@@ -10,14 +10,13 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """
-Create a new minimal research project from the scitex_template_research template.
+Create a new minimal research project from the scitex-writer template.
 
-Uses the 'minimal' branch which contains only the scitex/ directory with:
-- writer/ - LaTeX manuscript writing
-- scholar/ - Bibliography management
-- visualizer/ - Figure creation
-- console/ - Code execution
-- management/ - Project management
+Single source of truth: https://github.com/ywatanabe1989/scitex-writer.git
+
+Contains:
+- writer/ - LaTeX manuscript writing and compilation
+- scripts/ - Compilation and automation scripts
 """
 
 import sys
@@ -25,7 +24,7 @@ from typing import Optional
 
 from ._clone_project import clone_project
 
-TEMPLATE_REPO_URL = "https://github.com/ywatanabe1989/scitex-minimal-template.git"
+TEMPLATE_REPO_URL = "https://github.com/ywatanabe1989/scitex-writer.git"
 
 
 def clone_research_minimal(
@@ -35,13 +34,11 @@ def clone_research_minimal(
     tag: Optional[str] = None,
 ) -> bool:
     """
-    Create a new minimal research project from the scitex-minimal-template.
+    Create a new minimal research project from scitex-writer (single source of truth).
 
-    This template contains only the essential scitex/ directory structure:
+    This template contains the essential project structure:
     - writer/ - Full LaTeX manuscript writing with compilation scripts
-    - scholar/ - Bibliography management
-    - visualizer/ - Figure creation
-    - console/ - Code execution
+    - scripts/ - Compilation and automation scripts
 
     Parameters
     ----------
@@ -69,7 +66,7 @@ def clone_research_minimal(
     return clone_project(
         project_dir,
         TEMPLATE_REPO_URL,
-        "scitex-minimal-template",
+        "scitex-writer",
         git_strategy,
         branch=branch,
         tag=tag,

@@ -32,6 +32,7 @@ from .._utils._customize import update_references
 from .._utils._git_strategy import apply_git_strategy, remove_template_git
 from .._utils._logging_helpers import log_final, log_group
 from .._utils._rename import rename_package_directories
+from ._scholar_writer_integration import setup_scholar_writer_integration
 
 logger = getLogger(__name__)
 
@@ -170,6 +171,18 @@ def clone_project(
                 ctx.step(f"Updated {updated_count} references to {project_name}")
             else:
                 ctx.step("No references to update")
+
+        # Setup scholar-writer integration (symlinks for bibliography sharing)
+        with log_group("Setting up scholar integration", "📚") as ctx:
+            result = setup_scholar_writer_integration(target_path)
+            if result["success"] and result["layout"]:
+                ctx.step(f"Layout detected: {result['layout']}")
+                if result["symlink_created"]:
+                    ctx.step("Created symlink for bibliography sharing")
+                else:
+                    ctx.step("Symlink already exists")
+            else:
+                ctx.step("Scholar integration skipped")
 
         # Apply git strategy
         apply_git_strategy(target_path, git_strategy, template_name)

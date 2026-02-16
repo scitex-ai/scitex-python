@@ -28,6 +28,10 @@ from ._project.clone_singularity import TEMPLATE_REPO_URL as SINGULARITY_URL
 from ._project.clone_singularity import clone_singularity
 from ._project.clone_writer_directory import TEMPLATE_REPO_URL as PAPER_DIRECTORY_URL
 from ._project.clone_writer_directory import clone_writer_directory
+from ._project._scholar_writer_integration import (
+    setup_scholar_writer_integration,
+    ensure_integration,
+)
 
 
 def get_available_templates_info():
@@ -140,6 +144,9 @@ __all__ = [
     "find_parent_git",
     "create_child_git",
     "remove_child_git",
+    # Scholar-Writer integration
+    "setup_scholar_writer_integration",
+    "ensure_integration",
 ]
 
 # EOF
