@@ -36,8 +36,6 @@ except ImportError:
     _fr = None
 
 # Standard library and matplotlib imports
-import matplotlib as mpl  # noqa: E402
-import matplotlib.font_manager as fm  # noqa: E402
 import matplotlib.pyplot as _plt  # noqa: E402
 
 from scitex import logging as _logging  # noqa: E402
@@ -139,164 +137,27 @@ except ImportError:
 # Backward compatibility: expose styles submodule (deprecated, use figrecipe)
 from . import ax, color, gallery, styles, utils  # noqa: E402
 
+# Auto-configure matplotlib with SciTeX defaults on import
+from ._auto_config import configure as _configure  # noqa: E402
+
 # Import draw_graph from figrecipe integration (handles AxisWrapper)
 from ._figrecipe_integration import draw_graph  # noqa: E402
+
+# Spec building and rendering (moved from Django)
+from ._render import render_spec_to_bytes  # noqa: E402
+from ._spec_builders import (  # noqa: E402
+    ALL_KINDS,
+    DATA_KINDS,
+    KIND_ALIASES,
+    LABEL_KINDS,
+    MATRIX_KINDS,
+    XY_KINDS,
+    build_spec,
+    build_spec_from_csv,
+)
 from .styles import presets  # noqa: E402
 
-# ============================================================================
-# Auto-configure matplotlib with SciTeX defaults on import
-# ============================================================================
-
-
-def _register_arial_fonts():
-    """Register Arial fonts if available."""
-    try:
-        fm.findfont("Arial", fallback_to_default=False)
-        return True
-    except Exception:
-        # Search for Arial font files and register them
-        arial_paths = [
-            f
-            for f in fm.findSystemFonts()
-            if os.path.basename(f).lower().startswith("arial")
-        ]
-
-        if arial_paths:
-            for path in arial_paths:
-                try:
-                    fm.fontManager.addfont(path)
-                except Exception:
-                    pass
-
-            # Verify Arial is now available
-            try:
-                fm.findfont("Arial", fallback_to_default=False)
-                return True
-            except Exception:
-                pass
-        return False
-
-
-def _auto_configure_mpl():
-    """Apply SciTeX style configuration automatically on import."""
-    # Load SCITEX style preset from figrecipe (caches for per-figure use)
-    if _FIGRECIPE_AVAILABLE:
-        try:
-            load_style("SCITEX")
-        except Exception:
-            pass
-
-    # Always set global rcParams for consistent defaults
-    from .styles import resolve_style_value
-
-    # mm to pt conversion factor
-    mm_to_pt = 2.83465
-
-    # Load all style values from YAML (with env override support)
-    font_size = resolve_style_value("fonts.axis_label_pt", None, 7)
-    title_size = resolve_style_value("fonts.title_pt", None, 8)
-    tick_size = resolve_style_value("fonts.tick_label_pt", None, 7)
-    legend_size = resolve_style_value("fonts.legend_pt", None, 6)
-
-    trace_mm = resolve_style_value("lines.trace_mm", None, 0.2)
-    line_width = trace_mm * mm_to_pt
-
-    axes_thickness_mm = resolve_style_value("axes.thickness_mm", None, 0.2)
-    axes_linewidth = axes_thickness_mm * mm_to_pt
-
-    hide_top = resolve_style_value("behavior.hide_top_spine", None, True, bool)
-    hide_right = resolve_style_value("behavior.hide_right_spine", None, True, bool)
-
-    dpi = int(resolve_style_value("output.dpi", None, 300))
-
-    # Calculate figure size from axes + margins
-    axes_w = resolve_style_value("axes.width_mm", None, 40)
-    axes_h = resolve_style_value("axes.height_mm", None, 28)
-    margin_l = resolve_style_value("margins.left_mm", None, 20)
-    margin_r = resolve_style_value("margins.right_mm", None, 20)
-    margin_b = resolve_style_value("margins.bottom_mm", None, 20)
-    margin_t = resolve_style_value("margins.top_mm", None, 20)
-    fig_w_mm = axes_w + margin_l + margin_r
-    fig_h_mm = axes_h + margin_b + margin_t
-    figsize_inch = (fig_w_mm / 25.4, fig_h_mm / 25.4)
-
-    # Apply rcParams
-    mpl_config = {
-        # Resolution
-        "figure.dpi": max(100, dpi // 3),
-        "savefig.dpi": dpi,
-        # Figure Size
-        "figure.figsize": figsize_inch,
-        # Font Sizes
-        "font.size": font_size,
-        "axes.titlesize": title_size,
-        "axes.labelsize": font_size,
-        "xtick.labelsize": tick_size,
-        "ytick.labelsize": tick_size,
-        # Legend
-        "legend.fontsize": legend_size,
-        "legend.frameon": False,
-        "legend.loc": "best",
-        # Auto Layout
-        "figure.autolayout": True,
-        # Spines
-        "axes.spines.top": not hide_top,
-        "axes.spines.right": not hide_right,
-        # Line widths
-        "axes.linewidth": axes_linewidth,
-        "lines.linewidth": line_width,
-        "lines.markersize": 6.0,
-        # Grid
-        "grid.linewidth": axes_linewidth,
-        "grid.alpha": 0.3,
-        # Math text
-        "mathtext.fontset": "dejavusans",
-        "mathtext.default": "regular",
-    }
-
-    mpl.rcParams.update(mpl_config)
-
-
-# Register Arial fonts eagerly
-_arial_enabled = _register_arial_fonts()
-
-# Configure font family
-if _arial_enabled:
-    mpl.rcParams["font.family"] = "Arial"
-    mpl.rcParams["font.sans-serif"] = [
-        "Arial",
-        "Helvetica",
-        "DejaVu Sans",
-        "Liberation Sans",
-    ]
-else:
-    mpl.rcParams["font.family"] = "sans-serif"
-    mpl.rcParams["font.sans-serif"] = [
-        "Helvetica",
-        "DejaVu Sans",
-        "Liberation Sans",
-        "sans-serif",
-    ]
-    # Suppress font warnings
-    import logging
-
-    logging.getLogger("matplotlib.font_manager").setLevel(logging.ERROR)
-
-# Apply SciTeX style configuration automatically
-_auto_configure_mpl()
-
-# Set up color cycle from scitex colors
-try:
-    _rgba_norm_cycle = {
-        k: tuple(color.update_alpha(v, 1.0))
-        for k, v in color.PARAMS.get("RGBA_NORM_FOR_CYCLE", {}).items()
-    }
-    if _rgba_norm_cycle:
-        mpl.rcParams["axes.prop_cycle"] = _plt.cycler(
-            color=list(_rgba_norm_cycle.values())
-        )
-except Exception:
-    pass  # Use matplotlib default colors if color module fails
+_configure(_FIGRECIPE_AVAILABLE, load_style, color)
 
 
 # ============================================================================
@@ -452,6 +313,16 @@ __all__ = [
     "distribute_panels",
     "align_smart",
     "smart_align",  # Backward compatibility alias for align_smart
+    # Spec building and rendering
+    "build_spec",
+    "build_spec_from_csv",
+    "render_spec_to_bytes",
+    "XY_KINDS",
+    "DATA_KINDS",
+    "LABEL_KINDS",
+    "MATRIX_KINDS",
+    "ALL_KINDS",
+    "KIND_ALIASES",
     # Graph visualization
     "draw_graph",
     "get_graph_preset",
