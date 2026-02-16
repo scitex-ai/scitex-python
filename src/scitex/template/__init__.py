@@ -19,6 +19,22 @@ from ._code._code_templates import (
     list_code_templates,
 )
 from ._project._clone_template import clone_template
+from ._project._customize import customize_minimal_template, customize_template
+from ._project._directory_structure import (
+    PROJECT_STRUCTURE,
+    build_directory_tree,
+)
+from ._project._generate_configs import (
+    create_env_template,
+    create_paths_config,
+    create_project_config,
+    create_requirements_file,
+)
+from ._project._generate_readme import create_minimal_readme, create_project_readme
+from ._project._scholar_writer_integration import (
+    ensure_integration,
+    setup_scholar_writer_integration,
+)
 from ._project.clone_pip_project import TEMPLATE_REPO_URL as PIP_PROJECT_URL
 from ._project.clone_pip_project import clone_pip_project
 from ._project.clone_research import TEMPLATE_REPO_URL as RESEARCH_URL
@@ -28,10 +44,6 @@ from ._project.clone_singularity import TEMPLATE_REPO_URL as SINGULARITY_URL
 from ._project.clone_singularity import clone_singularity
 from ._project.clone_writer_directory import TEMPLATE_REPO_URL as PAPER_DIRECTORY_URL
 from ._project.clone_writer_directory import clone_writer_directory
-from ._project._scholar_writer_integration import (
-    setup_scholar_writer_integration,
-    ensure_integration,
-)
 
 
 def get_available_templates_info():
@@ -144,6 +156,17 @@ __all__ = [
     "find_parent_git",
     "create_child_git",
     "remove_child_git",
+    # Template customization (moved from Django)
+    "customize_template",
+    "customize_minimal_template",
+    "create_project_config",
+    "create_paths_config",
+    "create_env_template",
+    "create_requirements_file",
+    "create_minimal_readme",
+    "create_project_readme",
+    "build_directory_tree",
+    "PROJECT_STRUCTURE",
     # Scholar-Writer integration
     "setup_scholar_writer_integration",
     "ensure_integration",
