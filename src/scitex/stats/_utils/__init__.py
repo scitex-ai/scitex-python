@@ -32,6 +32,9 @@ from ._normalizers import force_dataframe
 # Power analysis
 from ._power import power_ttest, sample_size_ttest
 
+# Serialization
+from ._serialize import to_json_safe
+
 __all__ = [
     # Effect sizes
     "cohens_d",
@@ -54,6 +57,8 @@ __all__ = [
     "p2stars",
     # Normalizers
     "force_dataframe",
+    # Serialization
+    "to_json_safe",
     # CSV/DataFrame column resolution
     "resolve_columns",
     "resolve_groups",

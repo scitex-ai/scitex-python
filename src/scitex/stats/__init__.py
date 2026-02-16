@@ -41,6 +41,12 @@ from . import (  # noqa: F401
     tests,
 )
 
+# Unified test dispatcher
+from ._dispatch import available_tests, run_test
+
+# JSON-safe serialization
+from ._utils._serialize import to_json_safe
+
 # Convenience re-export from descriptive
 from .descriptive import describe
 
@@ -82,10 +88,17 @@ except ImportError:
 # Export key auto module classes at top level for convenience
 # Internal imports (hidden with underscore prefix)
 from .auto import TEST_RULES as _TEST_RULES  # noqa: F401
-from .auto import StatContext, StatStyle, TestRule, check_applicable
+from .auto import (
+    StatContext,
+    StatStyle,
+    TestRule,
+    check_applicable,
+    get_stat_style,
+    p_to_stars,
+    recommend_tests,
+)
 from .auto import format_test_line as _format_test_line  # noqa: F401
 from .auto import get_menu_items as _get_menu_items  # noqa: F401
-from .auto import get_stat_style, p_to_stars, recommend_tests
 
 # =============================================================================
 # Stats Schema - Use scitex.io.bundle.Stats as single source of truth
@@ -353,6 +366,11 @@ __all__ = [
     "tests",
     # Descriptive convenience export
     "describe",
+    # Unified test dispatcher
+    "run_test",
+    "available_tests",
+    # JSON-safe serialization
+    "to_json_safe",
     # Statistical tests - public API (23 tests)
     # Parametric (6)
     "test_ttest_ind",
