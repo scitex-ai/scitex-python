@@ -43,6 +43,7 @@ from ._project.clone_research_minimal import (
     MINIMAL_INCLUDE_DIRS,
     clone_research_minimal,
 )
+from ._project.clone_scitex_minimal import clone_scitex_minimal
 from ._project.clone_singularity import TEMPLATE_REPO_URL as SINGULARITY_URL
 from ._project.clone_singularity import clone_singularity
 from ._project.clone_writer_directory import TEMPLATE_REPO_URL as PAPER_DIRECTORY_URL
@@ -72,9 +73,22 @@ def get_available_templates_info():
     """
     return [
         {
+            "id": "scitex_minimal",
+            "name": "SciTeX Minimal",
+            "description": "Minimal scitex project with writer + scholar workspaces",
+            "github_url": RESEARCH_URL,
+            "use_case": "Manuscript writing with integrated bibliography management",
+            "features": [
+                "scitex/writer/ - Full scitex-writer (manuscripts, supplementary, revision)",
+                "scitex/scholar/ - Bibliography files, library, and prompts",
+                "Bibliography sharing via symlink between writer and scholar",
+                "Self-contained: version info preserved in pyproject.toml",
+            ],
+        },
+        {
             "id": "research_minimal",
-            "name": "Research Minimal",
-            "description": "Minimal manuscript writing template from scitex-writer",
+            "name": "Research Minimal (Legacy)",
+            "description": "Filtered manuscript writing template from scitex-writer",
             "github_url": RESEARCH_URL,
             "use_case": "Focused manuscript writing with essential LaTeX structure",
             "include_dirs": [
@@ -157,6 +171,7 @@ __all__ = [
     "clone_template",
     "clone_research",
     "clone_research_minimal",
+    "clone_scitex_minimal",
     "MINIMAL_INCLUDE_DIRS",
     "clone_pip_project",
     "clone_singularity",

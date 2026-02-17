@@ -113,6 +113,7 @@ class TestTemplateIdHelpers:
         ids = get_template_ids()
         assert "research" in ids
         assert "research_minimal" in ids
+        assert "scitex_minimal" in ids
         assert "pip_project" in ids
         assert "singularity" in ids
         assert "paper_directory" in ids
@@ -125,6 +126,10 @@ class TestTemplateIdHelpers:
         assert "minimal" in ids
         assert "pip-project" in ids
         assert "paper" in ids
+
+    def test_minimal_alias_resolves_to_scitex_minimal(self):
+        """The 'minimal' alias resolves to scitex_minimal."""
+        assert ALIASES["minimal"] == "scitex_minimal"
 
 
 class TestIncludeDirsForwarding:
@@ -327,6 +332,176 @@ class TestImportFromPackage:
         import scitex.template
 
         assert "MINIMAL_INCLUDE_DIRS" in scitex.template.__all__
+
+    def test_clone_scitex_minimal_in_all(self):
+        """clone_scitex_minimal is in __all__."""
+        import scitex.template
+
+        assert "clone_scitex_minimal" in scitex.template.__all__
+
+
+class TestScitexMinimalDispatch:
+    """Test scitex_minimal template dispatching."""
+
+    def test_scitex_minimal_in_templates(self):
+        """scitex_minimal is registered in TEMPLATES."""
+        assert "scitex_minimal" in TEMPLATES
+
+    def test_scitex_minimal_dispatches(self):
+        """scitex_minimal dispatches to its clone function."""
+        mock_func = MagicMock(return_value=True)
+        with patch.dict(TEMPLATES, {"scitex_minimal": mock_func}):
+            result = clone_template(
+                template_id="scitex_minimal",
+                project_dir="/tmp/test-scitex-minimal",
+            )
+            assert result is True
+            mock_func.assert_called_once()
+
+    def test_minimal_alias_dispatches_to_scitex_minimal(self):
+        """'minimal' alias dispatches to scitex_minimal function."""
+        mock_func = MagicMock(return_value=True)
+        with patch.dict(TEMPLATES, {"scitex_minimal": mock_func}):
+            result = clone_template(
+                template_id="minimal",
+                project_dir="/tmp/test-minimal-alias",
+            )
+            assert result is True
+            mock_func.assert_called_once()
+
+
+class TestScitexMinimalComposition:
+    """Test clone_scitex_minimal composes ensure calls."""
+
+    @patch("scitex.template._project._scholar_writer_integration.ensure_integration")
+    @patch("scitex.scholar.ensure")
+    @patch("scitex.writer.ensure")
+    def test_calls_writer_ensure(self, mock_writer, mock_scholar, mock_int, tmp_path):
+        """clone_scitex_minimal calls writer.ensure."""
+        from scitex.template._project.clone_scitex_minimal import clone_scitex_minimal
+
+        clone_scitex_minimal(str(tmp_path / "proj"))
+        mock_writer.assert_called_once()
+
+    @patch("scitex.template._project._scholar_writer_integration.ensure_integration")
+    @patch("scitex.scholar.ensure")
+    @patch("scitex.writer.ensure")
+    def test_calls_scholar_ensure(self, mock_writer, mock_scholar, mock_int, tmp_path):
+        """clone_scitex_minimal calls scholar.ensure."""
+        from scitex.template._project.clone_scitex_minimal import clone_scitex_minimal
+
+        clone_scitex_minimal(str(tmp_path / "proj"))
+        mock_scholar.assert_called_once()
+
+    @patch("scitex.template._project._scholar_writer_integration.ensure_integration")
+    @patch("scitex.scholar.ensure")
+    @patch("scitex.writer.ensure")
+    def test_calls_ensure_integration(
+        self, mock_writer, mock_scholar, mock_int, tmp_path
+    ):
+        """clone_scitex_minimal sets up integration."""
+        from scitex.template._project.clone_scitex_minimal import clone_scitex_minimal
+
+        clone_scitex_minimal(str(tmp_path / "proj"))
+        mock_int.assert_called_once()
+
+    @patch("scitex.template._project._scholar_writer_integration.ensure_integration")
+    @patch("scitex.scholar.ensure")
+    @patch("scitex.writer.ensure")
+    def test_forwards_git_strategy(self, mock_writer, mock_scholar, mock_int, tmp_path):
+        """git_strategy is forwarded to writer.ensure."""
+        from scitex.template._project.clone_scitex_minimal import clone_scitex_minimal
+
+        clone_scitex_minimal(str(tmp_path / "proj"), git_strategy="origin")
+        _, kwargs = mock_writer.call_args
+        assert kwargs["git_strategy"] == "origin"
+
+    @patch("scitex.template._project._scholar_writer_integration.ensure_integration")
+    @patch("scitex.scholar.ensure")
+    @patch("scitex.writer.ensure")
+    def test_returns_true_on_success(
+        self, mock_writer, mock_scholar, mock_int, tmp_path
+    ):
+        """Returns True on successful creation."""
+        from scitex.template._project.clone_scitex_minimal import clone_scitex_minimal
+
+        result = clone_scitex_minimal(str(tmp_path / "proj"))
+        assert result is True
+
+
+class TestScholarEnsure:
+    """Test scitex.scholar.ensure creates workspace scaffold."""
+
+    def test_creates_scaffold(self, tmp_path):
+        """ensure creates bib_files, library, prompts."""
+        from scitex.scholar.ensure import ensure
+
+        result = ensure(str(tmp_path))
+        assert result == tmp_path / "scitex" / "scholar"
+        assert (tmp_path / "scitex" / "scholar" / "bib_files").is_dir()
+        assert (tmp_path / "scitex" / "scholar" / "library").is_dir()
+        assert (tmp_path / "scitex" / "scholar" / "prompts").is_dir()
+
+    def test_noop_if_exists(self, tmp_path):
+        """ensure is a no-op if scholar directory already exists."""
+        from scitex.scholar.ensure import ensure
+
+        scholar_dir = tmp_path / "scitex" / "scholar"
+        scholar_dir.mkdir(parents=True)
+        (scholar_dir / "existing_file.txt").write_text("keep me")
+
+        result = ensure(str(tmp_path))
+        assert result == scholar_dir
+        assert (scholar_dir / "existing_file.txt").exists()
+
+    def test_importable_from_package(self):
+        """ensure is importable from scitex.scholar."""
+        from scitex.scholar import ensure
+
+        assert callable(ensure)
+
+
+class TestWriterEnsure:
+    """Test scitex.writer.ensure function signature and behavior."""
+
+    def test_noop_if_exists(self, tmp_path):
+        """ensure returns existing path without calling Writer."""
+        from scitex.writer import ensure
+
+        writer_dir = tmp_path / "scitex" / "writer"
+        writer_dir.mkdir(parents=True)
+
+        result = ensure(str(tmp_path))
+        assert result == writer_dir
+
+    @patch("scitex.writer.Writer")
+    def test_calls_writer_constructor(self, mock_writer_cls, tmp_path):
+        """ensure calls Writer constructor for new workspace."""
+        from scitex.writer import ensure
+
+        result = ensure(str(tmp_path))
+        expected_path = tmp_path / "scitex" / "writer"
+        mock_writer_cls.assert_called_once_with(
+            str(expected_path), git_strategy="child"
+        )
+
+    @patch("scitex.writer.Writer")
+    def test_forwards_kwargs(self, mock_writer_cls, tmp_path):
+        """ensure forwards git_strategy and other kwargs."""
+        from scitex.writer import ensure
+
+        ensure(str(tmp_path), git_strategy="origin", branch="develop")
+        mock_writer_cls.assert_called_once_with(
+            str(tmp_path / "scitex" / "writer"),
+            git_strategy="origin",
+            branch="develop",
+        )
+
+    def test_importable_from_package(self):
+        """ensure is importable from scitex.writer."""
+        from scitex.writer import ensure
+
+        assert callable(ensure)
 
 
 if __name__ == "__main__":

@@ -81,6 +81,9 @@ try:
 except ImportError:
     openalex_scitex = None
 
+# Workspace ensure
+from .ensure import ensure  # noqa: E402
+
 # Citation formatting (plain-dict based, no ORM dependencies)
 from .formatting import (  # noqa: E402
     clean_bibtex_for_arxiv,
@@ -96,6 +99,8 @@ from .formatting import (  # noqa: E402
 )
 
 __all__ = [
+    # Workspace
+    "ensure",
     # Core classes
     "Scholar",
     "Paper",
