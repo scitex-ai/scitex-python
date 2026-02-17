@@ -81,7 +81,26 @@ try:
 except ImportError:
     openalex_scitex = None
 
+# Workspace ensure
+from .ensure_workspace import ensure_workspace  # noqa: E402
+
+# Citation formatting (plain-dict based, no ORM dependencies)
+from .formatting import (  # noqa: E402
+    clean_bibtex_for_arxiv,
+    clean_text,
+    generate_cite_key,
+    paper_normalize,
+    papers_to_format,
+    to_bibtex,
+    to_csv_row,
+    to_endnote,
+    to_ris,
+    to_text_citation,
+)
+
 __all__ = [
+    # Workspace
+    "ensure_workspace",
     # Core classes
     "Scholar",
     "Paper",
@@ -97,6 +116,17 @@ __all__ = [
     # Local database integrations
     "crossref_scitex",  # CrossRef (167M+ papers via crossref-local)
     "openalex_scitex",  # OpenAlex (284M+ works via openalex-local)
+    # Citation formatting
+    "clean_text",
+    "generate_cite_key",
+    "paper_normalize",
+    "to_bibtex",
+    "to_ris",
+    "to_endnote",
+    "to_csv_row",
+    "to_text_citation",
+    "clean_bibtex_for_arxiv",
+    "papers_to_format",
 ]
 
 # # Import core classes for advanced users

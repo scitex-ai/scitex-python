@@ -55,17 +55,16 @@ try:
         RevisionTree,
         SupplementaryTree,
         Writer,
-    )
-    from scitex_writer import __version__ as _writer_version
-    from scitex_writer import (
         bib,
         compile,
+        ensure_workspace,
         figures,
         guidelines,
         project,
         prompts,
         tables,
     )
+    from scitex_writer import __version__ as _writer_version
 
     WRITER_AVAILABLE = True
     __writer_version__ = _writer_version
@@ -97,6 +96,7 @@ except ImportError:
     RevisionTree = _WriterNotAvailable
     bib = None
     compile = None
+    ensure_workspace = None
     figures = None
     guidelines = None
     project = None
@@ -119,6 +119,7 @@ __all__ = [
     # Availability check
     "WRITER_AVAILABLE",
     "has_writer",
+    "ensure_workspace",
     "__writer_version__",
     # Main class
     "Writer",

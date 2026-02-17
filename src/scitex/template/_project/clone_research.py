@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-10-29 05:56:37 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/template/clone_research.py
 # ----------------------------------------
@@ -28,6 +27,7 @@ def clone_research(
     git_strategy: Optional[str] = "child",
     branch: Optional[str] = None,
     tag: Optional[str] = None,
+    **kwargs,
 ) -> bool:
     """
     Create a new research project from the template repository.

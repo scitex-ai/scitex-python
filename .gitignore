@@ -497,9 +497,10 @@ cython_debug/
 **/*.log
 **/*sandbox
 **/*.sif
-**/*image
-**/image
-**/image.sif
+# Singularity image files (narrowed to avoid excluding Python _image packages)
+**/*image.sif
+**/singularity_image
+**/apptainer_image
 
 ### Source: /home/ywatanabe/.git-templates/.gitignore-templates/TeX.gitignore ###
 ## Core latex/pdflatex auxiliary files:

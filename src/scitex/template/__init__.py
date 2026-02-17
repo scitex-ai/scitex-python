@@ -19,11 +19,31 @@ from ._code._code_templates import (
     list_code_templates,
 )
 from ._project._clone_template import clone_template
+from ._project._customize import customize_minimal_template, customize_template
+from ._project._directory_structure import (
+    PROJECT_STRUCTURE,
+    build_directory_tree,
+)
+from ._project._generate_configs import (
+    create_env_template,
+    create_paths_config,
+    create_project_config,
+    create_requirements_file,
+)
+from ._project._generate_readme import create_minimal_readme, create_project_readme
+from ._project._scholar_writer_integration import (
+    ensure_integration,
+    setup_scholar_writer_integration,
+)
 from ._project.clone_pip_project import TEMPLATE_REPO_URL as PIP_PROJECT_URL
 from ._project.clone_pip_project import clone_pip_project
 from ._project.clone_research import TEMPLATE_REPO_URL as RESEARCH_URL
 from ._project.clone_research import clone_research
-from ._project.clone_research_minimal import clone_research_minimal
+from ._project.clone_research_minimal import (
+    MINIMAL_INCLUDE_DIRS,
+    clone_research_minimal,
+)
+from ._project.clone_scitex_minimal import clone_scitex_minimal
 from ._project.clone_singularity import TEMPLATE_REPO_URL as SINGULARITY_URL
 from ._project.clone_singularity import clone_singularity
 from ._project.clone_writer_directory import TEMPLATE_REPO_URL as PAPER_DIRECTORY_URL
@@ -53,18 +73,41 @@ def get_available_templates_info():
     """
     return [
         {
-            "id": "research_minimal",
-            "name": "Research Minimal",
-            "description": "Minimal SciTeX structure with writer, scholar, visualizer, and console",
+            "id": "scitex_minimal",
+            "name": "SciTeX Minimal",
+            "description": "Minimal scitex project with writer + scholar workspaces",
             "github_url": RESEARCH_URL,
-            "branch": "minimal",
-            "use_case": "Focused research workflow with essential SciTeX modules only",
+            "use_case": "Manuscript writing with integrated bibliography management",
             "features": [
-                "scitex/writer/ - LaTeX manuscript writing",
-                "scitex/scholar/ - Bibliography management",
-                "scitex/visualizer/ - Figure creation",
-                "scitex/console/ - Code execution",
-                "scitex/management/ - Project management",
+                "scitex/writer/ - Full scitex-writer (manuscripts, supplementary, revision)",
+                "scitex/scholar/ - Bibliography files, library, and prompts",
+                "Bibliography sharing via symlink between writer and scholar",
+                "Self-contained: version info preserved in pyproject.toml",
+            ],
+        },
+        {
+            "id": "research_minimal",
+            "name": "Research Minimal (Legacy)",
+            "description": "Filtered manuscript writing template from scitex-writer",
+            "github_url": RESEARCH_URL,
+            "use_case": "Focused manuscript writing with essential LaTeX structure",
+            "include_dirs": [
+                "00_shared",
+                "01_manuscript",
+                "02_supplementary",
+                "03_revision",
+                "scripts",
+                "compile.sh",
+                "Makefile",
+                "config",
+            ],
+            "features": [
+                "00_shared/ - Shared bibliography, styles, and templates",
+                "01_manuscript/ - Main manuscript with LaTeX contents",
+                "02_supplementary/ - Supplementary materials",
+                "03_revision/ - Revision and response to reviewers",
+                "scripts/ - Compilation and automation scripts",
+                "config/ - Compilation configuration files",
             ],
         },
         {
@@ -128,6 +171,8 @@ __all__ = [
     "clone_template",
     "clone_research",
     "clone_research_minimal",
+    "clone_scitex_minimal",
+    "MINIMAL_INCLUDE_DIRS",
     "clone_pip_project",
     "clone_singularity",
     "clone_writer_directory",
@@ -140,6 +185,20 @@ __all__ = [
     "find_parent_git",
     "create_child_git",
     "remove_child_git",
+    # Template customization (moved from Django)
+    "customize_template",
+    "customize_minimal_template",
+    "create_project_config",
+    "create_paths_config",
+    "create_env_template",
+    "create_requirements_file",
+    "create_minimal_readme",
+    "create_project_readme",
+    "build_directory_tree",
+    "PROJECT_STRUCTURE",
+    # Scholar-Writer integration
+    "setup_scholar_writer_integration",
+    "ensure_integration",
 ]
 
 # EOF

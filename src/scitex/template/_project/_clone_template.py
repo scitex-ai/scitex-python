@@ -16,19 +16,21 @@ from typing import Optional
 from .clone_pip_project import clone_pip_project
 from .clone_research import clone_research
 from .clone_research_minimal import clone_research_minimal
+from .clone_scitex_minimal import clone_scitex_minimal
 from .clone_singularity import clone_singularity
 from .clone_writer_directory import clone_writer_directory
 
 TEMPLATES = {
     "research": clone_research,
     "research_minimal": clone_research_minimal,
+    "scitex_minimal": clone_scitex_minimal,
     "pip_project": clone_pip_project,
     "singularity": clone_singularity,
     "paper_directory": clone_writer_directory,
 }
 
 ALIASES = {
-    "minimal": "research_minimal",
+    "minimal": "scitex_minimal",
     "pip-project": "pip_project",
     "paper": "paper_directory",
 }
@@ -40,6 +42,7 @@ def clone_template(
     git_strategy: Optional[str] = "child",
     branch: Optional[str] = None,
     tag: Optional[str] = None,
+    **kwargs: Any,
 ) -> bool:
     """
     Clone a project template by ID.
@@ -51,8 +54,8 @@ def clone_template(
     ----------
     template_id : str
         Template identifier. Canonical IDs: research, research_minimal,
-        pip_project, singularity, paper_directory.
-        Aliases: minimal, pip-project, paper.
+        scitex_minimal, pip_project, singularity, paper_directory.
+        Aliases: minimal (->scitex_minimal), pip-project, paper.
     project_dir : str
         Path to project directory (will be created).
     git_strategy : str, optional
@@ -61,6 +64,9 @@ def clone_template(
         Specific branch to clone.
     tag : str, optional
         Specific tag to clone.
+    **kwargs
+        Additional keyword arguments forwarded to the clone function
+        (e.g. ``include_dirs`` for research_minimal).
 
     Returns
     -------
@@ -83,6 +89,7 @@ def clone_template(
         git_strategy=git_strategy,
         branch=branch,
         tag=tag,
+        **kwargs,
     )
 
 

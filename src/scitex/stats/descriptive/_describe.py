@@ -75,9 +75,9 @@ def verify_non_leakage(
     described_first, _ = describe(x_first, dim=dim)
 
     if _is_torch_tensor(x):
-        assert (
-            described_first.shape == described[:1].shape
-        ), f"Shape mismatch: {described_first.shape} != {described[:1].shape}"
+        assert described_first.shape == described[:1].shape, (
+            f"Shape mismatch: {described_first.shape} != {described[:1].shape}"
+        )
         torch.testing.assert_close(
             described_first,
             described[:1],
@@ -86,9 +86,9 @@ def verify_non_leakage(
             msg="Statistics leak information across samples",
         )
     else:
-        assert (
-            described_first.shape == described[:1].shape
-        ), f"Shape mismatch: {described_first.shape} != {described[:1].shape}"
+        assert described_first.shape == described[:1].shape, (
+            f"Shape mismatch: {described_first.shape} != {described[:1].shape}"
+        )
         np.testing.assert_allclose(
             described_first,
             described[:1],
@@ -99,20 +99,15 @@ def verify_non_leakage(
     return True
 
 
+_DEFAULT_FUNCS = ["mean", "std", "kurtosis", "skewness", "q25", "median", "q75"]
+
+
 def describe(
     x,
     axis: int = -1,
     dim: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    funcs: Union[List[str], str] = [
-        "nanmean",
-        "nanstd",
-        "nankurtosis",
-        "nanskewness",
-        "nanq25",
-        "nanq50",
-        "nanq75",
-    ],
+    funcs: Union[List[str], str] = None,
     device=None,
     batch_size: int = -1,
 ) -> Tuple[np.ndarray, List[str]]:
@@ -128,8 +123,11 @@ def describe(
         Dimension(s) along which to compute statistics
     keepdims : bool, default=False
         Whether to keep reduced dimensions
-    funcs : list of str or "all"
-        Statistical functions to compute
+    funcs : list of str or "all", optional
+        Statistical functions to compute. Clean names (mean, std, median,
+        etc.) use nan-safe implementations. Legacy nan-prefixed names
+        (nanmean, nanstd, etc.) are also accepted. If None, uses default:
+        ["mean", "std", "kurtosis", "skewness", "q25", "median", "q75"].
     device : optional
         Device for torch tensors (ignored for numpy)
     batch_size : int, default=-1
@@ -140,18 +138,36 @@ def describe(
     Tuple[ndarray or Tensor, List[str]]
         Computed statistics stacked along last dimension and their names
     """
+    if funcs is None:
+        funcs = _DEFAULT_FUNCS
+
     dim = _normalize_axis(axis, dim)
     dim = (dim,) if isinstance(dim, int) else tuple(dim) if dim is not None else None
 
-    func_names = funcs
+    # Clean names map to nan-safe functions (recommended).
+    # Legacy nan-prefixed names and strict (non-nan) names also available.
     func_candidates = {
-        "mean": mean,
-        "std": std,
-        "kurtosis": kurtosis,
-        "skewness": skewness,
-        "q25": q25,
-        "q50": q50,
-        "q75": q75,
+        # Clean names -> nan-safe (default, recommended)
+        "mean": nanmean,
+        "std": nanstd,
+        "var": nanvar,
+        "kurtosis": nankurtosis,
+        "skewness": nanskewness,
+        "q25": nanq25,
+        "median": nanq50,
+        "q75": nanq75,
+        "max": nanmax,
+        "min": nanmin,
+        "count": nancount,
+        # Strict (non-nan-safe) variants
+        "mean_strict": mean,
+        "std_strict": std,
+        "kurtosis_strict": kurtosis,
+        "skewness_strict": skewness,
+        "q25_strict": q25,
+        "q50_strict": q50,
+        "q75_strict": q75,
+        # Legacy nan-prefixed names (backward compat)
         "nanmean": nanmean,
         "nanstd": nanstd,
         "nanvar": nanvar,
@@ -165,9 +181,24 @@ def describe(
         "nancount": nancount,
     }
 
+    func_names = funcs
     if funcs == "all":
-        _funcs = list(func_candidates.values())
-        func_names = list(func_candidates.keys())
+        # Use clean names for "all" mode
+        all_clean = [
+            "mean",
+            "std",
+            "var",
+            "kurtosis",
+            "skewness",
+            "q25",
+            "median",
+            "q75",
+            "max",
+            "min",
+            "count",
+        ]
+        _funcs = [func_candidates[f] for f in all_clean]
+        func_names = all_clean
     else:
         _funcs = [func_candidates[ff] for ff in func_names]
 
