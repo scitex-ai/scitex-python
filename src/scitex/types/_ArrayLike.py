@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-05-01 09:21:23 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/types/_ArrayLike.py
 # ----------------------------------------
@@ -15,7 +14,14 @@ from typing import Union as _Union
 
 import numpy as _np
 import pandas as _pd
-import xarray as _xr
+
+try:
+    import xarray as _xr
+
+    XARRAY_AVAILABLE = True
+except ImportError:
+    XARRAY_AVAILABLE = False
+    _xr = None
 
 
 def _get_torch_tensor_type():
@@ -29,29 +35,38 @@ def _get_torch_tensor_type():
         return type(None)
 
 
-ArrayLike = _Union[
-    _List,
-    _Tuple,
-    _np.ndarray,
-    _pd.Series,
-    _pd.DataFrame,
-    _xr.DataArray,
-]
+if XARRAY_AVAILABLE:
+    ArrayLike = _Union[
+        _List,
+        _Tuple,
+        _np.ndarray,
+        _pd.Series,
+        _pd.DataFrame,
+        _xr.DataArray,
+    ]
+else:
+    ArrayLike = _Union[
+        _List,
+        _Tuple,
+        _np.ndarray,
+        _pd.Series,
+        _pd.DataFrame,
+    ]
 
 
 def is_array_like(obj) -> bool:
     """Check if object is array-like.
 
-    Returns:
+    Returns
+    -------
         bool: True if object is array-like, False otherwise.
     """
     # First check against non-torch types
-    is_standard_array = isinstance(
-        obj,
-        (_List, _Tuple, _np.ndarray, _pd.Series, _pd.DataFrame, _xr.DataArray),
-    )
+    base_types = [_List, _Tuple, _np.ndarray, _pd.Series, _pd.DataFrame]
+    if XARRAY_AVAILABLE:
+        base_types.append(_xr.DataArray)
 
-    if is_standard_array:
+    if isinstance(obj, tuple(base_types)):
         return True
 
     # Check torch tensor lazily to avoid circular imports
