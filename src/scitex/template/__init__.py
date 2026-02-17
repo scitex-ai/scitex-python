@@ -80,6 +80,8 @@ def get_available_templates_info():
             "include_dirs": [
                 "00_shared",
                 "01_manuscript",
+                "02_supplementary",
+                "03_revision",
                 "scripts",
                 "compile.sh",
                 "Makefile",
@@ -88,6 +90,8 @@ def get_available_templates_info():
             "features": [
                 "00_shared/ - Shared bibliography, styles, and templates",
                 "01_manuscript/ - Main manuscript with LaTeX contents",
+                "02_supplementary/ - Supplementary materials",
+                "03_revision/ - Revision and response to reviewers",
                 "scripts/ - Compilation and automation scripts",
                 "config/ - Compilation configuration files",
             ],

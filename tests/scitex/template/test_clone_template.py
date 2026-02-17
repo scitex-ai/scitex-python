@@ -237,12 +237,17 @@ class TestMinimalIncludeDirs:
         assert "Makefile" in MINIMAL_INCLUDE_DIRS
         assert "config" in MINIMAL_INCLUDE_DIRS
 
-    def test_minimal_does_not_include_supplementary(self):
-        """Minimal template excludes non-essential directories."""
+    def test_minimal_includes_supplementary_and_revision(self):
+        """Minimal template includes supplementary and revision."""
         from scitex.template import MINIMAL_INCLUDE_DIRS
 
-        assert "02_supplementary" not in MINIMAL_INCLUDE_DIRS
-        assert "03_revision" not in MINIMAL_INCLUDE_DIRS
+        assert "02_supplementary" in MINIMAL_INCLUDE_DIRS
+        assert "03_revision" in MINIMAL_INCLUDE_DIRS
+
+    def test_minimal_excludes_dev_dirs(self):
+        """Minimal template excludes dev-only directories."""
+        from scitex.template import MINIMAL_INCLUDE_DIRS
+
         assert "src" not in MINIMAL_INCLUDE_DIRS
         assert "tests" not in MINIMAL_INCLUDE_DIRS
 

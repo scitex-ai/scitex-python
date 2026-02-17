@@ -30,6 +30,8 @@ TEMPLATE_REPO_URL = "https://github.com/ywatanabe1989/scitex-writer.git"
 MINIMAL_INCLUDE_DIRS = [
     "00_shared",
     "01_manuscript",
+    "02_supplementary",
+    "03_revision",
     "scripts",
     "compile.sh",
     "Makefile",
