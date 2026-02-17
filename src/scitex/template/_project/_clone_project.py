@@ -20,9 +20,10 @@ This module provides high-level orchestration only, delegating to:
 - _git_strategy: Git handling
 """
 
+import shutil
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 import scitex.git
 from scitex.logging import getLogger
@@ -36,6 +37,25 @@ from ._scholar_writer_integration import setup_scholar_writer_integration
 
 logger = getLogger(__name__)
 
+# Items always preserved during include_dirs filtering
+_ALWAYS_KEEP = {".gitignore", ".git", "LICENSE", "README.md"}
+
+
+def _filter_to_include_dirs(target_path: Path, include_dirs: List[str]) -> None:
+    """Remove top-level items not in include_dirs.
+
+    Dotfiles (.gitignore, .git) and LICENSE/README.md are always preserved.
+    """
+    keep = set(include_dirs) | _ALWAYS_KEEP
+    for item in list(target_path.iterdir()):
+        if item.name in keep or item.name.startswith("."):
+            continue
+        if item.is_dir():
+            shutil.rmtree(item)
+        else:
+            item.unlink()
+        logger.debug(f"Removed excluded item: {item.name}")
+
 
 def clone_project(
     project_dir: str,
@@ -45,6 +65,7 @@ def clone_project(
     branch: Optional[str] = None,
     tag: Optional[str] = None,
     use_cache: bool = True,
+    include_dirs: Optional[List[str]] = None,
 ) -> bool:
     """
     Create a project from a template repository.
@@ -53,8 +74,9 @@ def clone_project(
     1. Validates target directory
     2. Clones template to temporary location
     3. Copies template to target location
-    4. Customizes package names and references
-    5. Applies git strategy
+    4. Filters to include_dirs if specified
+    5. Customizes package names and references
+    6. Applies git strategy
 
     Parameters
     ----------
@@ -80,6 +102,9 @@ def clone_project(
     use_cache : bool, optional
         Use cached template from ~/.scitex/templates/ if available. Default True.
         Set to False to force fresh git clone.
+    include_dirs : list of str, optional
+        If set, only keep these top-level items after cloning. Dotfiles
+        (.gitignore, .git) and LICENSE/README.md are always preserved.
 
     Returns
     -------
@@ -120,8 +145,6 @@ def clone_project(
             cache_path = cache_dir / cache_name
 
             # Check cache first if enabled
-            import shutil
-
             if use_cache and cache_path.exists():
                 ctx.step(f"Using cached template: {cache_path}")
                 # Copy from cache (don't modify cache directly)
@@ -163,6 +186,11 @@ def clone_project(
                     copy_template(temp_path, target_path, quiet=True)
                     ctx.step("Copied template files")
 
+        # Filter to include_dirs if specified
+        if include_dirs:
+            _filter_to_include_dirs(target_path, include_dirs)
+            logger.info(f"Filtered template to: {include_dirs}")
+
         # Customize template for project
         with log_group("Customizing template", "🔧") as ctx:
             rename_package_directories(target_path, project_name)
@@ -203,6 +231,6 @@ def clone_project(
         return False
 
 
-__all__ = ["clone_project"]
+__all__ = ["clone_project", "_filter_to_include_dirs"]
 
 # EOF

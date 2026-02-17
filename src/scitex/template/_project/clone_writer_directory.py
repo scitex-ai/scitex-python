@@ -27,6 +27,7 @@ def clone_writer_directory(
     git_strategy: Optional[str] = "child",
     branch: Optional[str] = "main",
     tag: Optional[str] = None,
+    **kwargs,
 ) -> bool:
     """
     Create a new paper directory from the scitex-writer template repository.

@@ -40,6 +40,7 @@ def clone_template(
     git_strategy: Optional[str] = "child",
     branch: Optional[str] = None,
     tag: Optional[str] = None,
+    **kwargs: Any,
 ) -> bool:
     """
     Clone a project template by ID.
@@ -61,6 +62,9 @@ def clone_template(
         Specific branch to clone.
     tag : str, optional
         Specific tag to clone.
+    **kwargs
+        Additional keyword arguments forwarded to the clone function
+        (e.g. ``include_dirs`` for research_minimal).
 
     Returns
     -------
@@ -83,6 +87,7 @@ def clone_template(
         git_strategy=git_strategy,
         branch=branch,
         tag=tag,
+        **kwargs,
     )
 
 

@@ -39,7 +39,10 @@ from ._project.clone_pip_project import TEMPLATE_REPO_URL as PIP_PROJECT_URL
 from ._project.clone_pip_project import clone_pip_project
 from ._project.clone_research import TEMPLATE_REPO_URL as RESEARCH_URL
 from ._project.clone_research import clone_research
-from ._project.clone_research_minimal import clone_research_minimal
+from ._project.clone_research_minimal import (
+    MINIMAL_INCLUDE_DIRS,
+    clone_research_minimal,
+)
 from ._project.clone_singularity import TEMPLATE_REPO_URL as SINGULARITY_URL
 from ._project.clone_singularity import clone_singularity
 from ._project.clone_writer_directory import TEMPLATE_REPO_URL as PAPER_DIRECTORY_URL
@@ -71,16 +74,22 @@ def get_available_templates_info():
         {
             "id": "research_minimal",
             "name": "Research Minimal",
-            "description": "Minimal SciTeX structure with writer, scholar, visualizer, and console",
+            "description": "Minimal manuscript writing template from scitex-writer",
             "github_url": RESEARCH_URL,
-            "branch": "minimal",
-            "use_case": "Focused research workflow with essential SciTeX modules only",
+            "use_case": "Focused manuscript writing with essential LaTeX structure",
+            "include_dirs": [
+                "00_shared",
+                "01_manuscript",
+                "scripts",
+                "compile.sh",
+                "Makefile",
+                "config",
+            ],
             "features": [
-                "scitex/writer/ - LaTeX manuscript writing",
-                "scitex/scholar/ - Bibliography management",
-                "scitex/visualizer/ - Figure creation",
-                "scitex/console/ - Code execution",
-                "scitex/management/ - Project management",
+                "00_shared/ - Shared bibliography, styles, and templates",
+                "01_manuscript/ - Main manuscript with LaTeX contents",
+                "scripts/ - Compilation and automation scripts",
+                "config/ - Compilation configuration files",
             ],
         },
         {
@@ -144,6 +153,7 @@ __all__ = [
     "clone_template",
     "clone_research",
     "clone_research_minimal",
+    "MINIMAL_INCLUDE_DIRS",
     "clone_pip_project",
     "clone_singularity",
     "clone_writer_directory",

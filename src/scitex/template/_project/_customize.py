@@ -68,8 +68,8 @@ def customize_minimal_template(
 ) -> None:
     """Customise a minimal (scitex-writer) template with project metadata.
 
-    Writes ``title.tex`` and ``authors.tex`` under
-    ``scitex/writer/00_shared/``.
+    Writes ``title.tex`` and ``authors.tex`` under ``00_shared/``
+    (direct clone) or ``scitex/writer/00_shared/`` (nested layout).
 
     Parameters
     ----------
@@ -81,23 +81,32 @@ def customize_minimal_template(
     path = Path(project_dir)
     meta = _project_meta(metadata)
 
-    title_file = path / "scitex" / "writer" / "00_shared" / "title.tex"
-    if title_file.exists():
-        title_file.write_text(
-            f"%% -*- coding: utf-8 -*-\n\\title{{{meta['name']}}}\n\n%%%% EOF\n"
-        )
+    # Try direct clone path first, then nested layout
+    for title_file in [
+        path / "00_shared" / "title.tex",
+        path / "scitex" / "writer" / "00_shared" / "title.tex",
+    ]:
+        if title_file.exists():
+            title_file.write_text(
+                f"%% -*- coding: utf-8 -*-\n\\title{{{meta['name']}}}\n\n%%%% EOF\n"
+            )
+            break
 
     author_name = meta["owner_full_name"] or meta["owner"]
     if author_name:
-        author_file = path / "scitex" / "writer" / "00_shared" / "authors.tex"
-        if author_file.exists():
-            author_file.write_text(
-                f"%% -*- coding: utf-8 -*-\n"
-                f"\\author[1]{{{author_name}\\corref{{cor1}}}}\n\n"
-                f"\\address[1]{{Institution, Department, City, Country}}\n\n"
-                f"\\cortext[cor1]{{Corresponding author.}}\n\n"
-                f"%%%% EOF\n"
-            )
+        for author_file in [
+            path / "00_shared" / "authors.tex",
+            path / "scitex" / "writer" / "00_shared" / "authors.tex",
+        ]:
+            if author_file.exists():
+                author_file.write_text(
+                    f"%% -*- coding: utf-8 -*-\n"
+                    f"\\author[1]{{{author_name}\\corref{{cor1}}}}\n\n"
+                    f"\\address[1]{{Institution, Department, City, Country}}\n\n"
+                    f"\\cortext[cor1]{{Corresponding author.}}\n\n"
+                    f"%%%% EOF\n"
+                )
+                break
 
     logger.info(f"Customized minimal template for project: {meta['name']}")
 
@@ -123,6 +132,7 @@ def _update_readme(path: Path, meta: Dict) -> None:
 def _update_title_tex(path: Path, meta: Dict) -> None:
     """Write project name to title.tex if found."""
     for candidate in [
+        path / "00_shared" / "title.tex",
         path / "paper" / "manuscript" / "src" / "title.tex",
         path / "scitex" / "writer" / "00_shared" / "title.tex",
     ]:
@@ -138,6 +148,7 @@ def _update_authors_tex(path: Path, meta: Dict) -> None:
         return
 
     for candidate in [
+        path / "00_shared" / "authors.tex",
         path / "paper" / "manuscript" / "src" / "authors.tex",
         path / "scitex" / "writer" / "00_shared" / "authors.tex",
     ]:
