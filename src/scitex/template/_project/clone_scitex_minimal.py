@@ -54,7 +54,7 @@ def clone_scitex_minimal(
         project_path.mkdir(parents=True, exist_ok=True)
 
         # Ensure writer workspace (full scitex-writer clone)
-        from scitex.writer import ensure as ensure_writer
+        from scitex.writer import ensure_workspace as ensure_writer
 
         ensure_writer(
             str(project_path),
@@ -65,7 +65,7 @@ def clone_scitex_minimal(
         )
 
         # Ensure scholar workspace (directory scaffold)
-        from scitex.scholar import ensure as ensure_scholar
+        from scitex.scholar import ensure_workspace as ensure_scholar
 
         ensure_scholar(str(project_path))
 

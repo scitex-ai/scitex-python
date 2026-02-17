@@ -57,6 +57,7 @@ try:
         Writer,
         bib,
         compile,
+        ensure_workspace,
         figures,
         guidelines,
         project,
@@ -95,6 +96,7 @@ except ImportError:
     RevisionTree = _WriterNotAvailable
     bib = None
     compile = None
+    ensure_workspace = None
     figures = None
     guidelines = None
     project = None
@@ -113,46 +115,11 @@ def has_writer() -> bool:
     return WRITER_AVAILABLE
 
 
-def ensure(project_dir, git_strategy="child", **kwargs):
-    """Ensure writer workspace exists at {project_dir}/scitex/writer/.
-
-    If the directory already exists, returns the path without modification.
-    If not, clones the full scitex-writer template.
-
-    Parameters
-    ----------
-    project_dir : str or Path
-        Root project directory. Writer workspace will be at
-        ``{project_dir}/scitex/writer/``.
-    git_strategy : str, optional
-        Git initialization strategy ('child', 'parent', 'origin', None).
-    **kwargs
-        Forwarded to Writer constructor (branch, tag, etc.).
-
-    Returns
-    -------
-    pathlib.Path
-        Path to the writer workspace directory.
-
-    Raises
-    ------
-    ImportError
-        If scitex-writer is not installed.
-    """
-    from pathlib import Path
-
-    writer_path = Path(project_dir) / "scitex" / "writer"
-    if writer_path.exists():
-        return writer_path
-    Writer(str(writer_path), git_strategy=git_strategy, **kwargs)
-    return writer_path
-
-
 __all__ = [
     # Availability check
     "WRITER_AVAILABLE",
     "has_writer",
-    "ensure",
+    "ensure_workspace",
     "__writer_version__",
     # Main class
     "Writer",

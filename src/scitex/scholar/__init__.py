@@ -82,7 +82,7 @@ except ImportError:
     openalex_scitex = None
 
 # Workspace ensure
-from .ensure import ensure  # noqa: E402
+from .ensure_workspace import ensure_workspace  # noqa: E402
 
 # Citation formatting (plain-dict based, no ORM dependencies)
 from .formatting import (  # noqa: E402
@@ -100,7 +100,7 @@ from .formatting import (  # noqa: E402
 
 __all__ = [
     # Workspace
-    "ensure",
+    "ensure_workspace",
     # Core classes
     "Scholar",
     "Paper",

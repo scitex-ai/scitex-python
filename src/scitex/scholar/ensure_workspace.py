@@ -14,7 +14,7 @@ logger = getLogger(__name__)
 SCHOLAR_SUBDIRS = ["bib_files", "library", "prompts"]
 
 
-def ensure(project_dir: Union[str, Path]) -> Path:
+def ensure_workspace(project_dir: Union[str, Path]) -> Path:
     """Ensure scholar workspace exists at {project_dir}/scitex/scholar/.
 
     Creates the directory scaffold with subdirectories for bibliography
@@ -42,6 +42,6 @@ def ensure(project_dir: Union[str, Path]) -> Path:
     return scholar_path
 
 
-__all__ = ["ensure", "SCHOLAR_SUBDIRS"]
+__all__ = ["ensure_workspace", "SCHOLAR_SUBDIRS"]
 
 # EOF
