@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-10-02 19:50:54 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/plt/plot_learning_curve.py
 # ----------------------------------------
@@ -19,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 import scitex
-from scitex.plt.color import str2hex
+from scitex.plt.color import to_hex
 
 
 def _prepare_metrics_df(metrics_df):
@@ -49,7 +48,7 @@ def _configure_accuracy_axis(ax, metric_key):
 def _plot_training_data(ax, metrics_df, metric_key, linewidth=1, color=None):
     """Plot training phase data as line."""
     if color is None:
-        color = str2hex("blue")
+        color = to_hex("blue")
 
     is_training = scitex.str.search("^[Tt]rain(ing)?", metrics_df.step, as_bool=True)[0]
     training_df = metrics_df[is_training]
@@ -70,7 +69,7 @@ def _plot_training_data(ax, metrics_df, metric_key, linewidth=1, color=None):
 def _plot_validation_data(ax, metrics_df, metric_key, markersize=3, color=None):
     """Plot validation phase data as scatter."""
     if color is None:
-        color = str2hex("green")
+        color = to_hex("green")
 
     is_validation = scitex.str.search(
         "^[Vv]alid(ation)?", metrics_df.step, as_bool=True
@@ -93,7 +92,7 @@ def _plot_validation_data(ax, metrics_df, metric_key, markersize=3, color=None):
 def _plot_test_data(ax, metrics_df, metric_key, markersize=3, color=None):
     """Plot test phase data as scatter."""
     if color is None:
-        color = str2hex("red")
+        color = to_hex("red")
 
     is_test = scitex.str.search("^[Tt]est", metrics_df.step, as_bool=True)[0]
     test_df = metrics_df[is_test]
@@ -232,9 +231,7 @@ def plot_learning_curve(
 
 def main(args):
     """Demo learning curve plotting with synthetic data."""
-    import matplotlib.pyplot as plt
     import numpy as np
-    import pandas as pd
 
     # Create synthetic metrics data
     n_epochs = 10
