@@ -32,78 +32,82 @@ except ImportError:
     Papers = None  # type: ignore[assignment,misc]
     Scholar = None  # type: ignore[assignment,misc]
 
-# ── Workspace ────────────────────────────────────────────────────────────────
-from .ensure_workspace import ensure_workspace  # noqa: E402
-
 # ── Paper filtering ──────────────────────────────────────────────────────────
+# ── Internal helpers (accessible via __getattr__) ────────────────────────────
+from .ensure_workspace import ensure_workspace as _ensure_workspace  # noqa: E402
 from .filters import apply_filters  # noqa: E402
 
-# ── Citation formatting ──────────────────────────────────────────────────────
+# ── Citation formatting (internal, accessible via __getattr__) ───────────────
+from .formatting import clean_bibtex_for_arxiv as _clean_bibtex_for_arxiv  # noqa: E402
+from .formatting import clean_text as _clean_text  # noqa: E402
+
+# ── Citation formatting (public) ─────────────────────────────────────────────
 from .formatting import (  # noqa: E402
-    clean_bibtex_for_arxiv,
-    clean_text,
     generate_cite_key,
     make_citation_key,
-    paper_from_search_result,
-    paper_normalize,
     papers_to_format,
-    sanitize_filename,
     to_bibtex,
-    to_csv_row,
     to_endnote,
     to_ris,
     to_text_citation,
 )
+from .formatting import (
+    paper_from_search_result as _paper_from_search_result,  # noqa: E402
+)
+from .formatting import paper_normalize as _paper_normalize  # noqa: E402
+from .formatting import sanitize_filename as _sanitize_filename  # noqa: E402
+from .formatting import to_csv_row as _to_csv_row  # noqa: E402
+from .storage import (
+    normalize_search_filename as _normalize_search_filename,  # noqa: E402
+)
 
-# ── Storage filename helper ──────────────────────────────────────────────────
-from .storage import normalize_search_filename  # noqa: E402
+# ── Citation graph ───────────────────────────────────────────────────────────
+try:
+    from scitex.scholar.citation_graph import (
+        CitationGraphBuilder as _CitationGraphBuilder,
+    )
+    from scitex.scholar.citation_graph import (
+        plot_citation_graph as _plot_citation_graph,
+    )
 
-# ── Advanced / power-user classes (not in __all__ but importable) ────────────
-# These are kept accessible for advanced users but intentionally
-# excluded from the default public API to keep the surface minimal.
+    CitationGraphBuilder = _CitationGraphBuilder
+    plot_citation_graph = _plot_citation_graph
+except ImportError:
+    CitationGraphBuilder = None  # type: ignore[assignment,misc]
+    plot_citation_graph = None  # type: ignore[assignment,misc]
+
+# ── Advanced / power-user classes (hidden, accessible via __getattr__) ───────
 try:
     from scitex.scholar.auth import ScholarAuthManager as _ScholarAuthManager
-
-    ScholarAuthManager = _ScholarAuthManager
 except ImportError:
-    ScholarAuthManager = None  # type: ignore[assignment,misc]
+    _ScholarAuthManager = None  # type: ignore[assignment]
 
 try:
     from scitex.scholar.browser import ScholarBrowserManager as _ScholarBrowserManager
-
-    ScholarBrowserManager = _ScholarBrowserManager
 except ImportError:
-    ScholarBrowserManager = None  # type: ignore[assignment,misc]
+    _ScholarBrowserManager = None  # type: ignore[assignment]
 
 try:
     from scitex.scholar.metadata_engines import ScholarEngine as _ScholarEngine
-
-    ScholarEngine = _ScholarEngine
 except ImportError:
-    ScholarEngine = None  # type: ignore[assignment,misc]
+    _ScholarEngine = None  # type: ignore[assignment]
 
 try:
     from scitex.scholar.pdf_download import (
         ScholarPDFDownloader as _ScholarPDFDownloader,
     )
-
-    ScholarPDFDownloader = _ScholarPDFDownloader
 except ImportError:
-    ScholarPDFDownloader = None  # type: ignore[assignment,misc]
+    _ScholarPDFDownloader = None  # type: ignore[assignment]
 
 try:
     from scitex.scholar.storage import ScholarLibrary as _ScholarLibrary
-
-    ScholarLibrary = _ScholarLibrary
 except ImportError:
-    ScholarLibrary = None  # type: ignore[assignment,misc]
+    _ScholarLibrary = None  # type: ignore[assignment]
 
 try:
     from scitex.scholar.url_finder import ScholarURLFinder as _ScholarURLFinder
-
-    ScholarURLFinder = _ScholarURLFinder
 except ImportError:
-    ScholarURLFinder = None  # type: ignore[assignment,misc]
+    _ScholarURLFinder = None  # type: ignore[assignment]
 
 # Local database integrations (available if crossref-local / openalex-local installed)
 try:
@@ -117,9 +121,6 @@ except ImportError:
     _openalex_scitex = None  # type: ignore[assignment]
 
 # ── Hide leaked submodule attributes ─────────────────────────────────────────
-# When Python loads a subpackage (e.g. scitex.scholar.auth) it automatically
-# sets it as an attribute on the parent package.  We delete these references
-# so that dir(scitex.scholar) only shows the intended public surface.
 import sys as _sys
 
 _this_module = _sys.modules[__name__]
@@ -128,6 +129,7 @@ for _submod in [
     "browser",
     "config",
     "core",
+    "ensure_workspace",
     "filters",
     "formatting",
     "impact_factor",
@@ -136,6 +138,7 @@ for _submod in [
     "pdf_download",
     "storage",
     "url_finder",
+    "citation_graph",
     "_utils",
 ]:
     try:
@@ -144,6 +147,33 @@ for _submod in [
         pass
 del _this_module, _submod, _sys
 
+# ── Lazy access for hidden names (backward compat for internal imports) ──────
+_LAZY_NAMES = {
+    # Power-user classes
+    "ScholarAuthManager": "_ScholarAuthManager",
+    "ScholarBrowserManager": "_ScholarBrowserManager",
+    "ScholarEngine": "_ScholarEngine",
+    "ScholarPDFDownloader": "_ScholarPDFDownloader",
+    "ScholarLibrary": "_ScholarLibrary",
+    "ScholarURLFinder": "_ScholarURLFinder",
+    # Internal helpers
+    "ensure_workspace": "_ensure_workspace",
+    "normalize_search_filename": "_normalize_search_filename",
+    "clean_bibtex_for_arxiv": "_clean_bibtex_for_arxiv",
+    "clean_text": "_clean_text",
+    "paper_normalize": "_paper_normalize",
+    "paper_from_search_result": "_paper_from_search_result",
+    "sanitize_filename": "_sanitize_filename",
+    "to_csv_row": "_to_csv_row",
+}
+
+
+def __getattr__(name):  # noqa: C901
+    if name in _LAZY_NAMES:
+        return globals()[_LAZY_NAMES[name]]
+    raise AttributeError(f"module 'scitex.scholar' has no attribute {name!r}")
+
+
 # ── Public API ────────────────────────────────────────────────────────────────
 __all__ = [
     # Core classes
@@ -151,26 +181,19 @@ __all__ = [
     "Paper",
     "Papers",
     "ScholarConfig",
-    # Workspace
-    "ensure_workspace",
-    # Filtering
-    "apply_filters",
-    # Filename for saved search results
-    "normalize_search_filename",
-    # Citation formatting
-    "generate_cite_key",
-    "make_citation_key",
-    "paper_normalize",
-    "paper_from_search_result",
-    "sanitize_filename",
+    # Citation graph
+    "CitationGraphBuilder",
+    "plot_citation_graph",
+    # Formatting (user-facing)
     "to_bibtex",
     "to_ris",
     "to_endnote",
-    "to_csv_row",
     "to_text_citation",
-    "clean_bibtex_for_arxiv",
-    "clean_text",
     "papers_to_format",
+    "generate_cite_key",
+    "make_citation_key",
+    # Filtering
+    "apply_filters",
 ]
 
 # EOF
