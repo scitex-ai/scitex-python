@@ -1,88 +1,64 @@
 #!/usr/bin/env python3
-# Timestamp: 2025-12-19
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_figure_utils.py
+# File: /home/ywatanabe/proj/scitex-python/src/scitex/io/_save_modules/_figure_utils.py
 
 """Utility functions for extracting figure data for CSV export."""
 
 
-def get_figure_with_data(obj):
-    """
-    Extract figure or axes object that may contain plotting data for CSV export.
+class _RecordingFigureDataProxy:
+    """Proxy providing export_as_csv() from a figrecipe RecordingFigure."""
 
-    Parameters
-    ----------
-    obj : various matplotlib objects
-        Could be Figure, Axes, FigWrapper, AxisWrapper, or other matplotlib objects
+    def __init__(self, fig):
+        self._fig = fig
+
+    def export_as_csv(self):
+        """Extract recorded plot data as a flat DataFrame."""
+        try:
+            import pandas as pd
+
+            rec = self._fig._recorder.figure_record
+            columns = {}
+            for ax_key, ax_rec in rec.axes.items():
+                for call in ax_rec.calls:
+                    for arg in call.args:
+                        # args are dicts: {'name': ..., '_array': ..., ...}
+                        if isinstance(arg, dict):
+                            arr = arg.get("_array")
+                            name = arg.get("name", "val")
+                        else:
+                            arr = getattr(arg, "_array", None)
+                            name = getattr(arg, "name", "val")
+                        if arr is not None:
+                            col_name = f"{ax_key}_{call.id}_{name}"
+                            data = arr.tolist() if hasattr(arr, "tolist") else list(arr)
+                            columns[col_name] = data
+
+            if not columns:
+                return None
+
+            max_len = max(len(v) for v in columns.values())
+            padded = {
+                k: list(v) + [float("nan")] * (max_len - len(v))
+                for k, v in columns.items()
+            }
+            return pd.DataFrame(padded)
+        except Exception:
+            return None
+
+
+def get_figure_with_data(obj):
+    """Return a proxy with export_as_csv() if the object has figrecipe recording data.
 
     Returns
     -------
-    object or None
-        Figure or axes object that has export_as_csv methods, or None if not found
+    _RecordingFigureDataProxy or None
     """
-    import matplotlib.axes
-    import matplotlib.figure
-    import matplotlib.pyplot as plt
+    # figrecipe RecordingFigure directly
+    if hasattr(obj, "_recorder") and hasattr(obj._recorder, "figure_record"):
+        return _RecordingFigureDataProxy(obj)
 
-    # Check if object already has export methods (SciTeX wrapped objects)
-    if hasattr(obj, "export_as_csv"):
-        return obj
-
-    # Handle matplotlib Figure objects
-    if isinstance(obj, matplotlib.figure.Figure):
-        # Get the current axes that might be wrapped with SciTeX functionality
-        current_ax = plt.gca()
-        if hasattr(current_ax, "export_as_csv"):
-            return current_ax
-
-        # Check all axes in the figure
-        for ax in obj.axes:
-            if hasattr(ax, "export_as_csv"):
-                return ax
-
-        return None
-
-    # Handle matplotlib Axes objects
-    if isinstance(obj, matplotlib.axes.Axes):
-        if hasattr(obj, "export_as_csv"):
-            return obj
-        return None
-
-    # Handle FigWrapper or similar SciTeX objects
-    if hasattr(obj, "figure") and hasattr(obj.figure, "axes"):
-        # Check if the wrapper itself has export methods
-        if hasattr(obj, "export_as_csv"):
-            return obj
-
-        # Check the underlying figure's axes
-        for ax in obj.figure.axes:
-            if hasattr(ax, "export_as_csv"):
-                return ax
-
-        return None
-
-    # Handle AxisWrapper or similar SciTeX objects
-    if hasattr(obj, "_axis_mpl") or hasattr(obj, "_ax"):
-        if hasattr(obj, "export_as_csv"):
-            return obj
-        return None
-
-    # Try to get the current figure and its axes as fallback
-    try:
-        current_fig = plt.gcf()
-        current_ax = plt.gca()
-
-        if hasattr(current_ax, "export_as_csv"):
-            return current_ax
-        elif hasattr(current_fig, "export_as_csv"):
-            return current_fig
-
-        # Check all axes in current figure
-        for ax in current_fig.axes:
-            if hasattr(ax, "export_as_csv"):
-                return ax
-
-    except:
-        pass
+    # figrecipe RecordingFigure via .fig attribute (e.g. bundle objects)
+    if hasattr(obj, "fig") and hasattr(getattr(obj, "fig", None), "_recorder"):
+        return _RecordingFigureDataProxy(obj.fig)
 
     return None
 

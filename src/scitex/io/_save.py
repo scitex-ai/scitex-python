@@ -364,7 +364,6 @@ def _save_scitex_bundle(
 
     from scitex.io.bundle import from_matplotlib
 
-    from ._save_modules._figure_utils import get_figure_with_data
 
     if isinstance(obj, matplotlib.figure.Figure):
         fig = obj
@@ -381,14 +380,7 @@ def _save_scitex_bundle(
     dpi = kwargs.get("dpi", 300)
     name = kwargs.get("name") or Path(spath).stem
 
-    # Extract CSV data from scitex.plt tracking if available
-    scitex_source = get_figure_with_data(obj)
-    if csv_df is None and scitex_source is not None:
-        if hasattr(scitex_source, "export_as_csv"):
-            try:
-                csv_df = scitex_source.export_as_csv()
-            except Exception:
-                pass
+    # CSV via AxisWrapper removed (figrecipe migration); csv_df from explicit kwarg only
 
     # Delegate to Bundle (single source of truth)
     # Encoding is built from CSV columns directly for consistency

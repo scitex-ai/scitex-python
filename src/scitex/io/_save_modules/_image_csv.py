@@ -260,7 +260,6 @@ def _export_csv_data(
         if fig_obj is not None and hasattr(fig_obj, "export_as_csv"):
             csv_data = fig_obj.export_as_csv()
             if csv_data is not None and not csv_data.empty:
-                # Determine CSV path
                 if parent_name.lower() in image_extensions:
                     grandparent_dir = os.path.dirname(parent_dir)
                     csv_dir = os.path.join(grandparent_dir, "csv")
@@ -269,34 +268,16 @@ def _export_csv_data(
                     csv_path = os.path.splitext(spath)[0] + ".csv"
 
                 os.makedirs(os.path.dirname(csv_path), exist_ok=True)
-
-                # Import here to avoid circular import
                 from . import save_csv
 
                 save_csv(csv_data, csv_path)
 
-                # Update metadata with CSV info
                 if collected_metadata is not None:
                     _update_metadata_with_csv(collected_metadata, csv_data, csv_path)
 
-                # Handle symlinks for CSV
                 _create_csv_symlinks(
                     csv_path, spath, symlink_from_cwd, symlink_to_path, image_extensions
                 )
-
-        # Also export SigmaPlot format if available
-        if fig_obj is not None and hasattr(fig_obj, "export_as_csv_for_sigmaplot"):
-            _export_sigmaplot_csv(
-                fig_obj,
-                spath,
-                parent_name,
-                parent_dir,
-                filename_without_ext,
-                symlink_from_cwd,
-                symlink_to_path,
-                image_extensions,
-                dry_run,
-            )
 
     except Exception as e:
         logger.warning(f"CSV export failed: {e}")
@@ -373,38 +354,6 @@ def _create_csv_symlinks(
         else:
             csv_cwd = os.getcwd() + "/" + os.path.basename(csv_path)
             symlink(csv_path, csv_cwd, True, True)
-
-
-def _export_sigmaplot_csv(
-    fig_obj,
-    spath,
-    parent_name,
-    parent_dir,
-    filename_without_ext,
-    symlink_from_cwd,
-    symlink_to_path,
-    image_extensions,
-    dry_run,
-):
-    """Export SigmaPlot-formatted CSV."""
-    sigmaplot_data = fig_obj.export_as_csv_for_sigmaplot()
-    if sigmaplot_data is not None and not sigmaplot_data.empty:
-        if parent_name.lower() in image_extensions:
-            grandparent_dir = os.path.dirname(parent_dir)
-            csv_dir = os.path.join(grandparent_dir, "csv")
-            csv_sigmaplot_path = os.path.join(
-                csv_dir, filename_without_ext + "_for_sigmaplot.csv"
-            )
-        else:
-            ext = os.path.splitext(spath)[1].lower().replace(".", "")
-            csv_sigmaplot_path = spath.replace(ext, "csv").replace(
-                ".csv", "_for_sigmaplot.csv"
-            )
-
-        os.makedirs(os.path.dirname(csv_sigmaplot_path), exist_ok=True)
-        from . import save_csv
-
-        save_csv(sigmaplot_data, csv_sigmaplot_path)
 
 
 def _save_metadata_json(

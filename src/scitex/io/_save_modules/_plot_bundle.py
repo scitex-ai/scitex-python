@@ -9,8 +9,6 @@ from pathlib import Path
 
 from scitex import logging
 
-from ._figure_utils import get_figure_with_data
-
 logger = logging.getLogger()
 
 
@@ -77,15 +75,8 @@ def save_plot_bundle(obj, spath, as_zip=False, data=None, layered=True, **kwargs
         bundle_dir = p if str(p).endswith(".plot") else Path(str(p) + ".plot")
         temp_dir = None
 
-    # Get CSV data from figure if not provided
+    # CSV via AxisWrapper removed (figrecipe migration); data passed explicitly or None
     csv_df = data
-    if csv_df is None:
-        csv_source = get_figure_with_data(obj)
-        if csv_source is not None and hasattr(csv_source, "export_as_csv"):
-            try:
-                csv_df = csv_source.export_as_csv()
-            except Exception:
-                pass
 
     from scitex.plt.io import save_layered_plot_bundle
 
