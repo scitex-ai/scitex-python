@@ -24,6 +24,7 @@ from ._BibTeXValidator import (
 )
 from ._LibraryCacheManager import LibraryCacheManager
 from ._LibraryManager import LibraryManager
+from ._search_filename import normalize_search_filename
 from .BibTeXHandler import BibTeXHandler
 from .PaperIO import PaperIO
 from .ScholarLibrary import ScholarLibrary
@@ -39,4 +40,5 @@ __all__ = [
     "validate_bibtex_file",
     "validate_bibtex_content",
     "PaperIO",
+    "normalize_search_filename",
 ]

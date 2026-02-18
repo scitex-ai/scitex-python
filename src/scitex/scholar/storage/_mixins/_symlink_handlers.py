@@ -188,6 +188,66 @@ class SymlinkHandlersMixin:
             logger.warning(f"Failed to create project symlink: {exc_}")
             return None
 
+    def _create_project_local_symlink(
+        self,
+        master_storage_path: Path,
+        readable_name: str,
+    ) -> Optional[Path]:
+        """Create symlink inside the project's own directory tree.
+
+        Target location: ``{project_dir}/scitex/scholar/library/{project}/{readable_name}``
+        Target of symlink: absolute path to master storage entry.
+
+        This mirrors the ``~/.scitex/scholar/library/{project}/`` view directly
+        inside the user's code project so papers are visible alongside source code.
+
+        Args:
+            master_storage_path: Absolute path to the MASTER entry directory.
+            readable_name: Human-readable symlink name (PDF-xx_CC-... format).
+
+        Returns
+        -------
+            Path to the created symlink, or None on failure.
+        """
+        if not getattr(self, "project_dir", None):
+            return None
+        if not self.project or self.project in ("master", "MASTER"):
+            return None
+
+        try:
+            local_lib = (
+                Path(self.project_dir) / "scitex" / "scholar" / "library" / self.project
+            )
+            local_lib.mkdir(parents=True, exist_ok=True)
+
+            symlink_path = local_lib / readable_name
+
+            # Remove stale symlinks pointing to the same master entry
+            master_id = master_storage_path.name
+            for existing in local_lib.iterdir():
+                if not existing.is_symlink():
+                    continue
+                try:
+                    if (
+                        existing.resolve().name == master_id
+                        and existing.name != readable_name
+                    ):
+                        existing.unlink()
+                except Exception:
+                    pass
+
+            if not symlink_path.exists():
+                # Use absolute path — relative would break across project moves
+                symlink_path.symlink_to(master_storage_path.resolve())
+                logger.success(
+                    f"Created project-local symlink: {symlink_path} -> {master_storage_path}"
+                )
+            return symlink_path
+
+        except Exception as exc_:
+            logger.warning(f"Failed to create project-local symlink: {exc_}")
+            return None
+
     def _ensure_project_symlink(
         self,
         title: str,
