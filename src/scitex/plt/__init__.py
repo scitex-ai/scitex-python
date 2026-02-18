@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-# Timestamp: "2026-01-19 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py
+# File: /home/ywatanabe/proj/scitex-python/src/scitex/plt/__init__.py
 """
 SciTeX plt module - Publication-quality plotting via figrecipe.
 
@@ -18,7 +17,7 @@ import os
 os.environ.setdefault("FIGRECIPE_BRAND", "scitex.plt")
 os.environ.setdefault("FIGRECIPE_ALIAS", "plt")
 
-# Map SCITEX_PLT_* → FIGRECIPE_* (user-facing prefix takes priority)
+# Map SCITEX_PLT_* -> FIGRECIPE_* (user-facing prefix takes priority)
 _ENV_MAPPINGS = [
     ("SCITEX_PLT_DEBUG_MODE", "FIGRECIPE_DEBUG_MODE"),
     ("SCITEX_PLT_DEV_REPRESENTATIVE_PLOTS", "FIGRECIPE_DEV_REPRESENTATIVE_PLOTS"),
@@ -129,23 +128,22 @@ else:
     register_graph_preset = _not_available
 
 # ============================================================================
-# Local scitex submodules (kept for compatibility)
+# Local scitex submodules
 # ============================================================================
 try:
     from ._tpl import termplot
 except ImportError:
     termplot = None
 
-# Backward compatibility: expose styles submodule (deprecated, use figrecipe)
-from . import ax, color, gallery, styles, utils  # noqa: E402
+from . import color, gallery, styles, utils  # noqa: E402
 
 # Auto-configure matplotlib with SciTeX defaults on import
 from ._auto_config import configure as _configure  # noqa: E402
 
-# Import draw_graph from figrecipe integration (handles AxisWrapper)
+# Import draw_graph from figrecipe integration
 from ._figrecipe_integration import draw_graph  # noqa: E402
 
-# Spec building and rendering (moved from Django)
+# Spec building and rendering
 from ._render import render_spec_to_bytes  # noqa: E402
 from ._spec_builders import (  # noqa: E402
     ALL_KINDS,
@@ -163,36 +161,12 @@ _configure(_FIGRECIPE_AVAILABLE, load_style, color)
 
 
 # ============================================================================
-# SciTeX-specific wrapper functions (for AxisWrapper/FigWrapper compatibility)
+# SciTeX-specific wrapper functions
 # ============================================================================
 
 
-def figure(*args, **kwargs):
-    """Create a figure that returns a FigWrapper.
-
-    This is the scitex-specific figure function that creates FigWrapper
-    objects for compatibility with scitex.plt.ax utilities.
-
-    For figrecipe-style recording figures, use subplots() instead.
-    """
-    from ._subplots._FigWrapper import FigWrapper
-
-    fig_mpl = _plt.figure(*args, **kwargs)
-    return FigWrapper(fig_mpl)
-
-
 def tight_layout(**kwargs):
-    """Apply tight layout to current figure with colorbar compatibility handling.
-
-    This function calls tight_layout on the current figure and gracefully handles:
-    1. UserWarning: "The figure layout has changed to tight" - informational only
-    2. RuntimeError: Colorbar layout incompatibility - occurs when colorbars exist with old engine
-
-    Parameters
-    ----------
-    **kwargs
-        All keyword arguments are passed to matplotlib.pyplot.tight_layout()
-    """
+    """Apply tight layout to current figure with colorbar compatibility handling."""
     import warnings
 
     with warnings.catch_warnings():
@@ -202,17 +176,12 @@ def tight_layout(**kwargs):
         try:
             _plt.tight_layout(**kwargs)
         except RuntimeError as e:
-            # Silently handle colorbar layout engine incompatibility
             if "Colorbar layout" not in str(e):
                 raise
 
 
 def colorbar(mappable=None, cax=None, ax=None, **kwargs):
-    """
-    Create a colorbar, automatically unwrapping SciTeX AxisWrapper objects.
-
-    This function handles both regular matplotlib axes and SciTeX AxisWrapper
-    objects transparently, making it a drop-in replacement for plt.colorbar().
+    """Create a colorbar, unwrapping wrapper axes if needed.
 
     Parameters
     ----------
@@ -220,7 +189,7 @@ def colorbar(mappable=None, cax=None, ax=None, **kwargs):
         The image, contour set, etc. to which the colorbar applies.
     cax : Axes, optional
         Axes into which the colorbar will be drawn.
-    ax : Axes or AxisWrapper or list thereof, optional
+    ax : Axes or list thereof, optional
         Parent axes from which space for the colorbar will be stolen.
     **kwargs
         Additional keyword arguments passed to matplotlib.pyplot.colorbar()
@@ -230,54 +199,45 @@ def colorbar(mappable=None, cax=None, ax=None, **kwargs):
     Colorbar
         The created colorbar object
     """
-    # Unwrap ax if it's a SciTeX AxisWrapper
+
+    def _unwrap(a):
+        """Unwrap any axes wrapper to raw matplotlib Axes."""
+        for attr in ("_ax", "_axis_mpl"):
+            if hasattr(a, attr):
+                return getattr(a, attr)
+        return a
+
     if ax is not None:
         if hasattr(ax, "__iter__") and not isinstance(ax, str):
-            # Handle list/array of axes
-            ax = [a._axis_mpl if hasattr(a, "_axis_mpl") else a for a in ax]
+            ax = [_unwrap(a) for a in ax]
         else:
-            # Single axis
-            ax = ax._axis_mpl if hasattr(ax, "_axis_mpl") else ax
+            ax = _unwrap(ax)
 
-    # Unwrap cax if provided
     if cax is not None:
-        cax = cax._axis_mpl if hasattr(cax, "_axis_mpl") else cax
+        cax = _unwrap(cax)
 
-    # Call matplotlib's colorbar with unwrapped axes
     return _plt.colorbar(mappable=mappable, cax=cax, ax=ax, **kwargs)
 
 
 def close(fig=None):
-    """
-    Close a figure, automatically unwrapping SciTeX FigWrapper objects.
-
-    This function is a drop-in replacement for matplotlib.pyplot.close() that
-    handles both regular matplotlib Figure objects and SciTeX FigWrapper objects.
+    """Close a figure, unwrapping wrapper objects if needed.
 
     Parameters
     ----------
-    fig : Figure, FigWrapper, int, str, or None
-        The figure to close. Can be:
-        - None: close the current figure
-        - Figure or FigWrapper: close the specified figure
-        - int: close figure with that number
-        - str: close figure with that label, or 'all' to close all figures
+    fig : Figure, RecordingFigure, int, str, or None
+        The figure to close.
     """
     if fig is None:
         _plt.close()
     elif isinstance(fig, (int, str)):
         _plt.close(fig)
-    elif hasattr(fig, "_fig_mpl"):
-        # FigWrapper object - unwrap and close
-        _plt.close(fig._fig_mpl)
-    elif hasattr(fig, "figure"):
-        # Alternative attribute name (backward compatibility)
-        _plt.close(fig.figure)
     elif hasattr(fig, "fig"):
-        # figrecipe RecordingFigure - unwrap and close
+        # figrecipe RecordingFigure
         _plt.close(fig.fig)
+    elif hasattr(fig, "_fig_mpl"):
+        # Legacy FigWrapper (backward compat)
+        _plt.close(fig._fig_mpl)
     else:
-        # Assume it's a matplotlib Figure
         _plt.close(fig)
 
 
@@ -334,12 +294,10 @@ __all__ = [
     "sns",
     "enable_svg",
     # SciTeX-specific wrappers
-    "figure",
     "colorbar",
     "close",
     "tight_layout",
     # Local submodules
-    "ax",
     "color",
     "gallery",
     "utils",
@@ -350,19 +308,15 @@ __all__ = [
 
 
 def __getattr__(name):
-    """Fallback to matplotlib.pyplot for any missing attributes.
-
-    This makes scitex.plt a complete drop-in replacement for matplotlib.pyplot.
-    """
+    """Fallback to matplotlib.pyplot for any missing attributes."""
     if hasattr(_plt, name):
         return getattr(_plt, name)
     raise AttributeError(f"module 'scitex.plt' has no attribute '{name}'")
 
 
 def __dir__():
-    """Provide comprehensive directory listing including matplotlib.pyplot functions."""
+    """Provide directory listing including matplotlib.pyplot functions."""
     local_attrs = list(__all__)
-    # Add matplotlib.pyplot attributes
     mpl_attrs = [attr for attr in dir(_plt) if not attr.startswith("_")]
     local_attrs.extend(mpl_attrs)
     return sorted(set(local_attrs))

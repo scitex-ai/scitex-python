@@ -6,13 +6,11 @@
 from typing import Any, Dict, List, Optional, Union
 
 try:
-    from figrecipe._integrations._scitex_stats import (
-        annotate_from_stats as _fr_annotate,
-    )
-    from figrecipe._integrations._scitex_stats import from_scitex_stats as _fr_convert
-    from figrecipe._integrations._scitex_stats import (
+    from figrecipe._integrations._scitex_stats import (  # not yet in public API
         load_stats_bundle as _fr_load_bundle,
     )
+    from figrecipe.utils import annotate_from_stats as _fr_annotate
+    from figrecipe.utils import from_scitex_stats as _fr_convert
 
     _AVAILABLE = True
 except ImportError:
