@@ -1,0 +1,51 @@
+# ============================================
+# SciTeX Scholar GUI - Docker Image
+# Lightweight Flask app for citation graph visualization
+# ============================================
+# Build:
+#   docker build -f scripts/containers/Dockerfile.scholar-gui -t scitex-scholar-gui .
+#
+# Run:
+#   docker run -p 5051:5051 scitex-scholar-gui
+#   docker run -p 5051:5051 -v /path/to/crossref.db:/data/crossref.db scitex-scholar-gui
+#
+# With docker-compose:
+#   docker compose -f scripts/containers/docker-compose.scholar-gui.yml up
+
+FROM python:3.11-slim
+
+LABEL maintainer="ywatanabe@scitex.ai"
+LABEL description="SciTeX Scholar GUI - Citation graph visualization"
+
+# System deps (gcc needed for some pip packages)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        gcc \
+        g++ \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -s /bin/bash scitex
+
+# Copy source
+COPY . /tmp/scitex-python
+
+# Install scitex with scholar-gui extra (minimal deps)
+RUN pip3 install --no-cache-dir --break-system-packages \
+    "/tmp/scitex-python[scholar-gui]" \
+    && rm -rf /tmp/scitex-python
+
+# Switch to non-root user
+USER scitex
+WORKDIR /home/scitex
+
+EXPOSE 5051
+
+# Health check via /api/health endpoint
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD curl -f http://localhost:5051/api/health || exit 1
+
+ENTRYPOINT ["scitex", "scholar", "gui", "--host", "0.0.0.0", "--no-browser"]
+
+# EOF

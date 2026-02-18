@@ -1,5 +1,6 @@
 """Flask app factory for Scholar GUI."""
 
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -10,6 +11,11 @@ def _find_crossref_db(db_path: Optional[str] = None) -> Optional[str]:
     """Auto-detect CrossRef database path."""
     if db_path and Path(db_path).exists():
         return db_path
+
+    # Check environment variable (Docker / explicit config)
+    env_path = os.environ.get("CROSSREF_DB_PATH")
+    if env_path and Path(env_path).exists():
+        return env_path
 
     # Static candidates
     candidates = [
