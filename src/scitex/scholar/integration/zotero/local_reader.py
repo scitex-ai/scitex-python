@@ -129,6 +129,34 @@ class ZoteroLocalReader:
         item_ids = [r[0] for r in rows if r[1] >= required]
         return self._build_papers(item_ids)
 
+    def list_collections(self) -> List[str]:
+        """Return all collection names in the Zotero library, sorted alphabetically.
+
+        Returns
+        -------
+        list of str
+            Collection names sorted alphabetically.
+        """
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT collectionName FROM collections ORDER BY collectionName"
+            ).fetchall()
+        return [r[0] for r in rows]
+
+    def list_tags(self) -> List[Dict]:
+        """Return all tag names with occurrence counts, sorted by count descending.
+
+        Returns
+        -------
+        list of dict
+            Tags with structure: [{"name": str, "count": int}, ...] sorted by count (descending).
+        """
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT name, COUNT(*) as cnt FROM tags GROUP BY name ORDER BY cnt DESC"
+            ).fetchall()
+        return [{"name": r[0], "count": r[1]} for r in rows]
+
     # ── Internal helpers ──────────────────────────────────────────────────────
 
     def _detect_db_path(self) -> Path:
