@@ -90,14 +90,10 @@ class TestCoreImports:
         """Test that scitex.plt module imports correctly."""
         from scitex import plt
 
-        assert hasattr(plt, "ax")
-
-    def test_scitex_plt_ax_import(self):
-        """Test that scitex.plt.ax submodule imports correctly."""
-        from scitex.plt import ax  # noqa: F401
-
-        assert hasattr(ax, "stx_heatmap")
-        assert hasattr(ax, "stx_joyplot")
+        # ax submodule removed in figrecipe migration (AxisWrapper deleted)
+        assert hasattr(plt, "subplots")
+        assert hasattr(plt, "save")
+        assert hasattr(plt, "color")
 
     def test_scitex_session_import(self):
         """Test that scitex.session module imports without circular imports."""
