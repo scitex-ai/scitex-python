@@ -1,0 +1,27 @@
+# ============================================
+# SciTeX Scholar GUI - Docker Compose
+# ============================================
+# Usage:
+#   docker compose -f scripts/containers/docker-compose.scholar-gui.yml up
+#
+# Environment variables:
+#   SCITEX_GUI_PORT      - Host port (default: 5051)
+#   CROSSREF_DB_PATH     - Path to CrossRef database on host
+#   OPENALEX_DB_PATH     - Path to OpenAlex database on host (optional)
+
+services:
+  scholar-gui:
+    build:
+      context: ../..
+      dockerfile: scripts/containers/Dockerfile.scholar-gui
+    ports:
+      - "${SCITEX_GUI_PORT:-5051}:5051"
+    volumes:
+      - ${CROSSREF_DB_PATH:-/dev/null}:/data/crossref.db:ro
+      - ${OPENALEX_DB_PATH:-/dev/null}:/data/openalex.db:ro
+    environment:
+      - CROSSREF_DB_PATH=/data/crossref.db
+      - OPENALEX_DB_PATH=/data/openalex.db
+    restart: unless-stopped
+
+# EOF

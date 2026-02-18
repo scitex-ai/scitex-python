@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.17.14"
+version = "2.18.0"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -426,6 +426,15 @@ resource = [
     "readchar",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
+]
+
+# Scholar GUI - Minimal deps for Flask citation graph viewer
+# Use: pip install scitex[scholar-gui]
+scholar-gui = [
+    "flask>=2.0.0",
+    "click",
+    "crossref-local",
+    "openalex-local",
 ]
 
 # Scholar Module - Paper management & browser
