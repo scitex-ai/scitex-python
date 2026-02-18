@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # File: scitex/plt/utils/metadata/_data_linkage.py
 
 """
@@ -23,9 +22,6 @@ from ._csv_column_extraction import (
 from ._csv_hash import _compute_csv_hash, _compute_csv_hash_from_df
 from ._csv_verification import assert_csv_json_consistency, verify_csv_json_consistency
 from ._recipe_extraction import (
-    _build_data_ref,
-    _extract_calls_from_history,
-    _filter_style_kwargs,
     collect_recipe_metadata,
 )
 
@@ -73,33 +69,7 @@ def _get_csv_columns_for_method(
     list
         List of column names that will be in the CSV (exact match)
     """
-    # Import the actual formatters to ensure consistency
-    try:
-        import pandas as pd
-
-        from scitex.plt._subplots._export_as_csv import format_record
-
-        # Construct the record tuple as used in tracking
-        record = (id_val, method, tracked_dict, kwargs)
-
-        # Call the actual formatter to get the DataFrame
-        df = format_record(record)
-
-        if df is not None and not df.empty:
-            # Add the axis prefix (this is what FigWrapper.export_as_csv does)
-            prefix = f"ax_{ax_index:02d}_"
-            columns = []
-            for col in df.columns:
-                col_str = str(col)
-                if not col_str.startswith(prefix):
-                    col_str = f"{prefix}{col_str}"
-                columns.append(col_str)
-            return columns
-
-    except Exception:
-        # If formatters fail, fall back to pattern-based generation
-        pass
-
+    # format_record removed in figrecipe migration; use pattern-based generation directly
     # Fallback: Pattern-based column name generation
     prefix = f"ax_{ax_index:02d}_"
     columns = []

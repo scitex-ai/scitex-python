@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-11-19 13:00:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py
 
@@ -2376,8 +2375,6 @@ def _extract_csv_columns_from_history(ax) -> list:
         List of dictionaries containing CSV column mappings for each tracked plot,
         e.g., [{"id": "boxplot_0", "method": "boxplot", "columns": ["ax_00_boxplot_0_boxplot_0", "ax_00_boxplot_0_boxplot_1"]}]
     """
-    from ._csv_column_naming import get_csv_column_name
-
     # Get axes position for CSV column naming
     ax_row, ax_col = 0, 0  # Default for single axes
     if hasattr(ax, "_scitex_metadata") and "position_in_grid" in ax._scitex_metadata:
@@ -2680,36 +2677,8 @@ def _get_csv_columns_for_method(
         List of column names that will be in the CSV (exact match)
     """
     # Import the actual formatters to ensure consistency
-    # This is the single source of truth - we use the same code path as CSV export
-    try:
-        import pandas as pd
-
-        from scitex.plt._subplots._export_as_csv import format_record
-
-        # Construct the record tuple as used in tracking
-        record = (id_val, method, tracked_dict, kwargs)
-
-        # Call the actual formatter to get the DataFrame
-        df = format_record(record)
-
-        if df is not None and not df.empty:
-            # Add the axis prefix (this is what FigWrapper.export_as_csv does)
-            # Uses zero-padded index: ax_00_, ax_01_, etc.
-            prefix = f"ax_{ax_index:02d}_"
-            columns = []
-            for col in df.columns:
-                col_str = str(col)
-                if not col_str.startswith(prefix):
-                    col_str = f"{prefix}{col_str}"
-                columns.append(col_str)
-            return columns
-
-    except Exception:
-        # If formatters fail, fall back to pattern-based generation
-        pass
-
-    # Fallback: Pattern-based column name generation
-    # This should rarely be used since we prefer the actual formatter
+    # format_record removed in figrecipe migration; use pattern-based generation directly
+    # Pattern-based column name generation
     import numpy as np
 
     prefix = f"ax_{ax_index:02d}_"
@@ -2953,7 +2922,7 @@ def verify_csv_json_consistency(csv_path: str, json_path: str = None) -> dict:
 
     try:
         # Read JSON metadata
-        with open(json_path, "r") as f:
+        with open(json_path) as f:
             metadata = json.load(f)
 
         # Get columns_actual from data section
