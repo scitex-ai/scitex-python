@@ -1,6 +1,6 @@
 figrecipe: '1.0'
 type: diagram
-created: '2026-02-16T10:44:59.395331'
+created: '2026-02-16T12:41:31.895253'
 dpi: 200
 diagram:
   title: SciTeX Ecosystem
@@ -59,16 +59,16 @@ diagram:
     title: Core Modules
     subtitle: Infrastructure of All Python Scripts in SciTeX
     content:
-    - scitex.io
-    - scitex.config
-    - scitex.logger
     - '@scitex.session'
-    - scitex.template
-    - scitex.repro
-    - scitex.rng
     - scitex.plt
     - (figrecipe)
     - scitex.stats
+    - scitex.io
+    - scitex.config
+    - scitex.logger
+    - scitex.repro
+    - scitex.rng
+    - scitex.template
     emphasis: normal
     shape: rounded
     fill_color: !!python/tuple

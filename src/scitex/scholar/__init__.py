@@ -1,400 +1,199 @@
 """SciTeX Scholar - Scientific Literature Management Made Simple.
 
-This module provides a unified interface for:
-- Searching scientific literature across multiple sources
-- Automatic paper enrichment with journal metrics
-- PDF downloads and local library management
-- Bibliography generation in multiple formats
+Searching, enriching, downloading, and organising scientific papers.
 
 Quick Start:
     from scitex.scholar import Scholar
 
     scholar = Scholar()
     papers = scholar.search("deep learning")
-    papers.save("pac.bib")
+    papers.save("results.bib")
 
 Installation:
     pip install scitex[scholar]
 """
 
-# Check for missing dependencies and warn user (internal)
+# ── Internal bootstrap ───────────────────────────────────────────────────────
 from scitex._install_guide import warn_module_deps as _warn_module_deps
 
-_missing = _warn_module_deps("scholar")
+_warn_module_deps("scholar")
 
-# Import configuration - wrap all in try/except for graceful degradation
-try:
-    from scitex.scholar.auth import ScholarAuthManager
-except ImportError:
-    ScholarAuthManager = None  # type: ignore[misc,assignment]
-
-try:
-    from scitex.scholar.browser import ScholarBrowserManager
-except ImportError:
-    ScholarBrowserManager = None  # type: ignore[misc,assignment]
-
+# ── Config first (required by Scholar via circular dep) ──────────────────────
 try:
     from scitex.scholar.config import ScholarConfig
 except ImportError:
-    ScholarConfig = None  # type: ignore[misc,assignment]
+    ScholarConfig = None  # type: ignore[assignment,misc]
 
+# ── Core classes ─────────────────────────────────────────────────────────────
 try:
     from scitex.scholar.core import Paper, Papers, Scholar
 except ImportError:
-    Paper = None
-    Papers = None
-    Scholar = None
+    Paper = None  # type: ignore[assignment,misc]
+    Papers = None  # type: ignore[assignment,misc]
+    Scholar = None  # type: ignore[assignment,misc]
 
-try:
-    from scitex.scholar.metadata_engines import ScholarEngine
-except ImportError:
-    ScholarEngine = None
+# ── Paper filtering ──────────────────────────────────────────────────────────
+# ── Internal helpers (accessible via __getattr__) ────────────────────────────
+from .ensure_workspace import ensure_workspace as _ensure_workspace  # noqa: E402
+from .filters import apply_filters  # noqa: E402
 
-try:
-    from scitex.scholar.pdf_download import ScholarPDFDownloader
-except ImportError:
-    ScholarPDFDownloader = None
+# ── Citation formatting (internal, accessible via __getattr__) ───────────────
+from .formatting import clean_bibtex_for_arxiv as _clean_bibtex_for_arxiv  # noqa: E402
+from .formatting import clean_text as _clean_text  # noqa: E402
 
-try:
-    from scitex.scholar.storage import ScholarLibrary
-except ImportError:
-    ScholarLibrary = None
-
-try:
-    from scitex.scholar.url_finder import ScholarURLFinder
-except ImportError:
-    ScholarURLFinder = None
-
-try:
-    from . import _utils  # Internal utilities
-except ImportError:
-    _utils = None
-
-# Local database integrations (crossref-local, openalex-local)
-try:
-    from .local_dbs import crossref_scitex
-except ImportError:
-    crossref_scitex = None
-
-try:
-    from .local_dbs import openalex_scitex
-except ImportError:
-    openalex_scitex = None
-
-# Workspace ensure
-from .ensure_workspace import ensure_workspace  # noqa: E402
-
-# Citation formatting (plain-dict based, no ORM dependencies)
+# ── Citation formatting (public) ─────────────────────────────────────────────
 from .formatting import (  # noqa: E402
-    clean_bibtex_for_arxiv,
-    clean_text,
     generate_cite_key,
-    paper_normalize,
+    make_citation_key,
     papers_to_format,
     to_bibtex,
-    to_csv_row,
     to_endnote,
     to_ris,
     to_text_citation,
 )
+from .formatting import (
+    paper_from_search_result as _paper_from_search_result,  # noqa: E402
+)
+from .formatting import paper_normalize as _paper_normalize  # noqa: E402
+from .formatting import sanitize_filename as _sanitize_filename  # noqa: E402
+from .formatting import to_csv_row as _to_csv_row  # noqa: E402
+from .storage import (
+    normalize_search_filename as _normalize_search_filename,  # noqa: E402
+)
 
-__all__ = [
-    # Workspace
+# ── Citation graph ───────────────────────────────────────────────────────────
+try:
+    from scitex.scholar.citation_graph import (
+        CitationGraphBuilder as _CitationGraphBuilder,
+    )
+    from scitex.scholar.citation_graph import (
+        plot_citation_graph as _plot_citation_graph,
+    )
+
+    CitationGraphBuilder = _CitationGraphBuilder
+    plot_citation_graph = _plot_citation_graph
+except ImportError:
+    CitationGraphBuilder = None  # type: ignore[assignment,misc]
+    plot_citation_graph = None  # type: ignore[assignment,misc]
+
+# ── Advanced / power-user classes (hidden, accessible via __getattr__) ───────
+try:
+    from scitex.scholar.auth import ScholarAuthManager as _ScholarAuthManager
+except ImportError:
+    _ScholarAuthManager = None  # type: ignore[assignment]
+
+try:
+    from scitex.scholar.browser import ScholarBrowserManager as _ScholarBrowserManager
+except ImportError:
+    _ScholarBrowserManager = None  # type: ignore[assignment]
+
+try:
+    from scitex.scholar.metadata_engines import ScholarEngine as _ScholarEngine
+except ImportError:
+    _ScholarEngine = None  # type: ignore[assignment]
+
+try:
+    from scitex.scholar.pdf_download import (
+        ScholarPDFDownloader as _ScholarPDFDownloader,
+    )
+except ImportError:
+    _ScholarPDFDownloader = None  # type: ignore[assignment]
+
+try:
+    from scitex.scholar.storage import ScholarLibrary as _ScholarLibrary
+except ImportError:
+    _ScholarLibrary = None  # type: ignore[assignment]
+
+try:
+    from scitex.scholar.url_finder import ScholarURLFinder as _ScholarURLFinder
+except ImportError:
+    _ScholarURLFinder = None  # type: ignore[assignment]
+
+# Local database integrations (available if crossref-local / openalex-local installed)
+try:
+    from .local_dbs import crossref_scitex as _crossref_scitex
+except ImportError:
+    _crossref_scitex = None  # type: ignore[assignment]
+
+try:
+    from .local_dbs import openalex_scitex as _openalex_scitex
+except ImportError:
+    _openalex_scitex = None  # type: ignore[assignment]
+
+# ── Hide leaked submodule attributes ─────────────────────────────────────────
+import sys as _sys
+
+_this_module = _sys.modules[__name__]
+for _submod in [
+    "auth",
+    "browser",
+    "config",
+    "core",
     "ensure_workspace",
+    "filters",
+    "formatting",
+    "impact_factor",
+    "local_dbs",
+    "metadata_engines",
+    "pdf_download",
+    "storage",
+    "url_finder",
+    "citation_graph",
+    "_utils",
+]:
+    try:
+        delattr(_this_module, _submod)
+    except AttributeError:
+        pass
+del _this_module, _submod, _sys
+
+# ── Lazy access for hidden names (backward compat for internal imports) ──────
+_LAZY_NAMES = {
+    # Power-user classes
+    "ScholarAuthManager": "_ScholarAuthManager",
+    "ScholarBrowserManager": "_ScholarBrowserManager",
+    "ScholarEngine": "_ScholarEngine",
+    "ScholarPDFDownloader": "_ScholarPDFDownloader",
+    "ScholarLibrary": "_ScholarLibrary",
+    "ScholarURLFinder": "_ScholarURLFinder",
+    # Internal helpers
+    "ensure_workspace": "_ensure_workspace",
+    "normalize_search_filename": "_normalize_search_filename",
+    "clean_bibtex_for_arxiv": "_clean_bibtex_for_arxiv",
+    "clean_text": "_clean_text",
+    "paper_normalize": "_paper_normalize",
+    "paper_from_search_result": "_paper_from_search_result",
+    "sanitize_filename": "_sanitize_filename",
+    "to_csv_row": "_to_csv_row",
+}
+
+
+def __getattr__(name):  # noqa: C901
+    if name in _LAZY_NAMES:
+        return globals()[_LAZY_NAMES[name]]
+    raise AttributeError(f"module 'scitex.scholar' has no attribute {name!r}")
+
+
+# ── Public API ────────────────────────────────────────────────────────────────
+__all__ = [
     # Core classes
     "Scholar",
     "Paper",
     "Papers",
-    # Configuration and managers
     "ScholarConfig",
-    "ScholarEngine",
-    "ScholarURLFinder",
-    "ScholarAuthManager",
-    "ScholarBrowserManager",
-    "ScholarLibrary",
-    "ScholarPDFDownloader",
-    # Local database integrations
-    "crossref_scitex",  # CrossRef (167M+ papers via crossref-local)
-    "openalex_scitex",  # OpenAlex (284M+ works via openalex-local)
-    # Citation formatting
-    "clean_text",
-    "generate_cite_key",
-    "paper_normalize",
+    # Citation graph
+    "CitationGraphBuilder",
+    "plot_citation_graph",
+    # Formatting (user-facing)
     "to_bibtex",
     "to_ris",
     "to_endnote",
-    "to_csv_row",
     "to_text_citation",
-    "clean_bibtex_for_arxiv",
     "papers_to_format",
+    "generate_cite_key",
+    "make_citation_key",
+    # Filtering
+    "apply_filters",
 ]
-
-# # Import core classes for advanced users
-# from scitex.scholar.core import Paper
-# from .core.Papers import Papers
-
-# # DOI resolver is available via: python -m scitex.scholar.resolve_doi_asyncs
-# from . import doi
-
-# # Backward compatibility alias
-# PaperCollection = Papers
-
-# # Import utility functions
-# from .utils._formatters import (
-#     papers_to_bibtex,
-#     papers_to_ris,
-#     papers_to_json,
-#     papers_to_markdown
-# )
-
-# # Import enrichment functionality
-# from .metadata.enrichment._MetadataEnricher import (
-#     MetadataEnricher,
-#     _enrich_papers_with_all,
-#     _enrich_papers_with_impact_factors,
-#     _enrich_papers_with_citations,
-# )
-
-# # PDF download functionality
-# from .download._ScholarPDFDownloader import (
-#     ScholarPDFDownloader,
-#     download_pdf_async,
-#     download_pdf_asyncs_async,
-# )
-# from .download._SmartScholarPDFDownloader import SmartScholarPDFDownloader
-
-# # Browser-based download functionality removed - simplified structure
-
-# # Create module-level convenience function
-# def download_pdf_asyncs(
-#     dois,
-#     download_dir=None,
-#     force=False,
-#     max_worker=4,
-#     show_async_progress=True,
-#     acknowledge_ethical_usage=None,
-#     **kwargs
-# ):
-#     """
-#     Download PDFs for DOIs using default Scholar instance.
-
-#     This is a convenience function that creates a Scholar instance if needed.
-#     For more control, use Scholar().download_pdf_asyncs() directly.
-
-#     Args:
-#         dois: DOI strings (list or single string) or Papers/Paper objects
-#         download_dir: Directory to save PDFs
-#         force: Force re-download
-#         max_worker: Maximum concurrent downloads
-#         show_async_progress: Show download progress
-#         acknowledge_ethical_usage: Acknowledge ethical usage for Sci-Hub
-#         **kwargs: Additional arguments
-
-#     Returns:
-#         Dictionary with download results
-
-#     Examples:
-#         >>> import scitex as stx
-#         >>> stx.scholar.download_pdf_asyncs(["10.1234/doi1", "10.5678/doi2"])
-#         >>> stx.scholar.download_pdf_asyncs("10.1234/single-doi")
-#     """
-#     scholar = Scholar()
-#     return scholar.download_pdf_asyncs(
-#         dois,
-#         download_dir=download_dir,
-#         force=force,
-#         max_worker=max_worker,
-#         show_async_progress=show_async_progress,
-#         acknowledge_ethical_usage=acknowledge_ethical_usage,
-#         **kwargs
-#     )
-
-# # Version
-# __version__ = "0.1.0"
-
-# # What users see with "from scitex.scholar import *"
-# __all__ = [
-#     # Main interface
-#     'Scholar',
-#     'ScholarConfig',
-
-
-#     # Convenience functions
-#     'search',
-#     'search_quick',
-#     'enrich_bibtex',
-#     'download_pdf_asyncs',  # NEW: Module-level convenience function
-
-#     "doi",
-#     "resolve_doi_asyncs",
-
-#     # Core classes
-#     'Paper',
-#     'Papers',
-#     'PaperCollection',  # Backward compatibility alias
-
-#     # Format converters
-#     'papers_to_bibtex',
-#     'papers_to_ris',
-#     'papers_to_json',
-#     'papers_to_markdown',
-
-#     # Enrichment
-#     'MetadataEnricher',
-
-#     # PDF download functionality
-#     'ScholarPDFDownloader',
-#     'download_pdf_async',
-#     'download_pdf_asyncs_async',
-
-#     # Browser-based functionality
-
-#     # Authentication
-#     'ScholarAuthManager',
-#     # 'OpenAthensAuthenticator',
-#     # 'ShibbolethAuthenticator',
-#     # 'EZProxyAuthenticator',
-
-#     # Resolution
-#     'SingleDOIResolver',
-#     'OpenURLResolver',
-#     'ResumableOpenURLResolver',
-#     # 'BatchDOIResolver',
-
-#     # Enrichment
-#     'MetadataEnricher',
-#     'JCR_YEAR',
-
-#     # Validation
-#     'PDFValidator',
-#     'ValidationResult',
-
-#     # # Database
-#     # 'PaperDatabase',
-#     # 'DatabaseEntry',
-#     # 'DatabaseIndex',
-
-#     # Semantic Search
-#     # 'SemanticSearchEngine',
-#     # 'VectorDatabase',
-#     # 'Embedder',
-# ]
-
-# # # For backward compatibility, provide access to old functions with deprecation warnings
-# # def __getattr__(name):
-# #     """Provide backward compatibility with deprecation warnings."""
-# #     import warnings
-
-# #     # Handle special IPython attributes
-# #     if name in ['__custom_documentations__', '__wrapped__']:
-# #         raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
-
-# #     # Map old names to new functionality
-# #     compatibility_map = {
-# #         'search_sync': 'search',
-# #         'build_index': 'Scholar()._index_local_pdfs',
-# #         'get_scholar_dir': 'Scholar().get_workspace_dir()',
-# #         'LocalSearchEngine': 'Scholar',
-# #         'VectorSearchEngine': 'Scholar',
-# #         'ScholarPDFDownloader': 'Scholar',
-# #         'search_papers': 'search',
-# #         'SemanticScholarPaper': 'Paper',
-# #         'PaperMetadata': 'Paper',
-# #         'PaperAcquisition': 'Scholar',
-# #         'SemanticScholarClient': 'Scholar',
-# #         'JournalMetrics': 'Scholar',
-# #         'PaperEnrichmentService': 'Scholar',
-# #         'generate_enriched_bibliography': 'Papers.save'
-# #     }
-
-# #     if name in compatibility_map:
-# #         warnings.warn(
-# #             f"{name} is deprecated. Use {compatibility_map[name]} instead.",
-# #             DeprecationWarning,
-# #             stacklevel=2
-# #         )
-
-# #         # Return the Scholar class for most cases
-# #         if name in ['search_sync', 'search_papers']:
-# #             return search
-# #         elif name == 'build_index':
-# #             def build_index(paths, **kwargs):
-# #                 scholar = Scholar()
-# #                 stats = {}
-# #                 for path in paths:
-# #                     stats.update(scholar._index_local_pdfs(path))
-# #                 return stats
-# #             return build_index
-# #         else:
-# #             return Scholar
-
-# #     from scitex.logging import ScholarError
-# #     raise ScholarError(
-# #         f"Module attribute not found: '{name}'",
-# #         context={"module": __name__, "attribute": name},
-# #         suggestion=f"Available attributes: Scholar, Paper, Papers, search, enrich_bibtex"
-# #     )
-
-
-# # Import new modules
-# from .auth import (
-#     ScholarAuthManager,
-#     # OpenAthensAuthenticator,
-#     # ShibbolethAuthenticator,
-#     # EZProxyAuthenticator,
-# )
-# from .metadata.doi._SingleDOIResovler import SingleDOIResolver
-# from .open_url import OpenURLResolver, ResumableOpenURLResolver
-# from .metadata.enrichment import (
-#     MetadataEnricher,
-#     JCR_YEAR,
-# )
-# # from .cli import resolve_doi_asyncs
-# from .validation import PDFValidator, ValidationResult
-# # from .database import PaperDatabase, DatabaseEntry, DatabaseIndex
-# # from .search import SemanticSearchEngine, VectorDatabase, Embedder
-
-# # Module docstring for help()
-# def _module_docstring():
-#     """
-#     SciTeX Scholar - Scientific Literature Management
-
-#     Main Classes:
-#         Scholar: Main interface for all functionality
-#         Paper: Represents a scientific paper
-#         Papers: Collection of papers with analysis tools
-
-#     Quick Start:
-#         >>> from scitex.scholar import Scholar
-#         >>> scholar = Scholar()
-#         >>> papers = scholar.search("machine learning")
-#         >>> papers.filter(year_min=2020).save("ml_pac.bib")
-
-#     Common Workflows:
-#         # Search and enrich
-#         papers = scholar.search("deep learning", year_min=2022)
-
-#         # Download PDFs
-#         scholar.download_pdf_asyncs(papers)
-
-#         # Filter results
-#         high_impact = papers.filter(impact_factor_min=5.0)
-
-#         # Save bibliography
-#         papers.save("bibliography.bib", format="bibtex")
-
-#         # Search local library
-#         scholar._index_local_pdfs("./my_papers")
-#         local = scholar.search_local("transformer")
-
-#     For more information, see the documentation at:
-#     https://github.com/ywatanabe1989/SciTeX-Code
-#     """
-#     pass
-
-# # Set module docstring
-# __doc__ = _module_docstring.__doc__
-
-# # EOF
 
 # EOF

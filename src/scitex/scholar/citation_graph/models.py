@@ -3,7 +3,7 @@ Data models for citation graphs.
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 
 @dataclass
@@ -78,3 +78,34 @@ class CitationGraph:
     def edge_count(self) -> int:
         """Number of edges in graph."""
         return len(self.edges)
+
+    def to_networkx(self):
+        """Convert to NetworkX DiGraph with node attributes.
+
+        Returns
+        -------
+        networkx.DiGraph
+            Directed graph with node attributes: title, short_title,
+            year, citations, similarity, journal.
+        """
+        import networkx as nx
+
+        G = nx.DiGraph()
+        for node in self.nodes:
+            G.add_node(
+                node.doi,
+                title=node.title,
+                short_title=node.title[:30],
+                year=node.year,
+                citations=node.citation_count,
+                similarity=node.similarity_score,
+                journal=node.journal,
+            )
+        for edge in self.edges:
+            G.add_edge(
+                edge.source,
+                edge.target,
+                edge_type=edge.edge_type,
+                weight=edge.weight,
+            )
+        return G

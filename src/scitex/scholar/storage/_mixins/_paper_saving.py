@@ -194,7 +194,7 @@ class PaperSavingMixin:
 
         logger.success(f"Saved paper to MASTER Scholar library: {paper_id}")
 
-        # Create project symlink if needed
+        # Create project symlinks if needed
         if self.project and self.project not in ["master", "MASTER"]:
             try:
                 readable_name = self._generate_readable_name(
@@ -204,9 +204,15 @@ class PaperSavingMixin:
                     year=year,
                     journal=journal,
                 )
+                # ~/.scitex/scholar/library/{project}/ view
                 self._create_project_symlink(
                     master_storage_path=master_storage_path,
                     project=self.project,
+                    readable_name=readable_name,
+                )
+                # {project_dir}/scitex/scholar/library/{project}/ view
+                self._create_project_local_symlink(
+                    master_storage_path=master_storage_path,
                     readable_name=readable_name,
                 )
             except Exception as exc_:

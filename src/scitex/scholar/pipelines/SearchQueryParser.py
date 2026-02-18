@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # File: ./src/scitex/scholar/pipelines/SearchQueryParser.py
 
 """
@@ -53,6 +52,12 @@ class SearchQueryParser:
         self.max_citations: Optional[int] = None
         self.open_access: Optional[bool] = None
         self.document_type: Optional[str] = None
+        self.title_includes: List[str] = []
+        self.title_excludes: List[str] = []
+        self.author_includes: List[str] = []
+        self.author_excludes: List[str] = []
+        self.journal_includes: List[str] = []
+        self.journal_excludes: List[str] = []
 
         self._parse()
 
@@ -161,8 +166,133 @@ class SearchQueryParser:
             filters["open_access"] = self.open_access
         if self.document_type is not None:
             filters["document_type"] = self.document_type
+        if self.title_includes:
+            filters["title_includes"] = self.title_includes
+        if self.title_excludes:
+            filters["title_excludes"] = self.title_excludes
+        if self.author_includes:
+            filters["author_includes"] = self.author_includes
+        if self.author_excludes:
+            filters["author_excludes"] = self.author_excludes
+        if self.journal_includes:
+            filters["journal_includes"] = self.journal_includes
+        if self.journal_excludes:
+            filters["journal_excludes"] = self.journal_excludes
 
         return filters
+
+    @classmethod
+    def from_shell_syntax(cls, query: str) -> "SearchQueryParser":
+        """Parse shell-style operators from a query string.
+
+        Supports the following shell-style operators:
+          -t VALUE or --title VALUE : Title include filter
+          -t -VALUE                 : Title exclude filter (- prefix on value)
+          -a VALUE or --author VALUE: Author include filter
+          -a -VALUE                 : Author exclude filter
+          -j VALUE or --journal VALUE: Journal include filter
+          -j -VALUE                 : Journal exclude filter
+          -ymin YYYY or --year-min YYYY: Minimum year
+          -ymax YYYY or --year-max YYYY: Maximum year
+          -cmin N or --citations-min N : Minimum citations
+          -cmax N or --citations-max N : Maximum citations
+          -ifmin N or --if-min N   : Minimum impact factor
+          -ifmax N or --if-max N   : Maximum impact factor
+
+        Args:
+            query: Query string with shell-style operators
+
+        Returns
+        -------
+            SearchQueryParser instance with parsed fields set
+
+        Example:
+            parser = SearchQueryParser.from_shell_syntax(
+                "hippocampus -t theta -a -Smith -ymin 2020 -cmin 50"
+            )
+        """
+        # Create instance without running the standard _parse() on the raw query.
+        # We do this by initialising with an empty string and then setting
+        # original_query and the parsed fields manually.
+        instance = cls.__new__(cls)
+        instance.original_query = query
+        instance.positive_keywords = []
+        instance.negative_keywords = []
+        instance.year_start = None
+        instance.year_end = None
+        instance.min_impact_factor = None
+        instance.max_impact_factor = None
+        instance.min_citations = None
+        instance.max_citations = None
+        instance.open_access = None
+        instance.document_type = None
+        instance.title_includes = []
+        instance.title_excludes = []
+        instance.author_includes = []
+        instance.author_excludes = []
+        instance.journal_includes = []
+        instance.journal_excludes = []
+
+        if not query:
+            return instance
+
+        remaining = query
+
+        # Text filters: -t/-a/-j  (value may be prefixed with - for exclude)
+        text_patterns = [
+            (r'(?:-t|--title)\s+(-?)([^\s]+|"[^"]+"|\'[^\']+\')', "title"),
+            (r'(?:-a|--author)\s+(-?)([^\s]+|"[^"]+"|\'[^\']+\')', "author"),
+            (r'(?:-j|--journal)\s+(-?)([^\s]+|"[^"]+"|\'[^\']+\')', "journal"),
+        ]
+
+        for pattern, field_name in text_patterns:
+            for match in re.finditer(pattern, remaining, re.IGNORECASE):
+                is_exclude = match.group(1) == "-"
+                value = match.group(2).strip("\"'")
+                if is_exclude:
+                    getattr(instance, f"{field_name}_excludes").append(value)
+                else:
+                    getattr(instance, f"{field_name}_includes").append(value)
+            remaining = re.sub(pattern, "", remaining, flags=re.IGNORECASE)
+
+        # Numeric filters
+        numeric_patterns = [
+            (r"(?:-ymin|--year-min)\s+(\d{4})", "year_min"),
+            (r"(?:-ymax|--year-max)\s+(\d{4})", "year_max"),
+            (r"(?:-cmin|--citations-min)\s+(\d+)", "citations_min"),
+            (r"(?:-cmax|--citations-max)\s+(\d+)", "citations_max"),
+            (r"(?:-ifmin|--if-min)\s+(\d+(?:\.\d+)?)", "impact_factor_min"),
+            (r"(?:-ifmax|--if-max)\s+(\d+(?:\.\d+)?)", "impact_factor_max"),
+        ]
+
+        field_mapping = {
+            "year_min": "year_start",
+            "year_max": "year_end",
+            "citations_min": "min_citations",
+            "citations_max": "max_citations",
+            "impact_factor_min": "min_impact_factor",
+            "impact_factor_max": "max_impact_factor",
+        }
+
+        for pattern, field_name in numeric_patterns:
+            match = re.search(pattern, remaining, re.IGNORECASE)
+            if match:
+                raw_value = match.group(1)
+                if "impact_factor" in field_name:
+                    value = float(raw_value)
+                elif "year" in field_name:
+                    value = int(raw_value)
+                else:
+                    value = int(raw_value)
+                attr_name = field_mapping[field_name]
+                setattr(instance, attr_name, value)
+                remaining = re.sub(pattern, "", remaining, flags=re.IGNORECASE)
+
+        # Remaining text becomes positive keywords
+        words = remaining.split()
+        instance.positive_keywords = [w.strip() for w in words if w.strip()]
+
+        return instance
 
     def get_api_filters(self) -> Dict[str, Any]:
         """Get filters that can be pushed to API level."""

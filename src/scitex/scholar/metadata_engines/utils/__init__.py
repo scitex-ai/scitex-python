@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-08-04 08:15:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/scholar/doi/utils/__init__.py
 # ----------------------------------------
@@ -12,7 +11,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 # Import TextNormalizer from central location
-from scitex.scholar.utils.text import TextNormalizer
+from scitex.scholar._utils.text import TextNormalizer
 
 from ._metadata2bibtex import metadata2bibtex
 from ._PubMedConverter import PubMedConverter, pmid2doi

@@ -4,7 +4,7 @@
     "meta": {
         "title": "",
         "description": "",
-        "exported_at": "2026-02-16T10:44:22.100200"
+        "exported_at": "2026-02-16T12:40:50.253456"
     },
     "figure": {
         "size_px": [
@@ -507,14 +507,14 @@
             "id": "ax_00_text_08",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.io",
-            "text": "\u00b7 scitex.io",
+            "label": "\u00b7 @scitex.session",
+            "text": "\u00b7 @scitex.session",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3119,
+                    "x0": 3099,
                     "y0": 517,
-                    "x1": 3166,
+                    "x1": 3186,
                     "y1": 527
                 },
                 "anchor": {
@@ -548,14 +548,14 @@
             "id": "ax_00_text_09",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.config",
-            "text": "\u00b7 scitex.config",
+            "label": "\u00b7 scitex.plt",
+            "text": "\u00b7 scitex.plt",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3108,
+                    "x0": 3117,
                     "y0": 534,
-                    "x1": 3176,
+                    "x1": 3167,
                     "y1": 544
                 },
                 "anchor": {
@@ -589,14 +589,14 @@
             "id": "ax_00_text_10",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.logger",
-            "text": "\u00b7 scitex.logger",
+            "label": "\u00b7 (figrecipe)",
+            "text": "\u00b7 (figrecipe)",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3108,
+                    "x0": 3114,
                     "y0": 551,
-                    "x1": 3177,
+                    "x1": 3170,
                     "y1": 561
                 },
                 "anchor": {
@@ -630,14 +630,14 @@
             "id": "ax_00_text_11",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 @scitex.session",
-            "text": "\u00b7 @scitex.session",
+            "label": "\u00b7 scitex.stats",
+            "text": "\u00b7 scitex.stats",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3099,
+                    "x0": 3111,
                     "y0": 567,
-                    "x1": 3186,
+                    "x1": 3173,
                     "y1": 577
                 },
                 "anchor": {
@@ -671,14 +671,14 @@
             "id": "ax_00_text_12",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.template",
-            "text": "\u00b7 scitex.template",
+            "label": "\u00b7 scitex.io",
+            "text": "\u00b7 scitex.io",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3102,
+                    "x0": 3119,
                     "y0": 584,
-                    "x1": 3183,
+                    "x1": 3166,
                     "y1": 594
                 },
                 "anchor": {
@@ -712,14 +712,14 @@
             "id": "ax_00_text_13",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.repro",
-            "text": "\u00b7 scitex.repro",
+            "label": "\u00b7 scitex.config",
+            "text": "\u00b7 scitex.config",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3110,
+                    "x0": 3108,
                     "y0": 601,
-                    "x1": 3174,
+                    "x1": 3176,
                     "y1": 611
                 },
                 "anchor": {
@@ -753,14 +753,14 @@
             "id": "ax_00_text_14",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.rng",
-            "text": "\u00b7 scitex.rng",
+            "label": "\u00b7 scitex.logger",
+            "text": "\u00b7 scitex.logger",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3115,
+                    "x0": 3108,
                     "y0": 618,
-                    "x1": 3169,
+                    "x1": 3177,
                     "y1": 628
                 },
                 "anchor": {
@@ -794,14 +794,14 @@
             "id": "ax_00_text_15",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.plt",
-            "text": "\u00b7 scitex.plt",
+            "label": "\u00b7 scitex.repro",
+            "text": "\u00b7 scitex.repro",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3117,
+                    "x0": 3110,
                     "y0": 634,
-                    "x1": 3167,
+                    "x1": 3174,
                     "y1": 644
                 },
                 "anchor": {
@@ -835,14 +835,14 @@
             "id": "ax_00_text_16",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 (figrecipe)",
-            "text": "\u00b7 (figrecipe)",
+            "label": "\u00b7 scitex.rng",
+            "text": "\u00b7 scitex.rng",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3114,
+                    "x0": 3115,
                     "y0": 651,
-                    "x1": 3170,
+                    "x1": 3169,
                     "y1": 661
                 },
                 "anchor": {
@@ -876,14 +876,14 @@
             "id": "ax_00_text_17",
             "axes_id": "ax_00",
             "element_type": "text",
-            "label": "\u00b7 scitex.stats",
-            "text": "\u00b7 scitex.stats",
+            "label": "\u00b7 scitex.template",
+            "text": "\u00b7 scitex.template",
             "geometry_px": {
                 "coord_space": "axes",
                 "bbox": {
-                    "x0": 3111,
+                    "x0": 3102,
                     "y0": 668,
-                    "x1": 3173,
+                    "x1": 3183,
                     "y1": 678
                 },
                 "anchor": {

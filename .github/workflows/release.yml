@@ -138,6 +138,7 @@ jobs:
     name: Publish to PyPI
     needs: [validate, test-install, github-release]
     runs-on: ubuntu-latest
+    environment: pypi
     permissions:
       id-token: write
     steps:

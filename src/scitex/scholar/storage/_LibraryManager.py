@@ -24,6 +24,7 @@ The main class inherits from multiple mixins for modular functionality:
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Optional
 
 from scitex import logging
@@ -111,12 +112,22 @@ class LibraryManager(
         project: str = None,
         single_doi_resolver=None,
         config: Optional[ScholarConfig] = None,
+        project_dir=None,
     ):
-        """Initialize library manager."""
+        """Initialize library manager.
+
+        Parameters
+        ----------
+        project_dir : str or Path, optional
+            Root of the user's code project (e.g. ``~/my-project``).
+            When provided, project-local symlinks are also created at
+            ``{project_dir}/scitex/scholar/library/{project}/``.
+        """
         self.config = config or ScholarConfig()
         self.project = self.config.resolve("project", project)
         self.library_master_dir = self.config.path_manager.get_library_master_dir()
         self.single_doi_resolver = single_doi_resolver
+        self.project_dir = Path(project_dir) if project_dir else None
         self._source_filename = "papers"
         self.dedup_manager = DeduplicationManager(config=self.config)
 

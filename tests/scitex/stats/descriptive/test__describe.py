@@ -24,8 +24,9 @@ class TestDescribe:
             7,
         ), f"Expected shape (10, 7), got {described.shape}"
         assert len(names) == 7, "Should return 7 stat names"
-        assert "nanmean" in names
-        assert "nanstd" in names
+        assert "mean" in names
+        assert "std" in names
+        assert "median" in names
 
     def test_with_nans(self):
         """Test with NaN values."""
@@ -63,9 +64,9 @@ class TestDescribe:
         described, names = describe(x, dim=-1, funcs="all")
 
         assert len(names) > 7, "Should return all available functions"
-        assert "nanmax" in names
-        assert "nanmin" in names
-        assert "nancount" in names
+        assert "max" in names
+        assert "min" in names
+        assert "count" in names
 
     def test_custom_funcs(self):
         """Test with custom function list."""

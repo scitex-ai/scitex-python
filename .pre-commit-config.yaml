@@ -1,5 +1,6 @@
 # Timestamp: "2026-02-15 14:00:26 (ywatanabe)"
 # File: ./.pre-commit-config.yaml
+repos: []
 # repos:
 #   - repo: local
 #     hooks:

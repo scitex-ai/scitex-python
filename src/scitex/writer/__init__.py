@@ -58,6 +58,7 @@ try:
         bib,
         compile,
         ensure_workspace,
+        export,
         figures,
         guidelines,
         project,
@@ -97,6 +98,7 @@ except ImportError:
     bib = None
     compile = None
     ensure_workspace = None
+    export = None
     figures = None
     guidelines = None
     project = None
@@ -131,6 +133,7 @@ __all__ = [
     # Modules
     "bib",
     "compile",
+    "export",
     "figures",
     "guidelines",
     "project",
