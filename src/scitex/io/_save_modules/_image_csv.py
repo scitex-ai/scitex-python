@@ -255,7 +255,7 @@ def _export_csv_data(
 
     csv_path = None
     try:
-        fig_obj = get_figure_with_data(obj)
+        fig_obj = get_figure_with_data(obj, spath=spath)
 
         if fig_obj is not None and hasattr(fig_obj, "export_as_csv"):
             csv_data = fig_obj.export_as_csv()
