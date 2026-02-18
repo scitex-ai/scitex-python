@@ -34,6 +34,7 @@ import click
 
 from ._crossref_scitex import crossref_scitex
 from ._fetch import fetch
+from ._gui import gui
 from ._jobs import jobs
 from ._library import config, library
 from ._openalex_scitex import openalex_scitex
@@ -260,6 +261,7 @@ def list_python_apis(ctx, verbose, max_depth, as_json):
 scholar.add_command(crossref_scitex)
 scholar.add_command(openalex_scitex)
 scholar.add_command(fetch)
+scholar.add_command(gui)
 scholar.add_command(library)
 scholar.add_command(config)
 scholar.add_command(jobs)

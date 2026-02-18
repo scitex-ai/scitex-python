@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SciTeX Scholar</title>
+        <link rel="stylesheet" href="/static/css/scholar.css">
+    </head>
+    <body>
+        <!-- Header -->
+        <header class="app-header">
+            <h1>SciTeX Scholar</h1>
+            <span class="subtitle">Scientific Literature Management</span>
+        </header>
+        <div class="app-container">
+            <!-- Sidebar -->
+            <aside class="app-sidebar">
+                <!-- Service Status -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section__header">
+                        <span class="sidebar-section__title">Service Status</span>
+                    </div>
+                    <div class="sidebar-section__content">
+                        <div id="serviceStatus">
+                            <span class="status-indicator status-checking">&#9679; Checking...</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Controls -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section__header">
+                        <span class="sidebar-section__title">Controls</span>
+                    </div>
+                    <div class="sidebar-section__content"
+                         style="font-size: 11px;
+                                color: var(--text-muted)">
+                        <div style="margin-bottom: 6px;">
+                            <kbd style="background: var(--bg-tertiary);
+                                        border: 1px solid var(--border-default);
+                                        padding: 1px 4px;
+                                        font-size: 10px">Scroll</kbd> Zoom
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <kbd style="background: var(--bg-tertiary);
+                                        border: 1px solid var(--border-default);
+                                        padding: 1px 4px;
+                                        font-size: 10px">Drag</kbd> Pan
+                        </div>
+                        <div>
+                            <kbd style="background: var(--bg-tertiary);
+                                        border: 1px solid var(--border-default);
+                                        padding: 1px 4px;
+                                        font-size: 10px">Click</kbd> Select node
+                        </div>
+                    </div>
+                </div>
+                <!-- DB Info -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section__header">
+                        <span class="sidebar-section__title">Database</span>
+                    </div>
+                    <div class="sidebar-section__content"
+                         style="font-size: 11px;
+                                color: var(--text-muted);
+                                word-break: break-all">
+                        {% if db_available %}
+                            <span style="color: var(--accent);">&#9679;</span> Connected
+                            <br>
+                            <small>{{ db_path }}</small>
+                        {% else %}
+                            <span style="color: var(--status-error);">&#9679;</span> Not found
+                            <br>
+                            <small>No CrossRef DB detected</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </aside>
+            <!-- Main Content -->
+            <main class="app-main">
+                <!-- Tab Navigation -->
+                <nav class="tab-nav">
+                    <button class="tab-btn active" data-tab="graph">Citation Graph</button>
+                    <button class="tab-btn" data-tab="library">Library</button>
+                    <button class="tab-btn" data-tab="search">Search</button>
+                    <button class="tab-btn" data-tab="enrichment">Enrichment</button>
+                </nav>
+                <!-- Citation Graph Tab -->
+                <div id="tab-graph" class="tab-panel active">
+                    <div class="citation-graph-container">
+                        <!-- Input Form -->
+                        <div class="graph-card">
+                            <div class="graph-card__header">
+                                <span class="graph-card__title">Build Citation Network</span>
+                            </div>
+                            <div class="graph-card__body">
+                                <p class="graph-description">
+                                    Enter a DOI to build an interactive citation network. The graph shows
+                                    related papers based on bibliographic coupling, co-citation, and direct citations.
+                                </p>
+                                <form id="graphForm" class="graph-form">
+                                    <div class="form-row">
+                                        <div class="form-group--doi">
+                                            <label class="form-label" for="doiInput">DOI</label>
+                                            <div class="input-wrapper">
+                                                <input type="text"
+                                                       id="doiInput"
+                                                       class="form-input"
+                                                       placeholder="e.g. 10.1038/s41586-020-2008-3"
+                                                       value="10.1038/s41586-020-2008-3">
+                                                <button type="submit" class="btn-build">Build Graph</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group--options">
+                                            <label class="form-label" for="topN">Papers</label>
+                                            <select id="topN" class="form-select">
+                                                <option value="10">10</option>
+                                                <option value="20" selected>20</option>
+                                                <option value="30">30</option>
+                                                <option value="50">50</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Loading -->
+                        <div id="graphLoading" class="graph-loading hidden">
+                            <div class="loading-spinner">
+                                <div class="spinner-ring"></div>
+                                <div class="spinner-ring"></div>
+                                <div class="spinner-ring"></div>
+                            </div>
+                            <div class="loading-text">Building citation network... This may take a moment.</div>
+                        </div>
+                        <!-- Error -->
+                        <div id="graphError" class="graph-error hidden">
+                            <p id="graphErrorMessage">An error occurred</p>
+                            <button class="btn-build"
+                                    onclick="document.getElementById('graphError').classList.add('hidden')">
+                                Dismiss
+                            </button>
+                        </div>
+                        <!-- Visualization -->
+                        <div id="graphVisualization" class="hidden">
+                            <div class="graph-card graph-card--full">
+                                <div class="graph-card__header">
+                                    <span class="graph-card__title">
+                                        <span id="graphTitle">Citation Network</span>
+                                        <small id="graphStats"
+                                               style="font-weight: 400;
+                                                      color: var(--text-muted);
+                                                      margin-left: 12px"></small>
+                                    </span>
+                                    <div class="graph-controls">
+                                        <button id="fitViewBtn" class="btn-control" title="Fit to view">&#8689;</button>
+                                        <button id="resetZoomBtn" class="btn-control" title="Reset zoom">&#8634;</button>
+                                        <button id="downloadSvgBtn" class="btn-control" title="Download SVG">&#8681;</button>
+                                    </div>
+                                </div>
+                                <div class="graph-card__body" style="padding: 0; position: relative;">
+                                    <div id="graphCanvas" class="graph-canvas-wrapper"></div>
+                                    <div id="nodeDetailsPanel" class="node-details-panel hidden"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Related Papers -->
+                        <div id="relatedPapersList" class="hidden related-papers-section">
+                            <div class="graph-card">
+                                <div class="graph-card__header">
+                                    <span class="graph-card__title">Related Papers</span>
+                                </div>
+                                <div class="graph-card__body" id="relatedPapersContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Library Tab (placeholder) -->
+                <div id="tab-library" class="tab-panel">
+                    <div class="tab-placeholder">
+                        <div>
+                            <h3>Library</h3>
+                            <p>Zotero-style paper management. Coming in Phase 2.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search Tab (placeholder) -->
+                <div id="tab-search" class="tab-panel">
+                    <div class="tab-placeholder">
+                        <div>
+                            <h3>Search</h3>
+                            <p>Search across CrossRef, OpenAlex, and your local library. Coming in Phase 3.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Enrichment Tab (placeholder) -->
+                <div id="tab-enrichment" class="tab-panel">
+                    <div class="tab-placeholder">
+                        <div>
+                            <h3>Metadata Enrichment</h3>
+                            <p>Enrich BibTeX with abstracts, citations, and impact factors. Coming in Phase 4.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- Scripts (order matters: ForceSimulation < GraphRenderer < citation-graph) -->
+        <script src="/static/js/app.js"></script>
+        <script src="/static/js/graph/ForceSimulation.js"></script>
+        <script src="/static/js/graph/GraphRenderer.js"></script>
+        <script src="/static/js/graph/citation-graph.js"></script>
+    </body>
+</html>
