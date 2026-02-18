@@ -1,171 +1,52 @@
-# Automated Release Pipeline
-# Triggers on version tag push (v*) and:
-# 1. Creates GitHub Release
-# 2. Publishes to PyPI
-# 3. Tests installation
-
-name: Release
+name: Publish to PyPI
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
+
+permissions:
+  contents: read
 
 jobs:
-  validate:
-    name: Validate Release
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Extract version
-        id: version
-        run: |
-          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
-          TOML_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
-
-          echo "Tag version: $TAG_VERSION"
-          echo "pyproject.toml version: $TOML_VERSION"
-
-          if [ "$TAG_VERSION" != "$TOML_VERSION" ]; then
-            echo "ERROR: Tag version ($TAG_VERSION) != pyproject.toml ($TOML_VERSION)"
-            exit 1
-          fi
-
-          echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
-          echo "✓ Versions match: $TAG_VERSION"
-
   build:
-    name: Build Package
-    needs: validate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
 
-      - name: Install build tools
-        run: pip install build
+    - name: Install build tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
 
-      - name: Build package
-        run: python -m build
+    - name: Build package
+      run: python -m build
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
+    - name: Check package
+      run: twine check dist/*
 
-  test-install:
-    name: Test Installation
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+  publish:
     needs: build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.10', '3.12']
-        install-type: ['core', 'audio']
-    steps:
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Install package
-        run: |
-          pip install --upgrade pip
-          WHEEL=$(ls dist/*.whl)
-          if [ "${{ matrix.install-type }}" == "audio" ]; then
-            pip install "${WHEEL}[audio]"
-          else
-            pip install "$WHEEL"
-          fi
-        timeout-minutes: 10
-
-      - name: Test imports
-        run: |
-          python -c "import scitex; print(f'Version: {scitex.__version__}')"
-          python -c "from scitex import io, stats, config"
-          echo "✓ Import test passed"
-
-  github-release:
-    name: Create GitHub Release
-    needs: [validate, test-install]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Generate release notes
-        id: notes
-        run: |
-          VERSION="${{ needs.validate.outputs.version }}"
-          # Extract changelog for this version
-          NOTES=$(awk "/## \[$VERSION\]/{flag=1; next} /## \[/{flag=0} flag" CHANGELOG.md)
-          if [ -z "$NOTES" ]; then
-            NOTES="Release v$VERSION"
-          fi
-          echo "notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$NOTES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: v${{ needs.validate.outputs.version }}
-          body: ${{ steps.notes.outputs.notes }}
-          files: dist/*
-          generate_release_notes: true
-
-  publish-pypi:
-    name: Publish to PyPI
-    needs: [validate, test-install, github-release]
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
       id-token: write
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
 
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-
-  verify:
-    name: Verify Release
-    needs: [validate, publish-pypi]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for PyPI propagation
-        run: sleep 60
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Verify PyPI installation
-        run: |
-          pip install "scitex==${{ needs.validate.outputs.version }}"
-          python -c "import scitex; assert scitex.__version__ == '${{ needs.validate.outputs.version }}'"
-          echo "✓ PyPI verification passed"
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
