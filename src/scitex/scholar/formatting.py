@@ -377,12 +377,80 @@ def papers_to_format(papers: List[dict], fmt: str) -> str:
     return "\n\n".join(func(p) for p in papers)
 
 
+# ── Search result normalization ─────────────────────────────────
+
+
+def paper_from_search_result(result: dict) -> dict:
+    """Normalize a raw search-API result dict to the standard paper format.
+
+    Handles field aliases from different search engines (externalUrl, snippet, etc.)
+    and fills missing fields with safe defaults.
+    """
+    journal = result.get("journal") or ""
+    import re as _re
+
+    journal = _re.sub(r"\s*\(IF[^)]*\)", "", journal)
+    return {
+        "title": result.get("title") or "Unknown",
+        "authors": result.get("authors") or "",
+        "journal": journal,
+        "year": str(result.get("year") or ""),
+        "doi": result.get("doi") or result.get("DOI") or "",
+        "pmid": result.get("pmid") or "",
+        "arxiv_id": result.get("arxiv_id") or "",
+        "citations": result.get("citations") or result.get("citation_count") or 0,
+        "impact_factor": result.get("impact_factor") or 0,
+        "is_open_access": result.get("is_open_access", False),
+        "abstract": result.get("abstract") or result.get("snippet") or "",
+        "url": (
+            result.get("externalUrl")
+            or result.get("external_url")
+            or result.get("pdf_url")
+            or ""
+        ),
+        "source": result.get("source") or "unknown",
+    }
+
+
+def make_citation_key(last_name: str, year=None) -> str:
+    """Generate a citation key from author last name and year.
+
+    Args:
+        last_name: Author last name (special chars stripped).
+        year: Publication year (optional).
+
+    Returns
+    -------
+        Citation key string, e.g. ``smith2024``.
+    """
+    import re as _re
+
+    name = _re.sub(r"[^a-zA-Z]", "", last_name).lower()
+    return f"{name}{year}" if year else name
+
+
+def sanitize_filename(filename: str, max_length: int = 50) -> str:
+    """Sanitize a string for use as a download filename.
+
+    Replaces shell-unsafe characters with underscores, collapses whitespace,
+    and truncates to *max_length* characters.
+    """
+    import re as _re
+
+    filename = _re.sub(r'[<>:"/\\|?*]', "_", filename)
+    filename = filename[:max_length]
+    return _re.sub(r"\s+", "_", filename.strip())
+
+
 # ── Public API ──────────────────────────────────────────────────
 
 __all__ = [
     "clean_text",
     "generate_cite_key",
     "paper_normalize",
+    "paper_from_search_result",
+    "make_citation_key",
+    "sanitize_filename",
     "to_bibtex",
     "to_ris",
     "to_endnote",
