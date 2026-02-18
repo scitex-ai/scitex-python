@@ -17,7 +17,7 @@ __FILE__ = __file__
 from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 import matplotlib.pyplot as plt
-from figrecipe._utils._units import mm_to_inch
+from figrecipe.utils import mm_to_inch
 
 if TYPE_CHECKING:
     from scitex.plt._subplots._AxisWrapper import AxisWrapper
@@ -201,7 +201,7 @@ def get_dimension_info(fig, ax) -> Dict:
     >>> print(f"Axes size: {info['axes_size_mm']} mm")
     >>> print(f"Axes size: {info['axes_size_px']} pixels at {info['dpi']} DPI")
     """
-    from figrecipe._utils._units import MM_PER_INCH, inch_to_mm
+    from figrecipe.utils import MM_PER_INCH, inch_to_mm
 
     # Figure dimensions
     fig_width_inch, fig_height_inch = fig.get_size_inches()

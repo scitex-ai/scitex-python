@@ -512,7 +512,7 @@ def _generate_and_save_hitmap(  # noqa: C901
 
         # Apply same crop as PNG if crop_box provided
         if crop_box is not None:
-            from figrecipe._utils._crop import crop
+            from figrecipe import crop
 
             crop(
                 str(hitmap_path),

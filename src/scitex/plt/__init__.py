@@ -73,17 +73,19 @@ if _FIGRECIPE_AVAILABLE:
     # Backward compatibility alias
     edit = gui
 
-    # Internal imports (not part of figrecipe public API)
-    from figrecipe._api._notebook import enable_svg
-    from figrecipe._api._seaborn_proxy import sns
-    from figrecipe._api._style_manager import STYLE, apply_style
-    from figrecipe._composition import align_panels, align_smart, distribute_panels
+    # Additional figrecipe public API re-exports
+    from figrecipe import (
+        align_panels,
+        align_smart,
+        distribute_panels,
+        get_graph_preset,
+        list_graph_presets,
+        register_graph_preset,
+    )
+    from figrecipe.utils import STYLE, apply_style, enable_svg, sns
 
     # Backward compatibility alias
     smart_align = align_smart
-    from figrecipe._graph._presets import get_preset as get_graph_preset
-    from figrecipe._graph._presets import list_presets as list_graph_presets
-    from figrecipe._graph._presets import register_preset as register_graph_preset
 
     # Also export load as alias for reproduce
     load = reproduce

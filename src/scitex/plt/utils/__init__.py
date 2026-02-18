@@ -3,7 +3,7 @@
 
 from figrecipe._utils._calc_nice_ticks import calc_nice_ticks
 from figrecipe._utils._mk_colorbar import mk_colorbar
-from figrecipe._utils._units import inch_to_mm, mm_to_inch, mm_to_pt, pt_to_mm
+from figrecipe.utils import inch_to_mm, mm_to_inch, mm_to_pt, pt_to_mm
 
 from ._calc_bacc_from_conf_mat import calc_bacc_from_conf_mat
 from ._close import close

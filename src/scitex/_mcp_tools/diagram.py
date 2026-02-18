@@ -25,7 +25,7 @@ def register_diagram_tools(mcp) -> None:
 
     # Check if figrecipe is available
     try:
-        from figrecipe._diagram import Diagram
+        from figrecipe import Diagram
 
         _FIGRECIPE_AVAILABLE = True
     except ImportError:

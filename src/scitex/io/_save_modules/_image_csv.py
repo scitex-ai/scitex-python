@@ -188,7 +188,7 @@ def _auto_crop_image(
         ext = spath.lower()
         if ext.endswith((".png", ".jpg", ".jpeg", ".tiff", ".tif")):
             try:
-                from figrecipe._utils._crop import crop
+                from figrecipe import crop
 
                 dpi = kwargs.get("dpi", 300)
                 margin_px = int(crop_margin_mm * dpi / 25.4)
