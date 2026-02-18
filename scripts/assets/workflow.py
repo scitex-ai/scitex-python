@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2026-02-16 09:09:47 (ywatanabe)"
+# Timestamp: "2026-02-16 12:40:23 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-python/scripts/assets/workflow.py
 
 
@@ -34,16 +34,16 @@ def _add_analysis_boxes(d, C, CT):
         "Core Modules",
         subtitle="Infrastructure of All Python Scripts in SciTeX",
         content=[
-            "scitex.io",
-            "scitex.config",
-            "scitex.logger",
             "@scitex.session",
-            "scitex.template",
-            "scitex.repro",
-            "scitex.rng",
             "scitex.plt",
             "(figrecipe)",
             "scitex.stats",
+            "scitex.io",
+            "scitex.config",
+            "scitex.logger",
+            "scitex.repro",
+            "scitex.rng",
+            "scitex.template",
         ],
         fill_color=CT["blue"],
         border_color=C["blue"],
