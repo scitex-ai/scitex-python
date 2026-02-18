@@ -19,10 +19,13 @@ Example:
 
 from .builder import CitationGraphBuilder
 from .models import CitationEdge, CitationGraph, PaperNode
+from .visualization import list_backends, plot_citation_graph
 
 __all__ = [
     "CitationGraphBuilder",
     "PaperNode",
     "CitationEdge",
     "CitationGraph",
+    "plot_citation_graph",
+    "list_backends",
 ]
