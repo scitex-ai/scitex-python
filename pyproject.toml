@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.18.0"
+version = "2.18.1"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -116,7 +116,7 @@ ai = [
     "ruamel.yaml",
     "xarray",
     "umap-learn",
-    "sktime",
+    "sktime>=0.21.0",  # >=0.21 has proper build-system deps declared (0.8.1 was broken)
     "markdown2",
     "imbalanced-learn",
     # # Heavy dependencies handled by _AVAILABLE flags
@@ -780,7 +780,7 @@ all = [
     "imbalanced-learn",
     "umap-learn>=0.5.4",
     "llvmlite>=0.39.0",  # Force Python 3.11+ compatible version
-    "sktime",
+    "sktime>=0.21.0",  # >=0.21 has proper build-system deps declared (0.8.1 was broken)
     "catboost",
     "opencv-python",
     # neuro
