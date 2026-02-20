@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2026-02-06 23:02:36 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-python/src/scitex/audio/_mcp/handlers.py
 
@@ -301,6 +300,7 @@ async def speak_handler(
     speed: float = 1.5,
     play: bool = True,
     save: bool = False,
+    output_path: str | None = None,
     fallback: bool = True,
     agent_id: str | None = None,
     wait: bool = True,
@@ -309,6 +309,8 @@ async def speak_handler(
     """Convert text to speech with fallback.
 
     Args:
+        save: If True and output_path is None, auto-generate a timestamped path.
+        output_path: Explicit path to save the audio file (overrides save flag).
         signature: If True, prepend hostname/project/branch to text.
     """
     try:
@@ -323,8 +325,7 @@ async def speak_handler(
             sig = _get_signature()
             final_text = sig + text
 
-        output_path = None
-        if save:
+        if output_path is None and save:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_path = str(_get_audio_dir() / f"tts_{timestamp}.mp3")
 
