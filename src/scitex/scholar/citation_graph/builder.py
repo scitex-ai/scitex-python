@@ -16,26 +16,32 @@ class CitationGraphBuilder:
     """
     Build citation network graphs for academic papers.
 
-    Example (SQLite):
-        >>> builder = CitationGraphBuilder(db_path="/path/to/crossref.db")
+    Auto-detects backend via crossref_local.Config (DB → HTTP).
+
+    Example (auto-detect):
+        >>> builder = CitationGraphBuilder()
         >>> graph = builder.build("10.1038/s41586-020-2008-3", top_n=20)
 
-    Example (HTTP via crossref-local):
+    Example (explicit SQLite):
+        >>> builder = CitationGraphBuilder(db_path="/path/to/crossref.db")
+
+    Example (explicit HTTP):
         >>> builder = CitationGraphBuilder(api_url="http://localhost:31291")
-        >>> graph = builder.build("10.1038/s41586-020-2008-3", top_n=20)
     """
 
     def __init__(self, db_path: str = None, api_url: str = None):
         """
-        Initialize builder with database path or HTTP API URL.
+        Initialize builder with database path, HTTP API URL, or auto-detect.
+
+        When no args given, delegates to crossref_local.Config for auto-detection:
+        1. CROSSREF_LOCAL_MODE env var (explicit "db" or "http")
+        2. CROSSREF_LOCAL_API_URL env var → HTTP mode
+        3. Local DB file existence → DB mode
+        4. Fallback to HTTP mode
 
         Args:
             db_path: Path to CrossRef SQLite database (local mode)
             api_url: URL of crossref-local HTTP API (HTTP mode)
-
-        Raises
-        ------
-            ValueError: If neither db_path nor api_url is provided
         """
         if api_url:
             from .database_http import CitationDatabaseHTTP
@@ -46,7 +52,22 @@ class CitationGraphBuilder:
             self.db_path = db_path
             self.db = CitationDatabase(db_path)
         else:
-            raise ValueError("Either db_path or api_url is required")
+            self._auto_detect()
+
+    def _auto_detect(self):
+        """Auto-detect backend via crossref_local.Config."""
+        from crossref_local._core.config import Config
+
+        mode = Config.get_mode()
+
+        if mode == "db":
+            self.db_path = str(Config.get_db_path())
+            self.db = CitationDatabase(self.db_path)
+        else:
+            from .database_http import CitationDatabaseHTTP
+
+            self.db_path = None
+            self.db = CitationDatabaseHTTP(Config.get_api_url())
 
     def build(
         self,
