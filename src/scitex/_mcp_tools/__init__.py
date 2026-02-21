@@ -11,9 +11,11 @@ from .clew import register_clew_tools
 from .dataset import register_dataset_tools
 from .dev import register_dev_tools
 from .diagram import register_diagram_tools
+from .fr import register_fr_tools
 from .introspect import register_introspect_tools
 from .linter import register_linter_tools
 from .plt import register_plt_tools
+from .project import register_project_tools
 from .scholar import register_scholar_tools
 from .social import register_social_tools
 from .stats import register_stats_tools
@@ -33,9 +35,11 @@ def register_all_tools(mcp) -> None:
     register_dataset_tools(mcp)
     register_dev_tools(mcp)
     register_diagram_tools(mcp)
+    register_fr_tools(mcp)
     register_introspect_tools(mcp)
     register_linter_tools(mcp)
     register_plt_tools(mcp)
+    register_project_tools(mcp)
     register_scholar_tools(mcp)
     register_social_tools(mcp)
     register_stats_tools(mcp)
