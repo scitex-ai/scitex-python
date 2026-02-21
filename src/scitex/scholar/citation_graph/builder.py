@@ -5,7 +5,6 @@ Main interface for building citation networks from CrossRef data.
 """
 
 import json
-from collections import Counter
 from pathlib import Path
 from typing import List, Optional
 
@@ -17,21 +16,37 @@ class CitationGraphBuilder:
     """
     Build citation network graphs for academic papers.
 
-    Example:
-        >>> builder = CitationGraphBuilder("/path/to/crossref.db")
+    Example (SQLite):
+        >>> builder = CitationGraphBuilder(db_path="/path/to/crossref.db")
         >>> graph = builder.build("10.1038/s41586-020-2008-3", top_n=20)
-        >>> builder.export_json(graph, "network.json")
+
+    Example (HTTP via crossref-local):
+        >>> builder = CitationGraphBuilder(api_url="http://localhost:31291")
+        >>> graph = builder.build("10.1038/s41586-020-2008-3", top_n=20)
     """
 
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str = None, api_url: str = None):
         """
-        Initialize builder with database path.
+        Initialize builder with database path or HTTP API URL.
 
         Args:
-            db_path: Path to CrossRef SQLite database
+            db_path: Path to CrossRef SQLite database (local mode)
+            api_url: URL of crossref-local HTTP API (HTTP mode)
+
+        Raises
+        ------
+            ValueError: If neither db_path nor api_url is provided
         """
-        self.db_path = db_path
-        self.db = CitationDatabase(db_path)
+        if api_url:
+            from .database_http import CitationDatabaseHTTP
+
+            self.db_path = None
+            self.db = CitationDatabaseHTTP(api_url)
+        elif db_path:
+            self.db_path = db_path
+            self.db = CitationDatabase(db_path)
+        else:
+            raise ValueError("Either db_path or api_url is required")
 
     def build(
         self,
@@ -51,7 +66,8 @@ class CitationGraphBuilder:
             weight_cocitation: Weight for co-citation
             weight_direct: Weight for direct citations
 
-        Returns:
+        Returns
+        -------
             CitationGraph object with nodes and edges
         """
         with self.db:
@@ -100,7 +116,8 @@ class CitationGraphBuilder:
             doi: DOI of the paper
             similarity_score: Calculated similarity score
 
-        Returns:
+        Returns
+        -------
             PaperNode object
         """
         metadata = self.db.get_paper_metadata(doi)
@@ -142,7 +159,8 @@ class CitationGraphBuilder:
         Args:
             dois: List of DOIs in the network
 
-        Returns:
+        Returns
+        -------
             List of CitationEdge objects
         """
         edges = []
@@ -183,7 +201,8 @@ class CitationGraphBuilder:
         Args:
             doi: DOI of the paper
 
-        Returns:
+        Returns
+        -------
             Dictionary with paper summary
         """
         with self.db:
