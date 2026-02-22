@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Usage module MCP tools — discover scitex usage examples."""
 
-from __future__ import annotations
 
 
 def register_usage_tools(mcp) -> None:

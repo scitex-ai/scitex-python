@@ -10,7 +10,6 @@ renamed as plt_diagram_* for consistent scitex branding.
   ...
 """
 
-from __future__ import annotations
 
 
 def register_diagram_tools(mcp) -> None:

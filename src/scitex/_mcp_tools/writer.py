@@ -6,7 +6,6 @@
 Single source of truth: scitex-writer MCP tools.
 """
 
-from __future__ import annotations
 
 
 def register_writer_tools(mcp) -> None:

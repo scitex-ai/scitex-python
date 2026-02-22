@@ -3,10 +3,7 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/audio.py
 """Audio module tools for FastMCP unified server."""
 
-from __future__ import annotations
-
 import json
-from typing import Optional
 
 
 def _json(data: dict) -> str:
@@ -19,15 +16,15 @@ def register_audio_tools(mcp) -> None:
     @mcp.tool()
     async def audio_speak(
         text: str,
-        backend: Optional[str] = None,
-        voice: Optional[str] = None,
+        backend: str | None = None,
+        voice: str | None = None,
         rate: int = 150,
         speed: float = 1.5,
         play: bool = True,
         save: bool = False,
-        output_path: Optional[str] = None,
+        output_path: str | None = None,
         fallback: bool = True,
-        agent_id: Optional[str] = None,
+        agent_id: str | None = None,
         wait: bool = True,
         signature: bool = False,
     ) -> str:

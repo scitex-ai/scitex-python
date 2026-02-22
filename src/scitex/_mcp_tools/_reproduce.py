@@ -16,7 +16,6 @@ Usage::
     print(script)
 """
 
-from __future__ import annotations
 
 __all__ = ["reproduce", "list_reproducible"]
 

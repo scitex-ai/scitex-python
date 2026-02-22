@@ -7,7 +7,6 @@ Programmatically bridges all figrecipe plt_* tools into scitex MCP.
 No manual wrapping — any new figrecipe plt tool appears automatically.
 """
 
-from __future__ import annotations
 
 
 def register_plt_tools(mcp) -> None:

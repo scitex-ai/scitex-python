@@ -3,7 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/__init__.py
 """FastMCP tool registration for unified server."""
 
-from __future__ import annotations
 
 from .audio import register_audio_tools
 from .capture import register_capture_tools

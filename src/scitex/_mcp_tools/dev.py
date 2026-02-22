@@ -4,7 +4,6 @@
 
 """MCP tool registration for developer utilities."""
 
-from __future__ import annotations
 
 import json
 

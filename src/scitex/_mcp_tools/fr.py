@@ -10,7 +10,6 @@ renamed as plt_stx_* for consistent scitex branding.
   ...
 """
 
-from __future__ import annotations
 
 
 def register_fr_tools(mcp) -> None:
