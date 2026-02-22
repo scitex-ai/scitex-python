@@ -13,17 +13,25 @@ Public API:
 - ZoteroLinker: Live synchronization with Zotero
 """
 
+from .attachment_resolver import ZoteroAttachmentResolver
 from .exporter import ZoteroExporter
 from .importer import ZoteroImporter
 from .linker import ZoteroLinker
+from .local_migrator import ZoteroLocalMigrator
 from .local_reader import ZoteroLocalReader, export_for_zotero
 from .mapper import ZoteroMapper
+from .migration_report import ExportPackage, MigrationReport, SyncDiff
 
 __all__ = [
-    "ZoteroImporter",
+    "ZoteroAttachmentResolver",
     "ZoteroExporter",
+    "ZoteroImporter",
     "ZoteroLinker",
+    "ZoteroLocalMigrator",
     "ZoteroLocalReader",
     "ZoteroMapper",
+    "ExportPackage",
+    "MigrationReport",
+    "SyncDiff",
     "export_for_zotero",
 ]
