@@ -5,10 +5,13 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Optional, Union
 
 from ._tracker import get_tracker, start_tracking, stop_tracking
+
+logger = logging.getLogger(__name__)
 
 
 def on_session_start(
@@ -16,6 +19,7 @@ def on_session_start(
     script_path: Optional[str] = None,
     parent_session: Optional[str] = None,
     verbose: bool = False,
+    metadata: Optional[dict] = None,
 ) -> None:
     """
     Hook called when a session starts.
@@ -30,12 +34,15 @@ def on_session_start(
         Parent session ID for chain tracking
     verbose : bool, optional
         Whether to log status messages
+    metadata : dict, optional
+        Additional metadata (e.g. notebook_path, cell_index)
     """
     try:
         start_tracking(
             session_id=session_id,
             script_path=script_path,
             parent_session=parent_session,
+            metadata=metadata,
         )
     except Exception as e:
         if verbose:
@@ -102,8 +109,8 @@ def on_io_load(
     if tracker is not None:
         try:
             tracker.record_input(path, track=track)
-        except Exception:
-            pass  # Silent fail - don't interrupt io operations
+        except Exception as e:
+            logger.debug("clew: failed to record input %s: %s", path, e)
 
 
 def on_io_save(
@@ -127,8 +134,8 @@ def on_io_save(
     if tracker is not None:
         try:
             tracker.record_output(path, track=track)
-        except Exception:
-            pass  # Silent fail - don't interrupt io operations
+        except Exception as e:
+            logger.debug("clew: failed to record output %s: %s", path, e)
 
 
 # ── Registry helpers ──
@@ -149,8 +156,8 @@ def _auto_register_session(session_id: str) -> None:
         from ._registry import get_registry
 
         get_registry().register_session(session_id)
-    except Exception:
-        pass  # Silent fail - registration should never interrupt workflow
+    except Exception as e:
+        logger.debug("clew: failed to auto-register session %s: %s", session_id, e)
 
 
 # EOF

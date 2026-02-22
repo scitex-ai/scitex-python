@@ -145,8 +145,8 @@ def save(
             from scitex.clew import on_io_save
 
             on_io_save(spath_final, track=track)
-        except Exception:
-            pass  # Silent fail - don't interrupt save operations
+        except Exception as e:
+            logger.debug("clew: failed to track output %s: %s", spath_final, e)
 
         # Register hash with remote Clew Registry (opt-in)
         if register:
@@ -155,8 +155,8 @@ def save(
 
                 file_hash = hash_file(spath_final)
                 get_registry().register(file_hash, source_type="file")
-            except Exception:
-                pass  # Silent fail - registration should never interrupt save
+            except Exception as e:
+                logger.debug("clew: failed to register %s: %s", spath_final, e)
 
         return Path(spath)
 
