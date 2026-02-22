@@ -18,4 +18,15 @@ from ._connected_papers import from_connected_papers, to_connected_papers
 
 __all__ = ["from_connected_papers", "to_connected_papers"]
 
+# Hide leaked submodule attributes
+import sys as _sys
+
+_this = _sys.modules[__name__]
+for _name in ["_connected_papers", "_s2_resolver"]:
+    try:
+        delattr(_this, _name)
+    except AttributeError:
+        pass
+del _this, _name, _sys
+
 # EOF

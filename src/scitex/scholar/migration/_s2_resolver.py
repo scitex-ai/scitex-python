@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional
 
+__all__: List[str] = []  # Internal module — no public API
+
 
 def bulk_resolve_dois(
     s2_ids: List[str],

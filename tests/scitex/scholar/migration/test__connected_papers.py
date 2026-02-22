@@ -25,8 +25,8 @@ Mock strategy
 -------------
 - `connectedpapers` module: patched via sys.modules so the lazy `import
   connectedpapers` inside the function body sees the mock.
-- `scitex.scholar.migration._connected_papers.bulk_resolve_dois`
-- `scitex.scholar.migration._connected_papers.bulk_resolve_metadata`
+- `scitex.scholar.migration._s2_resolver.bulk_resolve_dois`
+- `scitex.scholar.migration._s2_resolver.bulk_resolve_metadata`
 - `scitex.scholar.to_bibtex` imported inside to_connected_papers
 """
 
@@ -48,10 +48,8 @@ from scitex.scholar.migration._connected_papers import (
 # Patch targets
 # ---------------------------------------------------------------------------
 
-_BULK_RESOLVE_DOIS = "scitex.scholar.migration._connected_papers.bulk_resolve_dois"
-_BULK_RESOLVE_METADATA = (
-    "scitex.scholar.migration._connected_papers.bulk_resolve_metadata"
-)
+_BULK_RESOLVE_DOIS = "scitex.scholar.migration._s2_resolver.bulk_resolve_dois"
+_BULK_RESOLVE_METADATA = "scitex.scholar.migration._s2_resolver.bulk_resolve_metadata"
 _TO_BIBTEX = "scitex.scholar.to_bibtex"
 
 # ---------------------------------------------------------------------------

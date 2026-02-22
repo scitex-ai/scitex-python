@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from ._s2_resolver import bulk_resolve_dois, bulk_resolve_metadata
+__all__ = ["from_connected_papers", "to_connected_papers"]
 
 
 def from_connected_papers(
@@ -85,6 +85,8 @@ def from_connected_papers(
             }
 
         # Bulk resolve S2 IDs → DOIs
+        from ._s2_resolver import bulk_resolve_dois  # noqa: STX-I007
+
         doi_map = bulk_resolve_dois(s2_ids, api_key=s2_api_key)
         resolved_count = sum(1 for v in doi_map.values() if v is not None)
         unresolved = [k for k, v in doi_map.items() if v is None]
@@ -108,6 +110,8 @@ def from_connected_papers(
             }
 
         # Get full metadata for resolved papers
+        from ._s2_resolver import bulk_resolve_metadata  # noqa: STX-I007
+
         metadata_map = bulk_resolve_metadata(s2_ids, api_key=s2_api_key)
 
         if output_format == "citation_graph":
