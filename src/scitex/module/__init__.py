@@ -1,43 +1,51 @@
 #!/usr/bin/env python3
-# Timestamp: "2026-02-23"
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/module/__init__.py
+"""SciTeX Module — backward-compatibility shim.
+
+Module management has moved to scitex_cloud.module.
+This shim re-exports everything so existing code continues to work.
+
+Usage (preferred — new code should use this):
+    from scitex_cloud.module import module, output, html, INJECTED
+
+Usage (legacy — still works):
+    import scitex as stx
+    @stx.module(...)
+"""
 
 from __future__ import annotations
 
-import os
+import warnings
 
-__FILE__ = __file__
-__DIR__ = os.path.dirname(__FILE__)
+warnings.warn(
+    "scitex.module is deprecated. Use scitex_cloud.module instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
-"""SciTeX Module Maker -- decorator and output APIs for custom workspace modules.
+try:
+    from scitex_cloud.module import (
+        INJECTED,
+        ModuleManifest,
+        ModuleOutput,
+        ModuleOutputCollector,
+        html,
+        module,
+        output,
+        render_output,
+        render_outputs,
+    )
+except ImportError:
+    # Fallback: scitex_cloud not installed — use local copies
+    from ._decorator import module
+    from ._manifest import ModuleManifest
+    from ._output import ModuleOutput, ModuleOutputCollector, html, output
+    from ._renderer import render_output, render_outputs
 
-Usage:
-    import scitex as stx
+    class _InjectedSentinel:
+        def __repr__(self):
+            return "<INJECTED>"
 
-    @stx.module(label="My Analysis", icon="fa-brain", category="analysis")
-    def my_analysis(project=stx.module.INJECTED, plt=stx.module.INJECTED):
-        df = stx.io.load(project / "data.csv")
-        stx.module.output(df, title="Raw Data")
-        fig, ax = plt.subplots()
-        ax.plot(df["x"], df["y"])
-        stx.module.output(fig, title="Plot")
-"""
-
-
-# Sentinel object for decorator-injected parameters
-class _InjectedSentinel:
-    """Sentinel value indicating a parameter will be injected by the module runner."""
-
-    def __repr__(self):
-        return "<INJECTED>"
-
-
-INJECTED = _InjectedSentinel()
-
-from ._decorator import module
-from ._manifest import ModuleManifest
-from ._output import ModuleOutput, ModuleOutputCollector, html, output
-from ._renderer import render_output, render_outputs
+    INJECTED = _InjectedSentinel()
 
 __all__ = [
     "INJECTED",
