@@ -228,3 +228,40 @@ class CitationDatabaseHTTP:
             scores[doi] += weight_direct
 
         return scores
+
+    def get_combined_similarity_scores_batch(
+        self,
+        seed_dois: List[str],
+        weight_coupling: float = 2.0,
+        weight_cocitation: float = 2.0,
+        weight_direct: float = 1.0,
+    ) -> Counter:
+        """
+        Batch similarity scores via parallel HTTP requests.
+
+        HTTP API doesn't support batch SQL, so parallelize per-DOI calls
+        using ThreadPoolExecutor for acceptable performance.
+        """
+        from concurrent.futures import ThreadPoolExecutor
+
+        scores = Counter()
+        seed_set = set(d.lower() for d in seed_dois)
+
+        def _score_one(doi):
+            return self.get_combined_similarity_scores(
+                doi,
+                weight_coupling=weight_coupling,
+                weight_cocitation=weight_cocitation,
+                weight_direct=weight_direct,
+            )
+
+        max_workers = min(len(seed_dois), 20)
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            results = pool.map(_score_one, seed_dois)
+
+        for per_doi_scores in results:
+            for doi, score in per_doi_scores.items():
+                if doi.lower() not in seed_set:
+                    scores[doi] += score
+
+        return scores

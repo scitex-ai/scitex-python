@@ -77,7 +77,8 @@ class CitationDatabase:
             doi: DOI of the paper
             limit: Maximum number of references to return
 
-        Returns:
+        Returns
+        -------
             List of DOIs cited by the paper
         """
         cursor = self.conn.execute(
@@ -99,7 +100,8 @@ class CitationDatabase:
             doi: DOI of the paper
             limit: Maximum number of citations to return
 
-        Returns:
+        Returns
+        -------
             List of (citing_doi, year) tuples
         """
         cursor = self.conn.execute(
@@ -124,7 +126,8 @@ class CitationDatabase:
             doi: DOI of the paper
             limit: Maximum number of results
 
-        Returns:
+        Returns
+        -------
             List of (cocited_doi, cocitation_count) tuples
         """
         cursor = self.conn.execute(
@@ -154,7 +157,8 @@ class CitationDatabase:
             doi: DOI of the paper
             limit: Maximum number of results
 
-        Returns:
+        Returns
+        -------
             List of (coupled_doi, shared_references_count) tuples
         """
         cursor = self.conn.execute(
@@ -179,7 +183,8 @@ class CitationDatabase:
         Args:
             doi: DOI of the paper
 
-        Returns:
+        Returns
+        -------
             Dictionary with paper metadata, or None if not found
         """
         cursor = self.conn.execute("SELECT metadata FROM works WHERE doi = ?", (doi,))
@@ -212,7 +217,8 @@ class CitationDatabase:
             weight_direct: Weight for direct citation score
             max_papers: Maximum papers to consider per metric
 
-        Returns:
+        Returns
+        -------
             Counter with {doi: combined_score}
         """
         scores = Counter()
@@ -235,5 +241,92 @@ class CitationDatabase:
         citations = self.get_citations(seed_doi, limit=50)
         for doi, _ in citations:
             scores[doi] += weight_direct
+
+        return scores
+
+    def get_combined_similarity_scores_batch(
+        self,
+        seed_dois: List[str],
+        weight_coupling: float = 2.0,
+        weight_cocitation: float = 2.0,
+        weight_direct: float = 1.0,
+    ) -> Counter:
+        """
+        Calculate combined similarity scores for multiple seed DOIs in batch.
+
+        Uses batch SQL (WHERE IN) instead of per-DOI loops — O(4) queries
+        instead of O(4*N), critical for large DOI sets (100-1000+).
+
+        Args:
+            seed_dois: List of seed DOIs
+            weight_coupling: Weight for bibliographic coupling score
+            weight_cocitation: Weight for co-citation score
+            weight_direct: Weight for direct citation score
+
+        Returns
+        -------
+            Counter with {doi: combined_score} across all seeds
+        """
+        scores = Counter()
+        lower_dois = [d.lower() for d in seed_dois]
+        placeholders = ",".join("?" * len(lower_dois))
+
+        # 1. Bibliographic coupling (batch)
+        cursor = self.conn.execute(
+            f"""
+            SELECT c2.citing_doi, COUNT(*) as shared_refs
+            FROM citations c1
+            JOIN citations c2 ON c1.cited_doi = c2.cited_doi
+            WHERE c1.citing_doi IN ({placeholders})
+              AND c2.citing_doi NOT IN ({placeholders})
+            GROUP BY c2.citing_doi
+            ORDER BY shared_refs DESC
+            """,
+            lower_dois + lower_dois,
+        )
+        for row in cursor:
+            scores[row[0]] += row[1] * weight_coupling
+
+        # 2. Co-citation (batch)
+        cursor = self.conn.execute(
+            f"""
+            SELECT c2.cited_doi, COUNT(*) as cocitation_count
+            FROM citations c1
+            JOIN citations c2 ON c1.citing_doi = c2.citing_doi
+            WHERE c1.cited_doi IN ({placeholders})
+              AND c2.cited_doi NOT IN ({placeholders})
+            GROUP BY c2.cited_doi
+            ORDER BY cocitation_count DESC
+            """,
+            lower_dois + lower_dois,
+        )
+        for row in cursor:
+            scores[row[0]] += row[1] * weight_cocitation
+
+        # 3. Direct citations — references (batch)
+        cursor = self.conn.execute(
+            f"""
+            SELECT cited_doi
+            FROM citations
+            WHERE citing_doi IN ({placeholders})
+              AND cited_doi NOT IN ({placeholders})
+            """,
+            lower_dois + lower_dois,
+        )
+        for row in cursor:
+            scores[row[0]] += weight_direct
+
+        # 4. Direct citations — cited by (batch)
+        cursor = self.conn.execute(
+            f"""
+            SELECT citing_doi
+            FROM citations
+            WHERE cited_doi IN ({placeholders})
+              AND citing_doi NOT IN ({placeholders})
+            """,
+            lower_dois + lower_dois,
+        )
+        for row in cursor:
+            scores[row[0]] += weight_direct
 
         return scores
