@@ -48,12 +48,7 @@ _os.environ.setdefault("SCITEX_WRITER_ALIAS", "sw")
 
 # Check scitex-writer availability
 try:
-    # Re-export main class and dataclasses
     from scitex_writer import (
-        CompilationResult,
-        ManuscriptTree,
-        RevisionTree,
-        SupplementaryTree,
         Writer,
         bib,
         compile,
@@ -69,6 +64,28 @@ try:
 
     WRITER_AVAILABLE = True
     __writer_version__ = _writer_version
+
+    # Dataclasses: optional (may not be exported in older versions)
+    try:
+        from scitex_writer import (
+            CompilationResult,
+            ManuscriptTree,
+            RevisionTree,
+            SupplementaryTree,
+        )
+    except ImportError:
+        try:
+            from scitex_writer._dataclasses import (
+                CompilationResult,
+                ManuscriptTree,
+                RevisionTree,
+                SupplementaryTree,
+            )
+        except ImportError:
+            CompilationResult = None  # type: ignore[assignment,misc]
+            ManuscriptTree = None  # type: ignore[assignment,misc]
+            RevisionTree = None  # type: ignore[assignment,misc]
+            SupplementaryTree = None  # type: ignore[assignment,misc]
 
 except ImportError:
     WRITER_AVAILABLE = False
@@ -91,10 +108,10 @@ except ImportError:
             )
 
     Writer = _WriterNotAvailable
-    CompilationResult = _WriterNotAvailable
-    ManuscriptTree = _WriterNotAvailable
-    SupplementaryTree = _WriterNotAvailable
-    RevisionTree = _WriterNotAvailable
+    CompilationResult = None  # type: ignore[assignment]
+    ManuscriptTree = None  # type: ignore[assignment]
+    SupplementaryTree = None  # type: ignore[assignment]
+    RevisionTree = None  # type: ignore[assignment]
     bib = None
     compile = None
     ensure_workspace = None
