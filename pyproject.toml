@@ -476,6 +476,7 @@ scholar = [
     # Standalone packages
     "crossref-local",
     "openalex-local",
+    "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
 ]

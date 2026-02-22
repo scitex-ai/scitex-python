@@ -61,6 +61,13 @@ from .storage import (
     normalize_search_filename as _normalize_search_filename,  # noqa: E402
 )
 
+# ── Migration (Connected Papers) ─────────────────────────────────────────────
+try:
+    from scitex.scholar.migration import from_connected_papers, to_connected_papers
+except ImportError:
+    from_connected_papers = None  # type: ignore[assignment,misc]
+    to_connected_papers = None  # type: ignore[assignment,misc]
+
 # ── Citation graph ───────────────────────────────────────────────────────────
 try:
     from scitex.scholar.citation_graph import (
@@ -139,6 +146,7 @@ for _submod in [
     "storage",
     "url_finder",
     "citation_graph",
+    "migration",
     "_utils",
 ]:
     try:
@@ -192,6 +200,9 @@ __all__ = [
     "papers_to_format",
     "generate_cite_key",
     "make_citation_key",
+    # Migration
+    "from_connected_papers",
+    "to_connected_papers",
     # Filtering
     "apply_filters",
 ]
