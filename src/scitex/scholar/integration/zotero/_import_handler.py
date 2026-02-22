@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 from scitex import logging
 from scitex.scholar.storage import LibraryManager
 
-from .attachment_resolver import ResolvedAttachment, ZoteroAttachmentResolver
+from ._attachment_resolver import ResolvedAttachment, ZoteroAttachmentResolver
 from .local_reader import ZoteroLocalReader
 from .migration_report import MigratedItem, MigrationError, MigrationReport
 

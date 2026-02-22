@@ -26,10 +26,10 @@ from typing import List, Optional
 
 from scitex.scholar.storage import LibraryManager
 
+from ._attachment_resolver import ZoteroAttachmentResolver
 from ._diff_handler import ZoteroDiffHandler
 from ._export_handler import ZoteroExportHandler
 from ._import_handler import ZoteroImportHandler
-from .attachment_resolver import ZoteroAttachmentResolver
 from .local_reader import ZoteroLocalReader
 from .migration_report import ExportPackage, MigrationReport, SyncDiff
 

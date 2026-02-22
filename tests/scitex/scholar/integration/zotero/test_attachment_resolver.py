@@ -31,7 +31,7 @@ def base_dir(tmp_path):
 
 @pytest.fixture()
 def resolver(base_dir):
-    from scitex.scholar.integration.zotero.attachment_resolver import (
+    from scitex.scholar.integration.zotero._attachment_resolver import (
         ZoteroAttachmentResolver,
     )
 
@@ -44,7 +44,7 @@ def resolver(base_dir):
 
 
 def test_resolver_stores_base_dir(base_dir):
-    from scitex.scholar.integration.zotero.attachment_resolver import (
+    from scitex.scholar.integration.zotero._attachment_resolver import (
         ZoteroAttachmentResolver,
     )
 
@@ -53,7 +53,7 @@ def test_resolver_stores_base_dir(base_dir):
 
 
 def test_resolver_storage_dir_is_base_slash_storage(base_dir):
-    from scitex.scholar.integration.zotero.attachment_resolver import (
+    from scitex.scholar.integration.zotero._attachment_resolver import (
         ZoteroAttachmentResolver,
     )
 
@@ -155,7 +155,7 @@ def test_resolve_linked_relative_existing(resolver, base_dir):
 
 
 def test_resolved_attachment_fields():
-    from scitex.scholar.integration.zotero.attachment_resolver import (
+    from scitex.scholar.integration.zotero._attachment_resolver import (
         ResolvedAttachment,
     )
 
@@ -174,7 +174,7 @@ def test_resolved_attachment_fields():
 
 
 def test_resolved_attachment_is_pdf_false_for_other_types():
-    from scitex.scholar.integration.zotero.attachment_resolver import (
+    from scitex.scholar.integration.zotero._attachment_resolver import (
         ResolvedAttachment,
     )
 
@@ -204,7 +204,7 @@ class TestListAttachmentsIntegration:
 
     @pytest.fixture(scope="class")
     def live_resolver(self):
-        from scitex.scholar.integration.zotero.attachment_resolver import (
+        from scitex.scholar.integration.zotero._attachment_resolver import (
             ZoteroAttachmentResolver,
         )
 
