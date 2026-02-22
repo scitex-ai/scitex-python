@@ -24,10 +24,16 @@ class VerificationStatus(Enum):
 
 
 class VerificationLevel(Enum):
-    """Level of verification performed."""
+    """Level of verification performed.
 
-    CACHE = "cache"  # Hash comparison only (fast)
-    RERUN = "rerun"  # Full re-execution (thorough)
+    L1: CACHE     — Compare stored hashes vs current files (local only)
+    L2: RERUN     — Re-execute pipeline and compare (local only)
+    L3: REGISTERED — L2 + hash registered in Clew Registry with timestamp (scitex.ai)
+    """
+
+    CACHE = "cache"  # L1: Hash comparison only (fast)
+    RERUN = "rerun"  # L2: Full re-execution (thorough)
+    REGISTERED = "registered"  # L3: Registered with server-side timestamp
 
 
 @dataclass

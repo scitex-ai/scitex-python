@@ -50,6 +50,7 @@ def on_session_close(
     status: str = "success",
     exit_code: int = 0,
     verbose: bool = False,
+    register: Optional[bool] = None,
 ) -> None:
     """
     Hook called when a session closes.
@@ -62,9 +63,15 @@ def on_session_close(
         Exit code of the script
     verbose : bool, optional
         Whether to log status messages
+    register : bool, optional
+        If True, register session hashes with remote Clew Registry.
+        If None, checks SCITEX_AUTO_REGISTER environment variable.
     """
     try:
+        tracker = get_tracker()
         stop_tracking(status=status, exit_code=exit_code)
+        if _should_auto_register(register) and tracker is not None:
+            _auto_register_session(tracker.session_id)
     except Exception as e:
         if verbose:
             import logging
@@ -122,6 +129,28 @@ def on_io_save(
             tracker.record_output(path, track=track)
         except Exception:
             pass  # Silent fail - don't interrupt io operations
+
+
+# ── Registry helpers ──
+
+
+def _should_auto_register(register: Optional[bool]) -> bool:
+    """Check whether auto-registration is enabled."""
+    if register is not None:
+        return register
+    import os
+
+    return os.environ.get("SCITEX_AUTO_REGISTER", "").lower() in ("1", "true", "yes")
+
+
+def _auto_register_session(session_id: str) -> None:
+    """Register session hashes with remote Clew Registry (fire-and-forget)."""
+    try:
+        from ._registry import get_registry
+
+        get_registry().register_session(session_id)
+    except Exception:
+        pass  # Silent fail - registration should never interrupt workflow
 
 
 # EOF

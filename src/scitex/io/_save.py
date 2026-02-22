@@ -72,6 +72,7 @@ def save(
     metadata_extra: dict = None,
     json_schema: str = "editable",
     track: bool = True,
+    register: bool = False,
     **kwargs,
 ) -> None:
     """Save an object to a file with the specified format.
@@ -91,6 +92,7 @@ def save(
     metadata_extra : dict -- Extra metadata to merge.
     json_schema : str -- JSON metadata schema type.
     track : bool -- Track file in verification system.
+    register : bool -- Register file hash with remote Clew Registry.
     **kwargs -- Passed to underlying save function.
     """
     try:
@@ -145,6 +147,16 @@ def save(
             on_io_save(spath_final, track=track)
         except Exception:
             pass  # Silent fail - don't interrupt save operations
+
+        # Register hash with remote Clew Registry (opt-in)
+        if register:
+            try:
+                from scitex.clew import get_registry, hash_file
+
+                file_hash = hash_file(spath_final)
+                get_registry().register(file_hash, source_type="file")
+            except Exception:
+                pass  # Silent fail - registration should never interrupt save
 
         return Path(spath)
 
@@ -363,7 +375,6 @@ def _save_scitex_bundle(
     import matplotlib.figure
 
     from scitex.io.bundle import from_matplotlib
-
 
     if isinstance(obj, matplotlib.figure.Figure):
         fig = obj
