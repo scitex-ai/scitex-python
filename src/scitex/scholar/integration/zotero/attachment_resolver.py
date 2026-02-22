@@ -72,7 +72,10 @@ class ZoteroAttachmentResolver:
         # linkMode 0 or 1: stored in storage/<key>/<filename>
         if path_field.startswith("storage:"):
             filename = path_field[len("storage:") :]
-            full_path = self.storage_dir / item_key / filename
+            full_path = (self.storage_dir / item_key / filename).resolve()
+            # Guard against path traversal (e.g. "storage:../../etc/passwd")
+            if not str(full_path).startswith(str(self.storage_dir.resolve())):
+                return None
             return full_path if full_path.exists() else None
 
         # linkMode 2: linked file (absolute or relative path)
@@ -81,7 +84,9 @@ class ZoteroAttachmentResolver:
             if p.is_absolute() and p.exists():
                 return p
             # Try relative to base dir
-            rel = self.base_dir / path_field
+            rel = (self.base_dir / path_field).resolve()
+            if not str(rel).startswith(str(self.base_dir.resolve())):
+                return None
             if rel.exists():
                 return rel
 

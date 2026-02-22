@@ -122,7 +122,7 @@ class ZoteroImportHandler:
                     item_ids, conn, pdf_only=True
                 )
 
-        # Re-fetch type info for item_id -> zotero_key mapping
+        # Build zotero_key -> paper mapping for safe pairing
         ids_str = ",".join(str(i) for i in item_ids)
         with self._reader._connect() as conn:
             type_rows = conn.execute(
@@ -136,13 +136,18 @@ class ZoteroImportHandler:
                 """
             ).fetchall()
 
-        paper_idx = 0
+        # Index papers by _zotero_key for safe matching (avoids positional drift)
+        paper_by_key = {}
+        for p in papers:
+            key = getattr(p, "_zotero_key", None)
+            if key:
+                paper_by_key[key] = p
+
         for row in type_rows:
             item_id, zotero_key = row[0], row[1]
-            if paper_idx >= len(papers):
-                break
-            paper = papers.papers[paper_idx]
-            paper_idx += 1
+            paper = paper_by_key.get(zotero_key)
+            if paper is None:
+                continue
 
             title = getattr(paper.metadata.basic, "title", "") or ""
             doi = getattr(paper.metadata.id, "doi", None)
@@ -172,7 +177,7 @@ class ZoteroImportHandler:
             )
         )
         if item_pdfs:
-            report.pdfs_copied += len(item_pdfs)
+            report.pdfs_copied += 1
         else:
             report.pdfs_missing += 1
         report.imported += 1
