@@ -173,13 +173,15 @@ def to_connected_papers(
         entries = []
         for node in graph.nodes:
             if node.doi:
-                bib = to_bibtex(
-                    doi=node.doi,
-                    title=node.title,
-                    year=node.year,
-                    authors=node.authors,
-                    journal=node.journal,
-                )
+                authors = getattr(node, "authors", []) or []
+                paper_dict = {
+                    "doi": node.doi,
+                    "title": getattr(node, "title", ""),
+                    "year": getattr(node, "year", None),
+                    "authors_str": " and ".join(authors) if authors else "",
+                    "journal": getattr(node, "journal", ""),
+                }
+                bib = to_bibtex(paper_dict)
                 entries.append(bib)
 
         bibtex_path.write_text("\n\n".join(entries), encoding="utf-8")
@@ -209,7 +211,7 @@ def _build_citation_graph(seed_id, nodes, edges, doi_map, metadata_map, warnings
         PaperNode,
     )
 
-    seed_doi = doi_map.get(seed_id, seed_id)
+    seed_doi = doi_map.get(seed_id) or seed_id
     paper_nodes = []
 
     for s2_id, node_data in nodes.items():

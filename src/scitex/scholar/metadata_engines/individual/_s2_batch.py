@@ -120,7 +120,7 @@ class S2BatchMixin:
                     )
                 response.raise_for_status()
                 results = response.json()
-                all_results.extend(r if r is not None else None for r in results)
+                all_results.extend(results)
             except Exception as exc:
                 logger.warning(f"S2 batch resolve error: {exc}")
                 all_results.extend([None] * len(chunk))

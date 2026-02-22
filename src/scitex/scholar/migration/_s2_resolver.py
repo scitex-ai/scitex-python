@@ -40,6 +40,10 @@ def bulk_resolve_dois(
     engine = SemanticScholarEngine(api_key=api_key)
     results = engine.batch_resolve(s2_ids, fields="externalIds")
 
+    # Pad results if batch_resolve returned fewer items than input
+    if len(results) < len(s2_ids):
+        results.extend([None] * (len(s2_ids) - len(results)))
+
     mapping: Dict[str, Optional[str]] = {}
     for s2_id, result in zip(s2_ids, results):
         if result is None:
@@ -81,6 +85,10 @@ def bulk_resolve_metadata(
 
     engine = SemanticScholarEngine(api_key=api_key)
     results = engine.batch_resolve(s2_ids, fields=fields)
+
+    # Pad results if batch_resolve returned fewer items than input
+    if len(results) < len(s2_ids):
+        results.extend([None] * (len(s2_ids) - len(results)))
 
     return dict(zip(s2_ids, results))
 

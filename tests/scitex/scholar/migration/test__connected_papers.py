@@ -622,6 +622,34 @@ class TestToConnectedPapersExceptions:
         assert "serialisation error" in result["error"]
 
 
+class TestToConnectedPapersIntegration:
+    """Integration test: to_bibtex is NOT mocked — verifies real call works."""
+
+    def _make_node(self, doi, title="Title", year=2023, authors=None, journal="J"):
+        node = MagicMock()
+        node.doi = doi
+        node.title = title
+        node.year = year
+        node.authors = authors or ["Alice Smith"]
+        node.journal = journal
+        return node
+
+    def test_real_to_bibtex_produces_valid_entry(self, tmp_path):
+        """to_connected_papers builds a correct paper dict for to_bibtex."""
+        node = self._make_node("10.1234/test", title="Test Paper", year=2024)
+        graph = MagicMock()
+        graph.nodes = [node]
+        graph.to_dict.return_value = {"nodes": [], "edges": []}
+
+        result = to_connected_papers(graph, output=str(tmp_path))
+
+        assert result["success"] is True
+        assert result["bibtex_entries"] == 1
+        bib_content = Path(result["bibtex_path"]).read_text(encoding="utf-8")
+        assert "@article{" in bib_content
+        assert "10.1234/test" in bib_content
+
+
 if __name__ == "__main__":
     import os
 

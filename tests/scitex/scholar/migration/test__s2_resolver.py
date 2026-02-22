@@ -300,6 +300,42 @@ class TestBulkResolveMetadataSuccessful:
         engine_class.assert_called_once_with(api_key="secret")
 
 
+class TestBulkResolveDoisTruncatedResults:
+    """bulk_resolve_dois pads missing results when batch_resolve returns short."""
+
+    def test_truncated_batch_pads_with_none(self):
+        """If batch_resolve returns fewer items, missing ones become None."""
+        s2_ids = ["id1", "id2", "id3"]
+        # Only 1 result returned instead of 3
+        batch_results = [{"externalIds": {"DOI": "10.1/a"}}]
+        engine_class, _ = _make_engine_mock(batch_results)
+
+        with patch(_ENGINE_PATH, engine_class):
+            result = bulk_resolve_dois(s2_ids)
+
+        assert len(result) == 3
+        assert result["id1"] == "10.1/a"
+        assert result["id2"] is None
+        assert result["id3"] is None
+
+
+class TestBulkResolveMetadataTruncatedResults:
+    """bulk_resolve_metadata pads missing results when batch_resolve returns short."""
+
+    def test_truncated_batch_pads_with_none(self):
+        """If batch_resolve returns fewer items, missing ones become None."""
+        s2_ids = ["id1", "id2"]
+        batch_results = [{"title": "Paper 1"}]  # Only 1 result
+        engine_class, _ = _make_engine_mock(batch_results)
+
+        with patch(_ENGINE_PATH, engine_class):
+            result = bulk_resolve_metadata(s2_ids)
+
+        assert len(result) == 2
+        assert result["id1"] == {"title": "Paper 1"}
+        assert result["id2"] is None
+
+
 if __name__ == "__main__":
     import os
 
