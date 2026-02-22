@@ -84,6 +84,7 @@ _LAZY_SUBCOMMANDS = {
     "introspect": ("scitex.cli.introspect", "introspect", "Code introspection tools."),
     "linter": ("scitex.cli.linter", "linter", "SciTeX linter."),
     "mcp": ("scitex.cli.mcp", "mcp", "MCP server management."),
+    "notebook": ("scitex.cli.notebook", "notebook", "Jupyter notebook tools."),
     "plt": ("scitex.cli.plt", "plt", "Plotting tools."),
     "repro": ("scitex.cli.repro", "repro", "Reproducibility tools."),
     "resource": ("scitex.cli.resource", "resource", "Resource management."),
