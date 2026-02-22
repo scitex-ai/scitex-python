@@ -35,6 +35,7 @@ from ._project._scholar_writer_integration import (
     ensure_integration,
     setup_scholar_writer_integration,
 )
+from ._project.clone_module import clone_module
 from ._project.clone_pip_project import TEMPLATE_REPO_URL as PIP_PROJECT_URL
 from ._project.clone_pip_project import clone_pip_project
 from ._project.clone_research import TEMPLATE_REPO_URL as RESEARCH_URL
@@ -164,11 +165,26 @@ def get_available_templates_info():
                 "Manuscript tracking",
             ],
         },
+        {
+            "id": "module",
+            "name": "SciTeX Module",
+            "description": "User-authored workspace module for SciTeX Cloud",
+            "github_url": "",
+            "use_case": "Creating custom workspace modules (EEG viewer, genome browser, etc.)",
+            "features": [
+                "module.py - @stx.module decorated entry point",
+                "manifest.yaml - Module metadata (label, icon, category)",
+                "requirements.txt - Python dependencies",
+                "tests/ - Basic smoke tests",
+                "Import into SciTeX via Module Maker > Import from GitHub",
+            ],
+        },
     ]
 
 
 __all__ = [
     "clone_template",
+    "clone_module",
     "clone_research",
     "clone_research_minimal",
     "clone_scitex_minimal",

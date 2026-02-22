@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from .clone_module import clone_module
 from .clone_pip_project import clone_pip_project
 from .clone_research import clone_research
 from .clone_research_minimal import clone_research_minimal
@@ -27,12 +28,14 @@ TEMPLATES = {
     "pip_project": clone_pip_project,
     "singularity": clone_singularity,
     "paper_directory": clone_writer_directory,
+    "module": clone_module,
 }
 
 ALIASES = {
     "minimal": "scitex_minimal",
     "pip-project": "pip_project",
     "paper": "paper_directory",
+    "stx-module": "module",
 }
 
 
