@@ -222,6 +222,8 @@ units = _LazyModule("units")
 logging = _LazyModule("logging")
 session = _CallableModuleWrapper("session", main_decorator_name="session")
 session._setup_persistence("scitex", "session")
+module = _CallableModuleWrapper("module", main_decorator_name="module")
+module._setup_persistence("scitex", "module")
 capture = _LazyModule("capture")
 template = _LazyModule("template")
 cloud = _LazyModule("cloud")
@@ -319,6 +321,7 @@ __all__ = [
     "units",
     "logging",
     "session",
+    "module",
     "rng",
     "capture",
     "template",
