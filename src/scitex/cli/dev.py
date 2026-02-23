@@ -91,6 +91,17 @@ def dev(ctx, help_recursive):
     default=True,
     help="Check all sources (hosts, remotes, RTD). Default: on.",
 )
+@click.option(
+    "--dashboard",
+    is_flag=True,
+    help="Start the Flask version dashboard (GUI).",
+)
+@click.option(
+    "--dashboard-port", default=5000, type=int, help="Dashboard port (default: 5000)."
+)
+@click.option(
+    "--force", is_flag=True, help="Kill existing dashboard process using the port."
+)
 def versions(
     check,
     as_json,
@@ -102,6 +113,9 @@ def versions(
     all_remotes,
     rtd,
     check_all,
+    dashboard,
+    dashboard_port,
+    force,
 ):
     r"""
     List versions across the scitex ecosystem.
@@ -125,7 +139,21 @@ def versions(
       scitex dev versions --json             # JSON output
       scitex dev versions -p scitex          # Single package
       scitex dev versions --host spartan     # Check specific host only
+      scitex dev versions --dashboard        # Start version dashboard GUI
+      scitex dev versions --dashboard --force  # Restart dashboard
     """
+    if dashboard:
+        from scitex._dev import run_dashboard
+
+        run_dashboard(
+            host="127.0.0.1",
+            port=dashboard_port,
+            debug=False,
+            open_browser=True,
+            force=force,
+        )
+        return
+
     import json as json_module
 
     from scitex._dev import check_versions, list_versions
@@ -260,30 +288,6 @@ def list_python_apis(ctx, verbose, max_depth, as_json):
         verbose=verbose,
         max_depth=max_depth,
         as_json=as_json,
-    )
-
-
-@dev.command("dashboard")
-@click.option("--host", default="127.0.0.1", help="Host to bind to")
-@click.option("--port", "-p", default=5000, type=int, help="Port to listen on")
-@click.option("--debug", is_flag=True, help="Enable debug mode")
-@click.option("--no-browser", is_flag=True, help="Don't open browser")
-@click.option("--force", is_flag=True, help="Kill existing process using the port")
-def dashboard(host, port, debug, no_browser, force):
-    r"""
-    Start the Flask version dashboard.
-
-    \b
-    Examples:
-      scitex dev dashboard              # Start on localhost:5000
-      scitex dev dashboard --port 5001  # Custom port
-      scitex dev dashboard --no-browser # Don't open browser
-      scitex dev dashboard --force      # Kill existing and restart
-    """
-    from scitex._dev import run_dashboard
-
-    run_dashboard(
-        host=host, port=port, debug=debug, open_browser=not no_browser, force=force
     )
 
 
