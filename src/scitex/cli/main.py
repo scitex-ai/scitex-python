@@ -72,11 +72,17 @@ class LazyGroup(click.Group):
 
 _LAZY_SUBCOMMANDS = {
     "audio": ("scitex.cli.audio", "audio", "Audio tools and text-to-speech."),
+    "audit": ("scitex.cli.audit", "audit", "Security auditing tools."),
     "browser": ("scitex.cli.browser", "browser", "Browser automation tools."),
     "capture": ("scitex.cli.capture", "capture", "Screenshot capture tools."),
     "clew": ("scitex.cli.clew", "clew", "Verification and reproducibility."),
     "cloud": ("scitex.cli.cloud", "cloud", "Cloud storage operations."),
     "config": ("scitex.cli.config", "config", "Configuration management."),
+    "container": (
+        "scitex.cli.container",
+        "container",
+        "Container management (Apptainer/Singularity).",
+    ),
     "convert": ("scitex.cli.convert", "convert", "File format conversion."),
     "dataset": ("scitex.cli.dataset", "dataset", "Dataset discovery and management."),
     "dev": ("scitex.cli.dev", "dev", "Developer tools."),
