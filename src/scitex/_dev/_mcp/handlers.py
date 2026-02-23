@@ -29,72 +29,6 @@ async def list_versions_handler(
     return list_versions(packages)
 
 
-async def check_versions_handler(
-    packages: list[str] | None = None,
-) -> dict[str, Any]:
-    """Check version consistency across the scitex ecosystem.
-
-    Parameters
-    ----------
-    packages : list[str] | None
-        List of package names to check. If None, checks all ecosystem packages.
-
-    Returns
-    -------
-    dict
-        Detailed version check results with summary.
-    """
-    from scitex._dev import check_versions
-
-    return check_versions(packages)
-
-
-async def check_hosts_handler(
-    packages: list[str] | None = None,
-    hosts: list[str] | None = None,
-) -> dict[str, Any]:
-    """Check versions on SSH hosts.
-
-    Parameters
-    ----------
-    packages : list[str] | None
-        List of package names to check. If None, checks all ecosystem packages.
-    hosts : list[str] | None
-        List of host names to check. If None, checks all enabled hosts.
-
-    Returns
-    -------
-    dict
-        Host name -> package name -> version info mapping.
-    """
-    from scitex._dev import check_all_hosts
-
-    return check_all_hosts(packages=packages, hosts=hosts)
-
-
-async def check_remotes_handler(
-    packages: list[str] | None = None,
-    remotes: list[str] | None = None,
-) -> dict[str, Any]:
-    """Check versions on GitHub remotes.
-
-    Parameters
-    ----------
-    packages : list[str] | None
-        List of package names to check. If None, checks all ecosystem packages.
-    remotes : list[str] | None
-        List of remote names to check. If None, checks all enabled remotes.
-
-    Returns
-    -------
-    dict
-        Remote name -> package name -> version info mapping.
-    """
-    from scitex._dev import check_all_remotes
-
-    return check_all_remotes(packages=packages, remotes=remotes)
-
-
 async def get_config_handler() -> dict[str, Any]:
     """Get current developer configuration.
 
@@ -133,62 +67,6 @@ async def get_config_handler() -> dict[str, Any]:
         ],
         "branches": config.branches,
     }
-
-
-async def get_full_versions_handler(
-    packages: list[str] | None = None,
-    include_hosts: bool = True,
-    include_remotes: bool = True,
-    include_rtd: bool = True,
-) -> dict[str, Any]:
-    """Get comprehensive version data from all sources.
-
-    Parameters
-    ----------
-    packages : list[str] | None
-        List of package names to check. If None, checks all ecosystem packages.
-    include_hosts : bool
-        Include SSH host version checks.
-    include_remotes : bool
-        Include GitHub remote version checks.
-    include_rtd : bool
-        Include Read the Docs build status.
-
-    Returns
-    -------
-    dict
-        Combined version data from local, hosts, remotes, and RTD.
-    """
-    from scitex._dev import check_all_hosts, check_all_remotes, list_versions
-
-    result = {
-        "packages": list_versions(packages),
-        "hosts": {},
-        "remotes": {},
-        "rtd": {},
-    }
-
-    if include_hosts:
-        try:
-            result["hosts"] = check_all_hosts(packages=packages)
-        except Exception as e:
-            result["hosts"] = {"error": str(e)}
-
-    if include_remotes:
-        try:
-            result["remotes"] = check_all_remotes(packages=packages)
-        except Exception as e:
-            result["remotes"] = {"error": str(e)}
-
-    if include_rtd:
-        try:
-            from scitex._dev._rtd import check_all_rtd
-
-            result["rtd"] = check_all_rtd(packages=packages, versions=["latest"])
-        except Exception as e:
-            result["rtd"] = {"error": str(e)}
-
-    return result
 
 
 async def test_run_handler(
@@ -344,6 +222,64 @@ async def test_hpc_result_handler(
 
     output = fetch_hpc_result(job_id=job_id)
     return {"output": output, "job_id": job_id or "last"}
+
+
+async def sync_handler(
+    hosts: list[str] | None = None,
+    packages: list[str] | None = None,
+    install: bool = True,
+    confirm: bool = False,
+) -> dict[str, Any]:
+    """Sync ecosystem packages to remote hosts.
+
+    Safety: defaults to preview only. Pass confirm=True to execute.
+
+    Parameters
+    ----------
+    hosts : list[str] | None
+        Host names to sync. None = all enabled hosts.
+    packages : list[str] | None
+        Package names. None = host-specific defaults.
+    install : bool
+        Pip install after pull (default True).
+    confirm : bool
+        If False (default), preview only (dry run).
+        If True, execute the sync operation.
+
+    Returns
+    -------
+    dict
+        {host_name: {package: result}}.
+    """
+    from scitex._dev._sync import sync_all
+
+    return sync_all(hosts=hosts, packages=packages, install=install, confirm=confirm)
+
+
+async def sync_local_handler(
+    packages: list[str] | None = None,
+    confirm: bool = False,
+) -> dict[str, Any]:
+    """Install all local editable packages.
+
+    Safety: defaults to preview only. Pass confirm=True to execute.
+
+    Parameters
+    ----------
+    packages : list[str] | None
+        Package names. None = all configured packages.
+    confirm : bool
+        If False (default), preview only.
+        If True, execute pip install -e.
+
+    Returns
+    -------
+    dict
+        {package: {status, output}}.
+    """
+    from scitex._dev._sync import sync_local
+
+    return sync_local(packages=packages, confirm=confirm)
 
 
 async def rename_handler(

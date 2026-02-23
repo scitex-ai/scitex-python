@@ -67,6 +67,12 @@ from ._ssh import (
     get_remote_versions,
     test_host_connection,
 )
+from ._sync import (
+    sync_all,
+    sync_host,
+    sync_local,
+    sync_tags,
+)
 from ._test import (
     TestConfig,
     fetch_hpc_result,
@@ -115,6 +121,11 @@ __all__ = [
     "execute_rename",
     "RenameConfig",
     "RenameResult",
+    # Sync
+    "sync_all",
+    "sync_host",
+    "sync_local",
+    "sync_tags",
     # Test
     "run_local",
     "run_hpc_srun",

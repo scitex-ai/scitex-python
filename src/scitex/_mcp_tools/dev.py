@@ -4,7 +4,6 @@
 
 """MCP tool registration for developer utilities."""
 
-
 import json
 
 
@@ -17,7 +16,7 @@ def register_dev_tools(mcp) -> None:
     """Register developer tools with FastMCP server."""
 
     @mcp.tool()
-    async def dev_list_versions(
+    async def dev_versions_list(
         packages: list[str] | None = None,
     ) -> str:
         """[dev] List versions across the scitex ecosystem.
@@ -47,7 +46,7 @@ def register_dev_tools(mcp) -> None:
         return _json(result)
 
     @mcp.tool()
-    async def dev_get_config() -> str:
+    async def dev_config_show() -> str:
         """[dev] Get current developer configuration.
 
         Returns the configuration from ~/.scitex/dev_config.yaml including:
@@ -201,7 +200,69 @@ def register_dev_tools(mcp) -> None:
         return _json(result)
 
     @mcp.tool()
-    async def dev_rename(
+    async def dev_versions_sync(
+        hosts: list[str] | None = None,
+        packages: list[str] | None = None,
+        install: bool = True,
+        confirm: bool = False,
+    ) -> str:
+        """[dev] Sync ecosystem packages to remote hosts (git stash, pull, pip install).
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute. Parallel by default across hosts and packages.
+
+        Parameters
+        ----------
+        hosts : list[str] | None
+            Host names to sync. None = all enabled hosts.
+        packages : list[str] | None
+            Package names. None = host-specific defaults from config.
+        install : bool
+            Pip install after pull (default True).
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute the sync operation.
+
+        Returns
+        -------
+        str
+            JSON with {host_name: {package: {status, commands|output, error}}}.
+        """
+        from scitex._dev._mcp.handlers import sync_handler
+
+        result = await sync_handler(hosts, packages, install, confirm)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_versions_sync_local(
+        packages: list[str] | None = None,
+        confirm: bool = False,
+    ) -> str:
+        """[dev] Install all local editable packages (pip install -e).
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute.
+
+        Parameters
+        ----------
+        packages : list[str] | None
+            Package names. None = all configured packages.
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute pip install -e.
+
+        Returns
+        -------
+        str
+            JSON with {package: {status, output|commands}}.
+        """
+        from scitex._dev._mcp.handlers import sync_local_handler
+
+        result = await sync_local_handler(packages, confirm)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_bulk_rename(
         pattern: str,
         replacement: str,
         directory: str = ".",

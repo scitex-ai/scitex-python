@@ -4,8 +4,26 @@
 
 """MCP handlers for developer utilities."""
 
-from .handlers import check_versions_handler, list_versions_handler
+from .handlers import (
+    get_config_handler,
+    list_versions_handler,
+    rename_handler,
+    sync_handler,
+    sync_local_handler,
+    test_hpc_result_handler,
+    test_hpc_run_handler,
+    test_run_handler,
+)
 
-__all__ = ["list_versions_handler", "check_versions_handler"]
+__all__ = [
+    "get_config_handler",
+    "list_versions_handler",
+    "rename_handler",
+    "sync_handler",
+    "sync_local_handler",
+    "test_hpc_result_handler",
+    "test_hpc_run_handler",
+    "test_run_handler",
+]
 
 # EOF

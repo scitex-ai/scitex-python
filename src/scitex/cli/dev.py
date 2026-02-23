@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Timestamp: 2026-02-02
+# Timestamp: 2026-02-24
 # File: scitex/cli/dev.py
 
 """
@@ -22,11 +22,20 @@ def dev(ctx, help_recursive):
     Developer utilities (internal).
 
     \b
+    Subcommands:
+      versions   - Version management (list, sync, dashboard)
+      config     - Manage developer configuration
+      test       - Run tests locally or on HPC
+      rename     - Bulk rename across ecosystem
+      clone      - Clone ecosystem repos
+
+    \b
     Examples:
-      scitex dev versions              # List all ecosystem versions
-      scitex dev versions --check      # Check version consistency
-      scitex dev versions --json       # Output as JSON
-      scitex dev versions -p scitex    # Check specific package
+      scitex dev versions                    # List all versions
+      scitex dev versions sync               # Preview sync (dry run)
+      scitex dev versions sync --confirm     # Execute sync
+      scitex dev versions dashboard          # Start dashboard GUI
+      scitex dev config show                 # Show configuration
     """
     if help_recursive:
         from . import print_help_recursive
@@ -37,196 +46,244 @@ def dev(ctx, help_recursive):
         click.echo(ctx.get_help())
 
 
-@dev.command("versions")
-@click.option(
-    "--check",
-    is_flag=True,
-    help="Check version consistency and show summary",
-)
-@click.option(
-    "--json",
-    "as_json",
-    is_flag=True,
-    help="Output as JSON",
-)
-@click.option(
-    "-p",
-    "--package",
-    multiple=True,
-    help="Filter to specific package(s)",
-)
-@click.option(
-    "--local-only",
-    is_flag=True,
-    help="Skip remote (PyPI) version checks",
-)
-@click.option(
-    "--host",
-    multiple=True,
-    help="Check specific SSH host(s)",
-)
-@click.option(
-    "--all-hosts",
-    is_flag=True,
-    help="Check all configured SSH hosts",
-)
-@click.option(
-    "--remote",
-    multiple=True,
-    help="Check specific GitHub remote(s)",
-)
-@click.option(
-    "--all-remotes",
-    is_flag=True,
-    help="Check all configured GitHub remotes",
-)
-@click.option(
-    "--rtd",
-    is_flag=True,
-    help="Check Read the Docs build status",
-)
-@click.option(
-    "--all/--no-all",
-    "check_all",
-    default=True,
-    help="Check all sources (hosts, remotes, RTD). Default: on.",
-)
-@click.option(
-    "--dashboard",
-    is_flag=True,
-    help="Start the Flask version dashboard (GUI).",
-)
-@click.option(
-    "--dashboard-port", default=5000, type=int, help="Dashboard port (default: 5000)."
-)
-@click.option(
-    "--force", is_flag=True, help="Kill existing dashboard process using the port."
-)
-def versions(
-    check,
-    as_json,
-    package,
-    local_only,
-    host,
-    all_hosts,
-    remote,
-    all_remotes,
-    rtd,
-    check_all,
-    dashboard,
-    dashboard_port,
-    force,
-):
+# ---------------------------------------------------------------------------
+# versions — group for version management
+# ---------------------------------------------------------------------------
+
+
+@dev.group("versions", invoke_without_command=True)
+@click.pass_context
+def versions(ctx):
     r"""
-    List versions across the scitex ecosystem.
+    Version management across the scitex ecosystem.
 
     \b
-    Shows version information from multiple sources:
-      - pyproject.toml (local source)
-      - installed package (pip/importlib.metadata)
-      - git tag (latest version tag)
-      - git branch (current branch)
-      - PyPI (remote published version)
-      - SSH hosts (--all-hosts or --all)
-      - GitHub remotes (--all-remotes or --all)
-      - Read the Docs (--rtd or --all)
+    Subcommands:
+      list          - List local/PyPI versions
+      list-hosts    - List versions on SSH hosts
+      list-remotes  - List versions on GitHub remotes
+      list-rtd      - List Read the Docs build status
+      check         - Check version consistency
+      sync          - Sync packages to hosts (safe: preview by default)
+      dashboard     - Start version dashboard GUI
 
     \b
     Examples:
-      scitex dev versions                    # List all versions (incl. hosts, remotes, RTD)
-      scitex dev versions --no-all           # Skip hosts, remotes, RTD
-      scitex dev versions --check            # Check consistency
-      scitex dev versions --json             # JSON output
-      scitex dev versions -p scitex          # Single package
-      scitex dev versions --host spartan     # Check specific host only
-      scitex dev versions --dashboard        # Start version dashboard GUI
-      scitex dev versions --dashboard --force  # Restart dashboard
+      scitex dev versions list               # Local + PyPI versions
+      scitex dev versions list-hosts         # SSH host versions
+      scitex dev versions list-remotes       # GitHub remote versions
+      scitex dev versions check              # Consistency check
+      scitex dev versions sync               # Preview sync (dry run)
+      scitex dev versions sync --confirm     # Execute sync
+      scitex dev versions dashboard          # Start dashboard
     """
-    if dashboard:
-        from scitex._dev import run_dashboard
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
 
-        run_dashboard(
-            host="127.0.0.1",
-            port=dashboard_port,
-            debug=False,
-            open_browser=True,
-            force=force,
-        )
-        return
 
+@versions.command("list")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
+@click.option("--local-only", is_flag=True, help="Skip remote (PyPI) version checks")
+def versions_list(as_json, package, local_only):
+    r"""
+    List local and PyPI versions (read-only).
+
+    \b
+    Examples:
+      scitex dev versions list               # All packages
+      scitex dev versions list --json        # JSON output
+      scitex dev versions list -p scitex     # Specific package
+      scitex dev versions list --local-only  # Skip PyPI
+    """
     import json as json_module
 
-    from scitex._dev import check_versions, list_versions
+    from scitex._dev import list_versions
 
-    from ._dev_fmt import (
-        print_check_result,
-        print_hosts,
-        print_remotes,
-        print_rtd,
-        print_versions,
-    )
+    from ._dev_fmt import print_versions
 
     packages = list(package) if package else None
-
-    if check:
-        result = check_versions(packages)
-        if local_only:
-            for pkg_info in result["packages"].values():
-                pkg_info.get("remote", {}).pop("pypi", None)
-    else:
-        result = list_versions(packages)
-        if local_only:
-            for pkg_info in result.values():
-                pkg_info.get("remote", {}).pop("pypi", None)
-
-    if host or all_hosts or check_all:
-        from scitex._dev import check_all_hosts
-
-        hosts_filter = list(host) if host else None
-        try:
-            result["hosts"] = check_all_hosts(packages=packages, hosts=hosts_filter)
-        except Exception as e:
-            result["hosts"] = {"error": str(e)}
-
-    if remote or all_remotes or check_all:
-        from scitex._dev import check_all_remotes
-
-        remotes_filter = list(remote) if remote else None
-        try:
-            result["remotes"] = check_all_remotes(
-                packages=packages, remotes=remotes_filter
-            )
-        except Exception as e:
-            result["remotes"] = {"error": str(e)}
-
-    if rtd or check_all:
-        try:
-            from scitex._dev._rtd import check_all_rtd
-
-            result["rtd"] = check_all_rtd(packages=packages, versions=["latest"])
-        except Exception as e:
-            result["rtd"] = {"error": str(e)}
+    result = list_versions(packages)
+    if local_only:
+        for pkg_info in result.values():
+            pkg_info.get("remote", {}).pop("pypi", None)
 
     if as_json:
         click.echo(json_module.dumps(result, indent=2))
         return
 
-    if check:
-        print_check_result(result)
-    else:
-        print_versions(result)
-
-    if "hosts" in result and result["hosts"]:
-        print_hosts(result["hosts"])
-
-    if "remotes" in result and result["remotes"]:
-        print_remotes(result["remotes"])
-
-    if "rtd" in result and result["rtd"]:
-        print_rtd(result["rtd"])
+    print_versions(result)
 
 
+@versions.command("list-hosts")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
+@click.option("--host", multiple=True, help="Check specific host(s)")
+def versions_list_hosts(as_json, package, host):
+    r"""
+    List versions on SSH hosts.
+
+    \b
+    Examples:
+      scitex dev versions list-hosts             # All enabled hosts
+      scitex dev versions list-hosts --host nas  # Specific host
+      scitex dev versions list-hosts --json      # JSON output
+    """
+    import json as json_module
+
+    from scitex._dev import check_all_hosts
+
+    from ._dev_fmt import print_hosts
+
+    packages = list(package) if package else None
+    hosts_filter = list(host) if host else None
+    try:
+        result = check_all_hosts(packages=packages, hosts=hosts_filter)
+    except Exception as e:
+        result = {"error": str(e)}
+
+    if as_json:
+        click.echo(json_module.dumps(result, indent=2))
+        return
+
+    print_hosts(result)
+
+
+@versions.command("list-remotes")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
+@click.option("--remote", multiple=True, help="Check specific remote(s)")
+def versions_list_remotes(as_json, package, remote):
+    r"""
+    List versions on GitHub remotes.
+
+    \b
+    Examples:
+      scitex dev versions list-remotes       # All enabled remotes
+      scitex dev versions list-remotes --json
+    """
+    import json as json_module
+
+    from scitex._dev import check_all_remotes
+
+    from ._dev_fmt import print_remotes
+
+    packages = list(package) if package else None
+    remotes_filter = list(remote) if remote else None
+    try:
+        result = check_all_remotes(packages=packages, remotes=remotes_filter)
+    except Exception as e:
+        result = {"error": str(e)}
+
+    if as_json:
+        click.echo(json_module.dumps(result, indent=2))
+        return
+
+    print_remotes(result)
+
+
+@versions.command("list-rtd")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
+def versions_list_rtd(as_json, package):
+    r"""
+    List Read the Docs build status.
+
+    \b
+    Examples:
+      scitex dev versions list-rtd           # All packages
+      scitex dev versions list-rtd --json
+    """
+    import json as json_module
+
+    from ._dev_fmt import print_rtd
+
+    packages = list(package) if package else None
+    try:
+        from scitex._dev._rtd import check_all_rtd
+
+        result = check_all_rtd(packages=packages, versions=["latest"])
+    except Exception as e:
+        result = {"error": str(e)}
+
+    if as_json:
+        click.echo(json_module.dumps(result, indent=2))
+        return
+
+    print_rtd(result)
+
+
+@versions.command("check")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
+@click.option("--local-only", is_flag=True, help="Skip remote (PyPI) version checks")
+def versions_check(as_json, package, local_only):
+    r"""
+    Check version consistency across ecosystem.
+
+    \b
+    Examples:
+      scitex dev versions check              # Check all packages
+      scitex dev versions check -p scitex    # Check specific package
+      scitex dev versions check --json       # JSON output
+    """
+    import json as json_module
+
+    from scitex._dev import check_versions
+
+    from ._dev_fmt import print_check_result
+
+    packages = list(package) if package else None
+    result = check_versions(packages)
+    if local_only:
+        for pkg_info in result["packages"].values():
+            pkg_info.get("remote", {}).pop("pypi", None)
+
+    if as_json:
+        click.echo(json_module.dumps(result, indent=2))
+        return
+
+    print_check_result(result)
+
+
+# ---------------------------------------------------------------------------
+# versions subcommands — registered from separate modules
+# ---------------------------------------------------------------------------
+
+from ._dev_sync import sync as _versions_sync
+
+versions.add_command(_versions_sync)
+
+
+@versions.command("dashboard")
+@click.option("--port", default=5000, type=int, help="Dashboard port (default: 5000)")
+@click.option("--force", is_flag=True, help="Kill existing process using the port")
+def versions_dashboard(port, force):
+    r"""
+    Start the version dashboard GUI.
+
+    \b
+    Examples:
+      scitex dev versions dashboard              # Start on port 5000
+      scitex dev versions dashboard --port 5001  # Custom port
+      scitex dev versions dashboard --force      # Restart (kill existing)
+    """
+    from scitex._dev import run_dashboard
+
+    run_dashboard(
+        host="127.0.0.1",
+        port=port,
+        debug=False,
+        open_browser=True,
+        force=force,
+    )
+
+
+# ---------------------------------------------------------------------------
 # MCP subgroup
+# ---------------------------------------------------------------------------
+
+
 @dev.group(invoke_without_command=True)
 @click.pass_context
 def mcp(ctx):
@@ -252,17 +309,30 @@ def list_tools(verbose):
     click.secho("Dev MCP Tools", fg="cyan", bold=True)
     click.echo()
     tools = [
-        ("dev_list_versions", "List versions across ecosystem", "packages", "JSON"),
-        ("dev_check_versions", "Check version consistency", "packages", "JSON"),
-        ("dev_check_hosts", "Check versions on SSH hosts", "packages, hosts", "JSON"),
-        ("dev_check_remotes", "Check versions on GitHub", "packages, remotes", "JSON"),
-        ("dev_get_config", "Get current configuration", "", "JSON"),
+        ("dev_versions_list", "List versions across ecosystem", "packages", "JSON"),
         (
-            "dev_full_versions",
-            "Get comprehensive data",
-            "packages, hosts, remotes",
+            "dev_versions_sync",
+            "Sync to remote hosts (confirm=True to execute)",
+            "hosts, packages, confirm",
             "JSON",
         ),
+        (
+            "dev_versions_sync_local",
+            "Install local packages (confirm=True to execute)",
+            "packages, confirm",
+            "JSON",
+        ),
+        ("dev_config_show", "Get current configuration", "", "JSON"),
+        (
+            "dev_bulk_rename",
+            "Bulk rename (confirm=True to execute)",
+            "pattern, replacement, confirm",
+            "JSON",
+        ),
+        ("dev_test_local", "Run tests locally", "module, fast, pattern", "JSON"),
+        ("dev_test_hpc", "Run tests on HPC", "module, fast, async_mode", "JSON"),
+        ("dev_test_hpc_poll", "Check HPC job status", "job_id", "JSON"),
+        ("dev_test_hpc_result", "Fetch HPC test output", "job_id", "JSON"),
     ]
     for name, desc, params, returns in tools:
         click.secho(f"  {name}", fg="green", bold=True, nl=False)
@@ -291,7 +361,11 @@ def list_python_apis(ctx, verbose, max_depth, as_json):
     )
 
 
+# ---------------------------------------------------------------------------
 # Config subgroup
+# ---------------------------------------------------------------------------
+
+
 @dev.group(invoke_without_command=True)
 @click.pass_context
 def config(ctx):
@@ -376,13 +450,15 @@ def config_create(force):
 @config.command("validate")
 def config_validate():
     """Validate configuration file."""
+    import sys
+
     from scitex._dev import get_config_path, load_config
 
     config_path = get_config_path()
     if not config_path.exists():
         click.secho(f"Config not found: {config_path}", fg="red")
         click.echo("Run 'scitex dev config create' to create one.")
-        return
+        sys.exit(1)
 
     try:
         cfg = load_config()
@@ -392,6 +468,7 @@ def config_validate():
         click.echo(f"  Remotes: {len(cfg.github_remotes)}")
     except Exception as e:
         click.secho(f"Configuration error: {e}", fg="red")
+        sys.exit(1)
 
 
 # Register commands from separate modules
