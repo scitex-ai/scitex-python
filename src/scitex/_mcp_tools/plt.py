@@ -8,7 +8,6 @@ No manual wrapping — any new figrecipe plt tool appears automatically.
 """
 
 
-
 def register_plt_tools(mcp) -> None:
     """Register all figrecipe plt_* tools with the FastMCP server."""
     try:
@@ -22,7 +21,9 @@ def register_plt_tools(mcp) -> None:
 
         return
 
-    tools = fr_mcp.mcp._tool_manager._tools
+    from ._compat import get_tools_sync
+
+    tools = get_tools_sync(fr_mcp.mcp, include_mounted=False)
     registered = 0
     for name, tool in tools.items():
         if name.startswith("plt_"):

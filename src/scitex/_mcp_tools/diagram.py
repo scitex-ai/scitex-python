@@ -11,7 +11,6 @@ renamed as plt_diagram_* for consistent scitex branding.
 """
 
 
-
 def register_diagram_tools(mcp) -> None:
     """Register figrecipe diagram_* tools as plt_diagram_* in the FastMCP server."""
     try:
@@ -25,7 +24,9 @@ def register_diagram_tools(mcp) -> None:
 
         return
 
-    tools = fr_mcp.mcp._tool_manager._tools
+    from ._compat import get_tools_sync
+
+    tools = get_tools_sync(fr_mcp.mcp, include_mounted=False)
     for name, tool in tools.items():
         if name.startswith("diagram_"):
             new_name = "plt_diagram_" + name[len("diagram_") :]

@@ -11,7 +11,6 @@ renamed as plt_stx_* for consistent scitex branding.
 """
 
 
-
 def register_fr_tools(mcp) -> None:
     """Register figrecipe fr_* tools as plt_stx_* in the FastMCP server."""
     try:
@@ -25,7 +24,9 @@ def register_fr_tools(mcp) -> None:
 
         return
 
-    tools = fr_mcp.mcp._tool_manager._tools
+    from ._compat import get_tools_sync
+
+    tools = get_tools_sync(fr_mcp.mcp, include_mounted=False)
     for name, tool in tools.items():
         if name.startswith("fr_"):
             new_name = "plt_stx_" + name[len("fr_") :]

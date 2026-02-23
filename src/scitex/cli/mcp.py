@@ -93,11 +93,20 @@ def _estimate_tokens(text: str) -> int:
     return len(text) // 4 if text else 0
 
 
-def _get_mcp_summary(mcp_server) -> dict:
+def _get_all_tools(mcp_server) -> dict:
+    """Get ALL tools including mounted sub-servers (crossref, openalex)."""
+    from scitex._mcp_tools._compat import get_tools_sync
+
+    return get_tools_sync(mcp_server)
+
+
+def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
     """Get MCP server summary statistics."""
     import json as json_mod
 
-    tools = list(mcp_server._tool_manager._tools.values())
+    if all_tools is None:
+        all_tools = _get_all_tools(mcp_server)
+    tools = list(all_tools.values())
     instructions = getattr(mcp_server, "instructions", "") or ""
     total_desc = sum(len(t.description or "") for t in tools)
     total_params = sum(
@@ -167,16 +176,16 @@ def list_tools(
         click.secho("ERROR: MCP server not initialized", fg="red", err=True)
         raise SystemExit(1)
 
-    # Get all tools
-    tools = list(mcp_server._tool_manager._tools.keys())
+    # Get ALL tools (including mounted sub-servers like crossref, openalex)
+    all_tools = _get_all_tools(mcp_server)
 
     # Group by module
     modules = {}
-    for tool in sorted(tools):
-        prefix = tool.split("_")[0]
+    for tool_name in sorted(all_tools.keys()):
+        prefix = tool_name.split("_")[0]
         if prefix not in modules:
             modules[prefix] = []
-        modules[prefix].append(tool)
+        modules[prefix].append(tool_name)
 
     # Filter by module if specified
     if module:
@@ -187,7 +196,7 @@ def list_tools(
             raise SystemExit(1)
         modules = {module: modules[module]}
 
-    summary = _get_mcp_summary(mcp_server)
+    summary = _get_mcp_summary(mcp_server, all_tools)
 
     if as_json:
         import json
@@ -203,7 +212,7 @@ def list_tools(
                 "tools": [],
             }
             for tool_name in tool_list:
-                tool_obj = mcp_server._tool_manager._tools.get(tool_name)
+                tool_obj = all_tools.get(tool_name)
                 schema = tool_obj.parameters if hasattr(tool_obj, "parameters") else {}
                 output["modules"][mod]["tools"].append(
                     {
@@ -230,7 +239,7 @@ def list_tools(
         for mod, tool_list in sorted(modules.items()):
             click.secho(f"{mod}: {len(tool_list)} tools", fg="green", bold=True)
             for tool_name in tool_list:
-                tool_obj = mcp_server._tool_manager._tools.get(tool_name)
+                tool_obj = all_tools.get(tool_name)
 
                 if verbose == 0:
                     # Names only
@@ -348,18 +357,19 @@ def doctor(verbose: bool):
     else:
         click.secho("OK", fg="green")
 
-    # Check 5: Tool count
+    # Check 5: Tool count (including mounted sub-servers)
     click.echo("Checking tool registration... ", nl=False)
     try:
         from scitex.mcp_server import mcp as mcp_server
 
         if mcp_server:
-            tools = list(mcp_server._tool_manager._tools.keys())
-            if len(tools) >= 80:
-                click.secho(f"OK ({len(tools)} tools)", fg="green")
+            all_tools = _get_all_tools(mcp_server)
+            n = len(all_tools)
+            if n >= 80:
+                click.secho(f"OK ({n} tools)", fg="green")
             else:
-                click.secho(f"WARN ({len(tools)} tools, expected 80+)", fg="yellow")
-                warnings.append(f"Only {len(tools)} tools registered, expected 80+")
+                click.secho(f"WARN ({n} tools, expected 80+)", fg="yellow")
+                warnings.append(f"Only {n} tools registered, expected 80+")
         else:
             click.secho("SKIP", fg="yellow")
     except Exception as e:
