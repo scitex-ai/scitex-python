@@ -131,6 +131,21 @@ def _normalize_version(v: str | None) -> str | None:
     return v.lstrip("v")
 
 
+def _pep440_equal(v1: str | None, v2: str | None) -> bool:
+    """Compare two version strings using PEP 440 normalization.
+
+    Treats e.g. '0.10.3-alpha' and '0.10.3a0' as equal.
+    """
+    if v1 is None or v2 is None:
+        return v1 == v2
+    from packaging.version import InvalidVersion, Version
+
+    try:
+        return Version(_normalize_version(v1)) == Version(_normalize_version(v2))
+    except InvalidVersion:
+        return _normalize_version(v1) == _normalize_version(v2)
+
+
 def _compare_versions(v1: str | None, v2: str | None) -> int:
     """Compare two version strings. Returns -1, 0, or 1."""
     if v1 is None or v2 is None:
@@ -160,12 +175,12 @@ def _determine_status(info: dict[str, Any]) -> tuple[str, list[str]]:
     tag_ver = _normalize_version(info.get("git", {}).get("latest_tag"))
     pypi_ver = info.get("remote", {}).get("pypi")
 
-    # Check local consistency
-    if toml_ver and installed_ver and toml_ver != installed_ver:
+    # Check local consistency (PEP 440: '0.10.3-alpha' == '0.10.3a0')
+    if toml_ver and installed_ver and not _pep440_equal(toml_ver, installed_ver):
         issues.append(f"pyproject.toml ({toml_ver}) != installed ({installed_ver})")
 
     # Check if toml matches tag
-    if toml_ver and tag_ver and toml_ver != tag_ver:
+    if toml_ver and tag_ver and not _pep440_equal(toml_ver, tag_ver):
         issues.append(f"pyproject.toml ({toml_ver}) != git tag ({tag_ver})")
 
     # Check pypi status
