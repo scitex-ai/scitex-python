@@ -144,10 +144,27 @@ def clone_project(
             cache_name = template_name.replace("/", "_").replace(":", "_")
             cache_path = cache_dir / cache_name
 
-            # Check cache first if enabled
+            # Resolve remote ref for cache validation
+            ref = tag or branch  # None means default branch (HEAD)
+            cache_valid = False
+
             if use_cache and cache_path.exists():
-                ctx.step(f"Using cached template: {cache_path}")
-                # Copy from cache (don't modify cache directly)
+                # Validate cache against remote by comparing commit hashes
+                cache_hash = scitex.git.get_head_hash(cache_path)
+                remote_hash = scitex.git.ls_remote(template_url, ref=ref)
+
+                if cache_hash and remote_hash and cache_hash == remote_hash:
+                    cache_valid = True
+                    ctx.step(f"Cache valid ({cache_hash[:8]}): {cache_path}")
+                else:
+                    ctx.step(
+                        f"Cache stale (local={cache_hash[:8] if cache_hash else '?'}"
+                        f" remote={remote_hash[:8] if remote_hash else '?'})"
+                    )
+                    shutil.rmtree(cache_path)
+
+            if cache_valid:
+                # Copy from validated cache
                 copy_template(cache_path, target_path, quiet=True)
                 ctx.step("Copied from cache")
             else:
@@ -176,7 +193,11 @@ def clone_project(
                         if cache_path.exists():
                             shutil.rmtree(cache_path)
                         shutil.copytree(temp_path, cache_path, symlinks=True)
-                        ctx.substep(f"Cached to {cache_path}")
+                        new_hash = scitex.git.get_head_hash(cache_path)
+                        ctx.substep(
+                            f"Cached ({new_hash[:8] if new_hash else '?'})"
+                            f" to {cache_path}"
+                        )
 
                     # Handle git directory based on strategy
                     if git_strategy != "origin":
