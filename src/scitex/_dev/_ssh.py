@@ -70,7 +70,11 @@ except Exception as e:
             timeout=15,
         )
 
+        # SSH stdout may contain shell warnings before the actual output.
+        # Take the last non-empty line as the python output.
         output = result.stdout.strip()
+        lines = [l.strip() for l in output.splitlines() if l.strip()]
+        output = lines[-1] if lines else ""
 
         if result.returncode != 0:
             error = result.stderr.strip() or "SSH connection failed"
@@ -241,7 +245,15 @@ print(json.dumps(results))
         from typing import cast
 
         try:
-            return cast(dict[str, dict[str, Any]], json.loads(result.stdout.strip()))
+            # SSH stdout may contain shell warnings before the JSON.
+            # Extract the last line that looks like JSON (starts with '{').
+            stdout = result.stdout.strip()
+            for line in reversed(stdout.splitlines()):
+                line = line.strip()
+                if line.startswith("{"):
+                    stdout = line
+                    break
+            return cast(dict[str, dict[str, Any]], json.loads(stdout))
         except json.JSONDecodeError:
             return {
                 pkg: {
