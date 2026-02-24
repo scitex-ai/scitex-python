@@ -189,7 +189,7 @@ def get_toml_version(pkg_dir):
 
 def get_git_info(pkg_dir):
     if not pkg_dir:
-        return None, None
+        return None, None, {{}}
     try:
         tag = subprocess.run(
             ["git", "describe", "--tags", "--abbrev=0"],
@@ -204,11 +204,41 @@ def get_git_info(pkg_dir):
         ).stdout.strip() or None
     except Exception:
         branch = None
-    return tag, branch
+    # Worktree status
+    wt = {{"dirty": False, "ahead": 0, "behind": 0, "short_hash": None}}
+    try:
+        r = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True, text=True, cwd=str(pkg_dir), timeout=5
+        )
+        wt["dirty"] = bool(r.stdout.strip()) if r.returncode == 0 else False
+    except Exception:
+        pass
+    try:
+        r = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, cwd=str(pkg_dir), timeout=5
+        )
+        wt["short_hash"] = r.stdout.strip() if r.returncode == 0 else None
+    except Exception:
+        pass
+    try:
+        r = subprocess.run(
+            ["git", "rev-list", "--left-right", "--count", "HEAD...@{{upstream}}"],
+            capture_output=True, text=True, cwd=str(pkg_dir), timeout=5
+        )
+        if r.returncode == 0:
+            parts = r.stdout.strip().split()
+            if len(parts) == 2:
+                wt["ahead"] = int(parts[0])
+                wt["behind"] = int(parts[1])
+    except Exception:
+        pass
+    return tag, branch, wt
 
 results = {{}}
 for pkg in {packages_list}:
-    result = {{"installed": None, "toml": None, "git_tag": None, "git_branch": None, "status": "not_installed"}}
+    result = {{"installed": None, "toml": None, "git_tag": None, "git_branch": None, "git_dirty": False, "git_ahead": 0, "git_behind": 0, "git_hash": None, "status": "not_installed"}}
     try:
         result["installed"] = version(pkg)
         result["status"] = "ok"
@@ -216,7 +246,11 @@ for pkg in {packages_list}:
         result["error"] = str(e)
     pkg_dir = get_pkg_dir(pkg)
     result["toml"] = get_toml_version(pkg_dir)
-    result["git_tag"], result["git_branch"] = get_git_info(pkg_dir)
+    result["git_tag"], result["git_branch"], wt = get_git_info(pkg_dir)
+    result["git_dirty"] = wt.get("dirty", False)
+    result["git_ahead"] = wt.get("ahead", 0)
+    result["git_behind"] = wt.get("behind", 0)
+    result["git_hash"] = wt.get("short_hash")
     results[pkg] = result
 print(json.dumps(results))
 """

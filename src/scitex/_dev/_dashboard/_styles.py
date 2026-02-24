@@ -306,11 +306,10 @@ button {
     display: inline-flex;
     align-items: center;
     gap: 2px;
-    padding: 2px 6px;
+    padding: 2px 8px;
     border-radius: 8px;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: bold;
-    text-transform: uppercase;
     opacity: 0.9;
 }
 .source-badge.src-ok { background: rgba(74, 222, 128, 0.25); color: var(--success); }
@@ -326,6 +325,11 @@ button {
     color: var(--text-secondary);
     font-style: italic;
 }
+/* Worktree status indicators */
+.wt-clean { color: var(--success); font-weight: bold; }
+.wt-dirty { color: var(--error); font-weight: bold; }
+.wt-ahead { color: var(--warning); }
+.wt-behind { color: var(--error); }
 """
 
 

@@ -109,6 +109,68 @@ def get_git_branch(path: Path) -> str | None:
     return None
 
 
+def get_git_status(path: Path) -> dict[str, Any] | None:
+    """Get git worktree status (dirty/clean, ahead/behind remote).
+
+    Returns
+    -------
+    dict or None
+        Keys: dirty (bool), ahead (int), behind (int), short_hash (str).
+        Returns None if path doesn't exist or is not a git repo.
+    """
+    if not path.exists():
+        return None
+
+    info: dict[str, Any] = {"dirty": False, "ahead": 0, "behind": 0, "short_hash": None}
+
+    # Check if dirty (uncommitted changes)
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=path,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            info["dirty"] = bool(result.stdout.strip())
+    except Exception:
+        pass
+
+    # Get short commit hash
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=path,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            info["short_hash"] = result.stdout.strip()
+    except Exception:
+        pass
+
+    # Ahead/behind upstream
+    try:
+        result = subprocess.run(
+            ["git", "rev-list", "--left-right", "--count", "HEAD...@{upstream}"],
+            cwd=path,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            parts = result.stdout.strip().split()
+            if len(parts) == 2:
+                info["ahead"] = int(parts[0])
+                info["behind"] = int(parts[1])
+    except Exception:
+        pass
+
+    return info
+
+
 def get_pypi_version(package: str) -> str | None:
     """Fetch latest version from PyPI API."""
     try:
@@ -193,6 +255,17 @@ def _determine_status(info: dict[str, Any]) -> tuple[str, list[str]]:
             issues.append(f"local ({toml_ver}) < pypi ({pypi_ver}) - outdated")
             return "outdated", issues
 
+    # Check git worktree status
+    git_info = info.get("git", {})
+    if git_info.get("dirty"):
+        issues.append("uncommitted changes")
+    ahead = git_info.get("ahead", 0)
+    behind = git_info.get("behind", 0)
+    if ahead:
+        issues.append(f"{ahead} commit(s) ahead of remote")
+    if behind:
+        issues.append(f"{behind} commit(s) behind remote")
+
     if issues:
         return "mismatch", issues
 
@@ -237,6 +310,12 @@ def list_versions(packages: list[str] | None = None) -> dict[str, Any]:
         if local_path and local_path.exists():
             info["git"]["latest_tag"] = get_git_latest_tag(local_path)
             info["git"]["branch"] = get_git_branch(local_path)
+            git_status = get_git_status(local_path)
+            if git_status:
+                info["git"]["dirty"] = git_status["dirty"]
+                info["git"]["ahead"] = git_status["ahead"]
+                info["git"]["behind"] = git_status["behind"]
+                info["git"]["short_hash"] = git_status["short_hash"]
 
         # Remote sources
         info["remote"]["pypi"] = get_pypi_version(pypi_name)
