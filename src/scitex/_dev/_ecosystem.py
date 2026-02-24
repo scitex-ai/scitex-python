@@ -97,6 +97,12 @@ ECOSYSTEM: Dict[str, PackageInfo] = {
         "github_repo": "ywatanabe1989/pip-project-template",
         "import_name": "pip_project_template",
     },
+    "scitex-container": {
+        "local_path": "~/proj/scitex-container",
+        "pypi_name": "scitex-container",
+        "github_repo": "ywatanabe1989/scitex-container",
+        "import_name": "scitex_container",
+    },
     "singularity-template": {
         "local_path": "~/proj/singularity-template",
         "pypi_name": "singularity-template",
