@@ -153,9 +153,8 @@ bridge = [
 
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
-container = [
-    "scitex-container>=0.1.1",
-]
+# Note: scitex-container provided via host mount (not on PyPI)
+container = []
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -815,8 +814,7 @@ all = [
     # gui
     "dearpygui",
     "PyQt6",
-    # container
-    "scitex-container>=0.1.1",
+    # container — scitex-container provided via host mount (not on PyPI)
 ]
 
 # ============================================
