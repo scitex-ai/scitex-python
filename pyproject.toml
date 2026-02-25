@@ -151,6 +151,12 @@ bridge = [
     "scipy",
 ]
 
+# Container Module - Unified container management (Apptainer + Docker)
+# Use: pip install scitex[container]
+container = [
+    "scitex-container>=0.1.1",
+]
+
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
 browser = [
@@ -809,6 +815,8 @@ all = [
     # gui
     "dearpygui",
     "PyQt6",
+    # container
+    "scitex-container>=0.1.1",
 ]
 
 # ============================================

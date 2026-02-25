@@ -22,10 +22,10 @@ def build(name, force, output_dir, base):
     """Build a SciTeX container from .def file."""
     from scitex.container import build as do_build
 
+    if base:
+        name = name.replace("final", "base")
     try:
-        sif_path = do_build(
-            def_name=name, output_dir=output_dir, force=force, base=base
-        )
+        sif_path = do_build(def_name=name, output_dir=output_dir, force=force)
         click.secho(f"SIF ready: {sif_path}", fg="green")
     except FileNotFoundError as e:
         click.secho(str(e), fg="red", err=True)
@@ -91,8 +91,7 @@ def list_containers(containers_dir):
     """List available container versions."""
     from pathlib import Path
 
-    from scitex.container import get_active_version, list_versions
-    from scitex.container._utils import find_containers_dir
+    from scitex.container import find_containers_dir, get_active_version, list_versions
 
     try:
         cdir = Path(containers_dir) if containers_dir else find_containers_dir()
@@ -127,8 +126,7 @@ def switch(version, containers_dir, sudo):
     """Switch active container to VERSION."""
     from pathlib import Path
 
-    from scitex.container import get_active_version, switch_version
-    from scitex.container._utils import find_containers_dir
+    from scitex.container import find_containers_dir, get_active_version, switch_version
 
     try:
         cdir = Path(containers_dir) if containers_dir else find_containers_dir()
@@ -162,9 +160,8 @@ def rollback(containers_dir, sudo):
     """Revert to the previous container version."""
     from pathlib import Path
 
-    from scitex.container import get_active_version
+    from scitex.container import find_containers_dir, get_active_version
     from scitex.container import rollback as do_rollback
-    from scitex.container._utils import find_containers_dir
 
     try:
         cdir = Path(containers_dir) if containers_dir else find_containers_dir()
@@ -205,7 +202,7 @@ def deploy(target_dir, containers_dir):
     from pathlib import Path
 
     from scitex.container import deploy as do_deploy
-    from scitex.container._utils import find_containers_dir
+    from scitex.container import find_containers_dir
 
     try:
         cdir = Path(containers_dir) if containers_dir else find_containers_dir()
@@ -239,7 +236,7 @@ def cleanup(keep, containers_dir):
     from pathlib import Path
 
     from scitex.container import cleanup as do_cleanup
-    from scitex.container._utils import find_containers_dir
+    from scitex.container import find_containers_dir
 
     try:
         cdir = Path(containers_dir) if containers_dir else find_containers_dir()
