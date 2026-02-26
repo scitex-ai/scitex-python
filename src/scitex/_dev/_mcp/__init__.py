@@ -7,6 +7,9 @@
 from .handlers import (
     get_config_handler,
     list_versions_handler,
+    pull_local_handler,
+    remote_commit_handler,
+    remote_diff_handler,
     rename_handler,
     sync_handler,
     sync_local_handler,
@@ -18,6 +21,9 @@ from .handlers import (
 __all__ = [
     "get_config_handler",
     "list_versions_handler",
+    "pull_local_handler",
+    "remote_commit_handler",
+    "remote_diff_handler",
     "rename_handler",
     "sync_handler",
     "sync_local_handler",

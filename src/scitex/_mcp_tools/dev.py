@@ -262,6 +262,102 @@ def register_dev_tools(mcp) -> None:
         return _json(result)
 
     @mcp.tool()
+    async def dev_versions_diff(
+        host: str | None = None,
+        packages: list[str] | None = None,
+    ) -> str:
+        """[dev] Show git diff on remote host(s). Read-only operation.
+
+        Shows uncommitted changes (git status + git diff) on remote hosts.
+        Use this to review changes before committing with dev_versions_commit.
+
+        Parameters
+        ----------
+        host : str | None
+            Host name (e.g., "nas"). None = first enabled host.
+        packages : list[str] | None
+            Package names. None = host-configured defaults.
+
+        Returns
+        -------
+        str
+            JSON with {host: {package: {status, files, diff_stat, diff}}}.
+        """
+        from scitex._dev._mcp.handlers import remote_diff_handler
+
+        result = await remote_diff_handler(host, packages)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_versions_commit(
+        host: str,
+        packages: list[str] | None = None,
+        message: str | None = None,
+        push: bool = True,
+        confirm: bool = False,
+    ) -> str:
+        """[dev] Commit dirty changes on a remote host and push to origin.
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute. Auto-generates commit message if not provided.
+
+        Parameters
+        ----------
+        host : str
+            Host name (e.g., "nas"). Required.
+        packages : list[str] | None
+            Package names. None = host-configured defaults.
+        message : str | None
+            Commit message. Auto-generated if not provided.
+        push : bool
+            Push to origin after commit (default True).
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute commit + push.
+
+        Returns
+        -------
+        str
+            JSON with {package: {status, commands|output}}.
+        """
+        from scitex._dev._mcp.handlers import remote_commit_handler
+
+        result = await remote_commit_handler(host, packages, message, push, confirm)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_versions_pull(
+        packages: list[str] | None = None,
+        confirm: bool = False,
+        stash: bool = True,
+    ) -> str:
+        """[dev] Pull latest from origin to local repos.
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute. Use after dev_versions_commit to sync remote changes locally.
+
+        Parameters
+        ----------
+        packages : list[str] | None
+            Package names. None = all configured packages.
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute git pull.
+        stash : bool
+            If True (default), stash local changes before pull and pop after.
+            If False and repo is dirty, pull proceeds as-is (may fail).
+
+        Returns
+        -------
+        str
+            JSON with {package: {status, output|commands, stashed}}.
+        """
+        from scitex._dev._mcp.handlers import pull_local_handler
+
+        result = await pull_local_handler(packages, confirm, stash)
+        return _json(result)
+
+    @mcp.tool()
     async def dev_bulk_rename(
         pattern: str,
         replacement: str,

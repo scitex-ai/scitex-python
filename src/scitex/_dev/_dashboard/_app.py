@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+# Timestamp: "2026-02-26 11:12:34 (ywatanabe)"
+# File: /home/ywatanabe/proj/scitex-python/src/scitex/_dev/_dashboard/_app.py
+
 # Timestamp: 2026-02-02
-# File: scitex/_dev/_dashboard/_app.py
 
 """Flask application factory for the dashboard."""
 
@@ -138,6 +140,87 @@ def run_dashboard(
         app.run(host=host, port=port, debug=debug, threaded=True)
     except KeyboardInterrupt:
         print("\nDashboard stopped.")
+
+
+def run_background(
+    host: str = "127.0.0.1",
+    port: int = 5000,
+    force: bool = False,
+) -> None:
+    """Launch the dashboard as a detached background subprocess.
+
+    Parameters
+    ----------
+    host : str
+        Host to bind to. Default "127.0.0.1".
+    port : int
+        Port to listen on. Default 5000.
+    force : bool
+        Kill existing process using the port if any.
+    """
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    cache_dir = Path.home() / ".cache" / "scitex"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
+    log_path = cache_dir / "dashboard.log"
+    pid_path = cache_dir / "dashboard.pid"
+
+    inline_script = (
+        f"from scitex._dev._dashboard._app import run_dashboard; "
+        f"run_dashboard(host={host!r}, port={port!r}, debug=False, open_browser=False, force={force!r})"
+    )
+
+    log_file = open(log_path, "a")
+    proc = subprocess.Popen(
+        [sys.executable, "-c", inline_script],
+        stdout=log_file,
+        stderr=log_file,
+        start_new_session=True,
+    )
+
+    pid_path.write_text(str(proc.pid))
+
+    # print("Dashboard started in background.")
+    # print(f"  PID:  {proc.pid}")
+    # print(f"  URL:  http://{host}:{port}")
+    # print(f"  Log:  {log_path}")
+    # print(f"  PID file: {pid_path}")
+
+
+def stop_dashboard() -> bool:
+    """Stop a running background dashboard process.
+
+    Returns
+    -------
+    bool
+        True if the process was successfully stopped, False otherwise.
+    """
+    import os
+    import signal
+    from pathlib import Path
+
+    pid_path = Path.home() / ".cache" / "scitex" / "dashboard.pid"
+
+    if not pid_path.exists():
+        print("No dashboard PID file found. Is the dashboard running in background?")
+        return False
+
+    try:
+        pid = int(pid_path.read_text().strip())
+        os.kill(pid, signal.SIGTERM)
+        pid_path.unlink()
+        print(f"Dashboard (PID {pid}) stopped.")
+        return True
+    except ProcessLookupError:
+        print("Process not found. Removing stale PID file.")
+        pid_path.unlink(missing_ok=True)
+        return False
+    except Exception as e:
+        print(f"Error stopping dashboard: {e}")
+        return False
 
 
 # EOF

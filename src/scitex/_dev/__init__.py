@@ -73,6 +73,11 @@ from ._sync import (
     sync_local,
     sync_tags,
 )
+from ._sync_remote import (
+    pull_local,
+    remote_commit,
+    remote_diff,
+)
 from ._test import (
     TestConfig,
     fetch_hpc_result,
@@ -121,11 +126,15 @@ __all__ = [
     "execute_rename",
     "RenameConfig",
     "RenameResult",
-    # Sync
+    # Sync (local → remote)
     "sync_all",
     "sync_host",
     "sync_local",
     "sync_tags",
+    # Sync (remote → local)
+    "remote_diff",
+    "remote_commit",
+    "pull_local",
     # Test
     "run_local",
     "run_hpc_srun",

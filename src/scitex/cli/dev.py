@@ -251,30 +251,56 @@ def versions_check(as_json, package, local_only):
 # ---------------------------------------------------------------------------
 
 from ._dev_sync import sync as _versions_sync
+from ._dev_sync_remote import commit as _versions_commit
+from ._dev_sync_remote import diff as _versions_diff
+from ._dev_sync_remote import pull as _versions_pull
 
 versions.add_command(_versions_sync)
+versions.add_command(_versions_diff)
+versions.add_command(_versions_commit)
+versions.add_command(_versions_pull)
 
 
 @versions.command("dashboard")
 @click.option("--port", default=5000, type=int, help="Dashboard port (default: 5000)")
 @click.option("--force", is_flag=True, help="Kill existing process using the port")
-def versions_dashboard(port, force):
+@click.option("--no-browser", is_flag=True, help="Don't open browser window")
+@click.option(
+    "--background", is_flag=True, help="Run as background daemon (implies --no-browser)"
+)
+@click.option("--stop", is_flag=True, help="Stop a running background dashboard")
+def versions_dashboard(port, force, no_browser, background, stop):
     r"""
     Start the version dashboard GUI.
 
     \b
     Examples:
-      scitex dev versions dashboard              # Start on port 5000
-      scitex dev versions dashboard --port 5001  # Custom port
-      scitex dev versions dashboard --force      # Restart (kill existing)
+      scitex dev versions dashboard                    # Start on port 5000
+      scitex dev versions dashboard --port 5001        # Custom port
+      scitex dev versions dashboard --force            # Restart (kill existing)
+      scitex dev versions dashboard --no-browser       # Don't open browser
+      scitex dev versions dashboard --background       # Run as background daemon
+      scitex dev versions dashboard --stop             # Stop background daemon
     """
+    if stop:
+        from scitex._dev._dashboard._app import stop_dashboard
+
+        stop_dashboard()
+        return
+
+    if background:
+        from scitex._dev._dashboard._app import run_background
+
+        run_background(host="127.0.0.1", port=port, force=force)
+        return
+
     from scitex._dev import run_dashboard
 
     run_dashboard(
         host="127.0.0.1",
         port=port,
         debug=False,
-        open_browser=True,
+        open_browser=not no_browser,
         force=force,
     )
 

@@ -282,6 +282,93 @@ async def sync_local_handler(
     return sync_local(packages=packages, confirm=confirm)
 
 
+async def remote_diff_handler(
+    host: str | None = None,
+    packages: list[str] | None = None,
+) -> dict[str, Any]:
+    """Show git diff on remote host(s). Read-only operation.
+
+    Parameters
+    ----------
+    host : str | None
+        Host name. None = first enabled host.
+    packages : list[str] | None
+        Package names. None = host-configured defaults.
+
+    Returns
+    -------
+    dict
+        {host_name: {package: {status, files, diff_stat, diff}}}.
+    """
+    from scitex._dev._sync_remote import remote_diff
+
+    return remote_diff(host=host, packages=packages)
+
+
+async def remote_commit_handler(
+    host: str,
+    packages: list[str] | None = None,
+    message: str | None = None,
+    push: bool = True,
+    confirm: bool = False,
+) -> dict[str, Any]:
+    """Commit dirty changes on a remote host and optionally push to origin.
+
+    Safety: defaults to preview only. Pass confirm=True to execute.
+
+    Parameters
+    ----------
+    host : str
+        Host name (required).
+    packages : list[str] | None
+        Package names. None = host-configured defaults.
+    message : str | None
+        Commit message. Auto-generated if not provided.
+    push : bool
+        Push to origin after commit (default True).
+    confirm : bool
+        If False (default), preview only.
+
+    Returns
+    -------
+    dict
+        {package: {status, commands|output}}.
+    """
+    from scitex._dev._sync_remote import remote_commit
+
+    return remote_commit(
+        host=host, packages=packages, message=message, push=push, confirm=confirm
+    )
+
+
+async def pull_local_handler(
+    packages: list[str] | None = None,
+    confirm: bool = False,
+    stash: bool = True,
+) -> dict[str, Any]:
+    """Pull latest from origin to local repos.
+
+    Safety: defaults to preview only. Pass confirm=True to execute.
+
+    Parameters
+    ----------
+    packages : list[str] | None
+        Package names. None = all configured packages.
+    confirm : bool
+        If False (default), preview only.
+    stash : bool
+        If True (default), stash local changes before pull and pop after.
+
+    Returns
+    -------
+    dict
+        {package: {status, output|commands, stashed}}.
+    """
+    from scitex._dev._sync_remote import pull_local
+
+    return pull_local(packages=packages, confirm=confirm, stash=stash)
+
+
 async def rename_handler(
     pattern: str,
     replacement: str,
