@@ -33,13 +33,6 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Modules with optional extras in pyproject.toml
-MODULES_WITH_EXTRAS=(
-    ai audio benchmark bridge browser capture cli cloud config db decorators dev dsp dt fig fts gen
-    git io linalg msword nn notebook parallel path pd plt repro resource scholar stats str
-    torch types utils web writer
-)
-
 # Map module names to extras names (for naming conflicts)
 # e.g., "dev" module uses "devtools" extras (since "dev" is for pytest tools)
 get_extras_name() {
@@ -50,13 +43,12 @@ get_extras_name() {
     esac
 }
 
-# Check if module has extras
+# Check if module has extras by querying pyproject.toml directly
 has_extras() {
     local module="$1"
-    for m in "${MODULES_WITH_EXTRAS[@]}"; do
-        [[ "$m" == "$module" ]] && return 0
-    done
-    return 1
+    local extras_name
+    extras_name=$(get_extras_name "$module")
+    grep -qE "^${extras_name} = \[" "$PROJECT_ROOT/pyproject.toml"
 }
 
 # Get install command for module

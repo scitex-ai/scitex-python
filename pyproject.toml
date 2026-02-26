@@ -138,6 +138,10 @@ audio = [
     "pytest-asyncio",
 ]
 
+# Audit Module - Code and security auditing
+# Use: pip install scitex[audit]
+audit = []
+
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
 benchmark = [
@@ -173,6 +177,12 @@ capture = [
     "mcp",
 ]
 
+# Canvas Module - High-level figure composition
+# Use: pip install scitex[canvas]
+canvas = [
+    "figrecipe>=0.16.0",
+]
+
 # CLI Module - Command line interface
 # Use: pip install scitex[cli]
 cli = [
@@ -191,10 +201,25 @@ cloud = [
     "matplotlib",
 ]
 
+# Compat Module - Compatibility utilities
+# Use: pip install scitex[compat]
+compat = []
+
 # Config Module - Configuration management
 # Use: pip install scitex[config]
 config = [
     "PyYAML",
+]
+
+# Context Module - Context managers
+# Use: pip install scitex[context]
+context = []
+
+# CV Module - Computer vision
+# Use: pip install scitex[cv]
+cv = [
+    "opencv-python",
+    "Pillow",
 ]
 
 # DB Module - Database operations
@@ -203,6 +228,14 @@ db = [
     "sqlalchemy",
     "psycopg2-binary",
 ]
+
+# Dataset Module - Dataset management
+# Use: pip install scitex[dataset]
+dataset = []
+
+# Datetime Module - Date and time utilities
+# Use: pip install scitex[datetime]
+datetime = []
 
 # Decorators Module - Caching and utilities
 # Use: pip install scitex[decorators]
@@ -222,6 +255,10 @@ decorators = [
 diagram = [
     "PyYAML",
 ]
+
+# Dict Module - Dictionary utilities
+# Use: pip install scitex[dict]
+dict = []
 
 # DSP Module - Digital Signal Processing
 # Use: pip install scitex[dsp]
@@ -279,6 +316,20 @@ gen = [
     # "torch",
 ]
 
+# Etc Module - Miscellaneous utilities
+# Use: pip install scitex[etc]
+etc = [
+    "readchar",
+]
+
+# Events Module - Event system
+# Use: pip install scitex[events]
+events = []
+
+# Gists Module - Code snippet management
+# Use: pip install scitex[gists]
+gists = []
+
 # Git Module - Git operations
 # Use: pip install scitex[git]
 git = [
@@ -326,6 +377,10 @@ io = [
     # "torch",
 ]
 
+# Introspect Module - Code introspection
+# Use: pip install scitex[introspect]
+introspect = []
+
 # Linalg Module - Linear algebra
 # Use: pip install scitex[linalg]
 linalg = [
@@ -344,6 +399,20 @@ linalg = [
 logging = [
     "matplotlib",
 ]
+
+# Media Module - Media display utilities
+# Use: pip install scitex[media]
+media = []
+
+# ML Module - Machine learning
+# Use: pip install scitex[ml]
+ml = [
+    "scitex[ai]",
+]
+
+# Module Module - Module management
+# Use: pip install scitex[module]
+module = []
 
 # MSWord Module - MS Word document handling
 # Use: pip install scitex[msword]
@@ -372,6 +441,14 @@ nn = [
     # "mne",
     # "ripple_detection",
 ]
+
+# Notebook Module - Jupyter notebook utilities
+# Use: pip install scitex[notebook]
+notebook = []
+
+# OS Module - OS utilities
+# Use: pip install scitex[os]
+os = []
 
 # Parallel Module - Parallel processing
 # Use: pip install scitex[parallel]
@@ -408,6 +485,10 @@ plt = [
     "figrecipe>=0.16.0",
 ]
 
+# Project Module - Project management
+# Use: pip install scitex[project]
+project = []
+
 # Repro Module - Reproducibility tools
 # Use: pip install scitex[repro]
 repro = [
@@ -431,6 +512,18 @@ resource = [
     "readchar",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
+]
+
+# Reproduce Module - Reproducibility tools
+# Use: pip install scitex[reproduce]
+reproduce = [
+    "scitex[repro]",
+]
+
+# RNG Module - Random number generation
+# Use: pip install scitex[rng]
+rng = [
+    "scitex[repro]",
 ]
 
 # Scholar GUI - Minimal deps for Flask citation graph viewer
@@ -486,6 +579,14 @@ scholar = [
     # "torch",
 ]
 
+# Schema Module - Data schema validation
+# Use: pip install scitex[schema]
+schema = []
+
+# Security Module - Security utilities
+# Use: pip install scitex[security]
+security = []
+
 # Session Module - Session management
 # Use: pip install scitex[session]
 session = [
@@ -524,6 +625,12 @@ str = [
     "xarray",
 ]
 
+# Template Module - Project templates
+# Use: pip install scitex[template]
+template = [
+    "scitex[git]",
+]
+
 # Tex Module - LaTeX utilities
 # Use: pip install scitex[tex]
 tex = [
@@ -544,6 +651,10 @@ types = [
     # "torch",
 ]
 
+# UI Module - User interface utilities
+# Use: pip install scitex[ui]
+ui = []
+
 # Utils Module - General utilities
 # Use: pip install scitex[utils]
 utils = [
@@ -552,6 +663,12 @@ utils = [
     "matplotlib",
     "xarray",
     "tqdm",
+]
+
+# Verify Module - Verification utilities
+# Use: pip install scitex[verify]
+verify = [
+    "scitex[clew]",
 ]
 
 # Web Module - Web utilities
@@ -681,148 +798,78 @@ dev = [
 
 # All features (everything except dev)
 # Use: pip install scitex[all]
+# Auto-aggregates all individual module extras via self-referencing.
+# When adding a new module extras group, add a corresponding entry here.
 all = [
-    # science
-    "scipy",
-    "matplotlib",
-    "seaborn",
-    "plotly",
-    "scikit-learn",
-    "statsmodels",
-    "h5py",
-    "xarray",
-    "Pillow",
-    # io
-    "openpyxl",
-    "xlrd",
-    "ruamel.yaml",
-    "lxml",
-    "lxml_html_clean",
-    "zarr",
-    "numcodecs",
-    "piexif",
-    "pypdf",
-    "qrcode[pil]",
-    "PyPDF2",
-    "PyMuPDF",
-    "pdfplumber",
-    "python-docx",
-    "html2text",
-    "markdown",
-    "joblib",
-    "pymatreader",
-    "natsort",
-    "GitPython",
-    # ai
-    "openai",
-    "anthropic",
-    "google-genai",
-    "groq",
-    "optuna",
-    # audio
-    "pyttsx3",
-    "gTTS",
-    "pydub",
-    "elevenlabs",
-    "mcp",
-    # browser/capture
-    "playwright>=1.40.0",
-    "aiohttp",
-    "mss",
-    # cli
-    "click",
-    "requests",
-    # db
-    "sqlalchemy",
-    "psycopg2-binary",
-    # dsp
-    "sounddevice",
-    # gen
-    "ipython",
-    "pyperclip",
-    "readchar",
-    # linalg
-    "sympy",
-    "geom_median",
-    # msword
-    "pypandoc",
-    # nn/dl
-    "torch",
-    "torchvision",
-    "torchaudio",
-    "torchsummary",
-    "julius",
-    "transformers",
-    "accelerate",
-    "bitsandbytes",
-    "fairscale",
-    "pytorch_pretrained_vit",
-    "pytorch-optimizer",
-    "einops",
-    # plt
-    "termplotlib",
-    # resource
-    "psutil",
-    # scholar
-    "selenium",
-    "webdriver-manager",
-    "beautifulsoup4",
-    "crawl4ai",
-    "scholarly",
-    "pymed",
-    "pytesseract",
-    "bibtexparser",
-    "feedparser",
-    "httpx",
-    "tenacity",
-    "pydantic",
-    "watchdog",
-    "nest-asyncio",
-    "crossref-local",
-    "openalex-local",
-    # web
-    "readability-lxml",
-    # writer
-    "scitex-writer",
-    "yq",
-    "xlsx2csv",
-    "csv2latex",
-    # ml
-    "scikit-image",
-    "imbalanced-learn",
-    "umap-learn>=0.5.4",
-    "llvmlite>=0.39.0",  # Force Python 3.11+ compatible version
-    "sktime>=0.21.0",  # >=0.21 has proper build-system deps declared (0.8.1 was broken)
-    "catboost",
-    "opencv-python",
-    # neuro
-    "mne",
-    "obspy",
-    "pyedflib",
-    "pybids",
-    "tensorpac",
-    "ripple_detection",
-    # figures
-    "figrecipe>=0.16.0",
-    # jupyter
-    "jupyterlab",
-    "jupyter-collaboration",
-    "ipykernel",
-    "ipdb",
-    "papermill",
-    "jupytext",
-    "nbsphinx",
-    # webdev
-    "fastapi",
-    "flask",
-    "streamlit",
-    "celery",
-    # gui
-    "dearpygui",
-    "PyQt6",
-    # container — scitex-container provided via host mount (not on PyPI)
-    # social
-    "socialia>=0.3.1",
+    "scitex[ai]",
+    "scitex[audio]",
+    "scitex[audit]",
+    "scitex[benchmark]",
+    "scitex[bridge]",
+    "scitex[browser]",
+    "scitex[canvas]",
+    "scitex[capture]",
+    "scitex[clew]",
+    "scitex[cli]",
+    "scitex[cloud]",
+    "scitex[compat]",
+    "scitex[config]",
+    "scitex[container]",
+    "scitex[context]",
+    "scitex[cv]",
+    "scitex[dataset]",
+    "scitex[db]",
+    "scitex[datetime]",
+    "scitex[decorators]",
+    "scitex[devtools]",
+    "scitex[diagram]",
+    "scitex[dict]",
+    "scitex[dsp]",
+    "scitex[dt]",
+    "scitex[etc]",
+    "scitex[events]",
+    "scitex[gen]",
+    "scitex[gists]",
+    "scitex[git]",
+    "scitex[heavy]",
+    "scitex[introspect]",
+    "scitex[io]",
+    "scitex[linalg]",
+    "scitex[logging]",
+    "scitex[media]",
+    "scitex[ml]",
+    "scitex[module]",
+    "scitex[msword]",
+    "scitex[nn]",
+    "scitex[notebook]",
+    "scitex[os]",
+    "scitex[parallel]",
+    "scitex[path]",
+    "scitex[pd]",
+    "scitex[plt]",
+    "scitex[project]",
+    "scitex[repro]",
+    "scitex[reproduce]",
+    "scitex[resource]",
+    "scitex[rng]",
+    "scitex[schema]",
+    "scitex[scholar]",
+    "scitex[scholar-gui]",
+    "scitex[security]",
+    "scitex[session]",
+    "scitex[sh]",
+    "scitex[social]",
+    "scitex[stats]",
+    "scitex[str]",
+    "scitex[template]",
+    "scitex[tex]",
+    "scitex[torch]",
+    "scitex[types]",
+    "scitex[ui]",
+    "scitex[utils]",
+    "scitex[verify]",
+    "scitex[web]",
+    "scitex[writer]",
 ]
 
 # ============================================

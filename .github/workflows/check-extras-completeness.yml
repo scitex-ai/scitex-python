@@ -1,0 +1,31 @@
+# Verify every public module has an extras group in pyproject.toml
+# and that 'all' aggregates every individual group.
+
+name: Check Extras Completeness
+
+on:
+  push:
+    paths:
+      - "pyproject.toml"
+      - "src/scitex/*/"
+      - "scripts/check-extras-completeness.py"
+  pull_request:
+    paths:
+      - "pyproject.toml"
+      - "src/scitex/*/"
+      - "scripts/check-extras-completeness.py"
+
+jobs:
+  check:
+    name: Extras Completeness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run completeness check
+        run: python scripts/check-extras-completeness.py
