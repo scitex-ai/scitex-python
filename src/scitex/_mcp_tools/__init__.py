@@ -6,6 +6,7 @@
 from .audio import register_audio_tools
 from .capture import register_capture_tools
 from .clew import register_clew_tools
+from .cloud import register_cloud_tools
 from .dataset import register_dataset_tools
 from .dev import register_dev_tools
 from .diagram import register_diagram_tools
@@ -29,6 +30,7 @@ _TOOL_GROUPS = {
     "AUDIO": register_audio_tools,
     "CAPTURE": register_capture_tools,
     "CLEW": register_clew_tools,
+    "CLOUD": register_cloud_tools,
     "DATASET": register_dataset_tools,
     "DEV": register_dev_tools,
     "DIAGRAM": register_diagram_tools,
