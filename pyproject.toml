@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.19.7"
+version = "2.19.5"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -150,11 +150,6 @@ bridge = [
     "matplotlib",
     "scipy",
 ]
-
-# Container Module - Unified container management (Apptainer + Docker)
-# Use: pip install scitex[container]
-# Note: scitex-container provided via host mount (not on PyPI)
-container = []
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -499,6 +494,12 @@ sh = [
     "matplotlib",
 ]
 
+# Social Module - Social media integration
+# Use: pip install scitex[social]
+social = [
+    "socialia>=0.3.1",
+]
+
 # Stats Module - Statistical analysis
 # Use: pip install scitex[stats]
 stats = [
@@ -814,7 +815,8 @@ all = [
     # gui
     "dearpygui",
     "PyQt6",
-    # container — scitex-container provided via host mount (not on PyPI)
+    # social
+    "socialia>=0.3.1",
 ]
 
 # ============================================
