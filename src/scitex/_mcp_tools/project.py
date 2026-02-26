@@ -3,7 +3,6 @@
 # File: scitex/_mcp_tools/project.py
 """MCP tool registration for project file operations."""
 
-
 import json
 
 
@@ -133,6 +132,70 @@ def register_project_tools(mcp) -> None:
         result = await search_files_handler(
             root_path, name_pattern, content_pattern, relative_path, max_results
         )
+        return _json(result)
+
+    @mcp.tool()
+    async def project_exec_python(
+        root_path: str,
+        code: str,
+        timeout: int = 30,
+    ) -> str:
+        """[project] Execute Python code in the project directory.
+
+        Use this to generate binary files (audio, video, images) that
+        project_write_file cannot create (it only writes text).
+        The code runs with cwd set to the project root.
+
+        Parameters
+        ----------
+        root_path : str
+            Absolute path to the project root.
+        code : str
+            Python code to execute. Use print() for output.
+        timeout : int
+            Max execution time in seconds (5–60, default 30).
+
+        Returns
+        -------
+        str
+            JSON with {"success": bool, "exit_code": int,
+            "stdout": str, "stderr": str, "new_files": [...]}.
+        """
+        from scitex.project._mcp.handlers import exec_python_handler
+
+        result = await exec_python_handler(root_path, code, timeout)
+        return _json(result)
+
+    @mcp.tool()
+    async def project_exec_shell(
+        root_path: str,
+        command: str,
+        timeout: int = 30,
+    ) -> str:
+        """[project] Execute a shell command in the project directory.
+
+        Use this to run system commands (ffmpeg, sox, imagemagick, etc.)
+        for file processing. The command runs via /bin/bash with cwd
+        set to the project root.
+
+        Parameters
+        ----------
+        root_path : str
+            Absolute path to the project root.
+        command : str
+            Shell command to execute.
+        timeout : int
+            Max execution time in seconds (5–60, default 30).
+
+        Returns
+        -------
+        str
+            JSON with {"success": bool, "exit_code": int,
+            "stdout": str, "stderr": str, "new_files": [...]}.
+        """
+        from scitex.project._mcp.handlers import exec_shell_handler
+
+        result = await exec_shell_handler(root_path, command, timeout)
         return _json(result)
 
 

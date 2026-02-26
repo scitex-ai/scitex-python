@@ -10,10 +10,13 @@ from typing import Any
 MEDIA_EXTENSIONS: MappingProxyType[str, frozenset[str]] = MappingProxyType(
     {
         "image": frozenset({".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".bmp"}),
+        "audio": frozenset({".mp3", ".wav", ".ogg", ".flac", ".aac", ".m4a", ".webm"}),
+        "video": frozenset({".mp4", ".webm", ".avi", ".mov", ".mkv"}),
         "pdf": frozenset({".pdf"}),
         "csv": frozenset({".csv", ".tsv"}),
         "plotly": frozenset({".html"}),
-        "mermaid": frozenset({".mmd"}),
+        "mermaid": frozenset({".mmd", ".mermaid"}),
+        "graphviz": frozenset({".dot", ".gv"}),
     }
 )
 

@@ -5,6 +5,12 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.21.0] - 2026-02-27
+
+### Added
+- **Media classify**: Add graphviz (.dot, .gv) and .mermaid extensions to media type detection
+- **MCP handlers**: Project handler improvements
+
 ## [2.19.3] - 2026-02-24
 
 ### Added

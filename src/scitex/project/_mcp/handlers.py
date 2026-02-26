@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Timestamp: 2026-02-19
+# Timestamp: 2026-02-27
 # File: scitex/project/_mcp/handlers.py
 """
 Project file operation handlers for MCP tools.
@@ -10,8 +10,10 @@ Path traversal (../) is blocked at resolution time.
 
 from __future__ import annotations
 
+import asyncio
 import fnmatch
 import os
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -233,6 +235,155 @@ async def search_files_handler(
         "matches": matches,
         "count": len(matches),
         "truncated": len(matches) >= max_results,
+    }
+
+
+async def exec_python_handler(
+    root_path: str,
+    code: str,
+    timeout: int = 30,
+) -> dict:
+    """Execute Python code in the project directory.
+
+    Runs the code as a subprocess with cwd=root_path.
+    Captures stdout, stderr, and lists any new files created.
+    """
+    try:
+        root = _resolve_safe(root_path)
+    except ValueError as e:
+        return {"success": False, "error": str(e)}
+
+    if not root.exists():
+        return {"success": False, "error": f"Project root not found: {root_path}"}
+
+    timeout = max(5, min(timeout, 60))
+
+    # Snapshot files before execution for detecting new files
+    before = set()
+    for item in root.rglob("*"):
+        if item.is_file():
+            before.add(str(item.relative_to(root)))
+
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "python3",
+            "-c",
+            code,
+            cwd=str(root),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+        )
+        stdout_bytes, stderr_bytes = await asyncio.wait_for(
+            proc.communicate(), timeout=timeout
+        )
+    except asyncio.TimeoutError:
+        proc.kill()
+        return {
+            "success": False,
+            "error": f"Execution timed out after {timeout}s",
+        }
+    except FileNotFoundError:
+        return {"success": False, "error": "python3 not found in container"}
+    except Exception as e:
+        return {"success": False, "error": f"Execution failed: {e}"}
+
+    stdout = stdout_bytes.decode("utf-8", errors="replace")[:8192]
+    stderr = stderr_bytes.decode("utf-8", errors="replace")[:4096]
+
+    # Detect file changes (new, deleted, moved)
+    after = set()
+    for item in root.rglob("*"):
+        if item.is_file():
+            after.add(str(item.relative_to(root)))
+    created = after - before
+    deleted = before - after
+    # Filter out moves: if basename exists in both created and deleted, it's a move
+    deleted_basenames = {Path(p).name for p in deleted}
+    truly_new = sorted(p for p in created if Path(p).name not in deleted_basenames)
+    moved = sorted(p for p in created if Path(p).name in deleted_basenames)
+
+    return {
+        "success": proc.returncode == 0,
+        "exit_code": proc.returncode,
+        "stdout": stdout,
+        "stderr": stderr,
+        "new_files": truly_new,
+        "moved_files": moved,
+        "deleted_files": sorted(deleted),
+    }
+
+
+async def exec_shell_handler(
+    root_path: str,
+    command: str,
+    timeout: int = 30,
+) -> dict:
+    """Execute a shell command in the project directory.
+
+    Runs the command via /bin/bash with cwd=root_path.
+    Captures stdout, stderr, and lists any new files created.
+    """
+    try:
+        root = _resolve_safe(root_path)
+    except ValueError as e:
+        return {"success": False, "error": str(e)}
+
+    if not root.exists():
+        return {"success": False, "error": f"Project root not found: {root_path}"}
+
+    timeout = max(5, min(timeout, 60))
+
+    # Snapshot files before execution for detecting new files
+    before = set()
+    for item in root.rglob("*"):
+        if item.is_file():
+            before.add(str(item.relative_to(root)))
+
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "/bin/bash",
+            "-c",
+            command,
+            cwd=str(root),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        stdout_bytes, stderr_bytes = await asyncio.wait_for(
+            proc.communicate(), timeout=timeout
+        )
+    except asyncio.TimeoutError:
+        proc.kill()
+        return {
+            "success": False,
+            "error": f"Execution timed out after {timeout}s",
+        }
+    except Exception as e:
+        return {"success": False, "error": f"Execution failed: {e}"}
+
+    stdout = stdout_bytes.decode("utf-8", errors="replace")[:8192]
+    stderr = stderr_bytes.decode("utf-8", errors="replace")[:4096]
+
+    # Detect file changes (new, deleted, moved)
+    after = set()
+    for item in root.rglob("*"):
+        if item.is_file():
+            after.add(str(item.relative_to(root)))
+    created = after - before
+    deleted = before - after
+    # Filter out moves: if basename exists in both created and deleted, it's a move
+    deleted_basenames = {Path(p).name for p in deleted}
+    truly_new = sorted(p for p in created if Path(p).name not in deleted_basenames)
+    moved = sorted(p for p in created if Path(p).name in deleted_basenames)
+
+    return {
+        "success": proc.returncode == 0,
+        "exit_code": proc.returncode,
+        "stdout": stdout,
+        "stderr": stderr,
+        "new_files": truly_new,
+        "moved_files": moved,
+        "deleted_files": sorted(deleted),
     }
 
 
