@@ -227,6 +227,7 @@ module._setup_persistence("scitex", "module")
 capture = _LazyModule("capture")
 template = _LazyModule("template")
 cloud = _LazyModule("cloud")
+tunnel = _LazyModule("tunnel")
 config = _LazyModule("config")
 audio = _LazyModule("audio")
 msword = _LazyModule("msword")
@@ -348,6 +349,7 @@ __all__ = [
     "dev",
     "gists",
     "cloud",
+    "tunnel",
     "config",
     "audio",
     "msword",

@@ -637,6 +637,12 @@ tex = [
     "matplotlib",
 ]
 
+# Tunnel Module - SSH reverse tunnel for NAT traversal
+# Use: pip install scitex[tunnel]
+tunnel = [
+    "scitex-tunnel",
+]
+
 # Torch Module - PyTorch support
 # Use: pip install scitex[torch]
 torch = [
@@ -864,6 +870,7 @@ all = [
     "scitex[template]",
     "scitex[tex]",
     "scitex[torch]",
+    "scitex[tunnel]",
     "scitex[types]",
     "scitex[ui]",
     "scitex[utils]",

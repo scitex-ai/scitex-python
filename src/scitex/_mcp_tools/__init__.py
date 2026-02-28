@@ -19,6 +19,7 @@ from .scholar import register_scholar_tools
 from .social import register_social_tools
 from .stats import register_stats_tools
 from .template import register_template_tools
+from .tunnel import register_tunnel_tools
 from .ui import register_ui_tools
 from .usage import register_usage_tools
 from .writer import register_writer_tools
@@ -43,6 +44,7 @@ _TOOL_GROUPS = {
     "SOCIAL": register_social_tools,
     "STATS": register_stats_tools,
     "TEMPLATE": register_template_tools,
+    "TUNNEL": register_tunnel_tools,
     "UI": register_ui_tools,
     "USAGE": register_usage_tools,
     "WRITER": register_writer_tools,

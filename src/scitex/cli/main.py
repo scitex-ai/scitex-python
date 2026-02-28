@@ -100,6 +100,7 @@ _LAZY_SUBCOMMANDS = {
     "stats": ("scitex.cli.stats", "stats", "Statistical analysis tools."),
     "template": ("scitex.cli.template", "template", "Project templates."),
     "tex": ("scitex.cli.tex", "tex", "LaTeX tools."),
+    "tunnel": ("scitex.cli.tunnel", "tunnel", "SSH reverse tunnel for NAT traversal."),
     "verify": ("scitex.cli.clew", "clew", "Verification (alias for clew)."),
     "web": ("scitex.cli.web", "web", "Web utilities."),
     "writer": ("scitex.cli.writer", "writer", "Manuscript writing tools."),
