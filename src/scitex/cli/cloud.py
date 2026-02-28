@@ -47,20 +47,25 @@ def cloud(ctx, args):
 
     \b
     Commands (from scitex-cloud):
-      gitea       Gitea/git operations (clone, create, push, pull, pr, issue)
-      mcp         MCP server commands (start, doctor, list-tools)
-      deploy      Deploy SciTeX Cloud
-      docker      Docker container management
-      setup       Setup environment
-      status      Show deployment status
-      list-apis   List Python APIs
+      completion       Shell completion (bash, zsh, fish)
+      context          Cloud context tools (get, eval, action)
+      deploy           Deploy SciTeX Cloud
+      docker           Docker container management
+      gitea            Gitea/git operations (clone, create, push, pull, pr, issue)
+      logs             View service logs
+      mcp              MCP server commands (start, doctor, list-tools)
+      setup            Setup environment
+      ssh              SSH to cloud instance
+      ssh-copy-id      Register SSH key with cloud instance
+      status           Show deployment status
+      list-python-apis List Python APIs
 
     \b
     Examples:
+      scitex cloud ssh                     # SSH into cloud workspace
+      scitex cloud ssh-copy-id             # Register SSH key
       scitex cloud gitea clone user/repo
-      scitex cloud gitea list
       scitex cloud mcp start
-      scitex cloud mcp list-tools
       scitex cloud status
 
     \b
