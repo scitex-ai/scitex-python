@@ -14,22 +14,7 @@ if TYPE_CHECKING:
 
 
 def _get_scitex_axes(fig: "MplFigure") -> Optional[Any]:
-    """Find scitex.plt wrapped axes with tracking data.
-
-    Uses the same helper as sio.save to find objects with export_as_csv.
-    """
-    try:
-        from scitex.io._save_modules._figure_utils import get_figure_with_data
-
-        return get_figure_with_data(fig)
-    except ImportError:
-        pass
-
-    # Fallback: check figure axes directly
-    axes_list = list(fig.axes) if hasattr(fig.axes, "__iter__") else [fig.axes]
-    for ax in axes_list:
-        if hasattr(ax, "export_as_csv") and hasattr(ax, "history"):
-            return ax
+    """Legacy stub — AxisWrapper CSV export removed in figrecipe migration."""
     return None
 
 
@@ -127,7 +112,8 @@ def validate_encoding_csv_link(encoding: "Encoding", csv_df: "Any") -> list:
         encoding: Encoding object with trace definitions
         csv_df: DataFrame with CSV data
 
-    Returns:
+    Returns
+    -------
         List of validation errors (empty if valid)
     """
     errors = []

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-10-02 19:44:13 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/plt/plot_roc_curve.py
 # ----------------------------------------
@@ -17,7 +16,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score, roc_curve
 
 import scitex
-from scitex.plt.color import get_colors_from_conf_matap
+from scitex.plt.color import get_colors_from_cmap
 
 
 def _to_onehot(class_indices, n_classes):
@@ -107,7 +106,7 @@ def plot_roc_curve(true_class, pred_proba, labels, ax=None, spath=None):
                     true_class_onehot[:, i], pred_proba[:, i], average="macro"
                 )
             )
-        except Exception as e:
+        except Exception:
             print(
                 f'\nROC-AUC for "{labels[i]}" was not defined and NaN-filled '
                 "for a calculation purpose (for the macro avg.)\n"
@@ -117,7 +116,7 @@ def plot_roc_curve(true_class, pred_proba, labels, ax=None, spath=None):
 
     # Plot FPR-TPR curve for each class and iso-f1 curves
     # Use scitex color palette for consistent styling
-    colors = get_colors_from_conf_matap("tab10", n_classes)
+    colors = get_colors_from_cmap("tab10", n_classes)
 
     if ax is None:
         fig, ax = stx.plt.subplots()
@@ -143,7 +142,7 @@ def plot_roc_curve(true_class, pred_proba, labels, ax=None, spath=None):
     for i in range(n_classes):
         (l,) = ax.plot(fpr[i], tpr[i], color=colors[i], lw=2)
         lines.append(l)
-        legends.append("{0} (AUC = {1:0.2f})".format(labels[i], roc_auc[i]))
+        legends.append(f"{labels[i]} (AUC = {roc_auc[i]:0.2f})")
 
     # fig = plt.gcf()
     fig.subplots_adjust(bottom=0.25)
@@ -171,7 +170,6 @@ def plot_roc_curve(true_class, pred_proba, labels, ax=None, spath=None):
 
 def main(args):
     """Demo ROC AUC plotting with MNIST dataset."""
-    import matplotlib.pyplot as plt
     from sklearn import datasets, svm
     from sklearn.model_selection import train_test_split
 
@@ -191,7 +189,7 @@ def main(args):
     predicted_proba = clf.predict_proba(X_test)
 
     n_classes = len(np.unique(digits.target))
-    labels = ["Class {}".format(i) for i in range(n_classes)]
+    labels = [f"Class {i}" for i in range(n_classes)]
 
     # plt.rcParams["font.size"] = 20
     # plt.rcParams["legend.fontsize"] = "xx-small"

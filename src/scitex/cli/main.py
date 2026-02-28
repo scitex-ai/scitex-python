@@ -72,11 +72,17 @@ class LazyGroup(click.Group):
 
 _LAZY_SUBCOMMANDS = {
     "audio": ("scitex.cli.audio", "audio", "Audio tools and text-to-speech."),
+    "audit": ("scitex.cli.audit", "audit", "Security auditing tools."),
     "browser": ("scitex.cli.browser", "browser", "Browser automation tools."),
     "capture": ("scitex.cli.capture", "capture", "Screenshot capture tools."),
     "clew": ("scitex.cli.clew", "clew", "Verification and reproducibility."),
     "cloud": ("scitex.cli.cloud", "cloud", "Cloud storage operations."),
     "config": ("scitex.cli.config", "config", "Configuration management."),
+    "container": (
+        "scitex.cli.container",
+        "container",
+        "Container management (Apptainer/Singularity).",
+    ),
     "convert": ("scitex.cli.convert", "convert", "File format conversion."),
     "dataset": ("scitex.cli.dataset", "dataset", "Dataset discovery and management."),
     "dev": ("scitex.cli.dev", "dev", "Developer tools."),
@@ -84,6 +90,7 @@ _LAZY_SUBCOMMANDS = {
     "introspect": ("scitex.cli.introspect", "introspect", "Code introspection tools."),
     "linter": ("scitex.cli.linter", "linter", "SciTeX linter."),
     "mcp": ("scitex.cli.mcp", "mcp", "MCP server management."),
+    "notebook": ("scitex.cli.notebook", "notebook", "Jupyter notebook tools."),
     "plt": ("scitex.cli.plt", "plt", "Plotting tools."),
     "repro": ("scitex.cli.repro", "repro", "Reproducibility tools."),
     "resource": ("scitex.cli.resource", "resource", "Resource management."),
@@ -93,6 +100,7 @@ _LAZY_SUBCOMMANDS = {
     "stats": ("scitex.cli.stats", "stats", "Statistical analysis tools."),
     "template": ("scitex.cli.template", "template", "Project templates."),
     "tex": ("scitex.cli.tex", "tex", "LaTeX tools."),
+    "tunnel": ("scitex.cli.tunnel", "tunnel", "SSH reverse tunnel for NAT traversal."),
     "verify": ("scitex.cli.clew", "clew", "Verification (alias for clew)."),
     "web": ("scitex.cli.web", "web", "Web utilities."),
     "writer": ("scitex.cli.writer", "writer", "Manuscript writing tools."),

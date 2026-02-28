@@ -17,8 +17,8 @@ from typing import Any, Dict, Optional
 # ── Backend availability flags ───────────────────────────────────────────────
 
 try:
-    from figrecipe._graph import draw_graph as _fr_draw_graph
-    from figrecipe._graph._presets import get_preset as _fr_get_preset
+    from figrecipe import get_graph_preset as _fr_get_preset
+    from figrecipe._graph import draw_graph as _fr_draw_graph  # not yet in public API
 
     _FIGRECIPE_AVAILABLE = True
 except ImportError:

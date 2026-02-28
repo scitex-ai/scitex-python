@@ -12,7 +12,6 @@
     figrecipe is mounted automatically if installed.
 """
 
-from __future__ import annotations
 
 import json
 

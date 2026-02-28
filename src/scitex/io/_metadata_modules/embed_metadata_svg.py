@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/io/_metadata_modules/embed_metadata_svg.py
 
 """SVG metadata embedding using <metadata> element."""
@@ -15,10 +14,11 @@ def embed_metadata_svg(image_path: str, metadata_json: str) -> None:
         image_path: Path to the SVG file.
         metadata_json: JSON string of metadata to embed.
 
-    Raises:
+    Raises
+    ------
         ValueError: If the SVG file is invalid.
     """
-    with open(image_path, "r", encoding="utf-8") as f:
+    with open(image_path, encoding="utf-8") as f:
         svg_content = f.read()
 
     # Remove existing scitex metadata if present
@@ -36,7 +36,7 @@ def embed_metadata_svg(image_path: str, metadata_json: str) -> None:
         # Create metadata element with scitex data
         metadata_element = (
             f'\n<metadata id="scitex_metadata">'
-            f"<scitex:data>{metadata_json}</scitex:data>"
+            f"<scitex:data><![CDATA[{metadata_json}]]></scitex:data>"
             f"</metadata>\n"
         )
         svg_content = (

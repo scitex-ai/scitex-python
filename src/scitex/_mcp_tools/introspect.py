@@ -4,7 +4,6 @@
 
 """Introspection module tools for FastMCP unified server."""
 
-from __future__ import annotations
 
 import json
 from typing import Optional

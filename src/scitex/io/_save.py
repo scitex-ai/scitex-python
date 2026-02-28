@@ -72,6 +72,7 @@ def save(
     metadata_extra: dict = None,
     json_schema: str = "editable",
     track: bool = True,
+    register: bool = False,
     **kwargs,
 ) -> None:
     """Save an object to a file with the specified format.
@@ -91,6 +92,7 @@ def save(
     metadata_extra : dict -- Extra metadata to merge.
     json_schema : str -- JSON metadata schema type.
     track : bool -- Track file in verification system.
+    register : bool -- Register file hash with remote Clew Registry.
     **kwargs -- Passed to underlying save function.
     """
     try:
@@ -143,8 +145,18 @@ def save(
             from scitex.clew import on_io_save
 
             on_io_save(spath_final, track=track)
-        except Exception:
-            pass  # Silent fail - don't interrupt save operations
+        except Exception as e:
+            logger.debug("clew: failed to track output %s: %s", spath_final, e)
+
+        # Register hash with remote Clew Registry (opt-in)
+        if register:
+            try:
+                from scitex.clew import get_registry, hash_file
+
+                file_hash = hash_file(spath_final)
+                get_registry().register(file_hash, source_type="file")
+            except Exception as e:
+                logger.debug("clew: failed to register %s: %s", spath_final, e)
 
         return Path(spath)
 
@@ -364,8 +376,6 @@ def _save_scitex_bundle(
 
     from scitex.io.bundle import from_matplotlib
 
-    from ._save_modules._figure_utils import get_figure_with_data
-
     if isinstance(obj, matplotlib.figure.Figure):
         fig = obj
         fig_wrapper = None
@@ -381,14 +391,7 @@ def _save_scitex_bundle(
     dpi = kwargs.get("dpi", 300)
     name = kwargs.get("name") or Path(spath).stem
 
-    # Extract CSV data from scitex.plt tracking if available
-    scitex_source = get_figure_with_data(obj)
-    if csv_df is None and scitex_source is not None:
-        if hasattr(scitex_source, "export_as_csv"):
-            try:
-                csv_df = scitex_source.export_as_csv()
-            except Exception:
-                pass
+    # CSV via AxisWrapper removed (figrecipe migration); csv_df from explicit kwarg only
 
     # Delegate to Bundle (single source of truth)
     # Encoding is built from CSV columns directly for consistency

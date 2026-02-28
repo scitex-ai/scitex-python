@@ -4,7 +4,6 @@
 Single source of truth: scitex-dataset MCP tools.
 """
 
-from __future__ import annotations
 
 
 def register_dataset_tools(mcp) -> None:

@@ -29,6 +29,8 @@ from .mapper import ZoteroMapper
 _LINUX_PATH = Path("~/Zotero/zotero.sqlite").expanduser()
 _WSL_BASE = Path("/mnt/c/Users")
 
+_WSL_ZOTERO_SUBPATHS = ["Zotero", "Documents/Zotero"]
+
 _SKIP_TYPES = {"attachment", "note", "annotation"}
 
 
@@ -159,19 +161,30 @@ class ZoteroLocalReader:
 
     # ── Internal helpers ──────────────────────────────────────────────────────
 
+    def get_zotero_base_dir(self) -> Path:
+        """Return the Zotero data directory (parent of zotero.sqlite)."""
+        return self.db_path.parent
+
     def _detect_db_path(self) -> Path:
-        """Auto-detect Zotero SQLite: Linux first, then WSL Windows mount."""
+        """Auto-detect Zotero SQLite: Linux first, then WSL Windows mount.
+
+        Searches multiple known subpaths under each Windows user directory
+        to find the largest (most items) database.
+        """
         if _LINUX_PATH.exists():
             return _LINUX_PATH
         if _WSL_BASE.exists():
-            for candidate in _WSL_BASE.glob("*/Zotero/zotero.sqlite"):
-                if candidate.exists():
-                    return candidate
+            for subpath in _WSL_ZOTERO_SUBPATHS:
+                for candidate in _WSL_BASE.glob(f"*/{subpath}/zotero.sqlite"):
+                    if candidate.exists():
+                        return candidate
         raise FileNotFoundError(
             "No Zotero database found. Checked:\n"
             f"  {_LINUX_PATH}\n"
-            f"  {_WSL_BASE}/*/Zotero/zotero.sqlite\n"
-            "Pass db_path explicitly: ZoteroLocalReader(db_path='/path/to/zotero.sqlite')"
+            + "\n".join(
+                f"  {_WSL_BASE}/*/{sp}/zotero.sqlite" for sp in _WSL_ZOTERO_SUBPATHS
+            )
+            + "\nPass db_path explicitly: ZoteroLocalReader(db_path='/path/to/zotero.sqlite')"
         )
 
     def _connect(self) -> sqlite3.Connection:
@@ -285,6 +298,44 @@ class ZoteroLocalReader:
                 pass  # Skip malformed items silently
 
         return Papers(paper_list, project=self.project)
+
+    def _fetch_attachments_for_items(
+        self, item_ids: List[int]
+    ) -> Dict[int, List[dict]]:
+        """Batch-fetch attachment info for parent items.
+
+        Returns
+        -------
+        dict
+            Mapping parent itemID -> list of attachment dicts with keys:
+            path, contentType, linkMode, key.
+        """
+        if not item_ids:
+            return {}
+
+        ids_str = ",".join(str(i) for i in item_ids)
+        with self._connect() as conn:
+            rows = conn.execute(
+                f"""
+                SELECT ia.parentItemID, ia.path, ia.contentType, ia.linkMode,
+                       i.key
+                FROM itemAttachments ia
+                JOIN items i ON ia.itemID = i.itemID
+                WHERE ia.parentItemID IN ({ids_str})
+                """
+            ).fetchall()
+
+        result: Dict[int, List[dict]] = {i: [] for i in item_ids}
+        for row in rows:
+            result[row[0]].append(
+                {
+                    "path": row[1],
+                    "contentType": row[2] or "",
+                    "linkMode": row[3],
+                    "key": row[4],
+                }
+            )
+        return result
 
     def _to_api_format(
         self,

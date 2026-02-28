@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-08-22 00:00:02 (ywatanabe)"
 # File: /home/ywatanabe/proj/SciTeX-Code/src/scitex/scholar/engines/individual/SemanticScholarEngine.py
 # ----------------------------------------
@@ -13,14 +12,12 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import json
 import time
-from functools import lru_cache
 from typing import Dict, List, Optional, Union
 
 import requests
 from tenacity import (
     retry,
     retry_if_exception_type,
-    retry_if_result,
     stop_after_attempt,
     wait_exponential,
 )
@@ -29,11 +26,12 @@ from scitex import logging
 
 from ..utils import standardize_metadata
 from ._BaseDOIEngine import BaseDOIEngine
+from ._s2_batch import S2BatchMixin
 
 logger = logging.getLogger(__name__)
 
 
-class SemanticScholarEngine(BaseDOIEngine):
+class SemanticScholarEngine(S2BatchMixin, BaseDOIEngine):
     """Combined Semantic Scholar engine with enhanced features."""
 
     def __init__(self, email: str = "research@example.com", api_key: str = None):
@@ -339,7 +337,8 @@ class SemanticScholarEngine(BaseDOIEngine):
             corpus_id: Corpus ID (e.g., "262046731" or "CorpusId:262046731")
             page: Playwright Page object for navigation
 
-        Returns:
+        Returns
+        -------
             DOI string if found, None otherwise
         """
         if not corpus_id:

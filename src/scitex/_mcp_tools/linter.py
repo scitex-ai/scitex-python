@@ -4,7 +4,6 @@
 Single source of truth: scitex-linter MCP tools.
 """
 
-from __future__ import annotations
 
 
 def register_linter_tools(mcp) -> None:

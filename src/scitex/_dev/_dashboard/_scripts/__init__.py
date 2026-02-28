@@ -19,7 +19,7 @@ def get_javascript() -> str:
         + get_cards_js()
         + get_render_js()
         + get_utils_js()
-        + "\nfetchVersions();\n"
+        + "\nfetchVersions();\ntoggleAutoRefresh(30);\n"
     )
 
 

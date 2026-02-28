@@ -5,6 +5,29 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.21.0] - 2026-02-27
+
+### Added
+- **Media classify**: Add graphviz (.dot, .gv) and .mermaid extensions to media type detection
+- **MCP handlers**: Project handler improvements
+
+## [2.19.3] - 2026-02-24
+
+### Added
+- **`scitex.git.ls_remote()`**: Get remote ref commit hash via `git ls-remote`
+- **`scitex.git.get_head_hash()`**: Get local repo HEAD commit hash
+- **Smart template cache**: Validates cache by comparing local vs remote commit hashes; auto-invalidates stale cache
+
+## [2.19.0] - 2026-02-22
+
+### Added
+- **`build_from_dois()`**: Build citation networks from multiple seed DOIs with batch scoring
+- **`build_from_query()`**: Build citation networks from text queries via local DB search
+- **Batch SQL optimization**: `get_combined_similarity_scores_batch()` — O(4) queries instead of O(4N)
+- **HTTP parallel batch**: `ThreadPoolExecutor` parallelism for HTTP-mode batch scoring (up to 20 workers)
+- **`is_seed` flag**: PaperNode now tracks whether it's a seed paper
+- **`seed_dois` field**: CitationGraph stores all seed DOIs for multi-seed graphs
+
 ## [Unreleased]
 
 ### Changed

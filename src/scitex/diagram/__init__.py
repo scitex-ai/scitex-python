@@ -46,7 +46,8 @@ from figrecipe._diagram import (
     get_preset,
     list_presets,
 )
-from figrecipe._diagram._compile import compile_to_graphviz, compile_to_mermaid
+from figrecipe._diagram._graphviz import compile_to_graphviz
+from figrecipe._diagram._mermaid import compile_to_mermaid
 
 __all__ = [
     "Diagram",

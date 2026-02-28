@@ -42,7 +42,28 @@ def print_versions(versions: dict) -> None:
         if git.get("latest_tag"):
             click.echo(f"    git tag:   {git['latest_tag']}")
         if git.get("branch"):
-            click.echo(f"    branch:    {git['branch']}")
+            branch_str = git["branch"]
+            if git.get("short_hash"):
+                branch_str += f" ({git['short_hash']})"
+            click.echo(f"    branch:    {branch_str}")
+        # Git worktree status
+        if "dirty" in git:
+            dirty = git.get("dirty", False)
+            ahead = git.get("ahead", 0)
+            behind = git.get("behind", 0)
+            parts = []
+            if dirty:
+                parts.append("dirty")
+            else:
+                parts.append("clean")
+            if ahead:
+                parts.append(f"ahead:{ahead}")
+            if behind:
+                parts.append(f"behind:{behind}")
+            status_str = ", ".join(parts)
+            wt_color = "red" if dirty or behind else ("yellow" if ahead else "green")
+            click.echo("    worktree:  ", nl=False)
+            click.secho(status_str, fg=wt_color)
 
         # Remote
         remote = info.get("remote", {})
@@ -119,7 +140,27 @@ def print_hosts(hosts_data: dict) -> None:
                 "green" if status == "ok" else "red" if status == "error" else "yellow"
             )
             click.echo(f"    {pkg}: ", nl=False)
-            click.secho(f"{installed}", fg=color)
+            click.secho(f"{installed}", fg=color, nl=False)
+            # Show git worktree status if available
+            git_parts = []
+            git_hash = pkg_info.get("git_hash")
+            if git_hash:
+                git_parts.append(git_hash)
+            if pkg_info.get("git_dirty"):
+                git_parts.append("dirty")
+            ahead = pkg_info.get("git_ahead", 0)
+            behind = pkg_info.get("git_behind", 0)
+            if ahead:
+                git_parts.append(f"ahead:{ahead}")
+            if behind:
+                git_parts.append(f"behind:{behind}")
+            if git_parts:
+                git_str = " [" + ", ".join(git_parts) + "]"
+                dirty = pkg_info.get("git_dirty", False)
+                gc = "red" if dirty or behind else ("yellow" if ahead else "white")
+                click.secho(git_str, fg=gc)
+            else:
+                click.echo()
 
 
 def print_remotes(remotes_data: dict) -> None:

@@ -11,11 +11,32 @@ figures and detect logical groups (histogram, bar series, etc.).
 
 from typing import Any, Dict, List, Optional, Tuple
 
+import matplotlib.axes as _mpl_axes
+
 __all__ = [
     "get_all_artists",
     "get_all_artists_with_groups",
     "detect_logical_groups",
 ]
+
+
+def _get_flat_axes(fig) -> List[Any]:
+    """Return a flat list of matplotlib Axes from a figure.
+
+    RecordingFigure (from stx.plt.subplots) may expose fig.axes as a nested
+    list such as [[ax1], [ax2]], whereas plain matplotlib uses [ax1, ax2].
+    This helper normalises both cases.
+    """
+    raw = fig.axes if hasattr(fig, "axes") else []
+    flat: List[Any] = []
+    for item in raw:
+        if isinstance(item, (list, tuple)):
+            for subitem in item:
+                if isinstance(subitem, _mpl_axes.Axes):
+                    flat.append(subitem)
+        elif isinstance(item, _mpl_axes.Axes):
+            flat.append(item)
+    return flat
 
 
 def get_all_artists(fig, include_text: bool = False) -> List[Tuple[Any, int, str]]:
@@ -36,7 +57,7 @@ def get_all_artists(fig, include_text: bool = False) -> List[Tuple[Any, int, str
     """
     artists = []
 
-    for ax_idx, ax in enumerate(fig.axes):
+    for ax_idx, ax in enumerate(_get_flat_axes(fig)):
         # Lines (Line2D)
         for line in ax.get_lines():
             label = line.get_label()
@@ -114,7 +135,7 @@ def detect_logical_groups(fig) -> Dict[str, Dict[str, Any]]:
         group_counter[key] += 1
         return f"{group_type}_{ax_idx}_{idx}"
 
-    for ax_idx, ax in enumerate(fig.axes):
+    for ax_idx, ax in enumerate(_get_flat_axes(fig)):
         # Detect BarContainers (covers bar charts and histograms)
         bar_containers = [
             c for c in ax.containers if "BarContainer" in type(c).__name__
@@ -277,7 +298,7 @@ def get_all_artists_with_groups(
 
     artists_with_groups = []
 
-    for ax_idx, ax in enumerate(fig.axes):
+    for ax_idx, ax in enumerate(_get_flat_axes(fig)):
         # Lines
         for line in ax.get_lines():
             label = line.get_label()

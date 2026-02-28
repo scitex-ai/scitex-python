@@ -90,14 +90,10 @@ class TestCoreImports:
         """Test that scitex.plt module imports correctly."""
         from scitex import plt
 
-        assert hasattr(plt, "ax")
-
-    def test_scitex_plt_ax_import(self):
-        """Test that scitex.plt.ax submodule imports correctly."""
-        from scitex.plt import ax  # noqa: F401
-
-        assert hasattr(ax, "stx_heatmap")
-        assert hasattr(ax, "stx_joyplot")
+        # ax submodule removed in figrecipe migration (AxisWrapper deleted)
+        assert hasattr(plt, "subplots")
+        assert hasattr(plt, "save")
+        assert hasattr(plt, "color")
 
     def test_scitex_session_import(self):
         """Test that scitex.session module imports without circular imports."""
@@ -122,25 +118,9 @@ class TestLazyImports:
 
         # torch should still not be in sys.modules
         # (it might be if used elsewhere, but not from the types module)
-        assert (
-            "torch" not in sys.modules or torch_modules
-        ), "torch should not be imported at types module level"
-
-    def test_joypy_not_imported_at_module_level(self):
-        """Test that joypy is not imported when loading scitex.plt.ax."""
-        # Clear joypy from sys.modules if it exists
-        joypy_modules = [m for m in sys.modules if m.startswith("joypy")]
-        for module in joypy_modules:
-            del sys.modules[module]
-
-        # Import scitex.plt.ax
-        from scitex.plt import ax  # noqa: F401
-
-        # joypy should not be in sys.modules after importing the module
-        joypy_in_modules = any(m.startswith("joypy") for m in sys.modules)
-        assert (
-            not joypy_in_modules
-        ), "joypy should not be imported at plt.ax module level (should be lazy)"
+        assert "torch" not in sys.modules or torch_modules, (
+            "torch should not be imported at types module level"
+        )
 
 
 class TestIsArrayLike:
@@ -189,22 +169,6 @@ class TestIsArrayLike:
         assert is_array_like(42) is False
         assert is_array_like(3.14) is False
         assert is_array_like("string") is False
-
-
-class TestPlotJoyplotLazyImport:
-    """Test that stx_joyplot function works with lazy joypy import."""
-
-    def test_stx_joyplot_import(self):
-        """Test that stx_joyplot can be imported."""
-        from scitex.plt.ax._plot import stx_joyplot
-
-        assert callable(stx_joyplot)
-
-    def test_stx_joyplot_function_callable(self):
-        """Test that stx_joyplot is callable."""
-        from scitex.plt.ax._plot._stx_joyplot import stx_joyplot
-
-        assert callable(stx_joyplot)
 
 
 # ==============================================================================

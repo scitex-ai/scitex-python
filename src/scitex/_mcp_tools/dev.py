@@ -4,8 +4,6 @@
 
 """MCP tool registration for developer utilities."""
 
-from __future__ import annotations
-
 import json
 
 
@@ -18,7 +16,7 @@ def register_dev_tools(mcp) -> None:
     """Register developer tools with FastMCP server."""
 
     @mcp.tool()
-    async def dev_list_versions(
+    async def dev_versions_list(
         packages: list[str] | None = None,
     ) -> str:
         """[dev] List versions across the scitex ecosystem.
@@ -48,7 +46,7 @@ def register_dev_tools(mcp) -> None:
         return _json(result)
 
     @mcp.tool()
-    async def dev_get_config() -> str:
+    async def dev_config_show() -> str:
         """[dev] Get current developer configuration.
 
         Returns the configuration from ~/.scitex/dev_config.yaml including:
@@ -202,7 +200,165 @@ def register_dev_tools(mcp) -> None:
         return _json(result)
 
     @mcp.tool()
-    async def dev_rename(
+    async def dev_versions_sync(
+        hosts: list[str] | None = None,
+        packages: list[str] | None = None,
+        install: bool = True,
+        confirm: bool = False,
+    ) -> str:
+        """[dev] Sync ecosystem packages to remote hosts (git stash, pull, pip install).
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute. Parallel by default across hosts and packages.
+
+        Parameters
+        ----------
+        hosts : list[str] | None
+            Host names to sync. None = all enabled hosts.
+        packages : list[str] | None
+            Package names. None = host-specific defaults from config.
+        install : bool
+            Pip install after pull (default True).
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute the sync operation.
+
+        Returns
+        -------
+        str
+            JSON with {host_name: {package: {status, commands|output, error}}}.
+        """
+        from scitex._dev._mcp.handlers import sync_handler
+
+        result = await sync_handler(hosts, packages, install, confirm)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_versions_sync_local(
+        packages: list[str] | None = None,
+        confirm: bool = False,
+    ) -> str:
+        """[dev] Install all local editable packages (pip install -e).
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute.
+
+        Parameters
+        ----------
+        packages : list[str] | None
+            Package names. None = all configured packages.
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute pip install -e.
+
+        Returns
+        -------
+        str
+            JSON with {package: {status, output|commands}}.
+        """
+        from scitex._dev._mcp.handlers import sync_local_handler
+
+        result = await sync_local_handler(packages, confirm)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_versions_diff(
+        host: str | None = None,
+        packages: list[str] | None = None,
+    ) -> str:
+        """[dev] Show git diff on remote host(s). Read-only operation.
+
+        Shows uncommitted changes (git status + git diff) on remote hosts.
+        Use this to review changes before committing with dev_versions_commit.
+
+        Parameters
+        ----------
+        host : str | None
+            Host name (e.g., "nas"). None = first enabled host.
+        packages : list[str] | None
+            Package names. None = host-configured defaults.
+
+        Returns
+        -------
+        str
+            JSON with {host: {package: {status, files, diff_stat, diff}}}.
+        """
+        from scitex._dev._mcp.handlers import remote_diff_handler
+
+        result = await remote_diff_handler(host, packages)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_versions_commit(
+        host: str,
+        packages: list[str] | None = None,
+        message: str | None = None,
+        push: bool = True,
+        confirm: bool = False,
+    ) -> str:
+        """[dev] Commit dirty changes on a remote host and push to origin.
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute. Auto-generates commit message if not provided.
+
+        Parameters
+        ----------
+        host : str
+            Host name (e.g., "nas"). Required.
+        packages : list[str] | None
+            Package names. None = host-configured defaults.
+        message : str | None
+            Commit message. Auto-generated if not provided.
+        push : bool
+            Push to origin after commit (default True).
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute commit + push.
+
+        Returns
+        -------
+        str
+            JSON with {package: {status, commands|output}}.
+        """
+        from scitex._dev._mcp.handlers import remote_commit_handler
+
+        result = await remote_commit_handler(host, packages, message, push, confirm)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_versions_pull(
+        packages: list[str] | None = None,
+        confirm: bool = False,
+        stash: bool = True,
+    ) -> str:
+        """[dev] Pull latest from origin to local repos.
+
+        Safety: call first without confirm to preview, then with confirm=True
+        to execute. Use after dev_versions_commit to sync remote changes locally.
+
+        Parameters
+        ----------
+        packages : list[str] | None
+            Package names. None = all configured packages.
+        confirm : bool
+            If False (default), preview only (dry run).
+            If True, execute git pull.
+        stash : bool
+            If True (default), stash local changes before pull and pop after.
+            If False and repo is dirty, pull proceeds as-is (may fail).
+
+        Returns
+        -------
+        str
+            JSON with {package: {status, output|commands, stashed}}.
+        """
+        from scitex._dev._mcp.handlers import pull_local_handler
+
+        result = await pull_local_handler(packages, confirm, stash)
+        return _json(result)
+
+    @mcp.tool()
+    async def dev_bulk_rename(
         pattern: str,
         replacement: str,
         directory: str = ".",

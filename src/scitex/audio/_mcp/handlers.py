@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2026-02-06 23:02:36 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-python/src/scitex/audio/_mcp/handlers.py
 
@@ -293,6 +292,23 @@ async def check_audio_status_handler() -> dict:
         return {"success": False, "error": str(e)}
 
 
+def _emit_browser_speech(text: str) -> None:
+    """Emit OSC escape sequence to relay speech through PTY to browser.
+
+    When running inside a SciTeX Cloud Apptainer container, there is no
+    local audio sink. Instead, we emit a custom OSC escape:
+        \\x1b]9999;speak:<base64-text>\\x07
+    This flows through: PTY → WebSocket → browser xterm.js → speakText().
+    """
+    import sys
+
+    b64 = base64.b64encode(text.encode()).decode()
+    # Write to stderr so it doesn't interfere with MCP stdio protocol.
+    # The PTY captures both stdout and stderr.
+    sys.stderr.write(f"\x1b]9999;speak:{b64}\x07")
+    sys.stderr.flush()
+
+
 async def speak_handler(
     text: str,
     backend: str | None = None,
@@ -301,6 +317,7 @@ async def speak_handler(
     speed: float = 1.5,
     play: bool = True,
     save: bool = False,
+    output_path: str | None = None,
     fallback: bool = True,
     agent_id: str | None = None,
     wait: bool = True,
@@ -309,13 +326,13 @@ async def speak_handler(
     """Convert text to speech with fallback.
 
     Args:
+        save: If True and output_path is None, auto-generate a timestamped path.
+        output_path: Explicit path to save the audio file (overrides save flag).
         signature: If True, prepend hostname/project/branch to text.
     """
+    import os
+
     try:
-        from .. import speak as tts_speak
-
-        loop = asyncio.get_event_loop()
-
         # Prepend signature if requested
         final_text = text
         sig = None
@@ -323,8 +340,29 @@ async def speak_handler(
             sig = _get_signature()
             final_text = sig + text
 
-        output_path = None
-        if save:
+        # SciTeX Cloud container mode: relay speech to browser via OSC escape
+        if os.environ.get("SCITEX_CLOUD") == "true":
+            _emit_browser_speech(final_text)
+            result = {
+                "success": True,
+                "text": text,
+                "backend": "browser_relay",
+                "played": True,
+                "play_requested": play,
+                "mode": "cloud_relay",
+                "timestamp": datetime.now().isoformat(),
+            }
+            if signature:
+                result["signature"] = sig
+                result["full_text"] = final_text
+            return result
+
+        # Local mode: use scitex.audio directly
+        from .. import speak as tts_speak
+
+        loop = asyncio.get_event_loop()
+
+        if output_path is None and save:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_path = str(_get_audio_dir() / f"tts_{timestamp}.mp3")
 

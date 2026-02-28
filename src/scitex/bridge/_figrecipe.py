@@ -136,7 +136,7 @@ def _save_figure_image(fig, path: Path, dpi: int = 300, **kwargs):
     # Check if this is a figrecipe RecordingFigure - use fr.save() for full support
     if FIGRECIPE_AVAILABLE:
         try:
-            from figrecipe._wrappers import RecordingFigure
+            from figrecipe.utils import RecordingFigure
 
             if isinstance(fig, RecordingFigure):
                 # Use figrecipe's save with facecolor support

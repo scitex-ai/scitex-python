@@ -19,10 +19,15 @@ class HostConfig:
     name: str
     hostname: str
     user: str
-    role: str = "dev"  # dev, staging, prod
+    role: str = "dev"  # dev, staging, prod, hpc
     enabled: bool = True
     ssh_key: str | None = None
     port: int = 22
+    # Sync fields
+    python_bin: str = "python3"
+    pip_bin: str = "pip"
+    remote_base: str = "~/proj"
+    packages: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -115,6 +120,9 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 def _parse_host_config(data: dict[str, Any]) -> HostConfig:
     """Parse host config from dict."""
+    packages = data.get("packages", [])
+    if isinstance(packages, str):
+        packages = [p.strip() for p in packages.split(",") if p.strip()]
     return HostConfig(
         name=data.get("name", "unknown"),
         hostname=data.get("hostname", "localhost"),
@@ -123,6 +131,10 @@ def _parse_host_config(data: dict[str, Any]) -> HostConfig:
         enabled=data.get("enabled", True),
         ssh_key=data.get("ssh_key"),
         port=data.get("port", 22),
+        python_bin=data.get("python_bin", "python3"),
+        pip_bin=data.get("pip_bin", "pip"),
+        remote_base=data.get("remote_base", "~/proj"),
+        packages=packages if isinstance(packages, list) else [],
     )
 
 

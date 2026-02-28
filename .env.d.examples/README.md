@@ -34,6 +34,9 @@ scitex (umbrella)
 ├── 00_socialia.env        # Socialia social media package
 ├── 00_scitex-writer.env   # SciTeX Writer manuscript tools
 │
+├── # MCP server (02_*)
+├── 02_mcp.env             # MCP tool toggles (SCITEX_MCP_USE_*)
+│
 └── # Modules (01_*) - maps to scitex.{module}
 ├── 01_audio.env           # scitex.audio - TTS relay
 ├── 01_cloud.env           # scitex.cloud - Django backend
@@ -50,6 +53,7 @@ scitex (umbrella)
 
 - `00_*` - Standalone packages (loaded first)
 - `01_*` - SciTeX modules matching `scitex.{module}` (loaded after)
+- `02_*` - MCP server configuration (tool toggles)
 
 ## Quick Start
 
@@ -118,6 +122,15 @@ cat .env.d.examples/01_audio.env >> .env
 | `01_social.env` | scitex.social | X/Twitter, LinkedIn, Google Analytics, YouTube |
 | `01_ui.env` | scitex.ui | Backends, email accounts, SMTP, webhooks |
 | `01_web.env` | scitex.web | `SCITEX_WEB_DOWNLOADS_DIR` |
+
+### MCP Server (02_*)
+
+| File | Purpose | Key Variables |
+|------|---------|---------------|
+| `02_mcp.env` | Tool group toggles | `SCITEX_MCP_USE_PLT`, `SCITEX_MCP_USE_SCHOLAR`, ... |
+
+Set `SCITEX_MCP_USE_<GROUP>=0` to disable a tool group from the MCP server.
+All groups are enabled by default. This does not affect Python imports or CLI.
 
 ## Port Scheme
 

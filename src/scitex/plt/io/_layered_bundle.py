@@ -399,7 +399,7 @@ def save_layered_plot_bundle(  # noqa: C901
             # Apply additional margin cropping (removes transparent edges)
             margin_crop_box = None
             try:
-                from figrecipe._utils._crop import crop
+                from figrecipe import crop
 
                 _, margin_crop_box = crop(
                     str(png_path),

@@ -32,6 +32,7 @@ class SessionTracker:
         session_id: str,
         script_path: Optional[str] = None,
         parent_session: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Initialize a session tracker.
@@ -44,6 +45,8 @@ class SessionTracker:
             Path to the script being run
         parent_session : str, optional
             Parent session ID for chain tracking
+        metadata : dict, optional
+            Additional metadata (e.g. notebook_path, cell_index)
         """
         self.session_id = session_id
         self.script_path = script_path
@@ -66,6 +69,7 @@ class SessionTracker:
             script_path=script_path or "",
             script_hash=self._script_hash,
             parent_session=parent_session,
+            metadata=metadata,
         )
 
     def record_input(
@@ -272,6 +276,7 @@ def start_tracking(
     session_id: str,
     script_path: Optional[str] = None,
     parent_session: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
 ) -> SessionTracker:
     """
     Start tracking a new session.
@@ -284,6 +289,8 @@ def start_tracking(
         Path to the script being run
     parent_session : str, optional
         Parent session ID for chain tracking
+    metadata : dict, optional
+        Additional metadata (e.g. notebook_path, cell_index)
 
     Returns
     -------
@@ -294,6 +301,7 @@ def start_tracking(
         session_id=session_id,
         script_path=script_path,
         parent_session=parent_session,
+        metadata=metadata,
     )
     set_tracker(tracker)
     return tracker

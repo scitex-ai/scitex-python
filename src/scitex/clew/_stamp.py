@@ -24,7 +24,7 @@ from typing import Dict, List, Optional
 
 from ._db import get_db
 
-STAMP_BACKENDS = ("file", "rfc3161", "zenodo")
+STAMP_BACKENDS = ("file", "rfc3161", "zenodo", "scitex_cloud")
 
 
 @dataclass
@@ -176,6 +176,8 @@ def stamp(
         result = _stamp_rfc3161(stamp_id, root, now, service_url)
     elif backend == "zenodo":
         result = _stamp_zenodo(stamp_id, root, now, service_url)
+    elif backend == "scitex_cloud":
+        result = _stamp_scitex_cloud(stamp_id, root, now, service_url)
     else:
         raise ValueError(f"Unsupported backend: {backend}")
 
@@ -373,6 +375,28 @@ def _stamp_zenodo(stamp_id, root, timestamp, service_url=None):
         "Zenodo stamping is planned for a future release. "
         "Use 'file' or 'rfc3161' backend instead."
     )
+
+
+def _stamp_scitex_cloud(stamp_id, root, timestamp, service_url=None):
+    """SciTeX Cloud registry: register root hash with server-side timestamp."""
+    from ._registry import get_registry
+
+    registry = get_registry(base_url=service_url)
+    result = registry.register(
+        root["root_hash"],
+        source_type="stamp",
+        metadata={
+            "stamp_id": stamp_id,
+            "run_count": root["run_count"],
+            "timestamp": timestamp,
+        },
+    )
+
+    url = service_url or registry.base_url
+    token = (
+        result.get("data", {}).get("registered_at") if result.get("success") else None
+    )
+    return {"service_url": url, "response_token": token}
 
 
 def _ensure_stamps_table(db) -> None:

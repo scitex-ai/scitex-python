@@ -3,7 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/stats.py
 """Stats module tools for FastMCP unified server."""
 
-from __future__ import annotations
 
 import json
 from typing import List, Optional

@@ -18,7 +18,7 @@ __FILE__ = __file__
 from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 import matplotlib.pyplot as plt
-from figrecipe._utils._units import mm_to_inch, mm_to_pt
+from figrecipe.utils import mm_to_inch, mm_to_pt
 from matplotlib.axes import Axes
 
 # Default theme color palettes

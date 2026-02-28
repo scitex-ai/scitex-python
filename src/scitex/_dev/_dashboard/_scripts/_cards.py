@@ -8,6 +8,33 @@
 def get_cards_js() -> str:
     """Return JavaScript for package card rendering."""
     return """
+function renderWorktreeStatus(gitInfo) {
+    if (!gitInfo || gitInfo.dirty === undefined) return '';
+    const parts = [];
+    if (gitInfo.dirty) {
+        parts.push('<span class="wt-dirty">dirty</span>');
+    } else {
+        parts.push('<span class="wt-clean">clean</span>');
+    }
+    if (gitInfo.ahead > 0) parts.push('<span class="wt-ahead">ahead:' + gitInfo.ahead + '</span>');
+    if (gitInfo.behind > 0) parts.push('<span class="wt-behind">behind:' + gitInfo.behind + '</span>');
+    return '<div class="version-item"><span class="key">worktree</span><span class="value">' + parts.join(', ') + '</span></div>';
+}
+
+function renderHostWorktreeStatus(h, loading) {
+    if (loading) return '';
+    if (h.git_dirty === undefined) return '';
+    const parts = [];
+    if (h.git_dirty) {
+        parts.push('<span class="wt-dirty">dirty</span>');
+    } else {
+        parts.push('<span class="wt-clean">clean</span>');
+    }
+    if (h.git_ahead > 0) parts.push('<span class="wt-ahead">ahead:' + h.git_ahead + '</span>');
+    if (h.git_behind > 0) parts.push('<span class="wt-behind">behind:' + h.git_behind + '</span>');
+    return '<div class="version-item"><span class="key">worktree</span><span class="value">' + parts.join(', ') + '</span></div>';
+}
+
 function getEffectiveStatus(name, info) {
     const rtdData = cachedData.rtd || {};
     const hostData = cachedData.hosts || {};
@@ -73,6 +100,12 @@ function getSourceStatuses(name, info, hostVersions, remoteVersions, rtdStatus) 
     } else {
         statuses.local = 'na';
     }
+    // Downgrade local status if worktree is dirty or behind
+    if (statuses.local === 'ok') {
+        const gitInfo = info.git || {};
+        if (gitInfo.dirty) statuses.local = 'warn';
+        if (gitInfo.behind > 0) statuses.local = 'error';
+    }
 
     // HOST statuses (NAS, etc.)
     hostVersions.forEach(h => {
@@ -93,6 +126,11 @@ function getSourceStatuses(name, info, hostVersions, remoteVersions, rtdStatus) 
                 statuses[h.name] = 'ok';
             } else {
                 statuses[h.name] = 'na';
+            }
+            // Downgrade host status if worktree dirty or behind
+            if (statuses[h.name] === 'ok') {
+                if (h.git_dirty) statuses[h.name] = 'warn';
+                if (h.git_behind > 0) statuses[h.name] = 'error';
             }
         }
     });
@@ -143,7 +181,7 @@ function getSourceStatuses(name, info, hostVersions, remoteVersions, rtdStatus) 
 
 function renderSourceBadges(sourceStatuses) {
     const order = ['local', 'nas', 'pypi', 'github', 'rtd'];
-    const labels = { local: 'L', nas: 'N', pypi: 'P', github: 'G', rtd: 'R' };
+    const labels = { local: 'Local', nas: 'NAS', pypi: 'PyPI', github: 'GitHub', rtd: 'RTD' };
     const titles = { local: 'LOCAL', nas: 'NAS', pypi: 'PyPI', github: 'GitHub', rtd: 'RTD' };
 
     let html = '<span class="source-badges">';
@@ -215,7 +253,8 @@ function renderPackageCard(name, info, local, git, remote, hostVersions, remoteV
                         <div class="version-item"><span class="key">toml</span><span class="value">${local.pyproject_toml || '-'}</span></div>
                         <div class="version-item"><span class="key">installed</span><span class="value">${local.installed || '-'}</span></div>
                         <div class="version-item"><span class="key">tag</span><span class="value">${git.latest_tag || '-'}</span></div>
-                        <div class="version-item"><span class="key">branch</span><span class="value">${git.branch || '-'}</span></div>
+                        <div class="version-item"><span class="key">branch</span><span class="value">${git.branch || '-'}${git.short_hash ? ' (' + git.short_hash + ')' : ''}</span></div>
+                        ${renderWorktreeStatus(git)}
                     </div>`;
 
     // Host versions (NAS, etc.)
@@ -232,7 +271,8 @@ function renderPackageCard(name, info, local, git, remote, hostVersions, remoteV
         html += `<div class="version-item"><span class="key">toml</span><span class="value">${hostsLoading ? '...' : (h.toml || '-')}</span></div>`;
         html += `<div class="version-item"><span class="key">installed</span><span class="value">${hostsLoading ? '...' : (h.installed || h.error || '-')}</span></div>`;
         html += `<div class="version-item"><span class="key">tag</span><span class="value">${hostsLoading ? '...' : (h.git_tag || '-')}</span></div>`;
-        html += `<div class="version-item"><span class="key">branch</span><span class="value">${hostsLoading ? '...' : (h.git_branch || '-')}</span></div>`;
+        html += `<div class="version-item"><span class="key">branch</span><span class="value">${hostsLoading ? '...' : ((h.git_branch || '-') + (h.git_hash ? ' (' + h.git_hash + ')' : ''))}</span></div>`;
+        html += renderHostWorktreeStatus(h, hostsLoading);
         html += `</div>`;
     });
 

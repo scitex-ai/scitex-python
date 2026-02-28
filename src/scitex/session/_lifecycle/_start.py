@@ -106,8 +106,16 @@ def start(
             caller_file = file
         else:
             caller_file = inspect.stack()[1].filename
-            if "ipython" in caller_file:
-                caller_file = f"/tmp/{_os.getenv('USER')}.py"
+            if "ipython" in caller_file.lower():
+                try:
+                    from scitex.gen._detect_notebook_path import get_notebook_path
+
+                    nb_path = get_notebook_path()
+                    caller_file = (
+                        nb_path if nb_path else f"/tmp/{_os.getenv('USER')}.py"
+                    )
+                except Exception:
+                    caller_file = f"/tmp/{_os.getenv('USER')}.py"
 
         # Convert to absolute path if relative and resolve symlinks
         if not _os.path.isabs(caller_file):
@@ -238,7 +246,14 @@ def _start_verification(CONFIG) -> None:
         file_path = CONFIG.get("FILE")
         if file_path is not None:
             file_path = str(file_path)
-        on_session_start(session_id=session_id, script_path=file_path)
+
+        metadata = None
+        if file_path and file_path.endswith(".ipynb"):
+            metadata = {"notebook_path": file_path}
+
+        on_session_start(
+            session_id=session_id, script_path=file_path, metadata=metadata
+        )
     except Exception:
         pass
 

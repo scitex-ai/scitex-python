@@ -3,7 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/capture.py
 """Capture module tools for FastMCP unified server."""
 
-from __future__ import annotations
 
 import json
 from typing import Optional

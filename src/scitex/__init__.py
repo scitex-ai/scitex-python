@@ -222,9 +222,12 @@ units = _LazyModule("units")
 logging = _LazyModule("logging")
 session = _CallableModuleWrapper("session", main_decorator_name="session")
 session._setup_persistence("scitex", "session")
+module = _CallableModuleWrapper("module", main_decorator_name="module")
+module._setup_persistence("scitex", "module")
 capture = _LazyModule("capture")
 template = _LazyModule("template")
 cloud = _LazyModule("cloud")
+tunnel = _LazyModule("tunnel")
 config = _LazyModule("config")
 audio = _LazyModule("audio")
 msword = _LazyModule("msword")
@@ -247,6 +250,7 @@ compat = _LazyModule("compat")  # Compatibility utilities
 cli = _LazyModule("cli")  # Command-line interface
 linter = _LazyModule("linter")  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
+notebook = _LazyModule("notebook")  # Jupyter notebook verification & compilation
 verify = _LazyModule("verify")  # Backward compat alias for clew
 usage = _CallableModuleWrapper("usage", main_decorator_name="show")
 usage._setup_persistence("scitex", "usage")
@@ -318,6 +322,7 @@ __all__ = [
     "units",
     "logging",
     "session",
+    "module",
     "rng",
     "capture",
     "template",
@@ -344,6 +349,7 @@ __all__ = [
     "dev",
     "gists",
     "cloud",
+    "tunnel",
     "config",
     "audio",
     "msword",

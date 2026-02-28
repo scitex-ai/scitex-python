@@ -199,26 +199,7 @@ def _get_csv_columns_for_method(
     list
         List of column names that will be in the CSV
     """
-    try:
-        from scitex.plt._subplots._export_as_csv import format_record
-
-        record = (id_val, method, tracked_dict, kwargs)
-        df = format_record(record)
-
-        if df is not None and not df.empty:
-            prefix = f"ax_{ax_index:02d}_"
-            columns = []
-            for col in df.columns:
-                col_str = str(col)
-                if not col_str.startswith(prefix):
-                    col_str = f"{prefix}{col_str}"
-                columns.append(col_str)
-            return columns
-
-    except Exception:
-        pass
-
-    # Fallback: Pattern-based column name generation
+    # format_record removed in figrecipe migration; use pattern-based fallback directly
     return _get_csv_columns_fallback(id_val, method, tracked_dict, kwargs, ax_index)
 
 

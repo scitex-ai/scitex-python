@@ -1,0 +1,208 @@
+# Timestamp: "2025-11-25 20:00:00 (ywatanabe)"
+# File: ./deployment/singularity/scitex-cloud-shared-v0.1.0.def
+# ============================================
+# SciTeX User Workspace Container Definition
+# ============================================
+# This Singularity container provides a secure computational environment
+# for SciTeX Cloud users. Superior to Docker for HPC integration.
+
+Bootstrap: docker
+From: python:3.11-slim
+
+%labels
+    Author SciTeX Cloud Team
+    Version 2.0.0
+    Description User computational workspace for SciTeX Cloud with full SciTeX platform
+    Documentation https://github.com/ywatanabe/scitex-cloud
+    BuildDate 2025-11-25
+    SciTeX Latest from PyPI with all extras [all]
+
+%post
+    echo -e "============================================"
+    echo -e "Building SciTeX User Workspace Container"
+    echo -e "============================================"
+
+    # Update package lists
+    apt-get update
+
+    # Install system dependencies
+    echo -e "Installing system dependencies..."
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+        wget \
+        curl \
+        vim \
+        nano \
+        tmux \
+        htop \
+        tree \
+        less \
+        zip \
+        unzip \
+        bzip2 \
+        ca-certificates \
+        fontconfig \
+        && rm -rf /var/lib/apt/lists/*
+
+    # Install Microsoft core fonts (Arial, Times New Roman, etc.) for scientific figures
+    echo -e "Installing Microsoft core fonts..."
+    sed -i 's/main/main contrib/g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || \
+        sed -i 's/main$/main contrib/' /etc/apt/sources.list
+    apt-get update
+    echo -e "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ttf-mscorefonts-installer
+    fc-cache -fv
+    rm -rf /var/lib/apt/lists/*
+
+    echo -e "Installing Python packages..."
+    # Install uv for fast Python package management
+    pip install --no-cache-dir --upgrade pip uv
+
+    # Install SciTeX with all extras (includes full scientific stack)
+    # Using uv for faster resolution and installation, with cache enabled
+    echo -e "Installing SciTeX platform (all extras)..."
+    uv pip install --system 'scitex[all]'
+
+    # Install additional dev tools not covered by scitex[all]
+    uv pip install --system \
+        ipdb \
+        black \
+        flake8 \
+        icecream
+
+    # Clear matplotlib font cache so it discovers new fonts
+    echo -e "Refreshing matplotlib font cache..."
+    python -c "import matplotlib.font_manager; matplotlib.font_manager._rebuild()" 2>/dev/null || true
+    rm -rf /root/.cache/matplotlib 2>/dev/null || true
+
+    # Install Node.js 20 (needed for AI coding CLI tools)
+    echo -e "Installing Node.js..."
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    apt-get install -y --no-install-recommends nodejs
+    rm -rf /var/lib/apt/lists/*
+    npm config set prefix /usr/local
+
+    # Install AI coding CLI tools globally
+    echo -e "Installing AI coding CLI tools (Claude Code, Codex, Gemini CLI, agents)..."
+    npm install -g \
+        @anthropic-ai/claude-code \
+        @openai/codex \
+        @google/gemini-cli \
+        @agents-dev/cli
+
+    # Create workspace directory
+    echo -e "Setting up workspace..."
+    mkdir -p /workspace
+    chmod 755 /workspace
+
+    # Create logs directory
+    mkdir -p /logs
+    chmod 755 /logs
+
+    echo -e "Build complete!"
+
+%environment
+    # Set locale
+    export LC_ALL=C
+    export LANG=C.UTF-8
+
+    # Python configuration
+    export PYTHONUNBUFFERED=1
+    export PYTHONDONTWRITEBYTECODE=1
+    export PYTHONPATH=/workspace:$PYTHONPATH
+
+    # Path configuration (includes npm global bin for AI CLI tools)
+    export PATH=/usr/local/bin:$HOME/.npm-global/bin:$PATH
+
+    # Workspace
+    export WORKSPACE=/workspace
+
+%runscript
+    # Default: run Python script
+    exec python "$@"
+
+%startscript
+    # For instance mode (if needed)
+    echo -e "SciTeX User Workspace container started"
+    exec /bin/bash
+
+%test
+    # Test the installation
+    echo -e "Testing Python installation..."
+    python --version
+
+    echo -e "Testing installed packages..."
+    python -c "import numpy, pandas, matplotlib; print('Core packages OK')"
+
+    echo -e "Testing Arial font availability..."
+    python -c "
+import matplotlib.font_manager as fm
+fonts = [f.name for f in fm.fontManager.ttflist]
+if 'Arial' in fonts:
+    print('Arial font OK')
+else:
+    print('WARNING: Arial font not found, available fonts:', sorted(set(fonts))[:10])
+"
+
+    echo -e "Testing AI CLI tools..."
+    node --version
+    claude --version 2>/dev/null && echo "Claude Code OK" || echo "WARN: claude not installed"
+    codex --version 2>/dev/null && echo "Codex OK" || echo "WARN: codex not installed"
+    gemini --version 2>/dev/null && echo "Gemini CLI OK" || echo "WARN: gemini not installed"
+    agents --version 2>/dev/null && echo "agents CLI OK" || echo "WARN: agents not installed"
+
+    echo -e "Testing workspace..."
+    ls -la /workspace
+
+    echo -e "All tests passed!"
+
+%help
+    ========================================
+    SciTeX User Workspace Container
+    ========================================
+
+    This container provides a secure Python execution environment
+    for SciTeX Cloud users.
+
+    USAGE:
+        # Execute a Python script
+        singularity exec scitex-cloud-shared-v0.1.0.sif python script.py
+
+        # Execute with workspace binding
+        singularity exec --bind /data:/workspace scitex-cloud-shared-v0.1.0.sif python analysis.py
+
+        # Interactive shell
+        singularity shell scitex-cloud-shared-v0.1.0.sif
+
+    FEATURES:
+        - Python 3.11 with full scientific stack
+        - No root access required
+        - Runs as your user (UID preserved)
+        - Compatible with HPC clusters (SLURM, PBS)
+        - Resource limits via cgroups
+
+    SECURITY:
+        - No daemon required
+        - No privilege escalation
+        - Isolated /tmp and /var/tmp (use --contain)
+        - Clean environment (use --cleanenv)
+
+    PACKAGES INCLUDED:
+        - Core scientific: numpy, scipy, pandas
+        - Visualization: matplotlib, seaborn, plotly
+        - ML/AI: scikit-learn, PyTorch, transformers
+        - Interactive: jupyter, jupyterlab, ipython
+        - Utilities: requests, beautifulsoup4, tqdm
+        - Development: black, flake8, pytest
+        - SciTeX full platform [all]
+        - AI CLI tools: claude (Claude Code), codex (OpenAI Codex), gemini (Google Gemini CLI)
+        - agents CLI: unified MCP config syncing across all AI tools
+
+    BUILD:
+        sudo singularity build scitex-cloud-shared-v0.1.0.sif scitex-cloud-shared-v0.1.0.def
+
+    For more information, visit:
+    https://scitex.ai/docs/user-workspace
+
+# EOF

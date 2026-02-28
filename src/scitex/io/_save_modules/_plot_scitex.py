@@ -12,8 +12,6 @@ from pathlib import Path
 
 import numpy as np
 
-from ._figure_utils import get_figure_with_data
-
 
 def _create_stx_spec(bundle_type, title, size):
     """Create a spec dictionary for .stx bundle.
@@ -247,16 +245,8 @@ def save_plot_as_scitex(obj, spath, as_zip=True, basename=None, **kwargs):
     # Get CSV data from figure if not provided
     csv_df = data
     if csv_df is None:
-        # Try SciTeX wrapped objects first
-        csv_source = get_figure_with_data(obj)
-        if csv_source is not None and hasattr(csv_source, "export_as_csv"):
-            try:
-                csv_df = csv_source.export_as_csv()
-            except Exception:
-                pass
-        # Fall back to extracting from matplotlib lines
-        if csv_df is None:
-            csv_df = _extract_data_from_figure(fig)
+        # CSV via AxisWrapper removed (figrecipe migration); fall back to matplotlib lines
+        csv_df = _extract_data_from_figure(fig)
 
     # Create spec for .stx format
     fig_width_inch, fig_height_inch = fig.get_size_inches()

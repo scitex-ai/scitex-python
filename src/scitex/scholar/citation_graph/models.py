@@ -17,6 +17,7 @@ class PaperNode:
     journal: str = ""
     citation_count: int = 0
     similarity_score: float = 0.0
+    is_seed: bool = False
     metadata: Dict = field(default_factory=dict)
 
     def to_dict(self) -> Dict:
@@ -29,6 +30,7 @@ class PaperNode:
             "journal": self.journal,
             "citation_count": self.citation_count,
             "similarity_score": self.similarity_score,
+            "is_seed": self.is_seed,
         }
 
 
@@ -56,6 +58,7 @@ class CitationGraph:
     """Represents a complete citation network."""
 
     seed_doi: str
+    seed_dois: List[str] = field(default_factory=list)
     nodes: List[PaperNode] = field(default_factory=list)
     edges: List[CitationEdge] = field(default_factory=list)
     metadata: Dict = field(default_factory=dict)
@@ -64,6 +67,7 @@ class CitationGraph:
         """Convert to dictionary for JSON export."""
         return {
             "seed": self.seed_doi,
+            "seed_dois": self.seed_dois,
             "nodes": [node.to_dict() for node in self.nodes],
             "edges": [edge.to_dict() for edge in self.edges],
             "metadata": self.metadata,
@@ -100,6 +104,7 @@ class CitationGraph:
                 citations=node.citation_count,
                 similarity=node.similarity_score,
                 journal=node.journal,
+                is_seed=node.is_seed,
             )
         for edge in self.edges:
             G.add_edge(

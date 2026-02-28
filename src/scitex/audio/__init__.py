@@ -135,6 +135,7 @@ from ._tts import TTS
 
 __all__ = [
     "speak",
+    "generate_bytes",
     "stop_speech",
     "check_wsl_audio",
     "check_local_audio_available",
@@ -229,6 +230,45 @@ def get_tts(backend: str | None = None, **kwargs) -> _BaseTTS:
 
 # Import speak function from refactored module
 from ._speak import speak
+
+
+def generate_bytes(
+    text: str,
+    backend: str | None = None,
+    voice: str | None = None,
+    **kwargs,
+) -> bytes:
+    """Generate TTS audio as raw MP3 bytes without playing.
+
+    Useful for web delivery: the caller streams bytes to a browser
+    which plays them via the Web Audio API.
+
+    Backends are tried in FALLBACK_ORDER (elevenlabs → gtts → pyttsx3).
+    Set backend explicitly to skip auto-detection.
+
+    Args:
+        text: Text to convert to speech.
+        backend: TTS backend name, or None for auto-select.
+        voice: Voice name/id (backend-specific).
+        **kwargs: Extra options forwarded to the backend.
+
+    Returns
+    -------
+        MP3 audio bytes.
+
+    Raises
+    ------
+        ValueError: When no backend is available.
+        RuntimeError: When synthesis fails for all backends.
+
+    Examples
+    --------
+        import scitex.audio as audio
+        mp3_bytes = audio.generate_bytes("Hello, world!")
+        # → send to browser or save to file
+    """
+    tts = get_tts(backend, **kwargs)
+    return tts.to_bytes(text, voice=voice)
 
 
 def start_mcp_server():

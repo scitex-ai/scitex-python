@@ -74,6 +74,9 @@ from ._hash import combine_hashes, hash_directory, hash_file, hash_files, verify
 # Integration hooks
 from ._integration import on_io_load, on_io_save, on_session_close, on_session_start
 
+# Registry client
+from ._registry import ClewRegistry, get_registry
+
 # Rerun verification (separate module to avoid circular imports)
 from ._rerun import verify_by_rerun, verify_run_from_scratch
 
@@ -139,6 +142,37 @@ def stats():
     return db.stats()
 
 
+def register(hash_value: str, source_type: str = "manual", **kwargs):
+    """Register a hash with the remote Clew Registry on scitex.ai.
+
+    Parameters
+    ----------
+    hash_value : str
+        The hash to register (SHA256, up to 64 chars).
+    source_type : str
+        One of: session, file, stamp, manual.
+    **kwargs
+        Additional arguments passed to ClewRegistry.register().
+    """
+    return get_registry().register(hash_value, source_type=source_type, **kwargs)
+
+
+def verify_remote(hash_value: str):
+    """Verify a hash against the remote Clew Registry.
+
+    Parameters
+    ----------
+    hash_value : str
+        The hash to verify.
+
+    Returns
+    -------
+    dict
+        {registered: bool, registrations: [...]}
+    """
+    return get_registry().verify(hash_value)
+
+
 __all__ = [
     # Hash utilities
     "hash_file",
@@ -188,6 +222,11 @@ __all__ = [
     "on_session_close",
     "on_io_load",
     "on_io_save",
+    # Registry
+    "ClewRegistry",
+    "get_registry",
+    "register",
+    "verify_remote",
 ]
 
 

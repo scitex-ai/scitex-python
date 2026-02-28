@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-10-02 19:44:06 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/ml/plt/plot_pre_rec_curve.py
 # ----------------------------------------
@@ -16,7 +15,7 @@ import argparse
 import numpy as np
 from sklearn.metrics import average_precision_score, precision_recall_curve
 
-from scitex.plt.color import get_colors_from_conf_matap
+from scitex.plt.color import get_colors_from_cmap
 
 
 def _solve_intersection(f1, a, b):
@@ -123,7 +122,7 @@ def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
                     true_class_onehot[:, i], pred_proba[:, i], average="macro"
                 )
             )
-        except Exception as e:
+        except Exception:
             print(
                 f'\nPRE-REC-AUC for "{labels[i]}" was not defined and NaN-filled '
                 "for a calculation purpose (for the macro avg.)\n"
@@ -137,7 +136,7 @@ def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
 
     # Plot Precision-Recall curve for each class and iso-f1 curves
     # Use scitex color palette for consistent styling
-    colors = get_colors_from_conf_matap("tab10", n_classes)
+    colors = get_colors_from_cmap("tab10", n_classes)
 
     if ax is None:
         fig, ax = stx.plt.subplots()
@@ -158,7 +157,7 @@ def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
 
         # ax.annotate("f1={0:0.1f}".format(f_score), xy=(0.9, y[45] + 0.02))
         x_f, y_f = _solve_intersection(f_score, 0.5, 0.5)
-        ax.annotate("f1={0:0.1f}".format(f_score), xy=(x_f - 0.1, y_f - 0.1 * 0.5))
+        ax.annotate(f"f1={f_score:0.1f}", xy=(x_f - 0.1, y_f - 0.1 * 0.5))
         # ax.annotate("f1={0:0.1f}".format(f_score), xy=(y[35] - 0.02 * (3 - i_f), 0.85))
 
     lines.append(l)
@@ -175,7 +174,7 @@ def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
     for i in range(n_classes):
         (l,) = ax.plot(recall[i], precision[i], color=colors[i], lw=2)
         lines.append(l)
-        legends.append("{0} (AUC = {1:0.2f})".format(labels[i], pre_rec_auc[i]))
+        legends.append(f"{labels[i]} (AUC = {pre_rec_auc[i]:0.2f})")
 
     # fig = plt.gcf()
     fig.subplots_adjust(bottom=0.25)
@@ -208,7 +207,6 @@ def plot_pre_rec_curve(true_class, pred_proba, labels, ax=None, spath=None):
 
 def main(args):
     """Demo Precision-Recall curve plotting with MNIST dataset."""
-    import matplotlib.pyplot as plt
     from sklearn import datasets, svm
     from sklearn.model_selection import train_test_split
 
@@ -228,7 +226,7 @@ def main(args):
     predicted_proba = clf.predict_proba(X_test)
 
     n_classes = len(np.unique(digits.target))
-    labels = ["Class {}".format(i) for i in range(n_classes)]
+    labels = [f"Class {i}" for i in range(n_classes)]
 
     # plt.rcParams["font.size"] = 20
     # plt.rcParams["legend.fontsize"] = "xx-small"

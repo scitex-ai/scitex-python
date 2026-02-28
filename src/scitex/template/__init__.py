@@ -5,6 +5,8 @@
 Template management for SciTeX projects.
 """
 
+from pathlib import Path
+
 from scitex.git import (
     create_child_git,
     find_parent_git,
@@ -35,6 +37,7 @@ from ._project._scholar_writer_integration import (
     ensure_integration,
     setup_scholar_writer_integration,
 )
+from ._project.clone_module import clone_module
 from ._project.clone_pip_project import TEMPLATE_REPO_URL as PIP_PROJECT_URL
 from ._project.clone_pip_project import clone_pip_project
 from ._project.clone_research import TEMPLATE_REPO_URL as RESEARCH_URL
@@ -50,6 +53,84 @@ from ._project.clone_writer_directory import TEMPLATE_REPO_URL as PAPER_DIRECTOR
 from ._project.clone_writer_directory import clone_writer_directory
 
 
+def get_template_tree(template_id):
+    """Create template in a tempdir and return its ``tree`` output.
+
+    Actually runs the template's directory-creation logic in a
+    temporary directory on the fly, then captures the real ``tree``
+    output. This guarantees the displayed tree always matches
+    the current template code.
+
+    Parameters
+    ----------
+    template_id : str
+        Template identifier (e.g. 'minimal', 'research').
+
+    Returns
+    -------
+    str
+        ``tree`` output string, or empty string if unknown.
+    """
+    import shutil
+    import subprocess
+    import tempfile
+
+    from scitex.scholar.ensure_workspace import SCHOLAR_SUBDIRS
+
+    tmpdir = tempfile.mkdtemp(prefix="scitex_tree_")
+    try:
+        project_dir = Path(tmpdir) / "project"
+        project_dir.mkdir()
+
+        if template_id == "minimal":
+            # Reproduce scitex_minimal directory scaffold without git clone
+            writer_dir = project_dir / "scitex" / "writer"
+            for name in MINIMAL_INCLUDE_DIRS:
+                (writer_dir / name).mkdir(parents=True, exist_ok=True)
+            scholar_dir = project_dir / "scitex" / "scholar"
+            for name in SCHOLAR_SUBDIRS:
+                (scholar_dir / name).mkdir(parents=True, exist_ok=True)
+
+        elif template_id == "research":
+            build_directory_tree(str(project_dir), PROJECT_STRUCTURE)
+
+        elif template_id == "app":
+            # Reproduce pip-project-template structure
+            src_dir = project_dir / "src" / "package_name"
+            src_dir.mkdir(parents=True)
+            (src_dir / "__init__.py").touch()
+            tests_dir = project_dir / "tests"
+            tests_dir.mkdir()
+            (tests_dir / "__init__.py").touch()
+            (tests_dir / "test_main.py").touch()
+            (project_dir / "pyproject.toml").touch()
+            (project_dir / "README.md").touch()
+            (project_dir / "LICENSE").touch()
+
+        else:
+            return ""
+
+        result = subprocess.run(
+            ["tree", "--noreport", "--dirsfirst", str(project_dir)],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            # Replace the temp path prefix with "."
+            tree_output = result.stdout.strip()
+            first_newline = tree_output.find("\n")
+            if first_newline != -1:
+                return "." + tree_output[first_newline:]
+            return "."
+        return ""
+
+    except Exception:
+        return ""
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
 def get_available_templates_info():
     """
     Get information about all available SciTeX project templates.
@@ -63,6 +144,7 @@ def get_available_templates_info():
         - description: Template description
         - github_url: GitHub repository URL
         - use_case: When to use this template
+        - tree: Tree-command-style directory listing
 
     Example
     -------
@@ -73,102 +155,35 @@ def get_available_templates_info():
     """
     return [
         {
-            "id": "scitex_minimal",
+            "id": "minimal",
             "name": "SciTeX Minimal",
-            "description": "Minimal scitex project with writer + scholar workspaces",
+            "description": "Minimal project with writer + scholar workspaces",
             "github_url": RESEARCH_URL,
             "use_case": "Manuscript writing with integrated bibliography management",
-            "features": [
-                "scitex/writer/ - Full scitex-writer (manuscripts, supplementary, revision)",
-                "scitex/scholar/ - Bibliography files, library, and prompts",
-                "Bibliography sharing via symlink between writer and scholar",
-                "Self-contained: version info preserved in pyproject.toml",
-            ],
-        },
-        {
-            "id": "research_minimal",
-            "name": "Research Minimal (Legacy)",
-            "description": "Filtered manuscript writing template from scitex-writer",
-            "github_url": RESEARCH_URL,
-            "use_case": "Focused manuscript writing with essential LaTeX structure",
-            "include_dirs": [
-                "00_shared",
-                "01_manuscript",
-                "02_supplementary",
-                "03_revision",
-                "scripts",
-                "compile.sh",
-                "Makefile",
-                "config",
-            ],
-            "features": [
-                "00_shared/ - Shared bibliography, styles, and templates",
-                "01_manuscript/ - Main manuscript with LaTeX contents",
-                "02_supplementary/ - Supplementary materials",
-                "03_revision/ - Revision and response to reviewers",
-                "scripts/ - Compilation and automation scripts",
-                "config/ - Compilation configuration files",
-            ],
+            "tree": get_template_tree("minimal"),
         },
         {
             "id": "research",
-            "name": "Research Project (Full)",
-            "description": "Full scientific workflow structure for research projects",
+            "name": "SciTeX Full",
+            "description": "Full scientific workflow with data analysis, experiments, and paper writing",
             "github_url": RESEARCH_URL,
-            "use_case": "Scientific research with data analysis, experiments, and paper writing",
-            "features": [
-                "scripts/ - Analysis and preprocessing scripts",
-                "data/ - Raw and processed data management",
-                "docs/ - Manuscripts, notes, and references",
-                "results/ - Analysis outputs and reports",
-                "config/ - Project configuration files",
-            ],
+            "use_case": "End-to-end scientific research projects",
+            "tree": get_template_tree("research"),
         },
         {
-            "id": "pip_project",
-            "name": "Python Package",
-            "description": "Pip-installable Python package template",
+            "id": "app",
+            "name": "SciTeX App",
+            "description": "Pip-installable Python package for building reusable SciTeX apps",
             "github_url": PIP_PROJECT_URL,
-            "use_case": "Creating distributable Python packages for PyPI",
-            "features": [
-                "src/ - Package source code",
-                "tests/ - Unit and integration tests",
-                "docs/ - Sphinx documentation",
-                "setup.py - Package configuration",
-                "CI/CD - GitHub Actions workflows",
-            ],
-        },
-        {
-            "id": "singularity",
-            "name": "Singularity Container",
-            "description": "Container-based project with Singularity",
-            "github_url": SINGULARITY_URL,
-            "use_case": "Reproducible computational environments with containers",
-            "features": [
-                "Singularity definition files",
-                "Container build scripts",
-                "Environment specifications",
-                "Deployment configuration",
-            ],
-        },
-        {
-            "id": "paper_directory",
-            "name": "Paper Directory",
-            "description": "Academic paper writing template with scitex-writer",
-            "github_url": PAPER_DIRECTORY_URL,
-            "use_case": "Writing academic papers with LaTeX and BibTeX management",
-            "features": [
-                "LaTeX document structure",
-                "BibTeX bibliography management",
-                "Figure and table organization",
-                "Manuscript tracking",
-            ],
+            "use_case": "Creating reusable tools and apps for the SciTeX ecosystem",
+            "tree": get_template_tree("app"),
         },
     ]
 
 
 __all__ = [
     "clone_template",
+    "clone_module",
     "clone_research",
     "clone_research_minimal",
     "clone_scitex_minimal",

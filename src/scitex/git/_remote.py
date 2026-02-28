@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/git/remote.py
 
 """
@@ -144,6 +143,95 @@ def is_cloned_from(
     return _normalize_git_url(actual_url) == _normalize_git_url(expected_url)
 
 
+def ls_remote(
+    url: str,
+    ref: Optional[str] = None,
+    verbose: bool = False,
+) -> Optional[str]:
+    """
+    Get commit hash of a remote ref via ``git ls-remote``.
+
+    Parameters
+    ----------
+    url : str
+        Git repository URL.
+    ref : str, optional
+        Branch name, tag, or ref pattern. If None, returns HEAD.
+    verbose : bool
+        Enable verbose output.
+
+    Returns
+    -------
+    Optional[str]
+        Commit SHA-1 hash (40 hex chars), or None on failure.
+
+    Examples
+    --------
+    >>> ls_remote("https://github.com/user/repo.git")
+    'abc123...'
+    >>> ls_remote("https://github.com/user/repo.git", ref="main")
+    'abc123...'
+    >>> ls_remote("https://github.com/user/repo.git", ref="v1.0.0")
+    'def456...'
+    """
+    cmd = ["git", "ls-remote"]
+    if ref is None:
+        cmd.append("--symref")
+    cmd.append(url)
+    if ref is not None:
+        cmd.append(ref)
+
+    result = sh(cmd, verbose=verbose, return_as="dict")
+    if not result["success"]:
+        logger.debug(f"ls-remote failed for {url}: {result.get('stderr', '')}")
+        return None
+
+    stdout = result["stdout"].strip()
+    if not stdout:
+        return None
+
+    # Parse first line: "<hash>\t<ref>"
+    for line in stdout.splitlines():
+        parts = line.split("\t", 1)
+        if len(parts) == 2 and len(parts[0]) == 40:
+            return parts[0]
+
+    return None
+
+
+def get_head_hash(
+    repo_path: Path,
+    verbose: bool = False,
+) -> Optional[str]:
+    """
+    Get HEAD commit hash of a local git repository.
+
+    Parameters
+    ----------
+    repo_path : Path
+        Git repository path (must contain .git/).
+    verbose : bool
+        Enable verbose output.
+
+    Returns
+    -------
+    Optional[str]
+        Commit SHA-1 hash, or None if not a git repo.
+    """
+    if not (repo_path / ".git").exists():
+        return None
+
+    with _in_directory(repo_path):
+        result = sh(
+            ["git", "rev-parse", "HEAD"],
+            verbose=verbose,
+            return_as="dict",
+        )
+        if result["success"]:
+            return result["stdout"].strip()
+        return None
+
+
 def main(args):
     if args.action == "get-url":
         url = get_remote_url(args.repo_path, args.remote_name, args.verbose)
@@ -183,6 +271,8 @@ def run_session():
 __all__ = [
     "get_remote_url",
     "is_cloned_from",
+    "ls_remote",
+    "get_head_hash",
     "_validate_git_url",
 ]
 

@@ -126,10 +126,13 @@ def list_runs(limit, filter_status, no_verify, as_json):
 
 @clew.command("run")
 @click.argument("targets", nargs=-1, required=True)
-@click.option("--rerun", is_flag=True, help="Re-execute script and compare (thorough)")
+@click.option("--rerun", is_flag=True, help="Re-execute script and compare (L2)")
+@click.option(
+    "--register", is_flag=True, help="Register hashes with Clew Registry (L3)"
+)
 @click.option("-v", "--verbose", is_flag=True, help="Show detailed file information")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def verify_run_cmd(targets, rerun, verbose, as_json):
+def verify_run_cmd(targets, rerun, register, verbose, as_json):
     """
     Verify session run(s).
 
@@ -139,22 +142,46 @@ def verify_run_cmd(targets, rerun, verbose, as_json):
     - An artifact path: ./results/figure3.png (session that produced it)
 
     \b
+    Verification Levels:
+      (default)   L1 — compare stored hashes vs current files
+      --rerun     L2 — re-execute pipeline and compare
+      --register  L3 — L2 + register hashes with Clew Registry
+
+    \b
     Examples:
       scitex clew run 2025Y-11M-18D-09h12m03s_HmH5
       scitex clew run ./results/figure3.png
       scitex clew run ./script.py --rerun
-      scitex clew run file1.csv file2.csv --rerun
+      scitex clew run ./script.py --register
     """
     try:
         from scitex.clew import format_run_verification, verify_by_rerun, verify_run
 
         results = []
         for target in targets:
-            if rerun:
+            if rerun or register:
                 verification = verify_by_rerun(target)
             else:
                 verification = verify_run(target)
             results.append(verification)
+
+        # L3: register verified hashes with remote Clew Registry
+        if register:
+            from scitex.clew import get_registry
+
+            registry = get_registry()
+            for v in results:
+                if v.is_verified:
+                    try:
+                        registry.register_session(v.session_id)
+                        if not as_json:
+                            click.secho(f"  L3: registered {v.session_id}", fg="cyan")
+                    except Exception as e:
+                        click.secho(
+                            f"  L3: registration failed for {v.session_id}: {e}",
+                            fg="yellow",
+                            err=True,
+                        )
 
         if as_json:
             import json
@@ -423,30 +450,34 @@ def mcp(ctx):
 @mcp.command("list-tools")
 @click.option("-v", "--verbose", count=True, help="-v params, -vv returns")
 def list_tools(verbose):
-    """List available MCP tools for verification."""
-    click.secho("Verify MCP Tools", fg="cyan", bold=True)
+    """List available MCP tools for verification (reads from actual registration)."""
+    click.secho("Clew MCP Tools", fg="cyan", bold=True)
     click.echo()
-    # (name, desc, params, returns)
-    tools = [
-        ("verify_list", "List tracked runs", "limit=50, status_filter=None", "JSON"),
-        ("verify_run", "Verify a session run", "session_or_path: str", "JSON"),
-        ("verify_chain", "Verify dependency chain", "target_file: str", "JSON"),
-        ("verify_status", "Show status (like git status)", "", "JSON"),
-        ("verify_stats", "Show database statistics", "", "JSON"),
-        (
-            "verify_mermaid",
-            "Generate Mermaid DAG",
-            "session_id=None, target_file=None",
-            "str",
-        ),
-    ]
-    for name, desc, params, returns in tools:
+    # Collect tools by running register function against a mock MCP server
+    collected = []
+
+    class _MockMCP:
+        def tool(self):
+            def decorator(fn):
+                import inspect
+
+                sig = inspect.signature(fn)
+                params = [p for p in sig.parameters if p not in ("self", "cls")]
+                doc = (fn.__doc__ or "").strip().split("\n")[0].replace("[clew] ", "")
+                collected.append((fn.__name__, doc, params))
+                return fn
+
+            return decorator
+
+    from scitex._mcp_tools.clew import register_clew_tools
+
+    register_clew_tools(_MockMCP())
+
+    for name, desc, params in collected:
         click.secho(f"  {name}", fg="green", bold=True, nl=False)
         click.echo(f": {desc}")
         if verbose >= 1 and params:
-            click.echo(f"    params: {params}")
-        if verbose >= 2:
-            click.echo(f"    returns: {returns}")
+            click.echo(f"    params: {', '.join(params)}")
         if verbose >= 1:
             click.echo()
 

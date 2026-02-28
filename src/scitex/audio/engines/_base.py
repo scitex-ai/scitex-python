@@ -157,6 +157,42 @@ class BaseTTS(ABC):
             result["path"] = result_path
         return result
 
+    def to_bytes(
+        self,
+        text: str,
+        voice: Optional[str] = None,
+    ) -> bytes:
+        """Synthesize text and return raw audio bytes (MP3).
+
+        Does not play audio — caller is responsible for playback.
+        Useful for streaming audio to a browser or returning via HTTP.
+
+        Args:
+            text: Text to convert to speech.
+            voice: Optional voice name/id.
+
+        Returns
+        -------
+            MP3 audio bytes.
+        """
+        import os
+        import tempfile
+
+        if voice:
+            self.config["voice"] = voice
+
+        fd, tmp_path = tempfile.mkstemp(suffix=".mp3", prefix="scitex_tts_")
+        os.close(fd)
+        try:
+            self.synthesize(text, tmp_path)
+            with open(tmp_path, "rb") as f:
+                return f.read()
+        finally:
+            try:
+                os.unlink(tmp_path)
+            except Exception:
+                pass
+
     def _play_audio(self, path: Path) -> bool:
         """Play audio file using available system player.
 

@@ -6,7 +6,6 @@
 Single source of truth: socialia MCP tools.
 """
 
-from __future__ import annotations
 
 
 def register_social_tools(mcp) -> None:
