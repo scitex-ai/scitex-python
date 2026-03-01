@@ -800,6 +800,9 @@ dev = [
     "tomlkit",
     "matplotlib",
     "pyyaml",
+    # SciTeX ecosystem packages
+    "scitex-tunnel",
+    "scitex-container",
 ]
 
 # All features (everything except dev)
