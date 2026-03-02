@@ -32,7 +32,7 @@ def ensure_workspace(project_dir: Union[str, Path]) -> Path:
         Path to the scholar workspace directory.
     """
     scholar_path = Path(project_dir) / "scitex" / "scholar"
-    if scholar_path.exists():
+    if scholar_path.exists() and any(scholar_path.iterdir()):
         return scholar_path
 
     for subdir in SCHOLAR_SUBDIRS:
