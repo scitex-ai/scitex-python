@@ -57,7 +57,9 @@ def generate_mermaid_dag(
     elif session_id:
         chain_ids = db.get_chain(session_id)
     else:
-        chain_ids = []
+        # Full project DAG: all runs
+        all_runs = db.list_runs(limit=500)
+        chain_ids = [r["session_id"] for r in all_runs]
 
     if not chain_ids:
         lines.append('    empty["No runs found"]')
