@@ -376,6 +376,7 @@ async def rename_handler(
     confirm: bool = False,
     django_safe: bool = True,
     extra_excludes: list[str] | None = None,
+    force: bool = False,
 ) -> dict[str, Any]:
     """Bulk rename files, contents, directories, and symlinks.
 
@@ -396,6 +397,8 @@ async def rename_handler(
         Enable Django-safe mode.
     extra_excludes : list of str, optional
         Additional exclude patterns.
+    force : bool
+        Skip uncommitted changes check (default False).
 
     Returns
     -------
@@ -407,7 +410,7 @@ async def rename_handler(
     from scitex._dev._rename import RenameConfig, bulk_rename
     from scitex._dev._rename._safety import has_uncommitted_changes
 
-    if confirm and has_uncommitted_changes(directory):
+    if confirm and not force and has_uncommitted_changes(directory):
         return {"error": "Uncommitted changes detected. Commit or stash first."}
 
     config = RenameConfig(

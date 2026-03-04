@@ -21,7 +21,9 @@ class RenameConfig:
     django_safe: bool = True
     create_backup: bool = False
     # PATH-level filtering
-    path_includes: str = "py,txt,sh,md,yaml,toml,cfg,ini,json"
+    path_includes: str = (
+        "py,txt,sh,md,yaml,toml,cfg,ini,json,html,css,ts,js,tsx,jsx,scss,less,svg,xml"
+    )
     path_excludes: str = "__pycache__,staticfiles,node_modules,.git,venv,.venv"
     path_must_excludes: str = ".old,old,legacy,archive,backup,.backup,migrations"
     # SRC-level filtering

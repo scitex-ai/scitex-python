@@ -365,6 +365,7 @@ def register_dev_tools(mcp) -> None:
         confirm: bool = False,
         django_safe: bool = True,
         extra_excludes: list[str] | None = None,
+        force: bool = False,
     ) -> str:
         """[dev] Bulk rename files, contents, directories, and symlinks.
 
@@ -394,6 +395,8 @@ def register_dev_tools(mcp) -> None:
             Protect Django-specific patterns (db_table, related_name, etc).
         extra_excludes : list of str, optional
             Additional path patterns to exclude.
+        force : bool
+            Skip uncommitted changes check (default False).
 
         Returns
         -------
@@ -403,7 +406,7 @@ def register_dev_tools(mcp) -> None:
         from scitex._dev._mcp.handlers import rename_handler
 
         result = await rename_handler(
-            pattern, replacement, directory, confirm, django_safe, extra_excludes
+            pattern, replacement, directory, confirm, django_safe, extra_excludes, force
         )
         return _json(result)
 

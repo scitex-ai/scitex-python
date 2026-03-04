@@ -3,7 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-python/src/scitex/_mcp_tools/clew.py
 """Clew module tools for FastMCP unified server."""
 
-
 import json
 from typing import Optional
 
@@ -216,6 +215,8 @@ def register_clew_tools(mcp) -> None:
     async def clew_mermaid(
         session_id: Optional[str] = None,
         target_file: Optional[str] = None,
+        target_files: Optional[str] = None,
+        claims: bool = False,
     ) -> str:
         """[clew] Generate Mermaid diagram for verification DAG.
 
@@ -225,6 +226,10 @@ def register_clew_tools(mcp) -> None:
             Start from this session
         target_file : str, optional
             Start from session that produced this file
+        target_files : str, optional
+            Comma-separated list of target files (multi-target DAG)
+        claims : bool, optional
+            If True, build DAG from all registered claims
 
         Returns
         -------
@@ -238,9 +243,17 @@ def register_clew_tools(mcp) -> None:
         if target_file:
             target_file = str(Path(target_file).resolve())
 
+        multi_files = None
+        if target_files:
+            multi_files = [
+                str(Path(f.strip()).resolve()) for f in target_files.split(",")
+            ]
+
         mermaid_code = generate_mermaid_dag(
             session_id=session_id,
             target_file=target_file,
+            target_files=multi_files,
+            claims=claims,
         )
 
         return _json(
@@ -248,6 +261,62 @@ def register_clew_tools(mcp) -> None:
                 "mermaid": mermaid_code,
                 "session_id": session_id,
                 "target_file": target_file,
+                "target_files": multi_files,
+                "claims": claims,
+            }
+        )
+
+    @mcp.tool()
+    async def clew_dag(
+        target_files: Optional[str] = None,
+        claims: bool = False,
+    ) -> str:
+        """[clew] Verify full DAG for multiple targets or claims.
+
+        Parameters
+        ----------
+        target_files : str, optional
+            Comma-separated list of target file paths
+        claims : bool, optional
+            If True, build DAG from all registered claims
+
+        Returns
+        -------
+        str
+            JSON with DAG verification results
+        """
+        from pathlib import Path
+
+        if claims:
+            from scitex.clew import verify_claims_dag
+
+            dag_result = verify_claims_dag()
+        elif target_files:
+            from scitex.clew import verify_dag
+
+            targets = [str(Path(f.strip()).resolve()) for f in target_files.split(",")]
+            dag_result = verify_dag(targets)
+        else:
+            return _json({"error": "Specify target_files or claims=True"})
+
+        return _json(
+            {
+                "target_files": dag_result.target_files,
+                "status": dag_result.status.value,
+                "is_verified": dag_result.is_verified,
+                "num_runs": len(dag_result.runs),
+                "num_edges": len(dag_result.edges),
+                "topological_order": dag_result.topological_order,
+                "runs": [
+                    {
+                        "session_id": r.session_id,
+                        "script_path": r.script_path,
+                        "status": r.status.value,
+                        "is_verified": r.is_verified,
+                    }
+                    for r in dag_result.runs
+                ],
+                "edges": [{"parent": p, "child": c} for p, c in dag_result.edges],
             }
         )
 

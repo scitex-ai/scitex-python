@@ -166,7 +166,7 @@ def add_claim(
         db = get_db()
         sessions = db.find_session_by_file(source_file, role="output")
         if sessions:
-            source_session = sessions[0]["session_id"]
+            source_session = sessions[0]
 
     claim = Claim(
         claim_id=claim_id,
@@ -360,6 +360,47 @@ def verify_claim(claim_id_or_location: str) -> Dict:
     return result
 
 
+def verify_claims_dag(
+    file_path: Optional[str] = None,
+    claim_type: Optional[str] = None,
+) -> DAGVerification:
+    """Build a unified DAG from all claims, tracing each back to its source.
+
+    Parameters
+    ----------
+    file_path : str, optional
+        Filter claims by manuscript file path.
+    claim_type : str, optional
+        Filter claims by type.
+
+    Returns
+    -------
+    DAGVerification
+        Unified verification result covering all claim source chains merged.
+    """
+    from ._chain import DAGVerification, VerificationStatus
+    from ._dag import verify_dag
+
+    claims = list_claims(file_path=file_path, claim_type=claim_type)
+
+    # Collect unique source files from claims
+    source_files = []
+    for c in claims:
+        if c.source_file and c.source_file not in source_files:
+            source_files.append(c.source_file)
+
+    if not source_files:
+        return DAGVerification(
+            target_files=[],
+            runs=[],
+            edges=[],
+            status=VerificationStatus.UNKNOWN,
+            topological_order=[],
+        )
+
+    return verify_dag(source_files)
+
+
 def _resolve_claim(identifier: str, db) -> Optional[Claim]:
     """Resolve a claim by ID or location string."""
     conn = sqlite3.connect(str(db.db_path))
@@ -460,6 +501,7 @@ __all__ = [
     "add_claim",
     "list_claims",
     "verify_claim",
+    "verify_claims_dag",
     "format_claims",
     "migrate_add_claims_table",
 ]

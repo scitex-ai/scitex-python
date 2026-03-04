@@ -55,6 +55,7 @@ from __future__ import annotations
 # Chain verification
 from ._chain import (
     ChainVerification,
+    DAGVerification,
     FileVerification,
     RunVerification,
     VerificationLevel,
@@ -65,8 +66,24 @@ from ._chain import (
     verify_run,
 )
 
+# Claims
+from ._claim import (
+    Claim,
+    add_claim,
+    format_claims,
+    list_claims,
+    verify_claim,
+    verify_claims_dag,
+)
+
+# DAG verification
+from ._dag import verify_dag
+
 # Database
-from ._db import VerificationDB, get_db
+from ._db import VerificationDB, get_db, set_db
+
+# Examples
+from ._examples import init_examples
 
 # Hash utilities
 from ._hash import combine_hashes, hash_directory, hash_file, hash_files, verify_hash
@@ -79,6 +96,9 @@ from ._registry import ClewRegistry, get_registry
 
 # Rerun verification (separate module to avoid circular imports)
 from ._rerun import verify_by_rerun, verify_run_from_scratch
+
+# Stamping
+from ._stamp import Stamp, check_stamp, list_stamps, stamp
 
 # Tracker
 from ._tracker import (
@@ -142,6 +162,13 @@ def stats():
     return db.stats()
 
 
+def dag(targets=None, claims=False):
+    """Verify the DAG for multiple targets or all claims."""
+    if claims:
+        return verify_claims_dag()
+    return verify_dag(targets or [])
+
+
 def register(hash_value: str, source_type: str = "manual", **kwargs):
     """Register a hash with the remote Clew Registry on scitex.ai.
 
@@ -183,6 +210,7 @@ __all__ = [
     # Database
     "VerificationDB",
     "get_db",
+    "set_db",
     # Tracker
     "SessionTracker",
     "get_tracker",
@@ -195,12 +223,21 @@ __all__ = [
     "FileVerification",
     "RunVerification",
     "ChainVerification",
+    "DAGVerification",
     "verify_file",
     "verify_run",
     "verify_by_rerun",
     "verify_run_from_scratch",  # backward compat alias
     "verify_chain",
+    "verify_dag",
     "get_status",
+    # Claims
+    "Claim",
+    "add_claim",
+    "list_claims",
+    "verify_claim",
+    "verify_claims_dag",
+    "format_claims",
     # Visualization
     "format_run_verification",
     "format_run_detailed",
@@ -217,6 +254,7 @@ __all__ = [
     "run",
     "chain",
     "stats",
+    "dag",
     # Integration hooks
     "on_session_start",
     "on_session_close",
@@ -227,6 +265,13 @@ __all__ = [
     "get_registry",
     "register",
     "verify_remote",
+    # Stamping
+    "Stamp",
+    "stamp",
+    "check_stamp",
+    "list_stamps",
+    # Examples
+    "init_examples",
 ]
 
 

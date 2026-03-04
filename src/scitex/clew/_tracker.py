@@ -56,6 +56,9 @@ class SessionTracker:
         self._outputs: Dict[str, str] = {}
         self._script_hash: Optional[str] = None
         self._finalized = False
+        self._parent_sessions: set = set()
+        if parent_session:
+            self._parent_sessions.add(parent_session)
 
         self._db = get_db()
 
@@ -110,15 +113,14 @@ class SessionTracker:
                 role="input",
             )
 
-            # Auto-link parent: if this file was created by another session,
-            # set that session as our parent (first one found)
-            if self.parent_session is None:
-                producer_sessions = self._db.find_session_by_file(
-                    path_str, role="output"
-                )
-                if producer_sessions:
-                    self.parent_session = producer_sessions[0]
-                    self._db.set_parent(self.session_id, self.parent_session)
+            # Auto-link parents: record ALL producer sessions
+            producer_sessions = self._db.find_session_by_file(path_str, role="output")
+            for producer in producer_sessions:
+                if producer not in self._parent_sessions:
+                    self._parent_sessions.add(producer)
+                    self._db.add_parent(self.session_id, producer)
+                    if self.parent_session is None:
+                        self.parent_session = producer
 
         return self._inputs[path_str]
 

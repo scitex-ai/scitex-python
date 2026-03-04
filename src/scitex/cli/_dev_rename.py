@@ -21,6 +21,7 @@ import click
 @click.option("-e", "--exclude", multiple=True, help="Additional exclude patterns")
 @click.option("-b", "--backup", is_flag=True, help="Create backup before changes")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option("-f", "--force", is_flag=True, help="Skip uncommitted changes check")
 def rename(
     pattern,
     replacement,
@@ -30,6 +31,7 @@ def rename(
     exclude,
     backup,
     as_json,
+    force,
 ):
     r"""
     Bulk rename files, contents, directories, and symlinks.
@@ -67,7 +69,7 @@ def rename(
         extra_excludes=list(exclude),
     )
 
-    if not config.dry_run:
+    if not config.dry_run and not force:
         from scitex._dev._rename._safety import has_uncommitted_changes
 
         if has_uncommitted_changes(directory):
