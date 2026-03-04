@@ -86,6 +86,7 @@ def execute_rename(
     django_safe: bool = True,
     create_backup: bool = False,
     extra_excludes: list[str] | None = None,
+    force: bool = False,
     **kwargs: Any,
 ) -> RenameResult:
     """Execute rename with safety checks.
@@ -106,13 +107,15 @@ def execute_rename(
         Create backup before changes.
     extra_excludes : list of str, optional
         Additional exclude patterns.
+    force : bool
+        Skip uncommitted changes check (default False).
 
     Returns
     -------
     RenameResult
         Results of the rename operation.
     """
-    if has_uncommitted_changes(directory):
+    if not force and has_uncommitted_changes(directory):
         return _make_error_result(
             pattern,
             replacement,
@@ -178,12 +181,16 @@ def bulk_rename(config: RenameConfig) -> RenameResult:
             extra_excludes=config.extra_excludes,
         )
         preview = bulk_rename(dry_config)
-        if preview.collisions:
+        # Block file/symlink collisions; directory collisions are handled via merge
+        non_dir_collisions = [
+            c for c in preview.collisions if c.get("type") != "directory"
+        ]
+        if non_dir_collisions:
             return _make_error_result(
                 config.pattern,
                 config.replacement,
                 directory,
-                f"Collisions detected: {len(preview.collisions)} target(s) already exist. "
+                f"Collisions detected: {len(non_dir_collisions)} target(s) already exist. "
                 "Run dry-run to inspect.",
             )
 

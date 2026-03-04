@@ -158,10 +158,39 @@ def rename_file_names(config: RenameConfig, directory: str) -> list[dict[str, An
     return results
 
 
+def _merge_directory(src: Path, dst: Path) -> int:
+    """Move all children from src into dst, then remove empty src.
+
+    Returns number of items moved.
+    """
+    moved = 0
+    for child in list(src.iterdir()):
+        target = dst / child.name
+        if child.is_dir() and target.is_dir():
+            moved += _merge_directory(child, target)
+        else:
+            if target.exists():
+                target.unlink()
+            child.rename(target)
+            moved += 1
+    # Remove src if now empty
+    if src.exists() and not any(src.iterdir()):
+        src.rmdir()
+    return moved
+
+
 def rename_directory_names(
     config: RenameConfig, directory: str
 ) -> list[dict[str, Any]]:
-    """Step 4: Rename directories (deepest first)."""
+    """Step 4: Rename directories (deepest first).
+
+    Matches pattern against both:
+    - Leaf directory name (e.g., 'js')
+    - Relative path from root (e.g., 'static/scholar_app/js')
+    This enables patterns like 'scholar_app/js' to match path segments.
+
+    When target directory exists, merges contents into it.
+    """
     root = Path(directory)
     results = []
 
@@ -170,24 +199,37 @@ def rename_directory_names(
         if path.is_dir() and not path.is_symlink():
             if should_exclude_path(path, config):
                 continue
-            if config.pattern in path.name:
+            rel_path = str(path.relative_to(root))
+            if config.pattern in path.name or config.pattern in rel_path:
                 dirs.append(path)
 
     dirs.sort(key=lambda p: len(p.parts), reverse=True)
 
     for dir_path in dirs:
-        new_name = dir_path.name.replace(config.pattern, config.replacement)
-        new_path = dir_path.parent / new_name
+        if not dir_path.exists():
+            continue  # already moved by parent merge
+        if config.pattern in dir_path.name:
+            new_name = dir_path.name.replace(config.pattern, config.replacement)
+            new_path = dir_path.parent / new_name
+        else:
+            rel = str(dir_path.relative_to(root))
+            new_rel = rel.replace(config.pattern, config.replacement)
+            new_path = root / new_rel
         target_exists = new_path.exists() and new_path != dir_path
 
         if not config.dry_run:
-            dir_path.rename(new_path)
+            new_path.parent.mkdir(parents=True, exist_ok=True)
+            if target_exists:
+                _merge_directory(dir_path, new_path)
+            else:
+                dir_path.rename(new_path)
 
         results.append(
             {
                 "old_path": str(dir_path),
                 "new_path": str(new_path),
                 "target_exists": target_exists,
+                "merged": target_exists,
             }
         )
 

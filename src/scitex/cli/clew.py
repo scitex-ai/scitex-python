@@ -28,6 +28,7 @@ def clew(ctx, help_recursive):
       list      List all tracked runs with verification status
       run       Verify a specific session run
       chain     Verify dependency chain for a target file
+      dag       Verify multi-target DAG or all claims
       status    Show changed files (like git status)
       stats     Show database statistics
 
@@ -36,6 +37,7 @@ def clew(ctx, help_recursive):
       scitex clew list                          # List all runs
       scitex clew run 2025Y-11M-18D-09h12m03s   # Verify specific run
       scitex clew chain ./results/figure3.png  # Trace back to source
+      scitex clew dag report.json figure1.png  # Verify multi-target DAG
       scitex clew status                        # Show changes
     """
     if help_recursive:
@@ -165,7 +167,6 @@ def verify_run_cmd(targets, rerun, register, verbose, as_json):
                 verification = verify_run(target)
             results.append(verification)
 
-        # L3: register verified hashes with remote Clew Registry
         if register:
             from scitex.clew import get_registry
 
@@ -200,11 +201,11 @@ def verify_run_cmd(targets, rerun, register, verbose, as_json):
         else:
             all_verified = True
             for v in results:
-                badge = "✓✓" if v.level.value == "rerun" else "✓"
+                badge = "\u2713\u2713" if v.level.value == "rerun" else "\u2713"
                 if v.is_verified:
                     click.secho(f"{badge} {v.session_id}", fg="green")
                 else:
-                    click.secho(f"✗ {v.session_id}", fg="red")
+                    click.secho(f"\u2717 {v.session_id}", fg="red")
                     all_verified = False
                 if verbose:
                     click.echo(format_run_verification(v, verbose=True))
@@ -271,10 +272,10 @@ def verify_chain_cmd(target_file, verbose, mermaid, as_json):
 
             if chain.is_verified:
                 click.echo()
-                click.secho("✓ Chain fully verified!", fg="green")
+                click.secho("\u2713 Chain fully verified!", fg="green")
             else:
                 click.echo()
-                click.secho("✗ Chain verification failed", fg="red")
+                click.secho("\u2717 Chain verification failed", fg="red")
                 if chain.failed_runs:
                     click.echo(f"  {len(chain.failed_runs)} run(s) have issues")
                 sys.exit(1)
@@ -284,220 +285,14 @@ def verify_chain_cmd(target_file, verbose, mermaid, as_json):
         sys.exit(1)
 
 
-@clew.command("render")
-@click.argument("output_path", type=click.Path())
-@click.option("--session", "-s", help="Session ID to visualize")
-@click.option("--file", "-f", "target_file", help="Target file to trace chain")
-@click.option("--title", "-t", default="Verification DAG", help="Title for output")
-def render_cmd(output_path, session, target_file, title):
-    """
-    Render verification DAG to file (HTML, PNG, SVG, or Mermaid).
+# Wire in sub-module commands
+from scitex.cli._clew_claims import register_claim_commands
+from scitex.cli._clew_dag import register_dag_commands
+from scitex.cli._clew_misc import register_misc_commands
 
-    The output format is determined by the file extension:
-    - .html: Interactive HTML with Mermaid.js
-    - .png: PNG image
-    - .svg: SVG image
-    - .mmd: Raw Mermaid code
-
-    \b
-    Examples:
-      scitex clew render dag.html --file ./results/fig.png
-      scitex clew render dag.png --session 2025Y-11M-18D-09h12m03s
-    """
-    try:
-        if not session and not target_file:
-            click.secho("Error: Specify --session or --file", fg="red", err=True)
-            sys.exit(1)
-
-        from scitex.clew import render_dag
-
-        result_path = render_dag(
-            output_path=output_path,
-            session_id=session,
-            target_file=target_file,
-            title=title,
-        )
-        click.secho(f"Rendered to: {result_path}", fg="green")
-
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
-
-
-@clew.command("status")
-@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def status_cmd(as_json):
-    """
-    Show verification status (like git status).
-
-    Displays a summary of all tracked runs and highlights any
-    that have changed files (hash mismatches) or missing files.
-
-    \b
-    Examples:
-      scitex clew status
-      scitex clew status --json
-    """
-    try:
-        from scitex.clew import format_status, get_status
-
-        status = get_status()
-
-        if as_json:
-            import json
-
-            click.echo(json.dumps(status, indent=2))
-        else:
-            output = format_status(status)
-            click.echo(output)
-
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
-
-
-@clew.command("stats")
-@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def stats_cmd(as_json):
-    """
-    Show database statistics.
-
-    \b
-    Examples:
-      scitex clew stats
-      scitex clew stats --json
-    """
-    try:
-        from scitex.clew import get_db
-
-        db = get_db()
-        db_stats = db.stats()
-
-        if as_json:
-            import json
-
-            click.echo(json.dumps(db_stats, indent=2))
-        else:
-            click.secho("Verification Database Statistics", fg="cyan", bold=True)
-            click.echo("=" * 40)
-            click.echo(f"Database path:        {db_stats['db_path']}")
-            click.echo(f"Total runs:           {db_stats['total_runs']}")
-            click.echo(f"  Successful:         {db_stats['success_runs']}")
-            click.echo(f"  Failed:             {db_stats['failed_runs']}")
-            click.echo(f"Total file records:   {db_stats['total_file_records']}")
-            click.echo(f"Unique files tracked: {db_stats['unique_files']}")
-
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
-
-
-@clew.command("clear")
-@click.option("--force", "-f", is_flag=True, help="Skip confirmation")
-def clear_cmd(force):
-    """
-    Clear the verification database.
-
-    \b
-    Examples:
-      scitex clew clear
-      scitex clew clear -f
-    """
-    try:
-        from scitex.clew import get_db
-
-        db = get_db()
-        db_stats = db.stats()
-
-        if not force:
-            click.echo(f"This will delete {db_stats['total_runs']} runs and ")
-            click.echo(f"{db_stats['total_file_records']} file records.")
-            if not click.confirm("Are you sure?"):
-                click.echo("Cancelled.")
-                return
-
-        # Delete the database file
-        db_path = Path(db_stats["db_path"])
-        if db_path.exists():
-            db_path.unlink()
-            click.secho("Database cleared.", fg="green")
-        else:
-            click.echo("Database already empty.")
-
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
-
-
-@clew.group(invoke_without_command=True)
-@click.pass_context
-def mcp(ctx):
-    """
-    MCP (Model Context Protocol) server operations.
-
-    \b
-    Commands:
-      list-tools - List available MCP tools
-
-    \b
-    Examples:
-      scitex clew mcp list-tools
-    """
-    if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
-
-
-@mcp.command("list-tools")
-@click.option("-v", "--verbose", count=True, help="-v params, -vv returns")
-def list_tools(verbose):
-    """List available MCP tools for verification (reads from actual registration)."""
-    click.secho("Clew MCP Tools", fg="cyan", bold=True)
-    click.echo()
-    # Collect tools by running register function against a mock MCP server
-    collected = []
-
-    class _MockMCP:
-        def tool(self):
-            def decorator(fn):
-                import inspect
-
-                sig = inspect.signature(fn)
-                params = [p for p in sig.parameters if p not in ("self", "cls")]
-                doc = (fn.__doc__ or "").strip().split("\n")[0].replace("[clew] ", "")
-                collected.append((fn.__name__, doc, params))
-                return fn
-
-            return decorator
-
-    from scitex._mcp_tools.clew import register_clew_tools
-
-    register_clew_tools(_MockMCP())
-
-    for name, desc, params in collected:
-        click.secho(f"  {name}", fg="green", bold=True, nl=False)
-        click.echo(f": {desc}")
-        if verbose >= 1 and params:
-            click.echo(f"    params: {', '.join(params)}")
-        if verbose >= 1:
-            click.echo()
-
-
-@clew.command("list-python-apis")
-@click.option("-v", "--verbose", count=True, help="Verbosity: -v +doc, -vv full doc")
-@click.option("-d", "--max-depth", type=int, default=5, help="Max recursion depth")
-@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-@click.pass_context
-def list_python_apis(ctx, verbose, max_depth, as_json):
-    """List Python APIs (alias for: scitex introspect api scitex.clew)."""
-    from scitex.cli.introspect import api
-
-    ctx.invoke(
-        api,
-        dotted_path="scitex.clew",
-        verbose=verbose,
-        max_depth=max_depth,
-        as_json=as_json,
-    )
+register_dag_commands(clew)
+register_claim_commands(clew)
+register_misc_commands(clew)
 
 
 if __name__ == "__main__":

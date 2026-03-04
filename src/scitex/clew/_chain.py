@@ -8,7 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from ._db import get_db
 from ._hash import hash_file
@@ -95,6 +95,25 @@ class ChainVerification:
     target_file: str
     runs: List[RunVerification]
     status: VerificationStatus
+
+    @property
+    def is_verified(self) -> bool:
+        return self.status == VerificationStatus.VERIFIED
+
+    @property
+    def failed_runs(self) -> List[RunVerification]:
+        return [r for r in self.runs if not r.is_verified]
+
+
+@dataclass
+class DAGVerification:
+    """Verification result for a multi-target DAG."""
+
+    target_files: List[str]
+    runs: List[RunVerification]
+    edges: List[Tuple[str, str]]  # (parent_sid, child_sid)
+    status: VerificationStatus
+    topological_order: List[str]
 
     @property
     def is_verified(self) -> bool:

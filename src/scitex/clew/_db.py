@@ -13,17 +13,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+from ._db_chain import ChainMixin
 from ._db_queries import VerificationQueryMixin
 
 
-class VerificationDB(VerificationQueryMixin):
+class VerificationDB(VerificationQueryMixin, ChainMixin):
     """
     SQLite database for tracking session runs and file hashes.
 
     Stores:
     - runs: session_id, script_path, timestamps, status
     - file_hashes: session_id, file_path, hash, role (input/script/output)
-    - chains: parent-child relationships between sessions
+    - session_parents: multi-parent DAG junction table
 
     Examples
     --------
@@ -105,8 +106,26 @@ class VerificationDB(VerificationQueryMixin):
 
                 CREATE INDEX IF NOT EXISTS idx_verification_session
                     ON verification_results(session_id);
-            """
+
+                CREATE TABLE IF NOT EXISTS session_parents (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT NOT NULL,
+                    parent_session TEXT NOT NULL,
+                    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES runs(session_id),
+                    FOREIGN KEY (parent_session) REFERENCES runs(session_id),
+                    UNIQUE(session_id, parent_session)
+                );
+
+                CREATE INDEX IF NOT EXISTS idx_session_parents_session
+                    ON session_parents(session_id);
+                CREATE INDEX IF NOT EXISTS idx_session_parents_parent
+                    ON session_parents(parent_session);
+                """
             )
+
+        # Migrate existing parent_session data to junction table
+        self._migrate_session_parents()
 
     @contextmanager
     def _connect(self):
@@ -201,25 +220,6 @@ class VerificationDB(VerificationQueryMixin):
                     combined_hash,
                     session_id,
                 ),
-            )
-
-    def set_parent(self, session_id: str, parent_session: str) -> None:
-        """
-        Set the parent session for a run.
-
-        Parameters
-        ----------
-        session_id : str
-            Session identifier
-        parent_session : str
-            Parent session identifier
-        """
-        with self._connect() as conn:
-            conn.execute(
-                """
-                UPDATE runs SET parent_session = ? WHERE session_id = ?
-                """,
-                (parent_session, session_id),
             )
 
     def get_run(self, session_id: str) -> Optional[Dict[str, Any]]:
@@ -416,53 +416,6 @@ class VerificationDB(VerificationQueryMixin):
                     """,
                     (file_path,),
                 ).fetchall()
-            return [row["session_id"] for row in rows]
-
-    # -------------------------------------------------------------------------
-    # Chain operations
-    # -------------------------------------------------------------------------
-
-    def get_chain(self, session_id: str) -> List[str]:
-        """
-        Get the chain of parent sessions for a given session.
-
-        Parameters
-        ----------
-        session_id : str
-            Session identifier
-
-        Returns
-        -------
-        list of str
-            List of session IDs from current to root
-        """
-        chain = [session_id]
-        current = session_id
-
-        with self._connect() as conn:
-            while True:
-                row = conn.execute(
-                    "SELECT parent_session FROM runs WHERE session_id = ?",
-                    (current,),
-                ).fetchone()
-                if not row or not row["parent_session"]:
-                    break
-                current = row["parent_session"]
-                chain.append(current)
-
-        return chain
-
-    def get_children(self, session_id: str) -> List[str]:
-        """Get child sessions that depend on this session."""
-        with self._connect() as conn:
-            rows = conn.execute(
-                """
-                SELECT session_id FROM runs
-                WHERE parent_session = ?
-                ORDER BY started_at
-                """,
-                (session_id,),
-            ).fetchall()
             return [row["session_id"] for row in rows]
 
 
