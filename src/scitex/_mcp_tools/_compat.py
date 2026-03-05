@@ -34,15 +34,21 @@ def get_tools_sync(mcp_server, include_mounted: bool = True) -> dict:
         # FastMCP 2.x: _tool_manager.get_tools() returns dict with mounted
         if tm is not None and hasattr(tm, "get_tools"):
             return await tm.get_tools()
-        # FastMCP 3.x: mcp.list_tools() returns list
+        # FastMCP 3.x: mcp.list_tools() returns list of Tool objects
         tools = await mcp_server.list_tools()
         return {t.name: t for t in tools}
 
     try:
-        return asyncio.run(_gather())
+        loop = asyncio.get_running_loop()
     except RuntimeError:
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(_gather())
+        loop = None
+
+    if loop is not None and loop.is_running():
+        import concurrent.futures
+
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            return pool.submit(asyncio.run, _gather()).result()
+    return asyncio.run(_gather())
 
 
 # EOF

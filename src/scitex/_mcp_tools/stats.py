@@ -3,7 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/stats.py
 """Stats module tools for FastMCP unified server."""
 
-
 import json
 from typing import List, Optional
 
@@ -25,7 +24,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         has_control_group: bool = False,
         top_k: int = 3,
     ) -> str:
-        """[stats] Recommend appropriate statistical tests based on data characteristics."""
+        """Recommend appropriate statistical tests based on data characteristics."""
         from scitex.stats._mcp.handlers import recommend_tests_handler
 
         result = await recommend_tests_handler(
@@ -47,7 +46,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         columns: Optional[List[str]] = None,
         alternative: str = "two-sided",
     ) -> str:
-        """[stats] Execute a statistical test on provided data."""
+        """Execute a statistical test on provided data."""
         from scitex.stats._mcp.handlers import run_test_handler
 
         result = await run_test_handler(
@@ -71,7 +70,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         ci_lower: Optional[float] = None,
         ci_upper: Optional[float] = None,
     ) -> str:
-        """[stats] Format statistical results in journal style (APA, Nature, etc.)."""
+        """Format statistical results in journal style (APA, Nature, etc.)."""
         from scitex.stats._mcp.handlers import format_results_handler
 
         result = await format_results_handler(
@@ -97,7 +96,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         n_groups: int = 2,
         ratio: float = 1.0,
     ) -> str:
-        """[stats] Calculate statistical power or required sample size."""
+        """Calculate statistical power or required sample size."""
         from scitex.stats._mcp.handlers import power_analysis_handler
 
         result = await power_analysis_handler(
@@ -117,7 +116,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         method: str = "fdr_bh",
         alpha: float = 0.05,
     ) -> str:
-        """[stats] Apply multiple comparison correction to p-values."""
+        """Apply multiple comparison correction to p-values."""
         from scitex.stats._mcp.handlers import correct_pvalues_handler
 
         result = await correct_pvalues_handler(
@@ -132,7 +131,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         data: List[float],
         percentiles: Optional[List[float]] = None,
     ) -> str:
-        """[stats] Calculate descriptive statistics for data."""
+        """Calculate descriptive statistics for data."""
         from scitex.stats._mcp.handlers import describe_handler
 
         result = await describe_handler(
@@ -148,7 +147,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         measure: str = "cohens_d",
         pooled: bool = True,
     ) -> str:
-        """[stats] Calculate effect size between groups."""
+        """Calculate effect size between groups."""
         from scitex.stats._mcp.handlers import effect_size_handler
 
         result = await effect_size_handler(
@@ -164,7 +163,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         data: List[float],
         method: str = "shapiro",
     ) -> str:
-        """[stats] Test whether data follows a normal distribution."""
+        """Test whether data follows a normal distribution."""
         from scitex.stats._mcp.handlers import normality_test_handler
 
         result = await normality_test_handler(
@@ -180,7 +179,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         method: str = "tukey",
         control_group: int = 0,
     ) -> str:
-        """[stats] Run post-hoc pairwise comparisons after significant ANOVA/Kruskal."""
+        """Run post-hoc pairwise comparisons after significant ANOVA/Kruskal."""
         from scitex.stats._mcp.handlers import posthoc_test_handler
 
         result = await posthoc_test_handler(
@@ -196,7 +195,7 @@ def register_stats_tools(mcp) -> None:  # noqa: C901
         p_value: float,
         thresholds: Optional[List[float]] = None,
     ) -> str:
-        """[stats] Convert p-value to significance stars (*, **, ***, ns)."""
+        """Convert p-value to significance stars (*, **, ***, ns)."""
         from scitex.stats._mcp.handlers import p_to_stars_handler
 
         result = await p_to_stars_handler(

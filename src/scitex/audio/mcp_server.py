@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2026-02-06 23:03:14 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-python/src/scitex/audio/mcp_server.py
 
@@ -92,7 +91,7 @@ if FASTMCP_AVAILABLE:
         agent_id: Optional[str] = None,
         signature: bool = False,
     ) -> str:
-        """[audio] Convert text to speech with fallback (pyttsx3 -> gtts -> elevenlabs).
+        """Convert text to speech with fallback (pyttsx3 -> gtts -> elevenlabs).
 
         Smart routing: Automatically uses relay when local audio unavailable.
 

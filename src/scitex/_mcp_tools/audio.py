@@ -28,7 +28,7 @@ def register_audio_tools(mcp) -> None:
         wait: bool = True,
         signature: bool = False,
     ) -> str:
-        """[audio] Convert text to speech with smart routing.
+        """Convert text to speech with smart routing.
 
         Smart routing (mode=auto, default):
         - If local audio sink is SUSPENDED and relay available -> uses relay

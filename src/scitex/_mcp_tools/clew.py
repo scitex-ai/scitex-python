@@ -19,7 +19,7 @@ def register_clew_tools(mcp) -> None:
         limit: int = 50,
         status_filter: Optional[str] = None,
     ) -> str:
-        """[clew] List all tracked runs with verification status.
+        """List all tracked runs with verification status.
 
         Parameters
         ----------
@@ -64,7 +64,7 @@ def register_clew_tools(mcp) -> None:
     async def clew_run(
         session_or_path: str,
     ) -> str:
-        """[clew] Verify a specific session run by checking all file hashes.
+        """Verify a specific session run by checking all file hashes.
 
         Parameters
         ----------
@@ -131,7 +131,7 @@ def register_clew_tools(mcp) -> None:
     async def clew_chain(
         target_file: str,
     ) -> str:
-        """[clew] Verify the dependency chain for a target file.
+        """Verify the dependency chain for a target file.
 
         Traces back through all sessions that contributed to producing
         the target file and verifies each one.
@@ -184,7 +184,7 @@ def register_clew_tools(mcp) -> None:
 
     @mcp.tool()
     async def clew_status() -> str:
-        """[clew] Show verification status summary (like git status).
+        """Show verification status summary (like git status).
 
         Returns
         -------
@@ -198,7 +198,7 @@ def register_clew_tools(mcp) -> None:
 
     @mcp.tool()
     async def clew_stats() -> str:
-        """[clew] Show verification database statistics.
+        """Show verification database statistics.
 
         Returns
         -------
@@ -218,7 +218,7 @@ def register_clew_tools(mcp) -> None:
         target_files: Optional[str] = None,
         claims: bool = False,
     ) -> str:
-        """[clew] Generate Mermaid diagram for verification DAG.
+        """Generate Mermaid diagram for verification DAG.
 
         Parameters
         ----------
@@ -271,7 +271,7 @@ def register_clew_tools(mcp) -> None:
         target_files: Optional[str] = None,
         claims: bool = False,
     ) -> str:
-        """[clew] Verify full DAG for multiple targets or claims.
+        """Verify full DAG for multiple targets or claims.
 
         Parameters
         ----------

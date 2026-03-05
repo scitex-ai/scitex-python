@@ -5,7 +5,6 @@ Single source of truth: scitex-linter MCP tools.
 """
 
 
-
 def register_linter_tools(mcp) -> None:
     """Register linter tools by delegating to scitex-linter package."""
     try:
@@ -16,7 +15,7 @@ def register_linter_tools(mcp) -> None:
 
         @mcp.tool()
         def linter_usage() -> str:
-            """[linter] Get usage guide for SciTeX Linter (not installed)."""
+            """Get usage guide for SciTeX Linter (not installed)."""
             return "scitex-linter is required. Install with: pip install scitex-linter"
 
 

@@ -7,7 +7,6 @@ Single source of truth: scitex-writer MCP tools.
 """
 
 
-
 def register_writer_tools(mcp) -> None:
     """Register writer tools by delegating to scitex-writer package."""
     try:
@@ -19,7 +18,7 @@ def register_writer_tools(mcp) -> None:
         # Fallback when scitex-writer is not installed
         @mcp.tool()
         def writer_usage() -> str:
-            """[writer] Get usage guide for SciTeX Writer (not installed)."""
+            """Get usage guide for SciTeX Writer (not installed)."""
             return "scitex-writer is required. Install with: pip install scitex-writer"
 
 

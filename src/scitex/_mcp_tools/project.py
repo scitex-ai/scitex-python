@@ -19,7 +19,7 @@ def register_project_tools(mcp) -> None:
         relative_path: str = ".",
         max_depth: int = 3,
     ) -> str:
-        """[project] List files and directories in a project directory.
+        """List files and directories in a project directory.
 
         Parameters
         ----------
@@ -45,7 +45,7 @@ def register_project_tools(mcp) -> None:
         root_path: str,
         relative_path: str,
     ) -> str:
-        """[project] Read the content of a file in a project.
+        """Read the content of a file in a project.
 
         Parameters
         ----------
@@ -72,7 +72,7 @@ def register_project_tools(mcp) -> None:
         relative_path: str,
         content: str,
     ) -> str:
-        """[project] Write or create a file in a project.
+        """Write or create a file in a project.
 
         Creates any missing parent directories automatically.
 
@@ -103,7 +103,7 @@ def register_project_tools(mcp) -> None:
         relative_path: str = ".",
         max_results: int = 50,
     ) -> str:
-        """[project] Search project files by name glob and/or content substring.
+        """Search project files by name glob and/or content substring.
 
         At least one of name_pattern or content_pattern must be provided.
 
@@ -140,7 +140,7 @@ def register_project_tools(mcp) -> None:
         code: str,
         timeout: int = 30,
     ) -> str:
-        """[project] Execute Python code in the project directory.
+        """Execute Python code in the project directory.
 
         Use this to generate binary files (audio, video, images) that
         project_write_file cannot create (it only writes text).
@@ -172,7 +172,7 @@ def register_project_tools(mcp) -> None:
         command: str,
         timeout: int = 30,
     ) -> str:
-        """[project] Execute a shell command in the project directory.
+        """Execute a shell command in the project directory.
 
         Use this to run system commands (ffmpeg, sox, imagemagick, etc.)
         for file processing. The command runs via /bin/bash with cwd

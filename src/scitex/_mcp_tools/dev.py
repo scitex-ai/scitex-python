@@ -19,7 +19,7 @@ def register_dev_tools(mcp) -> None:
     async def dev_versions_list(
         packages: list[str] | None = None,
     ) -> str:
-        """[dev] List versions across the scitex ecosystem.
+        """List versions across the scitex ecosystem.
 
         Shows version information from multiple sources:
         - pyproject.toml (local source)
@@ -47,7 +47,7 @@ def register_dev_tools(mcp) -> None:
 
     @mcp.tool()
     async def dev_config_show() -> str:
-        """[dev] Get current developer configuration.
+        """Get current developer configuration.
 
         Returns the configuration from ~/.scitex/dev_config.yaml including:
         - Packages to track
@@ -74,7 +74,7 @@ def register_dev_tools(mcp) -> None:
         pattern: str = "",
         parallel: str = "auto",
     ) -> str:
-        """[dev] Run project tests locally via pytest.
+        """Run project tests locally via pytest.
 
         Auto-detects project root via git. Uses parallel execution by default.
 
@@ -115,7 +115,7 @@ def register_dev_tools(mcp) -> None:
         hpc_mem: str = "16G",
         async_mode: bool = False,
     ) -> str:
-        """[dev] Run project tests on HPC (Spartan) via Slurm.
+        """Run project tests on HPC (Spartan) via Slurm.
 
         Syncs project via rsync, then runs pytest via srun (blocking)
         or sbatch (async). Use dev_test_hpc_poll to check async job status.
@@ -155,7 +155,7 @@ def register_dev_tools(mcp) -> None:
     async def dev_test_hpc_poll(
         job_id: str | None = None,
     ) -> str:
-        """[dev] Check HPC test job status.
+        """Check HPC test job status.
 
         Queries sacct for the job state. If completed/failed, also fetches
         the last 20 lines of output.
@@ -180,7 +180,7 @@ def register_dev_tools(mcp) -> None:
     async def dev_test_hpc_result(
         job_id: str | None = None,
     ) -> str:
-        """[dev] Fetch full HPC test output.
+        """Fetch full HPC test output.
 
         Downloads the complete stdout from a finished HPC test job via scp.
 
@@ -206,7 +206,7 @@ def register_dev_tools(mcp) -> None:
         install: bool = True,
         confirm: bool = False,
     ) -> str:
-        """[dev] Sync ecosystem packages to remote hosts (git stash, pull, pip install).
+        """Sync ecosystem packages to remote hosts (git stash, pull, pip install).
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute. Parallel by default across hosts and packages.
@@ -238,7 +238,7 @@ def register_dev_tools(mcp) -> None:
         packages: list[str] | None = None,
         confirm: bool = False,
     ) -> str:
-        """[dev] Install all local editable packages (pip install -e).
+        """Install all local editable packages (pip install -e).
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute.
@@ -266,7 +266,7 @@ def register_dev_tools(mcp) -> None:
         host: str | None = None,
         packages: list[str] | None = None,
     ) -> str:
-        """[dev] Show git diff on remote host(s). Read-only operation.
+        """Show git diff on remote host(s). Read-only operation.
 
         Shows uncommitted changes (git status + git diff) on remote hosts.
         Use this to review changes before committing with dev_versions_commit.
@@ -296,7 +296,7 @@ def register_dev_tools(mcp) -> None:
         push: bool = True,
         confirm: bool = False,
     ) -> str:
-        """[dev] Commit dirty changes on a remote host and push to origin.
+        """Commit dirty changes on a remote host and push to origin.
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute. Auto-generates commit message if not provided.
@@ -331,7 +331,7 @@ def register_dev_tools(mcp) -> None:
         confirm: bool = False,
         stash: bool = True,
     ) -> str:
-        """[dev] Pull latest from origin to local repos.
+        """Pull latest from origin to local repos.
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute. Use after dev_versions_commit to sync remote changes locally.
@@ -367,7 +367,7 @@ def register_dev_tools(mcp) -> None:
         extra_excludes: list[str] | None = None,
         force: bool = False,
     ) -> str:
-        """[dev] Bulk rename files, contents, directories, and symlinks.
+        """Bulk rename files, contents, directories, and symlinks.
 
         Two-step safety: call first without confirm to preview changes,
         then with confirm=True to execute. Django-safe by default
