@@ -3,7 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/template.py
 """Template module tools for FastMCP unified server."""
 
-
 import json
 from typing import Optional
 
@@ -24,7 +23,7 @@ def register_template_tools(mcp) -> None:
         branch: Optional[str] = None,
         tag: Optional[str] = None,
     ) -> str:
-        """[template] Create a new project by cloning a template."""
+        """Create a new project by cloning a template."""
         from scitex.template._mcp.handlers import clone_template_handler
 
         result = await clone_template_handler(
@@ -39,7 +38,7 @@ def register_template_tools(mcp) -> None:
 
     @mcp.tool()
     async def template_list_git_strategies() -> str:
-        """[template] List available git initialization strategies for template cloning."""
+        """List available git initialization strategies for template cloning."""
         from scitex.template._mcp.handlers import list_git_strategies_handler
 
         result = await list_git_strategies_handler()
@@ -51,7 +50,7 @@ def register_template_tools(mcp) -> None:
         filepath: Optional[str] = None,
         docstring: Optional[str] = None,
     ) -> str:
-        """[template] Get a code template for scripts and modules. Core: session, io, config. Module usage: plt, stats, scholar, audio, capture, diagram, canvas, writer. Use 'all' for all templates combined."""
+        """Get a code template for scripts and modules. Core: session, io, config. Module usage: plt, stats, scholar, audio, capture, diagram, canvas, writer. Use 'all' for all templates combined."""
         from scitex.template._mcp.handlers import get_code_template_handler
 
         result = await get_code_template_handler(
@@ -63,7 +62,7 @@ def register_template_tools(mcp) -> None:
 
     @mcp.tool()
     async def template_list_code_templates() -> str:
-        """[template] List all available code templates for scripts and modules."""
+        """List all available code templates for scripts and modules."""
         from scitex.template._mcp.handlers import list_code_templates_handler
 
         result = await list_code_templates_handler()

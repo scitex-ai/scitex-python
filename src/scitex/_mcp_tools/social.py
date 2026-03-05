@@ -7,7 +7,6 @@ Single source of truth: socialia MCP tools.
 """
 
 
-
 def register_social_tools(mcp) -> None:
     """Register social tools by delegating to socialia package.
 
@@ -24,7 +23,7 @@ def register_social_tools(mcp) -> None:
         # Fallback when socialia is not installed
         @mcp.tool()
         def social_status() -> str:
-            """[social] Get social media status (not installed)."""
+            """Get social media status (not installed)."""
             return "socialia is required. Install with: pip install socialia"
 
 

@@ -17,7 +17,7 @@ def register_tunnel_tools(mcp) -> None:
 
     @mcp.tool()
     async def tunnel_setup(port: int, bastion_server: str, secret_key_path: str) -> str:
-        """[tunnel] Set up a persistent SSH reverse tunnel.
+        """Set up a persistent SSH reverse tunnel.
 
         Creates an autossh systemd service for NAT traversal.
         The tunnel forwards a remote port on the bastion server
@@ -30,7 +30,7 @@ def register_tunnel_tools(mcp) -> None:
 
     @mcp.tool()
     async def tunnel_remove(port: int) -> str:
-        """[tunnel] Remove a persistent SSH reverse tunnel.
+        """Remove a persistent SSH reverse tunnel.
 
         Stops and disables the autossh systemd service for the given port.
         """
@@ -41,7 +41,7 @@ def register_tunnel_tools(mcp) -> None:
 
     @mcp.tool()
     async def tunnel_status(port: int = 0) -> str:
-        """[tunnel] Check status of SSH reverse tunnels.
+        """Check status of SSH reverse tunnels.
 
         If port is 0 (default), shows all tunnel services.
         Otherwise shows status for the specific port.

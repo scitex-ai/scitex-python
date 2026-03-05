@@ -4,7 +4,6 @@
 
 """Introspection module tools for FastMCP unified server."""
 
-
 import json
 from typing import Optional
 
@@ -23,7 +22,7 @@ def register_introspect_tools(mcp) -> None:
         include_defaults: bool = True,
         include_annotations: bool = True,
     ) -> str:
-        """[introspect] Get function/class signature with parameters and types."""
+        """Get function/class signature with parameters and types."""
         from scitex.introspect._mcp.handlers import q_handler
 
         result = await q_handler(
@@ -39,7 +38,7 @@ def register_introspect_tools(mcp) -> None:
         max_lines: Optional[int] = None,
         include_decorators: bool = True,
     ) -> str:
-        """[introspect] Get source code of a Python object."""
+        """Get source code of a Python object."""
         from scitex.introspect._mcp.handlers import qq_handler
 
         result = await qq_handler(
@@ -56,7 +55,7 @@ def register_introspect_tools(mcp) -> None:
         kind: Optional[str] = None,
         include_inherited: bool = False,
     ) -> str:
-        """[introspect] List members of module/class (like dir()). filter: all|public|private|dunder."""
+        """List members of module/class (like dir()). filter: all|public|private|dunder."""
         from scitex.introspect._mcp.handlers import dir_handler
 
         result = await dir_handler(
@@ -74,7 +73,7 @@ def register_introspect_tools(mcp) -> None:
         docstring: bool = False,
         root_only: bool = False,
     ) -> str:
-        """[introspect] List the API tree of a module recursively."""
+        """List the API tree of a module recursively."""
         from scitex.introspect._mcp.handlers import list_api_handler
 
         result = await list_api_handler(
@@ -90,7 +89,7 @@ def register_introspect_tools(mcp) -> None:
         dotted_path: str,
         format: str = "raw",
     ) -> str:
-        """[introspect] Get docstring of a Python object. format: raw|parsed|summary."""
+        """Get docstring of a Python object. format: raw|parsed|summary."""
         from scitex.introspect._mcp.handlers import docstring_handler
 
         result = await docstring_handler(
@@ -101,7 +100,7 @@ def register_introspect_tools(mcp) -> None:
 
     @mcp.tool()
     async def introspect_exports(dotted_path: str) -> str:
-        """[introspect] Get __all__ exports of a module."""
+        """Get __all__ exports of a module."""
         from scitex.introspect._mcp.handlers import exports_handler
 
         result = await exports_handler(dotted_path=dotted_path)
@@ -113,7 +112,7 @@ def register_introspect_tools(mcp) -> None:
         search_paths: Optional[str] = None,
         max_results: int = 10,
     ) -> str:
-        """[introspect] Find usage examples in tests/examples directories."""
+        """Find usage examples in tests/examples directories."""
         from scitex.introspect._mcp.handlers import examples_handler
 
         # Parse search_paths if provided as comma-separated string
@@ -136,7 +135,7 @@ def register_introspect_tools(mcp) -> None:
         include_builtins: bool = False,
         max_depth: int = 10,
     ) -> str:
-        """[introspect] Get class inheritance hierarchy (MRO + subclasses)."""
+        """Get class inheritance hierarchy (MRO + subclasses)."""
         from scitex.introspect._mcp.handlers import class_hierarchy_handler
 
         result = await class_hierarchy_handler(
@@ -151,7 +150,7 @@ def register_introspect_tools(mcp) -> None:
         dotted_path: str,
         include_extras: bool = True,
     ) -> str:
-        """[introspect] Get detailed type hint analysis for function/class."""
+        """Get detailed type hint analysis for function/class."""
         from scitex.introspect._mcp.handlers import type_hints_handler
 
         result = await type_hints_handler(
@@ -165,7 +164,7 @@ def register_introspect_tools(mcp) -> None:
         dotted_path: str,
         categorize: bool = True,
     ) -> str:
-        """[introspect] Get all imports from a module (AST-based static analysis)."""
+        """Get all imports from a module (AST-based static analysis)."""
         from scitex.introspect._mcp.handlers import imports_handler
 
         result = await imports_handler(
@@ -180,7 +179,7 @@ def register_introspect_tools(mcp) -> None:
         recursive: bool = False,
         max_depth: int = 3,
     ) -> str:
-        """[introspect] Get module dependencies (what it imports)."""
+        """Get module dependencies (what it imports)."""
         from scitex.introspect._mcp.handlers import dependencies_handler
 
         result = await dependencies_handler(
@@ -197,7 +196,7 @@ def register_introspect_tools(mcp) -> None:
         timeout_seconds: int = 10,
         internal_only: bool = True,
     ) -> str:
-        """[introspect] Get function call graph (with timeout protection)."""
+        """Get function call graph (with timeout protection)."""
         from scitex.introspect._mcp.handlers import call_graph_handler
 
         result = await call_graph_handler(

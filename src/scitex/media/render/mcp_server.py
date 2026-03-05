@@ -32,7 +32,7 @@ if FASTMCP_AVAILABLE:
         root_path: Optional[str] = None,
         alt: str = "",
     ) -> str:
-        """[render] Display a media file in the specified target.
+        """Display a media file in the specified target.
 
         Args:
             path: File path to display.
@@ -46,7 +46,7 @@ if FASTMCP_AVAILABLE:
 
     @mcp.tool()
     def render_detect(text: str, root_path: Optional[str] = None) -> str:
-        """[render] Detect media file references in text.
+        """Detect media file references in text.
 
         Args:
             text: Text containing file paths.
@@ -58,7 +58,7 @@ if FASTMCP_AVAILABLE:
 
     @mcp.tool()
     def render_classify(path: str) -> str:
-        """[render] Classify a file by media type.
+        """Classify a file by media type.
 
         Args:
             path: File path to classify.

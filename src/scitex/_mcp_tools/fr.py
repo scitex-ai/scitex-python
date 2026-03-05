@@ -19,7 +19,7 @@ def register_fr_tools(mcp) -> None:
 
         @mcp.tool()
         def plt_stx_not_available() -> str:
-            """[plt] figrecipe not installed."""
+            """Figrecipe not installed."""
             return "figrecipe is required. Install with: pip install figrecipe"
 
         return
