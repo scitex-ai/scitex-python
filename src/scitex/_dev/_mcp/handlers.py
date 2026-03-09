@@ -377,6 +377,9 @@ async def rename_handler(
     django_safe: bool = True,
     extra_excludes: list[str] | None = None,
     force: bool = False,
+    skip_ids: list[str] | None = None,
+    use_sudo: bool = False,
+    sudo_password: str | None = None,
 ) -> dict[str, Any]:
     """Bulk rename files, contents, directories, and symlinks.
 
@@ -399,6 +402,13 @@ async def rename_handler(
         Additional exclude patterns.
     force : bool
         Skip uncommitted changes check (default False).
+    skip_ids : list of str, optional
+        IDs of changes to skip (from preview output).
+    use_sudo : bool
+        Use sudo for file operations (default False).
+    sudo_password : str, optional
+        Password for non-interactive sudo -S. Required when use_sudo=True
+        on systems without NOPASSWD configured.
 
     Returns
     -------
@@ -413,6 +423,11 @@ async def rename_handler(
     if confirm and not force and has_uncommitted_changes(directory):
         return {"error": "Uncommitted changes detected. Commit or stash first."}
 
+    if use_sudo and sudo_password:
+        from scitex._dev._rename._io import set_sudo_password
+
+        set_sudo_password(sudo_password)
+
     config = RenameConfig(
         pattern=pattern,
         replacement=replacement,
@@ -420,8 +435,16 @@ async def rename_handler(
         dry_run=not confirm,
         django_safe=django_safe,
         extra_excludes=extra_excludes or [],
+        skip_ids=skip_ids or [],
+        use_sudo=use_sudo,
     )
     result = bulk_rename(config)
+
+    if use_sudo and sudo_password:
+        from scitex._dev._rename._io import set_sudo_password
+
+        set_sudo_password(None)
+
     return asdict(result)
 
 

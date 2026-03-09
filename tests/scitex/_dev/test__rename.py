@@ -94,6 +94,22 @@ class TestFiltering:
         assert is_django_protected_line("INSTALLED_APPS = [", "APP") is True
         assert is_django_protected_line("x = my_function()", "my") is False
 
+    def test_django_protected_does_not_block_app_config(self):
+        """apps.py name and urls.py app_name should NOT be protected."""
+        assert (
+            is_django_protected_line('    name = "apps.modulemaker_app"', "modulemaker")
+            is False
+        )
+        assert (
+            is_django_protected_line('app_name = "modulemaker"', "modulemaker") is False
+        )
+
+    def test_django_protected_db_table_still_protected(self):
+        """db_table lines must remain protected."""
+        assert (
+            is_django_protected_line("    db_table = 'old_table'", "old_table") is True
+        )
+
     def test_is_src_excluded(self):
         config = RenameConfig(pattern="x", replacement="y")
         assert is_src_excluded("db_table='test'", config) is True
@@ -115,6 +131,28 @@ class TestPreviewRename:
         assert result.contents[0]["matches"] == 2
         # File should be unchanged
         assert "old_name" in (tmp_path / "test.py").read_text()
+
+    def test_preview_includes_line_details(self, tmp_path):
+        (tmp_path / "test.py").write_text("old_name = 1\nkeep\nold_name = 2\n")
+        result = preview_rename("old_name", "new_name", directory=str(tmp_path))
+
+        assert "lines" in result.contents[0]
+        lines = result.contents[0]["lines"]
+        assert len(lines) == 2
+        assert lines[0]["action"] == "replace"
+        assert lines[0]["line_num"] == 1
+        assert "old_name" in lines[0]["before"]
+        assert "new_name" in lines[0]["after"]
+
+    def test_preview_line_details_shows_protected(self, tmp_path):
+        content = "db_table = 'old_val'\nold_val = 1\n"
+        (tmp_path / "models.py").write_text(content)
+        result = preview_rename("old_val", "new_val", directory=str(tmp_path))
+
+        lines = result.contents[0]["lines"]
+        actions = [l["action"] for l in lines]
+        assert "protect" in actions
+        assert "replace" in actions
 
     def test_preview_file_names(self, tmp_path):
         (tmp_path / "old_module.py").write_text("pass\n")
@@ -402,6 +440,89 @@ class TestSummary:
         assert result.summary["content_matches"] >= 2
         assert result.summary["files_renamed"] >= 1
         assert result.summary["dirs_renamed"] >= 1
+
+    def test_summary_protected_files_count(self, tmp_path):
+        (tmp_path / "models.py").write_text("db_table = 'old_val'\nold_val = 1\n")
+        (tmp_path / "clean.py").write_text("old_val = 2\n")
+
+        result = preview_rename("old_val", "new_val", directory=str(tmp_path))
+
+        assert result.summary["protected_files"] == 1
+
+
+# ---------------------------------------------------------------------------
+# Skip IDs
+# ---------------------------------------------------------------------------
+
+
+class TestSkipIds:
+    def test_skip_file_level(self, tmp_path):
+        """Skip all changes in a specific file by file-level ID."""
+        (tmp_path / "a.py").write_text("old = 1\n")
+        (tmp_path / "b.py").write_text("old = 2\n")
+        # Preview to get IDs
+        preview = preview_rename("old", "new", directory=str(tmp_path))
+        # Find ID for a.py
+        a_id = [c["id"] for c in preview.contents if "a.py" in c["file"]][0]
+        # Execute with skip
+        with patch(
+            "scitex._dev._rename._core.has_uncommitted_changes", return_value=False
+        ):
+            with patch(
+                "scitex._dev._rename._core.check_directory_safety", return_value=None
+            ):
+                execute_rename("old", "new", directory=str(tmp_path), skip_ids=[a_id])
+        assert "old" in (tmp_path / "a.py").read_text()  # Skipped
+        assert "new" in (tmp_path / "b.py").read_text()  # Changed
+
+    def test_skip_line_level(self, tmp_path):
+        """Skip a specific line by line-level ID."""
+        (tmp_path / "test.py").write_text("old_a = 1\nkeep = 2\nold_b = 3\n")
+        preview = preview_rename("old", "new", directory=str(tmp_path))
+        # Get line-level ID for line 1
+        file_result = preview.contents[0]
+        line_id = [l["id"] for l in file_result["lines"] if l["line_num"] == 1][0]
+        with patch(
+            "scitex._dev._rename._core.has_uncommitted_changes", return_value=False
+        ):
+            with patch(
+                "scitex._dev._rename._core.check_directory_safety", return_value=None
+            ):
+                execute_rename(
+                    "old", "new", directory=str(tmp_path), skip_ids=[line_id]
+                )
+        text = (tmp_path / "test.py").read_text()
+        assert "old_a" in text  # Line 1 skipped
+        assert "new_b" in text  # Line 3 changed
+
+    def test_skip_dir_rename(self, tmp_path):
+        """Skip a directory rename by ID."""
+        (tmp_path / "old_dir").mkdir()
+        (tmp_path / "old_dir" / "file.py").write_text("pass\n")
+        preview = preview_rename("old_dir", "new_dir", directory=str(tmp_path))
+        dir_id = preview.dir_names[0]["id"]
+        with patch(
+            "scitex._dev._rename._core.has_uncommitted_changes", return_value=False
+        ):
+            with patch(
+                "scitex._dev._rename._core.check_directory_safety", return_value=None
+            ):
+                execute_rename(
+                    "old_dir",
+                    "new_dir",
+                    directory=str(tmp_path),
+                    skip_ids=[dir_id],
+                )
+        assert (tmp_path / "old_dir").exists()  # Not renamed
+
+    def test_ids_in_preview(self, tmp_path):
+        """Preview output includes IDs."""
+        (tmp_path / "test.py").write_text("old = 1\n")
+        result = preview_rename("old", "new", directory=str(tmp_path))
+        assert "id" in result.contents[0]
+        assert result.contents[0]["id"].startswith("c-")
+        assert "id" in result.contents[0]["lines"][0]
+        assert "-L" in result.contents[0]["lines"][0]["id"]
 
 
 # EOF
