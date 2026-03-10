@@ -60,6 +60,8 @@ dependencies = [
     "tqdm",
     "packaging",
     "natsort",  # Natural sorting - used by many modules
+    # Reproducibility Verification
+    "scitex-clew>=0.1.0",
 ]
 
 [project.urls]

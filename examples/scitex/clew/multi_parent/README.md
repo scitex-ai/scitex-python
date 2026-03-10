@@ -33,9 +33,10 @@ Multi-parent nodes:
 
 1. **Multi-parent tracking** - `stx.io.load()` from multiple upstream outputs auto-links all parents
 2. **DAG verification** - `stx.clew.dag([file1, file2])` traces back through the full diamond
-3. **Claims** - `stx.clew.add_claim()` registers scientific claims tied to source files
-4. **Claims-to-DAG** - `stx.clew.verify_claims_dag()` builds DAG from all registered claims
-5. **DAG rendering** - `render_dag("dag.html", target_files=[...])` generates interactive HTML
+3. **DAG rerun** - `stx.clew.rerun_dag()` re-executes the entire pipeline in sandbox
+4. **Claims** - `stx.clew.add_claim()` registers scientific claims tied to source files
+5. **Claim rerun** - `stx.clew.rerun_claims()` reruns all sessions backing claims
+6. **DAG visualization** - `stx.clew.mermaid(target_files=[...])` generates Mermaid diagrams
 
 ## CLI Commands
 

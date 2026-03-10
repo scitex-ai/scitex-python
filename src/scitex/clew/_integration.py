@@ -8,11 +8,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional, Union
 
-import scitex.logging as _logging
+from scitex_clew._logging import getLogger
+from scitex_clew._tracker import get_tracker, start_tracking, stop_tracking
 
-from ._tracker import get_tracker, start_tracking, stop_tracking
-
-logger = _logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def on_session_start(
@@ -99,7 +98,7 @@ def on_io_load(
         Whether to track this file as an input
     """
     try:
-        from ._db import get_db
+        from scitex_clew._db import get_db
 
         get_db()  # Always ensure DB exists
     except Exception as e:
@@ -134,7 +133,7 @@ def on_io_save(
         Whether to track this file as an output
     """
     try:
-        from ._db import get_db
+        from scitex_clew._db import get_db
 
         get_db()  # Always ensure DB exists
     except Exception as e:
@@ -166,7 +165,7 @@ def _should_auto_register(register: Optional[bool]) -> bool:
 def _auto_register_session(session_id: str) -> None:
     """Register session hashes with remote Clew Registry (fire-and-forget)."""
     try:
-        from ._registry import get_registry
+        from scitex_clew._registry import get_registry
 
         get_registry().register_session(session_id)
     except Exception as e:

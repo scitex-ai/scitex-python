@@ -100,8 +100,7 @@ def main():
 ### Rerun-Verified (✓✓)
 Full re-execution confirms outputs match stored hashes.
 ```python
-from scitex.clew import verify_by_rerun
-result = verify_by_rerun("01_source_a_out/source_A.csv")
+result = stx.clew.rerun("01_source_a_out/source_A.csv")
 print("✓✓" if result.is_verified else "✗")
 ```
 
@@ -135,37 +134,34 @@ scitex clew chain 08_analyze_out/report.json
 ## Programmatic API
 
 ```python
-from scitex import clew
+import scitex as stx
 
 # Database stats
-stats = clew.stats()
+stats = stx.clew.stats()
 print(f"Total runs: {stats['total_runs']}")
 
 # List recent runs
-runs = clew.list_runs(limit=10)
+runs = stx.clew.list_runs(limit=10)
 
 # Verify a chain
-chain = clew.chain("08_analyze_out/report.json")
+chain = stx.clew.chain("08_analyze_out/report.json")
 print(f"Chain verified: {chain.is_verified}")
 print(f"Chain length: {chain.chain_length}")
 
+# Rerun entire DAG in sandbox
+dag_result = stx.clew.rerun_dag()
+print(f"DAG verified: {dag_result.is_verified}")
+
 # Generate DAG visualization
-from scitex.clew import render_dag
-render_dag("dag.html", target_file="report.json", show_hashes=True)
-render_dag("dag.png", target_file="report.json")  # Requires mmdc
+mermaid_code = stx.clew.mermaid(target_file="report.json")
 ```
 
-## DAG Visualization Formats
+## DAG Visualization
 
-The `render_dag()` function supports multiple output formats:
-
-| Format | Extension | Requirements | Use Case |
-|--------|-----------|--------------|----------|
-| HTML | `.html` | None | Interactive browser viewing |
-| Mermaid | `.mmd` | None | Embedding in markdown |
-| PNG | `.png` | `mmdc` (mermaid-cli) | Documentation, reports |
-| SVG | `.svg` | `mmdc` (mermaid-cli) | Scalable graphics |
-| JSON | `.json` | None | Programmatic access |
+```python
+# Generate Mermaid diagram code
+mermaid_code = stx.clew.mermaid(target_file="report.json")
+```
 
 ## How Verification Works
 
