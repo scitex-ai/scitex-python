@@ -5,13 +5,14 @@
 
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 from typing import Optional, Union
 
+import scitex.logging as _logging
+
 from ._tracker import get_tracker, start_tracking, stop_tracking
 
-logger = logging.getLogger(__name__)
+logger = _logging.getLogger(__name__)
 
 
 def on_session_start(
@@ -46,11 +47,7 @@ def on_session_start(
         )
     except Exception as e:
         if verbose:
-            import logging
-
-            logging.getLogger(__name__).warning(
-                f"Could not start verification tracking: {e}"
-            )
+            logger.warning(f"Could not start verification tracking: {e}")
 
 
 def on_session_close(
@@ -81,11 +78,7 @@ def on_session_close(
             _auto_register_session(tracker.session_id)
     except Exception as e:
         if verbose:
-            import logging
-
-            logging.getLogger(__name__).warning(
-                f"Could not stop verification tracking: {e}"
-            )
+            logger.warning(f"Could not stop verification tracking: {e}")
 
 
 def on_io_load(
@@ -93,7 +86,10 @@ def on_io_load(
     track: bool = True,
 ) -> None:
     """
-    Hook called when a file is loaded via stx.io.load().
+    Hook called when a file is loaded via scitex.io.load().
+
+    Always ensures the clew database exists at <project-root>/scitex/clew.db.
+    When inside a @scitex.session, records the file as an input in that session.
 
     Parameters
     ----------
@@ -102,6 +98,13 @@ def on_io_load(
     track : bool, optional
         Whether to track this file as an input
     """
+    try:
+        from ._db import get_db
+
+        get_db()  # Always ensure DB exists
+    except Exception as e:
+        logger.debug("clew: failed to initialise DB: %s", e)
+
     if not track:
         return
 
@@ -118,7 +121,10 @@ def on_io_save(
     track: bool = True,
 ) -> None:
     """
-    Hook called when a file is saved via stx.io.save().
+    Hook called when a file is saved via scitex.io.save().
+
+    Always ensures the clew database exists at <project-root>/scitex/clew.db.
+    When inside a @scitex.session, records the file as an output in that session.
 
     Parameters
     ----------
@@ -127,6 +133,13 @@ def on_io_save(
     track : bool, optional
         Whether to track this file as an output
     """
+    try:
+        from ._db import get_db
+
+        get_db()  # Always ensure DB exists
+    except Exception as e:
+        logger.debug("clew: failed to initialise DB: %s", e)
+
     if not track:
         return
 

@@ -366,19 +366,52 @@ def register_dev_tools(mcp) -> None:
         django_safe: bool = True,
         extra_excludes: list[str] | None = None,
         force: bool = False,
+        skip_ids: list[str] | None = None,
+        use_sudo: bool = False,
+        sudo_password: str | None = None,
     ) -> str:
         """Bulk rename files, contents, directories, and symlinks.
 
-        Two-step safety: call first without confirm to preview changes,
-        then with confirm=True to execute. Django-safe by default
-        (protects db_table, related_name, migrations).
+        WORKFLOW (3-step):
+        1. DRY RUN: Call with confirm=False (default). Review the output.
+        2. REVIEW: Check each change. Every item has a unique ID.
+           - Content changes: "c-{file_idx}-L{line}" (e.g., "c-003-L12")
+           - Directory renames: "d-{idx}" (e.g., "d-001")
+           - File renames: "f-{idx}"
+           - Symlink updates: "st-{idx}", "sn-{idx}"
+           Look for FALSE POSITIVES (changes that shouldn't happen) and
+           FALSE NEGATIVES (protected lines that should actually change).
+           Common false positives: legacy redirect URLs that should keep
+           the old name, documentation describing the rename itself.
+           Common false negatives: lines matching django_safe patterns
+           (db_table=, related_name=) that are actually app config, not
+           DB schema.
+        3. EXECUTE: Call with confirm=True and skip_ids=[...] for any
+           false positives. For false negatives, either set django_safe=False
+           or fix manually after execution.
 
-        Execution order:
-        1. File contents (safe - doesn't change paths)
-        2. Symlink targets (update to future paths)
-        3. Symlink names (leaf nodes)
-        4. File names (leaf nodes)
-        5. Directory names (deepest first)
+        SKIP_IDS: Use file-level IDs (e.g., "c-003") to skip ALL changes
+        in a file, or line-level IDs (e.g., "c-003-L12") to skip a single
+        line while still renaming other lines in the same file.
+
+        Django-safe by default (protects db_table, related_name, migration
+        files). Execution order: contents → symlink targets → symlink
+        names → file names → directory names (deepest first).
+
+        DJANGO APP RENAME WARNING: If renaming a Django app directory
+        (e.g., old_app/ → new_app/), additional manual steps are required
+        AFTER the bulk rename completes:
+        1. Add explicit db_table to ALL models in the renamed app to
+           preserve the old table names (e.g., db_table="old_app_mymodel").
+        2. Update migration file internal references (dependencies and
+           ForeignKey `to=` strings) from old_app to new_app.
+        3. Run SQL to fix Django tracking tables BEFORE running migrate:
+           UPDATE django_migrations SET app='new_app' WHERE app='old_app';
+        4. Create a new migration that updates django_content_type rows.
+        5. Fix any `related_name` values in models that reference the
+           old app name — these are Python-only but affect reverse queries.
+        Model class renames (e.g., UserModule → UserApp) require separate
+        Django RenameModel migrations and are NOT handled by this tool.
 
         Parameters
         ----------
@@ -397,6 +430,14 @@ def register_dev_tools(mcp) -> None:
             Additional path patterns to exclude.
         force : bool
             Skip uncommitted changes check (default False).
+        skip_ids : list of str, optional
+            IDs of changes to skip (from dry-run output). Supports both
+            file-level ("c-003") and line-level ("c-003-L12") granularity.
+        use_sudo : bool
+            Use sudo for file operations (for root-owned files). Default False.
+        sudo_password : str, optional
+            Password for non-interactive sudo. Required when use_sudo=True
+            on systems without NOPASSWD configured.
 
         Returns
         -------
@@ -406,7 +447,16 @@ def register_dev_tools(mcp) -> None:
         from scitex._dev._mcp.handlers import rename_handler
 
         result = await rename_handler(
-            pattern, replacement, directory, confirm, django_safe, extra_excludes, force
+            pattern,
+            replacement,
+            directory,
+            confirm,
+            django_safe,
+            extra_excludes,
+            force,
+            skip_ids=skip_ids,
+            use_sudo=use_sudo,
+            sudo_password=sudo_password,
         )
         return _json(result)
 

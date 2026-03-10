@@ -30,6 +30,8 @@ class RenameConfig:
     src_excludes: str = "db_table=,related_name=,table=,name=,old_name=,new_name="
     src_must_excludes: str = ""
     extra_excludes: list[str] = field(default_factory=list)
+    skip_ids: list[str] = field(default_factory=list)
+    use_sudo: bool = False
 
 
 @dataclass

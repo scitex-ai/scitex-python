@@ -93,8 +93,6 @@ def is_django_protected_line(line: str, pattern: str) -> bool:
     """Check if a line should be protected in Django-safe mode."""
     if re.search(r"db_table\s*=\s*['\"]", line):
         return True
-    if re.search(r"(table|name)\s*=\s*['\"]", line):
-        return True
     if re.search(r"(old_name|new_name)\s*=\s*['\"]", line):
         return True
     if re.search(r"related_name\s*=\s*['\"]", line):

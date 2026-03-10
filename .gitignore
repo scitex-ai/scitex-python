@@ -925,6 +925,7 @@ output/
 tests/results/
 mgmt
 .jupyter_ystore.db
+**/scitex/clew.db
 docs/visualization/FROM_USER.md
 /.claude-worktree-symlinks
 # Claude worktree symlink

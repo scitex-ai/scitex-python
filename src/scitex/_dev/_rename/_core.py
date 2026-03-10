@@ -45,6 +45,7 @@ def preview_rename(
     directory: str = ".",
     django_safe: bool = True,
     extra_excludes: list[str] | None = None,
+    skip_ids: list[str] | None = None,
     **kwargs: Any,
 ) -> RenameResult:
     """Preview rename changes without executing (dry run).
@@ -74,6 +75,7 @@ def preview_rename(
         dry_run=True,
         django_safe=django_safe,
         extra_excludes=extra_excludes or [],
+        skip_ids=skip_ids or [],
         **kwargs,
     )
     return bulk_rename(config)
@@ -87,6 +89,7 @@ def execute_rename(
     create_backup: bool = False,
     extra_excludes: list[str] | None = None,
     force: bool = False,
+    skip_ids: list[str] | None = None,
     **kwargs: Any,
 ) -> RenameResult:
     """Execute rename with safety checks.
@@ -131,6 +134,7 @@ def execute_rename(
         django_safe=django_safe,
         create_backup=create_backup,
         extra_excludes=extra_excludes or [],
+        skip_ids=skip_ids or [],
         **kwargs,
     )
     return bulk_rename(config)
@@ -179,6 +183,7 @@ def bulk_rename(config: RenameConfig) -> RenameResult:
             src_excludes=config.src_excludes,
             src_must_excludes=config.src_must_excludes,
             extra_excludes=config.extra_excludes,
+            skip_ids=config.skip_ids,
         )
         preview = bulk_rename(dry_config)
         # Block file/symlink collisions; directory collisions are handled via merge
@@ -213,16 +218,34 @@ def bulk_rename(config: RenameConfig) -> RenameResult:
         if item.get("target_exists"):
             collisions.append({"type": "directory", "path": item["new_path"]})
 
-    summary = {
+    # Detect Django app directory renames and emit warnings
+    warnings: list[str] = []
+    for item in dir_names:
+        old_p = Path(item["old_path"])
+        new_p = Path(item["new_path"])
+        if (old_p / "apps.py").exists() or (new_p / "apps.py").exists():
+            warnings.append(
+                f"DJANGO APP RENAME DETECTED: {old_p.name} → {new_p.name}. "
+                "You MUST manually: (1) add explicit db_table to all models, "
+                "(2) update migration file dependencies/references, "
+                "(3) run SQL: UPDATE django_migrations SET app='new' WHERE app='old', "
+                "(4) create a migration to update django_content_type rows. "
+                "Model class renames need separate RenameModel migrations."
+            )
+
+    summary: dict[str, Any] = {
         "content_files": len(contents),
         "content_matches": sum(c.get("matches", 0) for c in contents),
         "content_protected": sum(c.get("protected", 0) for c in contents),
+        "protected_files": sum(1 for c in contents if c.get("protected", 0) > 0),
         "symlink_targets_updated": len(symlink_targets),
         "symlinks_renamed": len(symlink_names),
         "files_renamed": len(file_names),
         "dirs_renamed": len(dir_names),
         "collisions": len(collisions),
     }
+    if warnings:
+        summary["warnings"] = warnings
 
     return RenameResult(
         dry_run=config.dry_run,
