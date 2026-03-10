@@ -147,6 +147,8 @@ def register_clew_tools(mcp) -> None:
         """
         from pathlib import Path
 
+        from scitex.clew import chain as do_chain
+
         path = Path(target_file)
         if not path.exists():
             return _json(
