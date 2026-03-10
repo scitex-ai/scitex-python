@@ -33,14 +33,14 @@ def register_clew_tools(mcp) -> None:
         str
             JSON with list of runs and their verification status
         """
-        from scitex.clew import get_db, verify_run
+        from scitex.clew import list_runs as do_list_runs
+        from scitex.clew import run as do_run
 
-        db = get_db()
-        runs = db.list_runs(status=status_filter, limit=limit)
+        runs = do_list_runs(status=status_filter, limit=limit)
 
         results = []
         for run in runs:
-            verification = verify_run(run["session_id"])
+            verification = do_run(run["session_id"])
             results.append(
                 {
                     "session_id": run["session_id"],
@@ -79,18 +79,17 @@ def register_clew_tools(mcp) -> None:
         """
         from pathlib import Path
 
-        from scitex.clew import get_db
-        from scitex.clew import verify_run as do_verify_run
+        from scitex.clew import run as do_run
 
-        db = get_db()
-
-        # Check if it's a file path
+        # run() accepts session_id; for file paths, resolve to session first
         path = Path(session_or_path)
         if path.exists():
+            from scitex.clew import get_db
+
+            db = get_db()
             sessions = db.find_session_by_file(str(path.resolve()), role="output")
             if not sessions:
                 sessions = db.find_session_by_file(str(path.resolve()), role="input")
-
             if not sessions:
                 return _json(
                     {
@@ -102,7 +101,7 @@ def register_clew_tools(mcp) -> None:
         else:
             session_id = session_or_path
 
-        verification = do_verify_run(session_id)
+        verification = do_run(session_id)
 
         return _json(
             {
@@ -148,8 +147,6 @@ def register_clew_tools(mcp) -> None:
         """
         from pathlib import Path
 
-        from scitex.clew import verify_chain as do_verify_chain
-
         path = Path(target_file)
         if not path.exists():
             return _json(
@@ -159,7 +156,7 @@ def register_clew_tools(mcp) -> None:
                 }
             )
 
-        chain = do_verify_chain(str(path.resolve()))
+        chain = do_chain(str(path.resolve()))
 
         return _json(
             {
@@ -191,10 +188,9 @@ def register_clew_tools(mcp) -> None:
         str
             JSON with counts of verified, mismatched, and missing runs
         """
-        from scitex.clew import get_status
+        from scitex.clew import status as do_status
 
-        status = get_status()
-        return _json(status)
+        return _json(do_status())
 
     @mcp.tool()
     async def clew_stats() -> str:
@@ -205,11 +201,9 @@ def register_clew_tools(mcp) -> None:
         str
             JSON with database statistics
         """
-        from scitex.clew import get_db
+        from scitex.clew import stats as do_stats
 
-        db = get_db()
-        stats = db.stats()
-        return _json(stats)
+        return _json(do_stats())
 
     @mcp.tool()
     async def clew_mermaid(
@@ -238,7 +232,7 @@ def register_clew_tools(mcp) -> None:
         """
         from pathlib import Path
 
-        from scitex.clew import generate_mermaid_dag
+        from scitex.clew import mermaid as do_mermaid
 
         if target_file:
             target_file = str(Path(target_file).resolve())
@@ -249,7 +243,7 @@ def register_clew_tools(mcp) -> None:
                 str(Path(f.strip()).resolve()) for f in target_files.split(",")
             ]
 
-        mermaid_code = generate_mermaid_dag(
+        mermaid_code = do_mermaid(
             session_id=session_id,
             target_file=target_file,
             target_files=multi_files,
@@ -287,15 +281,13 @@ def register_clew_tools(mcp) -> None:
         """
         from pathlib import Path
 
+        from scitex.clew import dag as do_dag
+
         if claims:
-            from scitex.clew import verify_claims_dag
-
-            dag_result = verify_claims_dag()
+            dag_result = do_dag(claims=True)
         elif target_files:
-            from scitex.clew import verify_dag
-
             targets = [str(Path(f.strip()).resolve()) for f in target_files.split(",")]
-            dag_result = verify_dag(targets)
+            dag_result = do_dag(targets)
         else:
             return _json({"error": "Specify target_files or claims=True"})
 
@@ -319,6 +311,95 @@ def register_clew_tools(mcp) -> None:
                 "edges": [{"parent": p, "child": c} for p, c in dag_result.edges],
             }
         )
+
+    def _format_dag_result(dag_result) -> str:
+        """Format DAGVerification to JSON string."""
+        return _json(
+            {
+                "target_files": dag_result.target_files,
+                "status": dag_result.status.value,
+                "is_verified": dag_result.is_verified,
+                "num_runs": len(dag_result.runs),
+                "num_edges": len(dag_result.edges),
+                "topological_order": dag_result.topological_order,
+                "runs": [
+                    {
+                        "session_id": r.session_id,
+                        "script_path": r.script_path,
+                        "status": r.status.value,
+                        "is_verified": r.is_verified,
+                    }
+                    for r in dag_result.runs
+                ],
+                "edges": [{"parent": p, "child": c} for p, c in dag_result.edges],
+            }
+        )
+
+    @mcp.tool()
+    async def clew_rerun_dag(
+        target_files: Optional[str] = None,
+        timeout: int = 300,
+    ) -> str:
+        """Re-execute entire DAG in topological order and compare outputs.
+
+        Each session is re-executed in a sandbox — original outputs are
+        never overwritten. This is the most thorough verification mode.
+
+        Parameters
+        ----------
+        target_files : str, optional
+            Comma-separated list of target file paths.
+            If omitted, reruns the entire project DAG.
+        timeout : int, optional
+            Maximum execution time per session in seconds (default: 300).
+
+        Returns
+        -------
+        str
+            JSON with DAG rerun verification results.
+        """
+        from pathlib import Path
+
+        from scitex.clew import rerun_dag as do_rerun_dag
+
+        targets = None
+        if target_files:
+            targets = [str(Path(f.strip()).resolve()) for f in target_files.split(",")]
+
+        dag_result = do_rerun_dag(targets, timeout=timeout)
+        return _format_dag_result(dag_result)
+
+    @mcp.tool()
+    async def clew_rerun_claims(
+        file_path: Optional[str] = None,
+        claim_type: Optional[str] = None,
+        timeout: int = 300,
+    ) -> str:
+        """Re-execute all sessions backing manuscript claims.
+
+        Traces each claim to its source session, builds the upstream DAG,
+        and reruns every session in a sandbox.
+
+        Parameters
+        ----------
+        file_path : str, optional
+            Filter claims by manuscript file path.
+        claim_type : str, optional
+            Filter by claim type: statistic, figure, table, text, value.
+        timeout : int, optional
+            Maximum execution time per session in seconds (default: 300).
+
+        Returns
+        -------
+        str
+            JSON with DAG rerun verification results.
+        """
+        from scitex.clew import rerun_claims as do_rerun_claims
+
+        dag_result = do_rerun_claims(
+            file_path=file_path, claim_type=claim_type, timeout=timeout
+        )
+        return _format_dag_result(dag_result)
 
 
 # EOF

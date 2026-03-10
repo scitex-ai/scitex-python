@@ -246,6 +246,158 @@ def _determine_status(file_verifications: list) -> VerificationStatus:
     return VerificationStatus.UNKNOWN
 
 
+def rerun_dag(
+    targets: list[str] | None = None,
+    timeout: int = 300,
+    cleanup: bool = True,
+) -> DAGVerification:
+    """Rerun-verify an entire DAG in topological order.
+
+    Each session is re-executed in a sandbox against its ORIGINAL stored
+    inputs (not freshly rerun outputs from upstream), then compared to
+    the original outputs.
+
+    Parameters
+    ----------
+    targets : list of str, optional
+        Target output files whose upstream DAG should be rerun.
+        If None, all runs in the database are used and their output
+        files become the targets.
+    timeout : int, optional
+        Maximum execution time per session in seconds (default: 300).
+    cleanup : bool, optional
+        Whether to remove sandbox output directories after each rerun.
+
+    Returns
+    -------
+    DAGVerification
+        Unified verification result for the entire DAG.
+    """
+    from ._chain import DAGVerification
+    from ._chain._dag import _topological_sort
+
+    db = get_db()
+
+    # If no targets, collect all output files from all runs
+    if targets is None:
+        targets = []
+        for run in db.list_runs(limit=10000):
+            hashes = db.get_file_hashes(run["session_id"], role="output")
+            targets.extend(hashes.keys())
+
+    # Resolve targets to leaf session IDs
+    resolved_targets = []
+    leaf_sessions = []
+    for target in targets:
+        target_str = str(Path(target).resolve())
+        resolved_targets.append(target_str)
+        sessions = db.find_session_by_file(target_str, role="output")
+        if sessions:
+            leaf_sessions.append(sessions[0])
+
+    if not leaf_sessions:
+        return DAGVerification(
+            target_files=resolved_targets,
+            runs=[],
+            edges=[],
+            status=VerificationStatus.UNKNOWN,
+            topological_order=[],
+        )
+
+    # BFS backward to collect full DAG
+    adjacency, _all_ids = db.get_dag(leaf_sessions)
+
+    # Topological sort (roots first)
+    topo_order = _topological_sort(adjacency)
+
+    # Rerun each session in topological order
+    verifications = {}
+    for sid in topo_order:
+        verifications[sid] = verify_by_rerun(sid, timeout, cleanup)
+
+    # Propagate failures forward through the DAG
+    failed_sessions: set = set()
+    for sid in topo_order:
+        parents = adjacency.get(sid, [])
+        has_failed_parent = any(p in failed_sessions for p in parents)
+        if has_failed_parent or not verifications[sid].is_verified:
+            failed_sessions.add(sid)
+
+    # Build edges list
+    edges = []
+    for child, parents in adjacency.items():
+        for p in parents:
+            edges.append((p, child))
+
+    # Determine overall status
+    run_list = [verifications[sid] for sid in topo_order]
+
+    if all(sid not in failed_sessions for sid in topo_order):
+        status = VerificationStatus.VERIFIED
+    elif any(
+        verifications[sid].status == VerificationStatus.MISMATCH for sid in topo_order
+    ):
+        status = VerificationStatus.MISMATCH
+    elif any(
+        verifications[sid].status == VerificationStatus.MISSING for sid in topo_order
+    ):
+        status = VerificationStatus.MISSING
+    else:
+        status = VerificationStatus.UNKNOWN
+
+    return DAGVerification(
+        target_files=resolved_targets,
+        runs=run_list,
+        edges=edges,
+        status=status,
+        topological_order=topo_order,
+    )
+
+
+def rerun_claims(
+    file_path: str | None = None,
+    claim_type: str | None = None,
+    timeout: int = 300,
+    cleanup: bool = True,
+) -> DAGVerification:
+    """Rerun-verify all sessions that produced files referenced by claims.
+
+    Collects unique source files from matching claims, then delegates
+    to ``rerun_dag`` with those files as targets.
+
+    Parameters
+    ----------
+    file_path : str, optional
+        Filter claims by manuscript file path.
+    claim_type : str, optional
+        Filter claims by type (statistic, figure, table, text, value).
+    timeout : int, optional
+        Maximum execution time per session in seconds (default: 300).
+    cleanup : bool, optional
+        Whether to remove sandbox output directories after each rerun.
+
+    Returns
+    -------
+    DAGVerification
+        Unified verification result for the upstream DAG of all
+        source files referenced by the matching claims.
+    """
+    from ._claim import list_claims
+
+    claims = list_claims(file_path=file_path, claim_type=claim_type)
+
+    # Collect unique source files from matching claims
+    source_files = []
+    seen = set()
+    for claim in claims:
+        sf = claim.source_file
+        if sf and sf not in seen:
+            seen.add(sf)
+            source_files.append(sf)
+
+    return rerun_dag(source_files or None, timeout, cleanup)
+
+
 # Backward compatibility alias
 verify_run_from_scratch = verify_by_rerun
 

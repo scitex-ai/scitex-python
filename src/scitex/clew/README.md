@@ -1,300 +1,154 @@
 <!-- ---
-!-- Timestamp: 2026-02-01 08:47:14
+!-- Timestamp: 2026-03-11
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/verify/README.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/clew/README.md
 !-- --- -->
 
-# scitex.clew Module
+# scitex.clew — Reproducibility Verification
 
 Hash-based verification system for reproducible scientific computations.
 
-## Overview
+## What It Does
 
-The verify module provides cryptographic tracking of scientific pipelines, enabling researchers to:
-- **Detect changes** in input/output files
-- **Trace dependencies** through processing chains
-- **Verify reproducibility** by re-executing scripts
-- **Visualize workflows** as directed acyclic graphs (DAGs)
+Every `@stx.session` + `stx.io.load/save` call is automatically tracked.
+Clew records SHA256 hashes of all inputs and outputs, links them into a
+dependency DAG, and lets you verify the entire pipeline at any time.
 
 ![Verification DAG](dag.png)
 
-*Example DAG showing verification states: ✓ verified (green), ✗ failed (red)*
+*DAG states: green (verified), red (mismatch), grey (unknown)*
 
-## Architecture
-
-```
-scitex/clew/
-├── __init__.py          # Public API and convenience functions
-├── _hash.py             # SHA256 hashing utilities
-├── _db.py               # SQLite database for storing hashes
-├── _tracker.py          # Session tracking integration
-├── _chain.py            # Chain verification logic
-├── _rerun.py            # Re-execution verification
-├── _integration.py      # Hooks for stx.io and @stx.session
-├── _visualize.py        # Re-exports from _viz/
-└── _viz/
-    ├── _mermaid.py      # Mermaid DAG generation
-    ├── _json.py         # JSON DAG export
-    ├── _format.py       # Terminal output formatting
-    ├── _colors.py       # Color constants
-    ├── _templates.py    # HTML templates
-    └── _utils.py        # Shared utilities
-```
-
-## Core Components
-
-### Hash Utilities (`_hash.py`)
+## Public API (19 functions)
 
 ```python
-from scitex.clew import hash_file, hash_files, hash_directory
+import scitex as stx
 
-# Single file
-h = hash_file("data.csv")  # SHA256 hex string
+# --- Verification (daily use) ---
+stx.clew.status()                     # git-status-like overview
+stx.clew.run("session_id")            # verify one run (hash check)
+stx.clew.chain("output.png")          # trace file back to source
+stx.clew.dag(["file1.csv", "file2"])  # verify full DAG
+stx.clew.rerun("session_id")          # re-execute in sandbox & compare
+stx.clew.rerun_dag()                  # rerun entire project DAG
+stx.clew.rerun_claims()               # rerun all claim-backing sessions
+stx.clew.list_runs(limit=50)          # list tracked runs
+stx.clew.stats()                      # database statistics
 
-# Multiple files
-hashes = hash_files(["a.csv", "b.csv"])  # {path: hash}
-
-# Directory (recursive)
-h = hash_directory("output/")  # Combined hash of all files
-```
-
-### Database (`_db.py`)
-
-SQLite-based storage for verification records:
-
-```python
-from scitex.clew import get_db
-
-db = get_db()  # ~/.scitex/verify.db by default
-
-# Record a run
-db.record_run(
-    session_id="abc123",
-    script_path="/path/to/script.py",
-    script_hash="sha256...",
-    config_hash="sha256...",
-    status="success"
+# --- Claims (paper submission) ---
+stx.clew.add_claim(                   # register manuscript assertion
+    "paper.tex", "statistic",
+    line_number=42, claim_value="p = 0.003",
+    source_file="stats_out/results.csv",
 )
+stx.clew.list_claims()                # list registered claims
+stx.clew.verify_claim("claim_abc123") # verify a specific claim
 
-# Record file hashes
-db.record_file_hash(
-    session_id="abc123",
-    file_path="/path/to/output.csv",
-    file_hash="sha256...",
-    role="output"  # or "input"
-)
+# --- Stamping (temporal proof) ---
+stx.clew.stamp()                      # create timestamp proof
+stx.clew.list_stamps()                # list stamps
+stx.clew.check_stamp()                # verify a stamp
 
-# Query runs
-runs = db.list_runs(limit=10, status="success")
-chain = db.get_chain("abc123")  # Parent session IDs
+# --- Hashing (utilities) ---
+stx.clew.hash_file("data.csv")        # SHA256 of a file
+stx.clew.hash_directory("output/")    # SHA256 of all files in dir
+
+# --- Visualization ---
+stx.clew.mermaid(target_file="out.csv")  # Mermaid DAG diagram
+
+# --- Examples ---
+stx.clew.init_examples("/tmp/demo")   # scaffold example pipeline
 ```
 
-### Session Tracker (`_tracker.py`)
+## Verification Levels
 
-Integrates with `@stx.session`:
+| Level | Symbol | Method | Speed |
+|-------|--------|--------|-------|
+| Cache | `✓` | Compare stored vs current SHA256 | Fast |
+| Rerun | `✓✓` | Re-execute script in sandbox, compare outputs | Slow |
 
-```python
-from scitex.clew import SessionTracker, start_tracking, stop_tracking
+Reruns are **read-only**: scripts run in a sandboxed temp directory, original
+outputs are never overwritten, and the sandbox is cleaned up after comparison.
 
-# Manual tracking (usually automatic via @stx.session)
-tracker = start_tracking(session_id="abc123")
-tracker.add_input("/path/to/input.csv")
-tracker.add_output("/path/to/output.csv")
-stop_tracking()
+## DAG Verification
+
+Clew tracks dependencies as a Directed Acyclic Graph:
+
+```
+01_source_a ──→ source_A.csv ──┐
+                               ├──→ 07_merge ──→ final.csv ──→ 08_analyze ──→ report.json
+01_source_b ──→ source_B.csv ──┤
+                               │
+01_source_c ──→ source_C.csv ──┘
 ```
 
-### Chain Verification (`_chain.py`)
+When any node fails verification, all downstream nodes are also marked failed.
+
+### Rerun modes
 
 ```python
-from scitex.clew import verify_file, verify_run, verify_chain
+# Rerun a single session
+stx.clew.rerun("session_id")
 
-# Verify single file
-file_result = verify_file("/path/to/output.csv")
-print(file_result.is_verified)  # True if hash matches
+# Rerun entire project DAG in topological order
+stx.clew.rerun_dag()
 
-# Verify session run
-run_result = verify_run("abc123")
-print(run_result.is_verified)  # True if all files match
-print(run_result.mismatched_files)  # List of changed files
+# Rerun only sessions backing specific targets
+stx.clew.rerun_dag(["output/figure1.png"])
 
-# Verify entire chain
-chain_result = verify_chain("/path/to/final_output.csv")
-print(chain_result.is_verified)  # True if all runs verified
-print(chain_result.chain_length)  # Number of runs in chain
-for run in chain_result.runs:
-    print(f"{run.session_id}: {run.status}")
-```
+# Rerun all sessions that back manuscript claims
+stx.clew.rerun_claims()
 
-### Verification Levels
-
-```python
-from scitex.clew import VerificationLevel, VerificationStatus
-
-# Levels
-VerificationLevel.CACHE     # Fast hash comparison (✓)
-VerificationLevel.RERUN     # Re-execution verification (✓✓)
-
-# Statuses
-VerificationStatus.VERIFIED
-VerificationStatus.UNVERIFIED
-VerificationStatus.FAILED
-VerificationStatus.UNKNOWN
-```
-
-### Re-execution Verification (`_rerun.py`)
-
-```python
-from scitex.clew import verify_by_rerun
-
-# Re-run script and verify outputs match
-result = verify_by_rerun("/path/to/output.csv")
-print(result.is_verified)  # True if re-execution produces same hashes
-print(result.level)  # VerificationLevel.RERUN
-```
-
-## Visualization (`_visualize.py`)
-
-### Terminal Output
-
-```python
-from scitex.clew import format_status, format_chain_verification
-
-# Git status-like output
-print(format_status())
-
-# Chain visualization
-chain = verify_chain("output.csv")
-print(format_chain_verification(chain))
-```
-
-### Mermaid DAG
-
-```python
-from scitex.clew import generate_mermaid_dag
-
-mermaid = generate_mermaid_dag(target_file="output.csv")
-# Returns:
-# graph TD
-#     script_0["✓ 🐍 analyze.py"]:::verified
-#     file_0[("✓ 📊 output.csv")]:::file_ok
-#     script_0 --> file_0
-#     classDef verified fill:#90EE90...
-```
-
-### HTML/PNG/SVG Export
-
-```python
-from scitex.clew import render_dag
-
-# Interactive HTML
-render_dag("dag.html", target_file="output.csv", show_hashes=True)
-
-# Static images (requires mmdc)
-render_dag("dag.png", target_file="output.csv")
-render_dag("dag.svg", target_file="output.csv")
-
-# Raw formats
-render_dag("dag.mmd", target_file="output.csv")  # Mermaid code
-render_dag("dag.json", target_file="output.csv")  # Graph structure
-```
-
-## Integration Hooks (`_integration.py`)
-
-Automatically called by `@stx.session` and `stx.io`:
-
-```python
-from scitex.clew import on_session_start, on_session_close, on_io_load, on_io_save
-
-# Session lifecycle
-on_session_start(session_id, script_path, config_hash)
-on_session_close(session_id, status="success")
-
-# I/O tracking
-on_io_load(file_path)  # Records as input
-on_io_save(file_path)  # Records as output
+# Rerun claims from a specific manuscript
+stx.clew.rerun_claims(file_path="paper.tex")
 ```
 
 ## CLI Commands
 
 ```bash
-# List runs
-scitex clew list [--limit N] [--status success|failed]
-
-# Check status
-scitex clew status
-
-# Verify specific run
-scitex clew run SESSION_ID [--from-scratch]
-
-# Trace dependencies
-scitex clew chain FILE_PATH
-
-# Database stats
-scitex clew stats
+scitex clew list                         # List runs
+scitex clew status                       # git-status-like summary
+scitex clew run SESSION_ID               # Verify specific run
+scitex clew run SESSION_ID --from-scratch # Rerun verification
+scitex clew chain FILE_PATH              # Trace dependencies
+scitex clew stats                        # Database statistics
 ```
 
-## MCP Tools
+## MCP Tools (9 tools)
 
-Available via MCP protocol:
+| Tool | Python API |
+|------|------------|
+| `clew_status` | `stx.clew.status()` |
+| `clew_run` | `stx.clew.run()` |
+| `clew_chain` | `stx.clew.chain()` |
+| `clew_dag` | `stx.clew.dag()` |
+| `clew_list` | `stx.clew.list_runs()` |
+| `clew_stats` | `stx.clew.stats()` |
+| `clew_mermaid` | `stx.clew.mermaid()` |
+| `clew_rerun_dag` | `stx.clew.rerun_dag()` |
+| `clew_rerun_claims` | `stx.clew.rerun_claims()` |
 
-| Tool | Description |
-|------|-------------|
-| `verify_list` | List tracked runs |
-| `verify_run` | Verify specific run |
-| `verify_chain` | Trace dependencies |
-| `verify_status` | Show changed items |
-| `verify_stats` | Database statistics |
-| `verify_mermaid` | Generate Mermaid DAG |
+## Architecture
 
-## Database Schema
-
-```sql
--- Runs table
-CREATE TABLE runs (
-    session_id TEXT PRIMARY KEY,
-    script_path TEXT,
-    script_hash TEXT,
-    config_hash TEXT,
-    status TEXT,
-    started_at TIMESTAMP,
-    ended_at TIMESTAMP
-);
-
--- File hashes table
-CREATE TABLE file_hashes (
-    id INTEGER PRIMARY KEY,
-    session_id TEXT,
-    file_path TEXT,
-    file_hash TEXT,
-    role TEXT,  -- 'input' or 'output'
-    recorded_at TIMESTAMP,
-    FOREIGN KEY (session_id) REFERENCES runs(session_id)
-);
-
--- Verification records table
-CREATE TABLE verifications (
-    id INTEGER PRIMARY KEY,
-    session_id TEXT,
-    level TEXT,  -- 'cache' or 'rerun'
-    status TEXT,  -- 'verified', 'failed'
-    verified_at TIMESTAMP,
-    FOREIGN KEY (session_id) REFERENCES runs(session_id)
-);
+```
+scitex/clew/
+├── __init__.py          # Public API (19 functions)
+├── _hash.py             # SHA256 hashing utilities
+├── _db.py               # SQLite database
+├── _tracker.py          # Session tracking integration
+├── _chain/              # Chain/DAG verification logic
+├── _rerun.py            # Rerun verification (sandbox)
+├── _claim.py            # Manuscript claims
+├── _stamp.py            # Temporal proof stamps
+├── _registry.py         # Remote Clew Registry client
+├── _integration.py      # Hooks for @stx.session and stx.io
+├── _visualize.py        # Mermaid/HTML DAG rendering
+└── _examples.py         # Example pipeline scaffolding
 ```
 
 ## Examples
 
-See `examples/scitex/clew/` for complete working examples:
-
-- `00_run_all.sh` - Run complete pipeline
-- `01-08` - Multi-branch processing pipeline
-- `09_demo_verification.py` - Verification states demo
-- `10_programmatic_verification.py` - API usage examples
-
-## See Also
-
-- `examples/scitex/clew/README.md` - Usage examples with DAG visualization
-- `@stx.session` decorator - Automatic session tracking
-- `stx.io` module - File I/O with hash tracking
+See [`examples/scitex/clew/`](../../../../examples/scitex/clew/) for complete working pipelines:
+- **Sequential**: 3-branch pipeline merging into final analysis
+- **Multi-parent**: Diamond DAG with multi-parent nodes and claims
 
 <!-- EOF -->
