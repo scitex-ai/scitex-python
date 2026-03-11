@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.22.2"
+version = "2.22.3"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,7 +79,7 @@ scitex-capture = "scitex.capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
 scitex-plt = "scitex.plt.mcp_server:main"
 scitex-scholar = "scitex.scholar.mcp_server:main"
-scitex-stats = "scitex.stats.mcp_server:main"
+# scitex-stats entry point now in standalone scitex-stats package
 scitex-template = "scitex.template.mcp_server:main"
 scitex-ui = "scitex.ui.mcp_server:main"
 # Unified MCP Server (all modules in one)
@@ -611,6 +611,7 @@ social = [
 # Stats Module - Statistical analysis
 # Use: pip install scitex[stats]
 stats = [
+    "scitex-stats>=0.2.0",
     "scipy",
     "statsmodels",
     "matplotlib",
