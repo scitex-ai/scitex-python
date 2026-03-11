@@ -262,6 +262,45 @@ def register_dev_tools(mcp) -> None:
         return _json(result)
 
     @mcp.tool()
+    async def dev_fix_mismatches(
+        hosts: list[str] | None = None,
+        packages: list[str] | None = None,
+        local: bool = True,
+        remote: bool = True,
+        confirm: bool = False,
+    ) -> str:
+        """Detect and fix version mismatches across the ecosystem.
+
+        Detects all packages with non-ok status, then fixes them:
+        - Local: pip install -e . where installed != toml
+        - Remote: git pull + pip install on hosts
+
+        Safety: call first without confirm to preview, then with confirm=True.
+
+        Parameters
+        ----------
+        hosts : list[str] | None
+            Host names. None = all enabled hosts.
+        packages : list[str] | None
+            Package names. None = all with mismatches.
+        local : bool
+            Fix local mismatches (default True).
+        remote : bool
+            Fix remote mismatches (default True).
+        confirm : bool
+            If False (default), preview only (dry run).
+
+        Returns
+        -------
+        str
+            JSON with {detected, local_fixes, remote_fixes, summary}.
+        """
+        from scitex._dev._mcp.handlers import fix_mismatches_handler
+
+        result = await fix_mismatches_handler(hosts, packages, local, remote, confirm)
+        return _json(result)
+
+    @mcp.tool()
     async def dev_versions_diff(
         host: str | None = None,
         packages: list[str] | None = None,

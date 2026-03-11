@@ -448,4 +448,47 @@ async def rename_handler(
     return asdict(result)
 
 
+async def fix_mismatches_handler(
+    hosts: list[str] | None = None,
+    packages: list[str] | None = None,
+    local: bool = True,
+    remote: bool = True,
+    confirm: bool = False,
+) -> dict[str, Any]:
+    """Detect and fix version mismatches across the ecosystem.
+
+    Combines mismatch detection with sync: pip install locally,
+    git pull + pip install on remote hosts.
+
+    Safety: defaults to preview only. Pass confirm=True to execute.
+
+    Parameters
+    ----------
+    hosts : list[str] | None
+        Host names. None = all enabled hosts.
+    packages : list[str] | None
+        Package names. None = all with mismatches.
+    local : bool
+        Fix local mismatches (default True).
+    remote : bool
+        Fix remote mismatches (default True).
+    confirm : bool
+        If False (default), preview only.
+
+    Returns
+    -------
+    dict
+        {detected, local_fixes, remote_fixes, summary}
+    """
+    from scitex._dev._fix import fix_mismatches
+
+    return fix_mismatches(
+        hosts=hosts,
+        packages=packages,
+        local=local,
+        remote=remote,
+        confirm=confirm,
+    )
+
+
 # EOF

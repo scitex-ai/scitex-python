@@ -65,6 +65,24 @@ def register_routes(app: Flask) -> None:
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+    @app.route("/api/fix_mismatches", methods=["POST"])
+    def api_fix_mismatches():
+        """Detect and fix version mismatches. POST with confirm=true to execute."""
+        try:
+            from .._fix import fix_mismatches
+
+            data = request.get_json(silent=True) or {}
+            result = fix_mismatches(
+                hosts=data.get("hosts"),
+                packages=data.get("packages"),
+                local=data.get("local", True),
+                remote=data.get("remote", True),
+                confirm=data.get("confirm", False),
+            )
+            return jsonify(result)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
     @app.route("/api/config")
     def api_config():
         """Get current configuration."""
