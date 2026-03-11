@@ -24,10 +24,10 @@ jobs:
         with:
           path-to-signatures: "signatures/cla.json"
           path-to-document: "https://github.com/ywatanabe1989/scitex-python/blob/main/CLA.md"
-          branch: "main"
+          branch: "cla-signatures"
           allowlist: bot*
-          message-success: |
+          custom-allsigned-prcomment: |
             Thank you for signing the SciTeX CLA. Your contribution can now be reviewed.
-          message-commit-not-allowed: |
+          custom-notsigned-prcomment: |
             Please sign the [SciTeX CLA](https://github.com/ywatanabe1989/scitex-python/blob/main/CLA.md) before your contribution can be merged.
             Comment `I have read and agree to the SciTeX CLA.` to sign.
