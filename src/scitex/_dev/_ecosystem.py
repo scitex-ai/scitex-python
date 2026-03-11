@@ -25,6 +25,24 @@ ECOSYSTEM: Dict[str, PackageInfo] = {
         "github_repo": "ywatanabe1989/scitex-python",
         "import_name": "scitex",
     },
+    "scitex-io": {
+        "local_path": "~/proj/scitex-io",
+        "pypi_name": "scitex-io",
+        "github_repo": "ywatanabe1989/scitex-io",
+        "import_name": "scitex_io",
+    },
+    "scitex-stats": {
+        "local_path": "~/proj/scitex-stats",
+        "pypi_name": "scitex-stats",
+        "github_repo": "ywatanabe1989/scitex-stats",
+        "import_name": "scitex_stats",
+    },
+    "scitex-clew": {
+        "local_path": "~/proj/scitex-clew",
+        "pypi_name": "scitex-clew",
+        "github_repo": "ywatanabe1989/scitex-clew",
+        "import_name": "scitex_clew",
+    },
     "scitex-cloud": {
         "local_path": "~/proj/scitex-cloud",
         "pypi_name": "scitex-cloud",

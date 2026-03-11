@@ -18,8 +18,7 @@ import click
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
 @click.pass_context
 def dev(ctx, help_recursive):
-    r"""
-    Developer utilities (internal).
+    """Developer utilities (internal).
 
     \b
     Subcommands:
@@ -54,8 +53,7 @@ def dev(ctx, help_recursive):
 @dev.group("versions", invoke_without_command=True)
 @click.pass_context
 def versions(ctx):
-    r"""
-    Version management across the scitex ecosystem.
+    """Version management across the scitex ecosystem.
 
     \b
     Subcommands:
