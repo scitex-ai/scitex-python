@@ -1,41 +1,37 @@
 #!/usr/bin/env python3
-# Time-stamp: "2024-11-14 07:41:25 (ywatanabe)"
-# File: ./scitex_repo/src/scitex/io/_load_modules/__init__.py
+# Timestamp: 2026-03-11
+# File: src/scitex/io/_load_modules/__init__.py
+"""Load modules — delegates format handlers to scitex-io, keeps scitex-specific ones local."""
 
-import importlib as __importlib
-import inspect as __inspect
-import os as __os
+import importlib as _importlib
+import inspect as _inspect
 
-# Get the current directory
-current_dir = __os.path.dirname(__file__)
+# =============================================================================
+# Import all public functions/classes from scitex_io._load_modules
+# =============================================================================
 
-# Iterate through all Python files in the current directory
-for filename in __os.listdir(current_dir):
-    if filename.endswith(".py") and not filename.startswith("__"):
-        module_name = filename[:-3]  # Remove .py extension
-        try:
-            module = __importlib.import_module(f".{module_name}", package=__name__)
+try:
+    _io_mod = _importlib.import_module("scitex_io._load_modules")
+    for _name, _obj in _inspect.getmembers(_io_mod):
+        if (
+            _inspect.isfunction(_obj) or _inspect.isclass(_obj)
+        ) and not _name.startswith("_"):
+            globals()[_name] = _obj
+    del _io_mod
+except ImportError:
+    pass
 
-            # Import only functions and classes from the module
-            for name, obj in __inspect.getmembers(module):
-                if __inspect.isfunction(obj) or __inspect.isclass(obj):
-                    if not name.startswith("_"):
-                        globals()[name] = obj
-        except ImportError:
-            # Skip modules with missing optional dependencies
-            pass
+# =============================================================================
+# SciTeX-specific load modules (NOT in scitex-io)
+# =============================================================================
 
-# Clean up temporary variables
-del (
-    __os,
-    __importlib,
-    __inspect,
-    current_dir,
-    filename,
-    module_name,
-    module,
-    name,
-    obj,
-)
+# Canvas loading (scitex-specific)
+try:
+    from ._canvas import load_canvas  # noqa: F401
+except ImportError:
+    pass
+
+# Clean up
+del _importlib, _inspect
 
 # EOF

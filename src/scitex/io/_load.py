@@ -14,20 +14,20 @@ import glob
 from pathlib import Path
 from typing import Any, Union
 
+from scitex_io._load_cache import cache_data, get_cached_data, load_npy_cached
+
+# Core loaders (from scitex-io, single source of truth)
+from scitex_io._load_modules._bibtex import _load_bibtex
+from scitex_io._load_modules._json import _load_json
+from scitex_io._load_modules._markdown import _load_markdown
+from scitex_io._load_modules._numpy import _load_npy
+from scitex_io._load_modules._pandas import _load_csv, _load_excel, _load_tsv
+from scitex_io._load_modules._pickle import _load_pickle
+from scitex_io._load_modules._txt import _load_txt
+from scitex_io._load_modules._xml import _load_xml
+from scitex_io._load_modules._yaml import _load_yaml
+
 from scitex.decorators import preserve_doc
-
-from ._load_cache import cache_data, get_cached_data, load_npy_cached
-
-# Core loaders (no special dependencies)
-from ._load_modules._bibtex import _load_bibtex
-from ._load_modules._json import _load_json
-from ._load_modules._markdown import _load_markdown
-from ._load_modules._numpy import _load_npy
-from ._load_modules._pandas import _load_csv, _load_excel, _load_tsv
-from ._load_modules._pickle import _load_pickle
-from ._load_modules._txt import _load_txt
-from ._load_modules._xml import _load_xml
-from ._load_modules._yaml import _load_yaml
 
 
 # Optional loaders - wrapped for missing dependencies
@@ -41,57 +41,57 @@ def _unavailable_loader(name):
 
 
 try:
-    from ._load_modules._con import _load_con
+    from scitex_io._load_modules._con import _load_con
 except ImportError:
     _load_con = _unavailable_loader("con")
 
 try:
-    from ._load_modules._docx import _load_docx
+    from scitex_io._load_modules._docx import _load_docx
 except ImportError:
     _load_docx = _unavailable_loader("docx")
 
 try:
-    from ._load_modules._eeg import _load_eeg_data
+    from scitex_io._load_modules._eeg import _load_eeg_data
 except ImportError:
     _load_eeg_data = _unavailable_loader("eeg")
 
 try:
-    from ._load_modules._hdf5 import _load_hdf5
+    from scitex_io._load_modules._hdf5 import _load_hdf5
 except ImportError:
     _load_hdf5 = _unavailable_loader("hdf5")
 
 try:
-    from ._load_modules._image import _load_image
+    from scitex_io._load_modules._image import _load_image
 except ImportError:
     _load_image = _unavailable_loader("image")
 
 try:
-    from ._load_modules._joblib import _load_joblib
+    from scitex_io._load_modules._joblib import _load_joblib
 except ImportError:
     _load_joblib = _unavailable_loader("joblib")
 
 try:
-    from ._load_modules._matlab import _load_matlab
+    from scitex_io._load_modules._matlab import _load_matlab
 except ImportError:
     _load_matlab = _unavailable_loader("matlab")
 
 try:
-    from ._load_modules._pdf import _load_pdf
+    from scitex_io._load_modules._pdf import _load_pdf
 except ImportError:
     _load_pdf = _unavailable_loader("pdf")
 
 try:
-    from ._load_modules._sqlite3 import _load_db_sqlite3
+    from scitex_io._load_modules._sqlite3 import _load_db_sqlite3
 except ImportError:
     _load_db_sqlite3 = _unavailable_loader("sqlite3")
 
 try:
-    from ._load_modules._torch import _load_torch
+    from scitex_io._load_modules._torch import _load_torch
 except ImportError:
     _load_torch = _unavailable_loader("torch")
 
 try:
-    from ._load_modules._zarr import _load_zarr
+    from scitex_io._load_modules._zarr import _load_zarr
 except ImportError:
     _load_zarr = _unavailable_loader("zarr")
 
