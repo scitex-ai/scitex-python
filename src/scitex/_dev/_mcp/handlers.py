@@ -37,36 +37,10 @@ async def get_config_handler() -> dict[str, Any]:
     dict
         Configuration including packages, hosts, remotes, branches.
     """
-    from scitex._dev import get_config_path, load_config
+    from scitex._dev._config import config_to_dict, get_config_path, load_config
 
     config = load_config()
-    return {
-        "config_path": str(get_config_path()),
-        "packages": [
-            {
-                "name": p.name,
-                "local_path": p.local_path,
-                "pypi_name": p.pypi_name,
-                "github_repo": p.github_repo,
-            }
-            for p in config.packages
-        ],
-        "hosts": [
-            {
-                "name": h.name,
-                "hostname": h.hostname,
-                "user": h.user,
-                "role": h.role,
-                "enabled": h.enabled,
-            }
-            for h in config.hosts
-        ],
-        "github_remotes": [
-            {"name": r.name, "org": r.org, "enabled": r.enabled}
-            for r in config.github_remotes
-        ],
-        "branches": config.branches,
-    }
+    return config_to_dict(config, config_path=get_config_path())
 
 
 async def test_run_handler(

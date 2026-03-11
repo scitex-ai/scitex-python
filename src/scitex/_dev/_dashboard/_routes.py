@@ -87,36 +87,10 @@ def register_routes(app: Flask) -> None:
     def api_config():
         """Get current configuration."""
         try:
-            from .._config import get_config_path, load_config
+            from .._config import config_to_dict, get_config_path, load_config
 
             config = load_config()
-            return jsonify(
-                {
-                    "config_path": str(get_config_path()),
-                    "packages": [
-                        {
-                            "name": p.name,
-                            "local_path": p.local_path,
-                            "pypi_name": p.pypi_name,
-                        }
-                        for p in config.packages
-                    ],
-                    "hosts": [
-                        {
-                            "name": h.name,
-                            "hostname": h.hostname,
-                            "role": h.role,
-                            "enabled": h.enabled,
-                        }
-                        for h in config.hosts
-                    ],
-                    "github_remotes": [
-                        {"name": r.name, "org": r.org, "enabled": r.enabled}
-                        for r in config.github_remotes
-                    ],
-                    "branches": config.branches,
-                }
-            )
+            return jsonify(config_to_dict(config, config_path=get_config_path()))
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 

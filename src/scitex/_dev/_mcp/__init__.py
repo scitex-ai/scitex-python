@@ -5,6 +5,7 @@
 """MCP handlers for developer utilities."""
 
 from .handlers import (
+    fix_mismatches_handler,
     get_config_handler,
     list_versions_handler,
     pull_local_handler,
@@ -13,12 +14,14 @@ from .handlers import (
     rename_handler,
     sync_handler,
     sync_local_handler,
+    test_hpc_poll_handler,
     test_hpc_result_handler,
     test_hpc_run_handler,
     test_run_handler,
 )
 
 __all__ = [
+    "fix_mismatches_handler",
     "get_config_handler",
     "list_versions_handler",
     "pull_local_handler",
@@ -27,6 +30,7 @@ __all__ = [
     "rename_handler",
     "sync_handler",
     "sync_local_handler",
+    "test_hpc_poll_handler",
     "test_hpc_result_handler",
     "test_hpc_run_handler",
     "test_run_handler",

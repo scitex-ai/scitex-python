@@ -40,6 +40,7 @@ from ._config import (
     HostConfig,
     PackageConfig,
     PyPIAccount,
+    config_to_dict,
     create_default_config,
     get_config_path,
     get_enabled_hosts,
@@ -95,6 +96,9 @@ __all__ = [
     # Versions
     "list_versions",
     "check_versions",
+    "get_mismatches",
+    # Fix
+    "fix_mismatches",
     # Ecosystem
     "ECOSYSTEM",
     "get_all_packages",
@@ -105,6 +109,7 @@ __all__ = [
     "create_default_config",
     "get_enabled_hosts",
     "get_enabled_remotes",
+    "config_to_dict",
     "DevConfig",
     "HostConfig",
     "GitHubRemote",

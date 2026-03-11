@@ -305,6 +305,52 @@ def get_enabled_remotes(config: DevConfig | None = None) -> list[GitHubRemote]:
     return [r for r in config.github_remotes if r.enabled]
 
 
+def config_to_dict(config: DevConfig, config_path: Path | None = None) -> dict:
+    """Serialize a DevConfig to a plain dict for JSON responses.
+
+    Parameters
+    ----------
+    config : DevConfig
+        Configuration to serialize.
+    config_path : Path | None
+        If provided, included as ``"config_path"`` in the result.
+
+    Returns
+    -------
+    dict
+        Serialized configuration.
+    """
+    result: dict = {
+        "packages": [
+            {
+                "name": p.name,
+                "local_path": p.local_path,
+                "pypi_name": p.pypi_name,
+                "github_repo": p.github_repo,
+            }
+            for p in config.packages
+        ],
+        "hosts": [
+            {
+                "name": h.name,
+                "hostname": h.hostname,
+                "user": h.user,
+                "role": h.role,
+                "enabled": h.enabled,
+            }
+            for h in config.hosts
+        ],
+        "github_remotes": [
+            {"name": r.name, "org": r.org, "enabled": r.enabled}
+            for r in config.github_remotes
+        ],
+        "branches": config.branches,
+    }
+    if config_path is not None:
+        result["config_path"] = str(config_path)
+    return result
+
+
 def get_config_path() -> Path:
     """Get the config file path (may not exist)."""
     path = os.getenv("SCITEX_DEV_CONFIG")
