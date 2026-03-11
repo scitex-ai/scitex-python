@@ -68,6 +68,9 @@ SciTeX aims to be free for researchers forever. A CLA ensures the project can:
   proprietary forks).
 - Provide legal clarity for institutions adopting SciTeX.
 
+Revenue from commercial licensing accrues to the Project Lead and is used to
+sustain the SciTeX project.
+
 This is the same approach used by MongoDB, Elasticsearch, and many other
 successful open-source projects with dual-licensing models.
 
