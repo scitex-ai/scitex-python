@@ -62,6 +62,9 @@ dependencies = [
     "natsort",  # Natural sorting - used by many modules
     # Reproducibility Verification
     "scitex-clew>=0.1.0",
+    # Delegated core modules (thin re-exports)
+    "scitex-io>=0.2.0",
+    "scitex-stats>=0.2.0",
 ]
 
 [project.urls]
