@@ -12,6 +12,7 @@ from .dev import register_dev_tools
 from .diagram import register_diagram_tools
 from .fr import register_fr_tools
 from .introspect import register_introspect_tools
+from .io import register_io_tools
 from .linter import register_linter_tools
 from .plt import register_plt_tools
 from .project import register_project_tools
@@ -37,6 +38,7 @@ _TOOL_GROUPS = {
     "DIAGRAM": register_diagram_tools,
     "FR": register_fr_tools,
     "INTROSPECT": register_introspect_tools,
+    "IO": register_io_tools,
     "LINTER": register_linter_tools,
     "PLT": register_plt_tools,
     "PROJECT": register_project_tools,
