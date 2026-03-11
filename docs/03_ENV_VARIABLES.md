@@ -155,6 +155,20 @@ The following environment variables were renamed for consistency. Old names are 
 |----------|-------------|---------|
 | `SCITEX_WEB_DOWNLOADS_DIR` | Web downloads directory | - |
 
+### Dev (`scitex._dev`)
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SCITEX_DEV_CONFIG` | Path to dev config YAML file | `~/.scitex/dev_config.yaml` |
+| `SCITEX_DEV_HOSTS` | Comma-separated list of enabled host names (overrides YAML `enabled` field) | - |
+| `SCITEX_DEV_GITHUB_REMOTES` | Comma-separated list of enabled GitHub remote names (overrides YAML `enabled` field) | - |
+| `GITHUB_TOKEN` / `GH_TOKEN` | GitHub personal access token for API calls | - |
+
+Notes:
+- `SCITEX_DEV_CONFIG` is read by `load_config()` and `get_config_path()`.
+- `SCITEX_DEV_HOSTS` and `SCITEX_DEV_GITHUB_REMOTES` selectively enable entries defined in the config file; entries not in the list are disabled.
+- `GITHUB_TOKEN` / `GH_TOKEN` are standard GitHub env vars; `GH_TOKEN` is checked first.
+
 ## Generating a Template
 
 You can generate a template `.src` file programmatically:

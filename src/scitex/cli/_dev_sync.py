@@ -151,4 +151,56 @@ def sync(host, package, local, tags, no_install, confirm, as_json):
     sys.exit(1 if has_error else 0)
 
 
+@click.command("sync-local")
+@click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
+@click.option("--confirm", is_flag=True, help="Execute (default is preview/dry-run)")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+def sync_local_cmd(package, confirm, as_json):
+    r"""
+    Install local editable packages (pip install -e .).
+
+    \b
+    Without --confirm, shows what would be done (dry run).
+    With --confirm, executes the installs.
+
+    \b
+    Examples:
+      scitex dev versions sync-local                 # Preview
+      scitex dev versions sync-local --confirm       # Execute
+      scitex dev versions sync-local -p scitex       # Specific package
+    """
+    import json as json_mod
+    import sys
+
+    from scitex._dev._sync import sync_local as _sync_local
+
+    packages_list = list(package) if package else None
+    mode = "EXECUTE" if confirm else "PREVIEW (add --confirm to execute)"
+    result = _sync_local(packages=packages_list, confirm=confirm)
+
+    if as_json:
+        click.echo(json_mod.dumps(result, indent=2, default=str))
+        has_error = any(
+            info.get("status") not in ("ok", "dry_run", "skipped")
+            for info in result.values()
+        )
+        sys.exit(1 if has_error else 0)
+
+    click.secho(f"Local packages [{mode}]", fg="cyan", bold=True)
+    has_error = False
+    for pkg, info in result.items():
+        status = info.get("status", "unknown")
+        if status == "ok":
+            click.secho(f"  {pkg}: ok", fg="green")
+        elif status == "dry_run":
+            cmds = info.get("commands", [])
+            click.secho(f"  {pkg}: " + " ".join(cmds), fg="yellow")
+        elif status == "skipped":
+            click.secho(f"  {pkg}: {info.get('error', 'skipped')}", fg="yellow")
+        else:
+            click.secho(f"  {pkg}: {info.get('error', status)}", fg="red")
+            has_error = True
+    sys.exit(1 if has_error else 0)
+
+
 # EOF

@@ -37,36 +37,10 @@ async def get_config_handler() -> dict[str, Any]:
     dict
         Configuration including packages, hosts, remotes, branches.
     """
-    from scitex._dev import get_config_path, load_config
+    from scitex._dev._config import config_to_dict, get_config_path, load_config
 
     config = load_config()
-    return {
-        "config_path": str(get_config_path()),
-        "packages": [
-            {
-                "name": p.name,
-                "local_path": p.local_path,
-                "pypi_name": p.pypi_name,
-                "github_repo": p.github_repo,
-            }
-            for p in config.packages
-        ],
-        "hosts": [
-            {
-                "name": h.name,
-                "hostname": h.hostname,
-                "user": h.user,
-                "role": h.role,
-                "enabled": h.enabled,
-            }
-            for h in config.hosts
-        ],
-        "github_remotes": [
-            {"name": r.name, "org": r.org, "enabled": r.enabled}
-            for r in config.github_remotes
-        ],
-        "branches": config.branches,
-    }
+    return config_to_dict(config, config_path=get_config_path())
 
 
 async def test_run_handler(
@@ -446,6 +420,49 @@ async def rename_handler(
         set_sudo_password(None)
 
     return asdict(result)
+
+
+async def fix_mismatches_handler(
+    hosts: list[str] | None = None,
+    packages: list[str] | None = None,
+    local: bool = True,
+    remote: bool = True,
+    confirm: bool = False,
+) -> dict[str, Any]:
+    """Detect and fix version mismatches across the ecosystem.
+
+    Combines mismatch detection with sync: pip install locally,
+    git pull + pip install on remote hosts.
+
+    Safety: defaults to preview only. Pass confirm=True to execute.
+
+    Parameters
+    ----------
+    hosts : list[str] | None
+        Host names. None = all enabled hosts.
+    packages : list[str] | None
+        Package names. None = all with mismatches.
+    local : bool
+        Fix local mismatches (default True).
+    remote : bool
+        Fix remote mismatches (default True).
+    confirm : bool
+        If False (default), preview only.
+
+    Returns
+    -------
+    dict
+        {detected, local_fixes, remote_fixes, summary}
+    """
+    from scitex._dev._fix import fix_mismatches
+
+    return fix_mismatches(
+        hosts=hosts,
+        packages=packages,
+        local=local,
+        remote=remote,
+        confirm=confirm,
+    )
 
 
 # EOF

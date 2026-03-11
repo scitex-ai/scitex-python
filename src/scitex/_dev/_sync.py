@@ -71,6 +71,9 @@ def _build_sync_commands(
     """Build the shell commands that would be run for a package."""
     base = f"{host.remote_base}/{dir_name}"
     cmds = [f"cd {base}"]
+    if install:
+        # Ensure .venv symlink exists so pip resolves to the right env
+        cmds.append("test -e .venv || ln -s ~/.venv .venv 2>/dev/null || true")
     if stash:
         cmds.append("git stash")
     cmds.append("git pull")

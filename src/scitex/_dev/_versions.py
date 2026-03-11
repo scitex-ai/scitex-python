@@ -363,4 +363,25 @@ def check_versions(packages: list[str] | None = None) -> dict[str, Any]:
     return {"packages": versions, "summary": summary}
 
 
+def get_mismatches(packages: list[str] | None = None) -> dict[str, Any]:
+    """Return packages with non-ok status and their issues.
+
+    Parameters
+    ----------
+    packages : list[str] | None
+        Package names to check. None = all ecosystem packages.
+
+    Returns
+    -------
+    dict
+        {package_name: {status, issues, local, git, remote}} for non-ok packages.
+    """
+    versions = list_versions(packages)
+    return {
+        pkg: info
+        for pkg, info in versions.items()
+        if info.get("status") not in ("ok", "unavailable")
+    }
+
+
 # EOF

@@ -40,6 +40,7 @@ from ._config import (
     HostConfig,
     PackageConfig,
     PyPIAccount,
+    config_to_dict,
     create_default_config,
     get_config_path,
     get_enabled_hosts,
@@ -47,6 +48,7 @@ from ._config import (
     load_config,
 )
 from ._ecosystem import ECOSYSTEM, get_all_packages, get_local_path
+from ._fix import fix_mismatches
 from ._github import (
     check_all_remotes,
     compare_with_local,
@@ -88,12 +90,15 @@ from ._test import (
     sync_to_hpc,
     watch_hpc_job,
 )
-from ._versions import check_versions, list_versions
+from ._versions import check_versions, get_mismatches, list_versions
 
 __all__ = [
     # Versions
     "list_versions",
     "check_versions",
+    "get_mismatches",
+    # Fix
+    "fix_mismatches",
     # Ecosystem
     "ECOSYSTEM",
     "get_all_packages",
@@ -104,6 +109,7 @@ __all__ = [
     "create_default_config",
     "get_enabled_hosts",
     "get_enabled_remotes",
+    "config_to_dict",
     "DevConfig",
     "HostConfig",
     "GitHubRemote",
