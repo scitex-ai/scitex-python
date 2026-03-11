@@ -180,16 +180,18 @@ function getSourceStatuses(name, info, hostVersions, remoteVersions, rtdStatus) 
 }
 
 function renderSourceBadges(sourceStatuses) {
-    const order = ['local', 'nas', 'pypi', 'github', 'rtd'];
-    const labels = { local: 'Local', nas: 'NAS', pypi: 'PyPI', github: 'GitHub', rtd: 'RTD' };
-    const titles = { local: 'LOCAL', nas: 'NAS', pypi: 'PyPI', github: 'GitHub', rtd: 'RTD' };
+    // Build order dynamically: local, then all hosts, then pypi/github/rtd
+    const hostKeys = Object.keys(sourceStatuses).filter(k => !['local', 'pypi', 'github', 'rtd'].includes(k));
+    const order = ['local', ...hostKeys, 'pypi', 'github', 'rtd'];
+    const labels = { local: 'Local', pypi: 'PyPI', github: 'GitHub', rtd: 'RTD' };
 
     let html = '<span class="source-badges">';
     order.forEach(key => {
         if (sourceStatuses[key] !== undefined) {
             const st = sourceStatuses[key];
             const cls = st === 'ok' ? 'src-ok' : st === 'warn' ? 'src-warn' : st === 'error' ? 'src-error' : st === 'loading' ? 'src-loading' : 'src-na';
-            html += `<span class="source-badge ${cls}" title="${titles[key] || key.toUpperCase()}: ${st}">${labels[key] || key[0].toUpperCase()}</span>`;
+            const label = labels[key] || key.toUpperCase();
+            html += `<span class="source-badge ${cls}" title="${key.toUpperCase()}: ${st}">${label}</span>`;
         }
     });
     html += '</span>';
