@@ -58,6 +58,9 @@ def _error_dict(error: str | Exception, code: ErrorCode | None = None) -> dict:
 @click.option("--output", "-o", help="Output path for enriched BibTeX")
 @click.option("--json", "json_output", is_flag=True, help="Output as JSON")
 @click.option("--async", "async_mode", is_flag=True, help="Run in background")
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be fetched without downloading"
+)
 def fetch(
     papers,
     bibtex_file,
@@ -69,6 +72,7 @@ def fetch(
     output,
     json_output,
     async_mode,
+    dry_run,
 ):
     """
     Fetch papers to your library
@@ -95,6 +99,43 @@ def fetch(
         else:
             click.echo(f"Error: {error_msg}", err=True)
         sys.exit(1)
+
+    if dry_run:
+        if bibtex_file:
+            from scitex.scholar.bibtex import parse_bibtex_file
+
+            entries = parse_bibtex_file(bibtex_file)
+            plan = {
+                "action": "dry_run",
+                "source": "bibtex",
+                "bibtex_file": str(bibtex_file),
+                "paper_count": len(entries),
+                "papers": [
+                    {"key": e.get("ID", "?"), "title": e.get("title", "?")}
+                    for e in entries[:20]
+                ],
+                "project": project,
+            }
+        else:
+            plan = {
+                "action": "dry_run",
+                "source": "arguments",
+                "paper_count": len(papers),
+                "papers": list(papers),
+                "project": project,
+            }
+        if json_output:
+            output_json({"success": True, **plan})
+        else:
+            click.echo(f"[dry-run] Would fetch {plan['paper_count']} paper(s)")
+            for p in plan["papers"]:
+                if isinstance(p, dict):
+                    click.echo(f"  - {p.get('key', '?')}: {p.get('title', '?')}")
+                else:
+                    click.echo(f"  - {p}")
+            if project:
+                click.echo(f"[dry-run] Project: {project}")
+        return
 
     if async_mode:
         _fetch_async(
