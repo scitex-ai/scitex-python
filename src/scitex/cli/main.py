@@ -86,6 +86,7 @@ _LAZY_SUBCOMMANDS = {
     "convert": ("scitex.cli.convert", "convert", "File format conversion."),
     "dataset": ("scitex.cli.dataset", "dataset", "Dataset discovery and management."),
     "dev": ("scitex.cli.dev", "dev", "Developer tools."),
+    "docs": ("scitex.cli.docs", "docs", "Browse and search SciTeX documentation."),
     "event": ("scitex.cli.event", "event", "Event bus for async task results."),
     "introspect": ("scitex.cli.introspect", "introspect", "Code introspection tools."),
     "linter": ("scitex.cli.linter", "linter", "SciTeX linter."),
