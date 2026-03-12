@@ -252,6 +252,7 @@ linter = _LazyModule("linter")  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
 notebook = _LazyModule("notebook")  # Jupyter notebook verification & compilation
 verify = _LazyModule("verify")  # Backward compat alias for clew
+app = _LazyModule("app")  # App SDK — unified file storage for local + cloud
 usage = _CallableModuleWrapper("usage", main_decorator_name="show")
 usage._setup_persistence("scitex", "usage")
 

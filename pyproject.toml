@@ -62,6 +62,8 @@ dependencies = [
     "natsort",  # Natural sorting - used by many modules
     # Reproducibility Verification
     "scitex-clew>=0.1.0",
+    # App SDK — unified file storage for local + cloud
+    "scitex-app>=0.1.0",
     # Delegated core modules (thin re-exports)
     "scitex-dev>=0.1.0",
     "scitex-io>=0.2.0",
