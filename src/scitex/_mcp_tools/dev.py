@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
-# Timestamp: 2026-02-02
+# Timestamp: 2026-03-13
 # File: scitex/_mcp_tools/dev.py
 
-"""MCP tool registration for developer utilities."""
+"""MCP tool registration for developer utilities.
 
-import json
-
-
-def _json(obj) -> str:
-    """Serialize object to JSON string."""
-    return json.dumps(obj, indent=2, default=str)
+All handlers return structured Result JSON via scitex_dev.mcp_utils.
+"""
 
 
 def register_dev_tools(mcp) -> None:
@@ -38,12 +34,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with version information for each package.
+            JSON Result with version information for each package.
         """
-        from scitex._dev._mcp.handlers import list_versions_handler
+        from scitex_dev.dev_mcp.handlers import list_versions_handler
 
-        result = await list_versions_handler(packages)
-        return _json(result)
+        return await list_versions_handler(packages)
 
     @mcp.tool()
     async def dev_config_show() -> str:
@@ -58,12 +53,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with current configuration.
+            JSON Result with current configuration.
         """
-        from scitex._dev._mcp.handlers import get_config_handler
+        from scitex_dev.dev_mcp.handlers import get_config_handler
 
-        result = await get_config_handler()
-        return _json(result)
+        return await get_config_handler()
 
     @mcp.tool()
     async def dev_test_local(
@@ -96,14 +90,13 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {"exit_code": int}.
+            JSON Result with {"exit_code": int}.
         """
-        from scitex._dev._mcp.handlers import test_run_handler
+        from scitex_dev.dev_mcp.handlers import test_run_handler
 
-        result = await test_run_handler(
+        return await test_run_handler(
             module, fast, coverage, exitfirst, pattern, parallel
         )
-        return _json(result)
 
     @mcp.tool()
     async def dev_test_hpc(
@@ -141,15 +134,14 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {"exit_code": int} for srun,
+            JSON Result with {"exit_code": int} for srun,
             or {"job_id": str} for sbatch.
         """
-        from scitex._dev._mcp.handlers import test_hpc_run_handler
+        from scitex_dev.dev_mcp.handlers import test_hpc_run_handler
 
-        result = await test_hpc_run_handler(
+        return await test_hpc_run_handler(
             module, fast, hpc_cpus, hpc_partition, hpc_time, hpc_mem, async_mode
         )
-        return _json(result)
 
     @mcp.tool()
     async def dev_test_hpc_poll(
@@ -168,13 +160,12 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {"state": str, "output": str|null, "job_id": str}.
+            JSON Result with {"state": str, "output": str|null, "job_id": str}.
             States: COMPLETED, RUNNING, PENDING, FAILED, TIMEOUT, CANCELLED.
         """
-        from scitex._dev._mcp.handlers import test_hpc_poll_handler
+        from scitex_dev.dev_mcp.handlers import test_hpc_poll_handler
 
-        result = await test_hpc_poll_handler(job_id)
-        return _json(result)
+        return await test_hpc_poll_handler(job_id)
 
     @mcp.tool()
     async def dev_test_hpc_result(
@@ -192,12 +183,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {"output": str|null, "job_id": str}.
+            JSON Result with {"output": str|null, "job_id": str}.
         """
-        from scitex._dev._mcp.handlers import test_hpc_result_handler
+        from scitex_dev.dev_mcp.handlers import test_hpc_result_handler
 
-        result = await test_hpc_result_handler(job_id)
-        return _json(result)
+        return await test_hpc_result_handler(job_id)
 
     @mcp.tool()
     async def dev_versions_sync(
@@ -226,12 +216,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {host_name: {package: {status, commands|output, error}}}.
+            JSON Result with {host_name: {package: {status, commands|output, error}}}.
         """
-        from scitex._dev._mcp.handlers import sync_handler
+        from scitex_dev.dev_mcp.handlers import sync_handler
 
-        result = await sync_handler(hosts, packages, install, confirm)
-        return _json(result)
+        return await sync_handler(hosts, packages, install, confirm)
 
     @mcp.tool()
     async def dev_versions_sync_local(
@@ -254,12 +243,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {package: {status, output|commands}}.
+            JSON Result with {package: {status, output|commands}}.
         """
-        from scitex._dev._mcp.handlers import sync_local_handler
+        from scitex_dev.dev_mcp.handlers import sync_local_handler
 
-        result = await sync_local_handler(packages, confirm)
-        return _json(result)
+        return await sync_local_handler(packages, confirm)
 
     @mcp.tool()
     async def dev_fix_mismatches(
@@ -293,12 +281,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {detected, local_fixes, remote_fixes, summary}.
+            JSON Result with {detected, local_fixes, remote_fixes, summary}.
         """
-        from scitex._dev._mcp.handlers import fix_mismatches_handler
+        from scitex_dev.dev_mcp.handlers import fix_mismatches_handler
 
-        result = await fix_mismatches_handler(hosts, packages, local, remote, confirm)
-        return _json(result)
+        return await fix_mismatches_handler(hosts, packages, local, remote, confirm)
 
     @mcp.tool()
     async def dev_versions_diff(
@@ -320,12 +307,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {host: {package: {status, files, diff_stat, diff}}}.
+            JSON Result with {host: {package: {status, files, diff_stat, diff}}}.
         """
-        from scitex._dev._mcp.handlers import remote_diff_handler
+        from scitex_dev.dev_mcp.handlers import remote_diff_handler
 
-        result = await remote_diff_handler(host, packages)
-        return _json(result)
+        return await remote_diff_handler(host, packages)
 
     @mcp.tool()
     async def dev_versions_commit(
@@ -357,12 +343,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {package: {status, commands|output}}.
+            JSON Result with {package: {status, commands|output}}.
         """
-        from scitex._dev._mcp.handlers import remote_commit_handler
+        from scitex_dev.dev_mcp.handlers import remote_commit_handler
 
-        result = await remote_commit_handler(host, packages, message, push, confirm)
-        return _json(result)
+        return await remote_commit_handler(host, packages, message, push, confirm)
 
     @mcp.tool()
     async def dev_versions_pull(
@@ -389,12 +374,11 @@ def register_dev_tools(mcp) -> None:
         Returns
         -------
         str
-            JSON with {package: {status, output|commands, stashed}}.
+            JSON Result with {package: {status, output|commands, stashed}}.
         """
-        from scitex._dev._mcp.handlers import pull_local_handler
+        from scitex_dev.dev_mcp.handlers import pull_local_handler
 
-        result = await pull_local_handler(packages, confirm, stash)
-        return _json(result)
+        return await pull_local_handler(packages, confirm, stash)
 
     @mcp.tool()
     async def dev_bulk_rename(
@@ -418,39 +402,9 @@ def register_dev_tools(mcp) -> None:
            - Directory renames: "d-{idx}" (e.g., "d-001")
            - File renames: "f-{idx}"
            - Symlink updates: "st-{idx}", "sn-{idx}"
-           Look for FALSE POSITIVES (changes that shouldn't happen) and
-           FALSE NEGATIVES (protected lines that should actually change).
-           Common false positives: legacy redirect URLs that should keep
-           the old name, documentation describing the rename itself.
-           Common false negatives: lines matching django_safe patterns
-           (db_table=, related_name=) that are actually app config, not
-           DB schema.
-        3. EXECUTE: Call with confirm=True and skip_ids=[...] for any
-           false positives. For false negatives, either set django_safe=False
-           or fix manually after execution.
+        3. EXECUTE: Call with confirm=True and skip_ids=[...] for false positives.
 
-        SKIP_IDS: Use file-level IDs (e.g., "c-003") to skip ALL changes
-        in a file, or line-level IDs (e.g., "c-003-L12") to skip a single
-        line while still renaming other lines in the same file.
-
-        Django-safe by default (protects db_table, related_name, migration
-        files). Execution order: contents → symlink targets → symlink
-        names → file names → directory names (deepest first).
-
-        DJANGO APP RENAME WARNING: If renaming a Django app directory
-        (e.g., old_app/ → new_app/), additional manual steps are required
-        AFTER the bulk rename completes:
-        1. Add explicit db_table to ALL models in the renamed app to
-           preserve the old table names (e.g., db_table="old_app_mymodel").
-        2. Update migration file internal references (dependencies and
-           ForeignKey `to=` strings) from old_app to new_app.
-        3. Run SQL to fix Django tracking tables BEFORE running migrate:
-           UPDATE django_migrations SET app='new_app' WHERE app='old_app';
-        4. Create a new migration that updates django_content_type rows.
-        5. Fix any `related_name` values in models that reference the
-           old app name — these are Python-only but affect reverse queries.
-        Model class renames (e.g., UserModule → UserApp) require separate
-        Django RenameModel migrations and are NOT handled by this tool.
+        Django-safe by default (protects db_table, related_name, migration files).
 
         Parameters
         ----------
@@ -470,22 +424,20 @@ def register_dev_tools(mcp) -> None:
         force : bool
             Skip uncommitted changes check (default False).
         skip_ids : list of str, optional
-            IDs of changes to skip (from dry-run output). Supports both
-            file-level ("c-003") and line-level ("c-003-L12") granularity.
+            IDs of changes to skip (from dry-run output).
         use_sudo : bool
-            Use sudo for file operations (for root-owned files). Default False.
+            Use sudo for file operations. Default False.
         sudo_password : str, optional
-            Password for non-interactive sudo. Required when use_sudo=True
-            on systems without NOPASSWD configured.
+            Password for non-interactive sudo.
 
         Returns
         -------
         str
-            JSON with rename results and summary.
+            JSON Result with rename results and summary.
         """
-        from scitex._dev._mcp.handlers import rename_handler
+        from scitex_dev.dev_mcp.handlers import rename_handler
 
-        result = await rename_handler(
+        return await rename_handler(
             pattern,
             replacement,
             directory,
@@ -497,7 +449,6 @@ def register_dev_tools(mcp) -> None:
             use_sudo=use_sudo,
             sudo_password=sudo_password,
         )
-        return _json(result)
 
 
 # EOF
