@@ -130,4 +130,76 @@ def group_to_json(ctx, group: click.Group) -> None:
     ctx.exit(0)
 
 
-__all__ = ["cli", "print_help_recursive", "format_python_signature", "group_to_json"]
+def help_recursive_to_json(ctx, group: click.Group) -> None:
+    """Output recursive help for a group and all subcommands as Result JSON.
+
+    Walks the entire command tree and outputs structured JSON with
+    command names, help text, options, and nested subcommands.
+    """
+    from scitex_dev import Result
+
+    def _cmd_to_dict(cmd, parent_ctx):
+        """Convert a Click command to a dict with options and help."""
+        info = {
+            "help": cmd.get_short_help_str(limit=300),
+        }
+        # Collect options (exclude --help)
+        params = []
+        for param in cmd.params:
+            if isinstance(param, click.Option) and param.name != "help":
+                p = {
+                    "name": param.name,
+                    "flags": list(param.opts),
+                    "required": param.required,
+                    "type": param.type.name
+                    if hasattr(param.type, "name")
+                    else str(param.type),
+                }
+                if param.default is not None:
+                    p["default"] = param.default
+                if param.help:
+                    p["help"] = param.help
+                params.append(p)
+            elif isinstance(param, click.Argument):
+                p = {
+                    "name": param.name,
+                    "type": "argument",
+                    "required": param.required,
+                }
+                params.append(p)
+        if params:
+            info["params"] = params
+
+        # Recurse into subgroups
+        if isinstance(cmd, click.MultiCommand):
+            subs = {}
+            for name in sorted(cmd.list_commands(parent_ctx) or []):
+                sub_cmd = cmd.get_command(parent_ctx, name)
+                if sub_cmd:
+                    with click.Context(
+                        sub_cmd, info_name=name, parent=parent_ctx
+                    ) as sub_ctx:
+                        subs[name] = _cmd_to_dict(sub_cmd, sub_ctx)
+            if subs:
+                info["subcommands"] = subs
+        return info
+
+    # Build the full tree
+    group_name = group.name or "cli"
+    fake_parent = click.Context(click.Group(), info_name="scitex")
+    parent_ctx = click.Context(group, info_name=group_name, parent=fake_parent)
+
+    tree = _cmd_to_dict(group, parent_ctx)
+    tree["name"] = f"scitex {group_name}" if group_name != "cli" else "scitex"
+
+    click.echo(Result(success=True, data=tree).to_json())
+    ctx.exit(0)
+
+
+__all__ = [
+    "cli",
+    "print_help_recursive",
+    "format_python_signature",
+    "group_to_json",
+    "help_recursive_to_json",
+]

@@ -48,9 +48,14 @@ def dev(ctx, help_recursive, as_json):
       scitex dev config show                 # Show configuration
     """
     if help_recursive:
-        from . import print_help_recursive
+        if as_json:
+            from . import help_recursive_to_json
 
-        print_help_recursive(ctx, dev)
+            help_recursive_to_json(ctx, dev)
+        else:
+            from . import print_help_recursive
+
+            print_help_recursive(ctx, dev)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
         if as_json:

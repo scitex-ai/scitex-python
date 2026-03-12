@@ -143,7 +143,12 @@ def cli(ctx, help_recursive, as_json):
     """
     ctx.ensure_object(dict)["as_json"] = as_json
     if help_recursive:
-        _print_help_recursive(ctx)
+        if as_json:
+            from . import help_recursive_to_json
+
+            help_recursive_to_json(ctx, cli)
+        else:
+            _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
         if as_json:
