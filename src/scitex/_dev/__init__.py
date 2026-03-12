@@ -1,96 +1,62 @@
 #!/usr/bin/env python3
-# Timestamp: 2026-02-02
+# Timestamp: 2026-03-13
 # File: scitex/_dev/__init__.py
 
-"""
-SciTeX Developer Utilities (Internal Module).
+"""SciTeX Developer Utilities — thin re-export from scitex_dev.
 
-This module provides internal developer tools for managing the scitex ecosystem.
-
-Functions
----------
-list_versions : List versions across ecosystem packages
-check_versions : Check version consistency
-load_config : Load developer configuration
-check_all_hosts : Check versions on SSH hosts
-check_all_remotes : Check versions on GitHub remotes
-run_dashboard : Run the Flask version dashboard
-
-Examples
---------
->>> from scitex._dev import list_versions
->>> versions = list_versions()
->>> versions["scitex"]["local"]["pyproject_toml"]
-'2.17.1'
-
->>> from scitex._dev import check_versions
->>> result = check_versions(["scitex", "figrecipe"])
->>> result["summary"]["ok"]
-2
-
->>> from scitex._dev import load_config
->>> config = load_config()
->>> len(config.packages)
-8
+All functionality has been migrated to the standalone ``scitex-dev`` package.
+This module re-exports everything for backward compatibility.
 """
 
-from ._config import (
+from scitex_dev import (
+    ECOSYSTEM,
     DevConfig,
     GitHubRemote,
     HostConfig,
     PackageConfig,
     PyPIAccount,
+    RenameConfig,
+    RenameResult,
+    TestConfig,
+    bulk_rename,
+    check_all_hosts,
+    check_all_remotes,
+    check_versions,
+    compare_with_local,
     config_to_dict,
     create_default_config,
+    execute_rename,
+    fetch_hpc_result,
+    fix_mismatches,
+    get_all_packages,
     get_config_path,
     get_enabled_hosts,
     get_enabled_remotes,
-    load_config,
-)
-from ._ecosystem import ECOSYSTEM, get_all_packages, get_local_path
-from ._fix import fix_mismatches
-from ._github import (
-    check_all_remotes,
-    compare_with_local,
     get_github_latest_tag,
     get_github_release,
     get_github_tags,
-)
-from ._rename import (
-    RenameConfig,
-    RenameResult,
-    bulk_rename,
-    execute_rename,
-    preview_rename,
-)
-from ._ssh import (
-    check_all_hosts,
+    get_local_path,
+    get_mismatches,
     get_remote_version,
     get_remote_versions,
-    test_host_connection,
-)
-from ._sync import (
+    list_versions,
+    load_config,
+    poll_hpc_job,
+    preview_rename,
+    pull_local,
+    remote_commit,
+    remote_diff,
+    run_hpc_sbatch,
+    run_hpc_srun,
+    run_local,
     sync_all,
     sync_host,
     sync_local,
     sync_tags,
-)
-from ._sync_remote import (
-    pull_local,
-    remote_commit,
-    remote_diff,
-)
-from ._test import (
-    TestConfig,
-    fetch_hpc_result,
-    poll_hpc_job,
-    run_hpc_sbatch,
-    run_hpc_srun,
-    run_local,
     sync_to_hpc,
+    test_host_connection,
     watch_hpc_job,
 )
-from ._versions import check_versions, get_mismatches, list_versions
 
 __all__ = [
     # Versions
@@ -160,22 +126,8 @@ def run_dashboard(
     open_browser: bool = True,
     force: bool = False,
 ) -> None:
-    """Run the Flask version dashboard.
-
-    Parameters
-    ----------
-    host : str
-        Host to bind to.
-    port : int
-        Port to listen on.
-    debug : bool
-        Enable debug mode.
-    open_browser : bool
-        Open browser automatically.
-    force : bool
-        Kill existing process using the port if any.
-    """
-    from ._dashboard import run_dashboard as _run
+    """Run the Flask version dashboard."""
+    from scitex_dev.dashboard import run_dashboard as _run
 
     _run(host=host, port=port, debug=debug, open_browser=open_browser, force=force)
 
