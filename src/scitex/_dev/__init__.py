@@ -65,6 +65,7 @@ from scitex_dev import (
     sync_to_hpc,
     test_host_connection,
     watch_hpc_job,
+    wrap_as_cli,
     wrap_as_mcp,
 )
 
@@ -134,6 +135,7 @@ __all__ = [
     "SideEffect",
     "handle_result",
     "run_as_cli",
+    "wrap_as_cli",
     "run_as_mcp",
     "wrap_as_mcp",
     "result_to_mcp",
