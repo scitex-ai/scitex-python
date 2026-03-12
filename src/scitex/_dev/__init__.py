@@ -10,6 +10,7 @@ This module re-exports everything for backward compatibility.
 
 from scitex_dev import (
     ECOSYSTEM,
+    RESULT_SCHEMA,
     DevConfig,
     ErrorCode,
     GitHubRemote,
@@ -21,6 +22,8 @@ from scitex_dev import (
     Result,
     SideEffect,
     TestConfig,
+    add_dry_run_argument,
+    add_json_argument,
     async_wrap_as_mcp,
     bulk_rename,
     check_all_hosts,
@@ -30,6 +33,7 @@ from scitex_dev import (
     compare_with_local,
     config_to_dict,
     create_default_config,
+    dry_run_option,
     execute_rename,
     fetch_hpc_result,
     fix_mismatches,
@@ -45,6 +49,7 @@ from scitex_dev import (
     get_remote_version,
     get_remote_versions,
     handle_result,
+    json_option,
     list_versions,
     load_config,
     poll_hpc_job,
