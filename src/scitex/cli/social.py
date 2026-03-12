@@ -143,8 +143,11 @@ def post(platform, text, file, reply_to, quote, subreddit, title, dry_run, as_js
 @social.command()
 @click.argument("platform", type=click.Choice(["twitter", "linkedin", "reddit"]))
 @click.argument("post_id")
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be deleted without deleting"
+)
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def delete(platform, post_id, as_json):
+def delete(platform, post_id, dry_run, as_json):
     """
     Delete a post from a platform
 
@@ -152,7 +155,11 @@ def delete(platform, post_id, as_json):
     Examples:
       scitex social delete twitter 1234567890
       scitex social delete reddit abc123
+      scitex social delete twitter 1234567890 --dry-run
     """
+    if dry_run:
+        click.echo(f"[dry-run] Would delete post {post_id} from {platform}")
+        sys.exit(0)
     sys.exit(_run_socialia("delete", platform, post_id, json_output=as_json))
 
 

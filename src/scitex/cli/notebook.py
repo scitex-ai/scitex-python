@@ -181,7 +181,10 @@ def compile_cmd(path, output, mermaid, as_json):
     default="cell",
     help="Cell ordering: cell (notebook order) or dag (execution order)",
 )
-def convert_cmd(path, output, order):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def convert_cmd(path, output, order, dry_run):
     """
     Convert .ipynb to .py with @scitex.session wrappers.
 
@@ -202,6 +205,13 @@ def convert_cmd(path, output, order):
             from pathlib import Path
 
             output = str(Path(path).with_suffix(".py"))
+
+        if dry_run:
+            click.secho("[dry-run] Would convert:", fg="cyan")
+            click.echo(f"  input:  {path}  (.ipynb)")
+            click.echo(f"  output: {output}  (.py)")
+            click.echo(f"  order:  {order}")
+            return
 
         script = convert_notebook(path, output=output, order=order)
         click.secho(f"Converted to: {output}", fg="green")

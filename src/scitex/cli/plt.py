@@ -94,7 +94,10 @@ def plt(ctx, help_recursive, as_json):
 @click.option("-o", "--output", required=True, help="Output file path")
 @click.option("--dpi", type=int, default=300, help="DPI for raster output")
 @click.option("--no-recipe", is_flag=True, help="Don't save YAML recipe")
-def plot(spec_file, output, dpi, no_recipe):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def plot(spec_file, output, dpi, no_recipe, dry_run):
     """
     Create a figure from a declarative YAML/JSON spec.
 
@@ -103,6 +106,9 @@ def plot(spec_file, output, dpi, no_recipe):
       scitex plt plot spec.yaml -o fig.png
       scitex plt plot spec.json -o fig.pdf --dpi 600
     """
+    if dry_run:
+        click.echo(f"[dry-run] Would create plot from spec: {spec_file} -> {output}")
+        return
     args = ["plot", spec_file, "-o", output, "--dpi", str(dpi)]
     if no_recipe:
         args.append("--no-recipe")
@@ -140,7 +146,10 @@ def edit(recipe_file):
 @click.option("--dpi", type=int, default=300, help="DPI for output")
 @click.option("--no-labels", is_flag=True, help="Don't add panel labels (A, B, C)")
 @click.option("--caption", help="Figure caption")
-def compose(sources, output, layout, gap, dpi, no_labels, caption):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def compose(sources, output, layout, gap, dpi, no_labels, caption, dry_run):
     """
     Compose multiple figures into one.
 
@@ -150,6 +159,9 @@ def compose(sources, output, layout, gap, dpi, no_labels, caption):
       scitex plt compose *.png -o fig.pdf --layout grid
       scitex plt compose a.yaml b.yaml -o fig.png --gap 10
     """
+    if dry_run:
+        click.echo(f"[dry-run] Would compose {len(sources)} figures -> {output}")
+        return
     args = ["compose"]
     args.extend(sources)
     args.extend(
@@ -166,7 +178,10 @@ def compose(sources, output, layout, gap, dpi, no_labels, caption):
 @click.argument("input_file", type=click.Path(exists=True))
 @click.option("-o", "--output", help="Output file (default: overwrites input)")
 @click.option("--margin", type=float, default=1, help="Margin to keep (mm)")
-def crop(input_file, output, margin):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def crop(input_file, output, margin, dry_run):
     """
     Crop whitespace from an image.
 
@@ -175,6 +190,10 @@ def crop(input_file, output, margin):
       scitex plt crop figure.png
       scitex plt crop figure.png -o cropped.png --margin 2
     """
+    if dry_run:
+        dest = output if output else input_file
+        click.echo(f"[dry-run] Would crop whitespace from {input_file} -> {dest}")
+        return
     args = ["crop", input_file, "--margin", str(margin)]
     if output:
         args.extend(["-o", output])
@@ -188,7 +207,10 @@ def crop(input_file, output, margin):
     "--format", "fmt", type=click.Choice(["png", "pdf", "svg"]), help="Output format"
 )
 @click.option("--dpi", type=int, default=300, help="DPI for raster output")
-def reproduce(recipe_file, output, fmt, dpi):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def reproduce(recipe_file, output, fmt, dpi, dry_run):
     """
     Reproduce a figure from a YAML recipe.
 
@@ -197,6 +219,9 @@ def reproduce(recipe_file, output, fmt, dpi):
       scitex plt reproduce recipe.yaml
       scitex plt reproduce recipe.yaml -o new_fig.pdf
     """
+    if dry_run:
+        click.echo(f"[dry-run] Would reproduce figure from recipe: {recipe_file}")
+        return
     args = ["reproduce", recipe_file, "--dpi", str(dpi)]
     if output:
         args.extend(["-o", output])
@@ -318,7 +343,10 @@ def fonts(check):
 @click.argument("input_file", type=click.Path(exists=True))
 @click.option("-o", "--output", required=True, help="Output file path")
 @click.option("--format", "fmt", help="Output format (inferred from extension)")
-def convert(input_file, output, fmt):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def convert(input_file, output, fmt, dry_run):
     """
     Convert between figure formats.
 
@@ -327,6 +355,15 @@ def convert(input_file, output, fmt):
       scitex plt convert fig.png -o fig.pdf
       scitex plt convert fig.svg -o fig.png
     """
+    if dry_run:
+        import os
+
+        in_fmt = fmt or os.path.splitext(input_file)[1].lstrip(".")
+        out_fmt = os.path.splitext(output)[1].lstrip(".")
+        click.echo(
+            f"[dry-run] Would convert {input_file} ({in_fmt}) -> {output} ({out_fmt})"
+        )
+        return
     args = ["convert", input_file, "-o", output]
     if fmt:
         args.extend(["--format", fmt])

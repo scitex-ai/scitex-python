@@ -248,12 +248,15 @@ def describe(data_path, column, as_json):
 )
 @click.option("--as-zip", is_flag=True, help="Save as ZIP archive")
 @click.option(
+    "--dry-run", is_flag=True, help="Show what would be saved without writing"
+)
+@click.option(
     "--json",
     "as_json",
     is_flag=True,
     help="Output as structured JSON (Result envelope).",
 )
-def save(input_path, output, as_zip, as_json):
+def save(input_path, output, as_zip, dry_run, as_json):
     """
     Save statistical results to a SciTeX bundle
 
@@ -261,7 +264,14 @@ def save(input_path, output, as_zip, as_json):
     Examples:
       scitex stats save results.json --output analysis.stats
       scitex stats save comparisons.json --output analysis.stats --as-zip
+      scitex stats save results.json --output analysis.stats --dry-run
     """
+    if dry_run:
+        click.echo(f"[dry-run] Would save {input_path} -> {output}")
+        if as_zip:
+            click.echo("[dry-run] Format: ZIP archive")
+        return
+
     try:
         import json
 

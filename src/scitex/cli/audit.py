@@ -85,7 +85,10 @@ def status():
 
 
 @audit.command()
-def install():
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def install(dry_run):
     """Install missing audit tools (bandit, pip-audit)."""
     import shutil
     import subprocess
@@ -95,6 +98,22 @@ def install():
         pip_tools.append("bandit")
     if not shutil.which("pip-audit"):
         pip_tools.append("pip-audit")
+
+    if dry_run:
+        if pip_tools:
+            click.secho("[dry-run] Would install via pip:", fg="cyan")
+            for tool in pip_tools:
+                click.echo(f"  pip install {tool}")
+        else:
+            click.echo(
+                "[dry-run] All pip-installable tools already installed — nothing to do."
+            )
+        if not shutil.which("shellcheck"):
+            click.secho(
+                "[dry-run] Would need manual install: sudo apt install shellcheck",
+                fg="cyan",
+            )
+        return
 
     if pip_tools:
         click.echo(f"Installing: {', '.join(pip_tools)}")
