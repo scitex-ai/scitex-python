@@ -31,6 +31,17 @@ def _require_writer_pkg():
         sys.exit(1)
 
 
+_WRITER_COMMANDS = {
+    "compile": "Compile LaTeX to PDF",
+    "bib": "Bibliography management",
+    "tables": "Table management",
+    "figures": "Figure management",
+    "guidelines": "IMRAD writing guidelines",
+    "prompts": "AI prompts (Asta integration)",
+    "mcp": "MCP server commands",
+}
+
+
 @click.command(
     context_settings={
         "help_option_names": ["-h", "--help"],
@@ -69,10 +80,27 @@ def writer(ctx, args):
       scitex writer --help
       scitex-writer --help
     """
+    args_list = list(args)
+
+    if args_list == ["--json"]:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=True,
+                data={"package": "scitex-writer", "commands": _WRITER_COMMANDS},
+            ).to_json()
+        )
+        return
+
+    if not args_list:
+        click.echo(ctx.get_help())
+        return
+
     _require_writer_pkg()
 
     # Delegate to scitex-writer CLI
-    cmd = ["scitex-writer"] + list(args)
+    cmd = ["scitex-writer"] + args_list
     sys.exit(subprocess.call(cmd))
 
 

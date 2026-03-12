@@ -26,6 +26,14 @@ def _require_linter_pkg():
         sys.exit(1)
 
 
+_LINTER_COMMANDS = {
+    "lint": "Lint Python files for SciTeX pattern compliance",
+    "python": "Lint then execute a Python script",
+    "list-rules": "List all lint rules",
+    "mcp": "MCP server commands",
+}
+
+
 @click.command(
     context_settings={
         "help_option_names": ["-h", "--help"],
@@ -59,9 +67,26 @@ def linter(ctx, args):
       scitex linter --help-recursive
       scitex-linter --help-recursive
     """
+    args_list = list(args)
+
+    if args_list == ["--json"]:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=True,
+                data={"package": "scitex-linter", "commands": _LINTER_COMMANDS},
+            ).to_json()
+        )
+        return
+
+    if not args_list:
+        click.echo(ctx.get_help())
+        return
+
     _require_linter_pkg()
 
-    cmd = ["scitex-linter"] + list(args)
+    cmd = ["scitex-linter"] + args_list
     sys.exit(subprocess.call(cmd))
 
 
