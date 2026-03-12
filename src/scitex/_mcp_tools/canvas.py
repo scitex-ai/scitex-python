@@ -12,12 +12,6 @@
     figrecipe is mounted automatically if installed.
 """
 
-import json
-
-
-def _json(data: dict) -> str:
-    return json.dumps(data, indent=2, default=str)
-
 
 def register_canvas_tools(mcp) -> None:
     """Register canvas tools with FastMCP server.
@@ -45,7 +39,9 @@ def register_canvas_tools(mcp) -> None:
             height_mm=height_mm,
         )
         result["_deprecated"] = "Use plt_compose from figrecipe instead"
-        return _json(result)
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def canvas_add_panel(
@@ -74,7 +70,9 @@ def register_canvas_tools(mcp) -> None:
             label=label,
         )
         result["_deprecated"] = "Use plt_compose from figrecipe instead"
-        return _json(result)
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def canvas_list_panels(parent_dir: str, canvas_name: str) -> str:
@@ -85,7 +83,9 @@ def register_canvas_tools(mcp) -> None:
             parent_dir=parent_dir, canvas_name=canvas_name
         )
         result["_deprecated"] = "Use figrecipe instead"
-        return _json(result)
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def canvas_remove_panel(
@@ -100,7 +100,9 @@ def register_canvas_tools(mcp) -> None:
             panel_name=panel_name,
         )
         result["_deprecated"] = "Use figrecipe instead"
-        return _json(result)
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def canvas_export_canvas(
@@ -121,7 +123,9 @@ def register_canvas_tools(mcp) -> None:
             dpi=dpi,
         )
         result["_deprecated"] = "Use plt_compose from figrecipe instead"
-        return _json(result)
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def canvas_list_canvases(parent_dir: str) -> str:
@@ -130,7 +134,9 @@ def register_canvas_tools(mcp) -> None:
 
         result = await list_canvases_handler(parent_dir=parent_dir)
         result["_deprecated"] = "Use figrecipe instead"
-        return _json(result)
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def canvas_canvas_exists(parent_dir: str, canvas_name: str) -> str:
@@ -141,7 +147,9 @@ def register_canvas_tools(mcp) -> None:
             parent_dir=parent_dir, canvas_name=canvas_name
         )
         result["_deprecated"] = "Use figrecipe instead"
-        return _json(result)
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
 
 # EOF
