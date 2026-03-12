@@ -3,12 +3,6 @@
 # File: scitex/_mcp_tools/project.py
 """MCP tool registration for project file operations."""
 
-import json
-
-
-def _json(obj) -> str:
-    return json.dumps(obj, indent=2, default=str)
-
 
 def register_project_tools(mcp) -> None:
     """Register project file tools with FastMCP server."""
@@ -38,7 +32,11 @@ def register_project_tools(mcp) -> None:
         from scitex.project._mcp.handlers import list_files_handler
 
         result = await list_files_handler(root_path, relative_path, max_depth)
-        return _json(result)
+
+        # Handler already called above; wrap result directly
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def project_read_file(
@@ -64,7 +62,11 @@ def register_project_tools(mcp) -> None:
         from scitex.project._mcp.handlers import read_file_handler
 
         result = await read_file_handler(root_path, relative_path)
-        return _json(result)
+
+        # Handler already called above; wrap result directly
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def project_write_file(
@@ -93,7 +95,11 @@ def register_project_tools(mcp) -> None:
         from scitex.project._mcp.handlers import write_file_handler
 
         result = await write_file_handler(root_path, relative_path, content)
-        return _json(result)
+
+        # Handler already called above; wrap result directly
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def project_search_files(
@@ -132,7 +138,11 @@ def register_project_tools(mcp) -> None:
         result = await search_files_handler(
             root_path, name_pattern, content_pattern, relative_path, max_results
         )
-        return _json(result)
+
+        # Handler already called above; wrap result directly
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def project_exec_python(
@@ -164,7 +174,11 @@ def register_project_tools(mcp) -> None:
         from scitex.project._mcp.handlers import exec_python_handler
 
         result = await exec_python_handler(root_path, code, timeout)
-        return _json(result)
+
+        # Handler already called above; wrap result directly
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
     @mcp.tool()
     async def project_exec_shell(
@@ -196,7 +210,11 @@ def register_project_tools(mcp) -> None:
         from scitex.project._mcp.handlers import exec_shell_handler
 
         result = await exec_shell_handler(root_path, command, timeout)
-        return _json(result)
+
+        # Handler already called above; wrap result directly
+        from scitex_dev.types import Result
+
+        return Result(success=True, data=result).to_json()
 
 
 # EOF

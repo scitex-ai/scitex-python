@@ -3,12 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/scholar.py
 """Scholar module tools for FastMCP unified server."""
 
-import json
-
-
-def _json(data: dict) -> str:
-    return json.dumps(data, indent=2, default=str)
-
 
 def register_scholar_tools(mcp) -> None:
     """Register scholar tools with FastMCP server."""
@@ -23,9 +17,12 @@ def register_scholar_tools(mcp) -> None:
         sources: list[str] | None = None,
     ) -> str:
         """Search for scientific papers. Supports local library search and external databases (CrossRef, Semantic Scholar, PubMed, arXiv, OpenAlex)."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import search_papers_handler
 
-        result = await search_papers_handler(
+        return await async_wrap_as_mcp(
+            search_papers_handler,
             query=query,
             limit=limit,
             year_min=year_min,
@@ -33,7 +30,6 @@ def register_scholar_tools(mcp) -> None:
             search_mode=search_mode,
             sources=sources,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_resolve_dois(
@@ -43,15 +39,17 @@ def register_scholar_tools(mcp) -> None:
         resume: bool = True,
     ) -> str:
         """Resolve DOIs from paper titles using Crossref API. Supports resumable operation for large batches."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import resolve_dois_handler
 
-        result = await resolve_dois_handler(
+        return await async_wrap_as_mcp(
+            resolve_dois_handler,
             titles=titles,
             bibtex_path=bibtex_path,
             project=project,
             resume=resume,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_enrich_bibtex(
@@ -62,16 +60,18 @@ def register_scholar_tools(mcp) -> None:
         add_impact_factors: bool = True,
     ) -> str:
         """Enrich BibTeX entries with metadata: DOIs, abstracts, citation counts, impact factors."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import enrich_bibtex_handler
 
-        result = await enrich_bibtex_handler(
+        return await async_wrap_as_mcp(
+            enrich_bibtex_handler,
             bibtex_path=bibtex_path,
             output_path=output_path,
             add_abstracts=add_abstracts,
             add_citations=add_citations,
             add_impact_factors=add_impact_factors,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_download_pdfs_batch(
@@ -83,9 +83,12 @@ def register_scholar_tools(mcp) -> None:
         resume: bool = True,
     ) -> str:
         """Download PDFs for multiple papers with progress tracking. Supports resumable operation."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import download_pdfs_batch_handler
 
-        result = await download_pdfs_batch_handler(
+        return await async_wrap_as_mcp(
+            download_pdfs_batch_handler,
             dois=dois,
             bibtex_path=bibtex_path,
             project=project,
@@ -93,7 +96,6 @@ def register_scholar_tools(mcp) -> None:
             max_concurrent=max_concurrent,
             resume=resume,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_get_library_status(
@@ -101,21 +103,27 @@ def register_scholar_tools(mcp) -> None:
         include_details: bool = False,
     ) -> str:
         """Get status of the paper library: download progress, missing PDFs, validation status."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import get_library_status_handler
 
-        result = await get_library_status_handler(
+        return await async_wrap_as_mcp(
+            get_library_status_handler,
             project=project,
             include_details=include_details,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_parse_bibtex(bibtex_path: str) -> str:
         """Parse a BibTeX file and return paper objects."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import parse_bibtex_handler
 
-        result = await parse_bibtex_handler(bibtex_path=bibtex_path)
-        return _json(result)
+        return await async_wrap_as_mcp(
+            parse_bibtex_handler,
+            bibtex_path=bibtex_path,
+        )
 
     @mcp.tool()
     async def scholar_validate_pdfs(
@@ -123,13 +131,15 @@ def register_scholar_tools(mcp) -> None:
         pdf_paths: list[str] | None = None,
     ) -> str:
         """Validate PDF files in library for completeness and readability."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import validate_pdfs_handler
 
-        result = await validate_pdfs_handler(
+        return await async_wrap_as_mcp(
+            validate_pdfs_handler,
             project=project,
             pdf_paths=pdf_paths,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_resolve_openurls(
@@ -138,14 +148,16 @@ def register_scholar_tools(mcp) -> None:
         resume: bool = True,
     ) -> str:
         """Resolve publisher URLs via OpenURL resolver for institutional access."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import resolve_openurls_handler
 
-        result = await resolve_openurls_handler(
+        return await async_wrap_as_mcp(
+            resolve_openurls_handler,
             dois=dois,
             resolver_url=resolver_url,
             resume=resume,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_authenticate(
@@ -155,15 +167,17 @@ def register_scholar_tools(mcp) -> None:
         confirm: bool = False,
     ) -> str:
         """Start SSO login for institutional access (OpenAthens, Shibboleth). Call without confirm first to check requirements, then with confirm=True to proceed."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import authenticate_handler
 
-        result = await authenticate_handler(
+        return await async_wrap_as_mcp(
+            authenticate_handler,
             method=method,
             institution=institution,
             force=force,
             confirm=confirm,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_check_auth_status(
@@ -171,13 +185,15 @@ def register_scholar_tools(mcp) -> None:
         verify_live: bool = False,
     ) -> str:
         """Check current authentication status without starting login. Returns whether a valid session exists."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import check_auth_status_handler
 
-        result = await check_auth_status_handler(
+        return await async_wrap_as_mcp(
+            check_auth_status_handler,
             method=method,
             verify_live=verify_live,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_logout(
@@ -185,13 +201,15 @@ def register_scholar_tools(mcp) -> None:
         clear_cache: bool = True,
     ) -> str:
         """Logout from institutional authentication and clear session cache."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import logout_handler
 
-        result = await logout_handler(
+        return await async_wrap_as_mcp(
+            logout_handler,
             method=method,
             clear_cache=clear_cache,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_export_papers(
@@ -201,15 +219,17 @@ def register_scholar_tools(mcp) -> None:
         filter_has_pdf: bool = False,
     ) -> str:
         """Export papers to various formats (BibTeX, RIS, JSON, CSV)."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import export_papers_handler
 
-        result = await export_papers_handler(
+        return await async_wrap_as_mcp(
+            export_papers_handler,
             output_path=output_path,
             project=project,
             format=format,
             filter_has_pdf=filter_has_pdf,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_create_project(
@@ -217,21 +237,24 @@ def register_scholar_tools(mcp) -> None:
         description: str | None = None,
     ) -> str:
         """Create a new scholar project for organizing papers."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import create_project_handler
 
-        result = await create_project_handler(
+        return await async_wrap_as_mcp(
+            create_project_handler,
             project_name=project_name,
             description=description,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_list_projects() -> str:
         """List all scholar projects in the library."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import list_projects_handler
 
-        result = await list_projects_handler()
-        return _json(result)
+        return await async_wrap_as_mcp(list_projects_handler)
 
     @mcp.tool()
     async def scholar_add_papers_to_project(
@@ -240,14 +263,16 @@ def register_scholar_tools(mcp) -> None:
         bibtex_path: str | None = None,
     ) -> str:
         """Add papers to a project by DOI or from BibTeX file."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import add_papers_to_project_handler
 
-        result = await add_papers_to_project_handler(
+        return await async_wrap_as_mcp(
+            add_papers_to_project_handler,
             project=project,
             dois=dois,
             bibtex_path=bibtex_path,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_parse_pdf_content(
@@ -261,9 +286,12 @@ def register_scholar_tools(mcp) -> None:
         max_pages: int | None = None,
     ) -> str:
         """Parse PDF content to extract text, sections (IMRaD), tables, images, and metadata."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.handlers import parse_pdf_content_handler
 
-        result = await parse_pdf_content_handler(
+        return await async_wrap_as_mcp(
+            parse_pdf_content_handler,
             pdf_path=pdf_path,
             doi=doi,
             project=project,
@@ -273,7 +301,6 @@ def register_scholar_tools(mcp) -> None:
             extract_images=extract_images,
             max_pages=max_pages,
         )
-        return _json(result)
 
     # Job management tools (from job_handlers.py)
     @mcp.tool()
@@ -289,9 +316,12 @@ def register_scholar_tools(mcp) -> None:
         async_mode: bool = True,
     ) -> str:
         """Fetch papers to your library. Supports async mode (default) which returns immediately with a job_id for tracking."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.job_handlers import fetch_papers_handler
 
-        result = await fetch_papers_handler(
+        return await async_wrap_as_mcp(
+            fetch_papers_handler,
             papers=papers,
             bibtex_path=bibtex_path,
             project=project,
@@ -302,7 +332,6 @@ def register_scholar_tools(mcp) -> None:
             output=output,
             async_mode=async_mode,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_list_jobs(
@@ -310,45 +339,63 @@ def register_scholar_tools(mcp) -> None:
         limit: int = 20,
     ) -> str:
         """List all background jobs with their status."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.job_handlers import list_jobs_handler
 
-        result = await list_jobs_handler(
+        return await async_wrap_as_mcp(
+            list_jobs_handler,
             status=status,
             limit=limit,
         )
-        return _json(result)
 
     @mcp.tool()
     async def scholar_get_job_status(job_id: str) -> str:
         """Get detailed status of a specific job including progress."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.job_handlers import get_job_status_handler
 
-        result = await get_job_status_handler(job_id=job_id)
-        return _json(result)
+        return await async_wrap_as_mcp(
+            get_job_status_handler,
+            job_id=job_id,
+        )
 
     @mcp.tool()
     async def scholar_start_job(job_id: str) -> str:
         """Start a pending job that was submitted with async mode."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.job_handlers import start_job_handler
 
-        result = await start_job_handler(job_id=job_id)
-        return _json(result)
+        return await async_wrap_as_mcp(
+            start_job_handler,
+            job_id=job_id,
+        )
 
     @mcp.tool()
     async def scholar_cancel_job(job_id: str) -> str:
         """Cancel a running or pending job."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.job_handlers import cancel_job_handler
 
-        result = await cancel_job_handler(job_id=job_id)
-        return _json(result)
+        return await async_wrap_as_mcp(
+            cancel_job_handler,
+            job_id=job_id,
+        )
 
     @mcp.tool()
     async def scholar_get_job_result(job_id: str) -> str:
         """Get the result of a completed job."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.scholar._mcp.job_handlers import get_job_result_handler
 
-        result = await get_job_result_handler(job_id=job_id)
-        return _json(result)
+        return await async_wrap_as_mcp(
+            get_job_result_handler,
+            job_id=job_id,
+        )
 
     # Import crossref-local and openalex-local MCP servers
     _import_local_db_servers(mcp)

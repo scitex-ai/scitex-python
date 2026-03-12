@@ -3,12 +3,7 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/capture.py
 """Capture module tools for FastMCP unified server."""
 
-import json
 from typing import Optional
-
-
-def _json(data: dict) -> str:
-    return json.dumps(data, indent=2, default=str)
 
 
 def register_capture_tools(mcp) -> None:
@@ -25,9 +20,12 @@ def register_capture_tools(mcp) -> None:
         app: Optional[str] = None,
     ) -> str:
         """Capture screenshot - monitor, window, browser, or everything."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.capture._mcp.handlers import capture_screenshot_handler
 
-        result = await capture_screenshot_handler(
+        return await async_wrap_as_mcp(
+            capture_screenshot_handler,
             monitor_id=monitor_id,
             all=all,
             quality=quality,
@@ -36,7 +34,6 @@ def register_capture_tools(mcp) -> None:
             url=url,
             app=app,
         )
-        return _json(result)
 
 
 # EOF

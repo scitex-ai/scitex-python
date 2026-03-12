@@ -21,6 +21,7 @@ from scitex_dev import (
     Result,
     SideEffect,
     TestConfig,
+    async_wrap_as_mcp,
     bulk_rename,
     check_all_hosts,
     check_all_remotes,
@@ -127,7 +128,7 @@ __all__ = [
     "watch_hpc_job",
     "sync_to_hpc",
     "TestConfig",
-    # LLM-friendly types (Phase 1)
+    # LLM-friendly types (Phase 1-3)
     "Result",
     "ErrorCode",
     "classify_exception",
@@ -138,6 +139,7 @@ __all__ = [
     "wrap_as_cli",
     "run_as_mcp",
     "wrap_as_mcp",
+    "async_wrap_as_mcp",
     "result_to_mcp",
 ]
 
