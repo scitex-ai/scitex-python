@@ -21,7 +21,7 @@ import click
 @click.option("--help-recursive", is_flag=True, help="Show help for all commands")
 @click.pass_context
 def crossref_scitex(ctx, help_recursive):
-    r"""CrossRef-SciTeX database search (167M+ papers).
+    """CrossRef-SciTeX database search (167M+ papers).
 
     \b
     Thin wrapper for crossref-local. All arguments passed directly.

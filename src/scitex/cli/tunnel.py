@@ -50,7 +50,7 @@ _TUNNEL_COMMANDS = {
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def tunnel(ctx, args):
-    r"""SSH reverse tunnel for NAT traversal (delegates to scitex-tunnel).
+    """SSH reverse tunnel for NAT traversal (delegates to scitex-tunnel).
 
     \b
     Commands (from scitex-tunnel):

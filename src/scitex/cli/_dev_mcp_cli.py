@@ -16,7 +16,7 @@ import click
 )
 @click.pass_context
 def mcp(ctx, as_json):
-    r"""
+    """
     MCP (Model Context Protocol) server operations.
 
     \b

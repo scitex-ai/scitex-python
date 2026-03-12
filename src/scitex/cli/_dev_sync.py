@@ -78,7 +78,7 @@ def _print_tag_results(tag_results, mode):
 @click.option("--confirm", is_flag=True, help="Execute (default is preview/dry-run)")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def sync(host, package, local, tags, no_install, confirm, as_json):
-    r"""
+    """
     Sync ecosystem packages (safe: preview by default).
 
     \b
@@ -156,7 +156,7 @@ def sync(host, package, local, tags, no_install, confirm, as_json):
 @click.option("--confirm", is_flag=True, help="Execute (default is preview/dry-run)")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def sync_local_cmd(package, confirm, as_json):
-    r"""
+    """
     Install local editable packages (pip install -e .).
 
     \b

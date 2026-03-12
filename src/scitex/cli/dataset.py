@@ -51,7 +51,7 @@ _DATASET_COMMANDS = {
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def dataset(ctx, args):
-    r"""
+    """
     Scientific dataset discovery (delegates to scitex-dataset).
 
     \b

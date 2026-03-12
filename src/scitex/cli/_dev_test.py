@@ -81,7 +81,7 @@ def test(
     hpc_mem,
     as_json,
 ):
-    r"""
+    """
     Run project tests locally or on HPC.
 
     \b

@@ -124,7 +124,7 @@ _LAZY_SUBCOMMANDS = {
 )
 @click.pass_context
 def cli(ctx, help_recursive, as_json):
-    r"""
+    """
     Integrated Scientific Research Platform (SciTeX).
 
     \b
@@ -234,7 +234,7 @@ def _generate_completion_script(shell: str) -> str:
 @cli.group(invoke_without_command=True)
 @click.pass_context
 def completion(ctx):
-    r"""
+    """
     Shell completion for scitex CLI.
 
     \b
@@ -260,7 +260,7 @@ def completion(ctx):
     help="Shell type (auto-detected if not provided).",
 )
 def completion_install(shell):
-    r"""
+    """
     Install shell completion for scitex CLI.
 
     \b
@@ -318,7 +318,7 @@ def completion_install(shell):
 
 @completion.command("status")
 def completion_status():
-    r"""
+    """
     Check shell completion installation status.
 
     \b

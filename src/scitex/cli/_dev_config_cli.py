@@ -16,7 +16,7 @@ import click
 )
 @click.pass_context
 def config(ctx, as_json):
-    r"""
+    """
     Manage configuration.
 
     \b

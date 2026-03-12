@@ -17,13 +17,14 @@ import click
 )
 @click.option("--tldr", is_flag=True, help="Quick-start summary (< 20 lines)")
 @click.option("--format", "fmt", type=click.Choice(["html", "json"]), default=None)
+@click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
 @click.pass_context
-def docs(ctx, list_pages, page, as_json, tldr, fmt):
-    r"""Browse and search documentation across the SciTeX ecosystem.
+def docs(ctx, list_pages, page, as_json, tldr, fmt, help_recursive):
+    """Browse and search documentation across the SciTeX ecosystem.
 
     \b
     Commands:
-      scitex docs                    # Overview of all packages
+      scitex docs                    # Show help
       scitex docs --tldr             # Quick examples (< 20 lines)
       scitex docs --list             # List all doc pages
       scitex docs --page api         # Specific page
@@ -38,6 +39,19 @@ def docs(ctx, list_pages, page, as_json, tldr, fmt):
       scitex docs search "statistics test"
     """
     if ctx.invoked_subcommand is not None:
+        return
+
+    # Handle --help-recursive
+    if help_recursive:
+        if as_json:
+            from . import help_recursive_to_json
+
+            help_recursive_to_json(ctx, docs)
+        else:
+            from . import print_help_recursive
+
+            print_help_recursive(ctx, docs)
+        ctx.exit(0)
         return
 
     # Handle --json at group level (list subcommands)
@@ -71,35 +85,8 @@ def docs(ctx, list_pages, page, as_json, tldr, fmt):
         _show_page(page, fmt, as_json)
         return
 
-    # Default: show overview
-    try:
-        overview = get_docs()
-        if as_json:
-            from scitex_dev import Result
-
-            click.echo(Result(success=True, data=overview).to_json())
-        else:
-            click.secho("SciTeX Documentation", fg="cyan", bold=True)
-            click.echo()
-            if isinstance(overview, dict):
-                for pkg_name, info in sorted(overview.items()):
-                    click.secho(f"  {pkg_name}", fg="green", bold=True)
-                    if isinstance(info, dict):
-                        desc = info.get("description", "")
-                        if desc:
-                            click.echo(f"    {desc}")
-                        pages = info.get("pages", [])
-                        if pages:
-                            page_names = [
-                                p.get("name", p) if isinstance(p, dict) else p
-                                for p in pages[:5]
-                            ]
-                            click.echo(f"    Pages: {', '.join(page_names)}")
-                    click.echo()
-            click.echo("Use --tldr for quick examples, --list for all pages")
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
+    # Default: show help (consistent with other groups)
+    click.echo(ctx.get_help())
 
 
 def _show_tldr(as_json):

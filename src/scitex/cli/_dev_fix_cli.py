@@ -17,7 +17,7 @@ import click
 @click.option("--confirm", is_flag=True, help="Execute (default is preview/dry-run)")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def fix(host, package, no_local, no_remote, confirm, as_json):
-    r"""
+    """
     Detect and fix version mismatches across the ecosystem.
 
     \b

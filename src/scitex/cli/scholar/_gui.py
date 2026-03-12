@@ -11,7 +11,7 @@ import click
 @click.option("--no-browser", is_flag=True, help="Don't open browser automatically")
 @click.option("--db", type=click.Path(), default=None, help="CrossRef database path")
 def gui(port, host, no_browser, db):
-    r"""Launch Scholar GUI in browser.
+    """Launch Scholar GUI in browser.
 
     \b
     Interactive web interface for:

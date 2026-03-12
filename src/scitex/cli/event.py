@@ -21,7 +21,7 @@ import click
 )
 @click.pass_context
 def event(ctx, as_json):
-    r"""
+    """
     Event bus for async task results.
 
     \b

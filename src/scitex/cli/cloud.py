@@ -59,7 +59,7 @@ _CLOUD_COMMANDS = {
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def cloud(ctx, args):
-    r"""Cloud operations and deployment (delegates to scitex-cloud).
+    """Cloud operations and deployment (delegates to scitex-cloud).
 
     \b
     Commands (from scitex-cloud):

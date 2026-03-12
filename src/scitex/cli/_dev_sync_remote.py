@@ -12,7 +12,7 @@ import click
 @click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def diff(host, package, as_json):
-    r"""
+    """
     Show uncommitted changes on remote host(s). Read-only.
 
     \b
@@ -66,7 +66,7 @@ def diff(host, package, as_json):
 @click.option("--confirm", is_flag=True, help="Execute (default is preview/dry-run)")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def commit(host, package, message, no_push, confirm, as_json):
-    r"""
+    """
     Commit dirty changes on a remote host and push to origin.
 
     \b
@@ -132,7 +132,7 @@ def commit(host, package, message, no_push, confirm, as_json):
 @click.option("--no-stash", is_flag=True, help="Don't stash dirty repos before pull")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def pull(package, confirm, no_stash, as_json):
-    r"""
+    """
     Pull latest from origin to local repos.
 
     \b
