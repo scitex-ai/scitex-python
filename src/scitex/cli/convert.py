@@ -2,15 +2,7 @@
 # Timestamp: "2025-12-19 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/cli/convert.py
 
-"""
-CLI commands for converting legacy bundle formats to unified .stx format.
-
-Usage:
-    scitex convert old_figure.figz                    # Convert to old_figure.stx
-    scitex convert old_figure.figz output.stx         # Convert with custom output
-    scitex convert --batch ./figures/*.figz           # Batch convert
-    scitex convert --validate output.stx              # Validate bundle
-"""
+"""CLI commands for converting legacy bundle formats to unified .stx format."""
 
 import sys
 from pathlib import Path
@@ -19,22 +11,23 @@ from typing import List, Optional
 import click
 
 
-@click.group()
-def convert():
-    """Convert and validate SciTeX bundle files.
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def convert(ctx, as_json):
+    """Convert and validate SciTeX bundle files."""
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
 
-    \b
-    Convert legacy formats (.figz, .pltz, .statsz) to unified .stx format.
-    Supports single file conversion, batch conversion, and validation.
-
-    \b
-    Examples:
-      scitex convert file old_figure.figz              # Convert single file
-      scitex convert file old_figure.figz -o new.stx   # Custom output name
-      scitex convert batch ./figures/*.figz            # Batch convert
-      scitex convert validate output.stx               # Validate bundle
-    """
-    pass
+            group_to_json(ctx, convert)
+        else:
+            click.echo(ctx.get_help())
 
 
 @convert.command("file")
@@ -55,8 +48,13 @@ def convert():
     is_flag=True,
     help="Show what would be done without writing files",
 )
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def convert_file(
-    input_path: str, output: Optional[str], overwrite: bool, dry_run: bool
+    input_path: str,
+    output: Optional[str],
+    overwrite: bool,
+    dry_run: bool,
+    as_json: bool,
 ):
     """Convert a single legacy bundle to .stx format.
 
@@ -72,6 +70,27 @@ def convert_file(
       scitex convert file plot.pltz -o converted_plot.stx
       scitex convert file stats.statsz --dry-run
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        def _convert():
+            input_file = Path(input_path)
+            if output:
+                output_file = Path(output)
+            else:
+                output_file = input_file.with_suffix(".stx")
+            if dry_run:
+                return {
+                    "action": "dry_run",
+                    "input": str(input_file),
+                    "output": str(output_file),
+                }
+            _convert_bundle(input_file, output_file)
+            return {"converted": str(input_file), "output": str(output_file)}
+
+        wrap_as_cli(_convert, as_json=True)
+        return
+
     input_file = Path(input_path)
 
     # Determine output path
@@ -136,8 +155,13 @@ def convert_file(
     is_flag=True,
     help="Show what would be done without writing files",
 )
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def convert_batch(
-    pattern: tuple, output_dir: Optional[str], overwrite: bool, dry_run: bool
+    pattern: tuple,
+    output_dir: Optional[str],
+    overwrite: bool,
+    dry_run: bool,
+    as_json: bool,
 ):
     """Batch convert multiple legacy bundles to .stx format.
 
@@ -147,6 +171,64 @@ def convert_batch(
       scitex convert batch ./plots/*.pltz -o ./converted/
       scitex convert batch ./**/*.figz ./**/*.pltz --dry-run
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        def _batch():
+            import glob as _glob
+
+            files: List[Path] = []
+            for pat in pattern:
+                matches = _glob.glob(pat, recursive=True)
+                files.extend(Path(m) for m in matches)
+            valid_extensions = (".figz", ".pltz", ".statsz")
+            files = [f for f in files if f.suffix in valid_extensions]
+            if not files:
+                return {"converted": 0, "errors": 0, "files": []}
+            out_dir = Path(output_dir) if output_dir else None
+            if out_dir and not dry_run:
+                out_dir.mkdir(parents=True, exist_ok=True)
+            results = []
+            converted = 0
+            errs = 0
+            for input_file in files:
+                if out_dir:
+                    output_file = out_dir / input_file.with_suffix(".stx").name
+                else:
+                    output_file = input_file.with_suffix(".stx")
+                if output_file.exists() and not overwrite:
+                    results.append({"input": str(input_file), "status": "skipped"})
+                    continue
+                if dry_run:
+                    results.append(
+                        {
+                            "input": str(input_file),
+                            "output": str(output_file),
+                            "status": "dry_run",
+                        }
+                    )
+                    converted += 1
+                    continue
+                try:
+                    _convert_bundle(input_file, output_file)
+                    results.append(
+                        {
+                            "input": str(input_file),
+                            "output": str(output_file),
+                            "status": "converted",
+                        }
+                    )
+                    converted += 1
+                except Exception as exc:
+                    results.append(
+                        {"input": str(input_file), "status": "error", "error": str(exc)}
+                    )
+                    errs += 1
+            return {"converted": converted, "errors": errs, "files": results}
+
+        wrap_as_cli(_batch, as_json=True)
+        return
+
     import glob
 
     # Collect all files matching patterns

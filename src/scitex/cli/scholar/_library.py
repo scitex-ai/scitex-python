@@ -54,9 +54,15 @@ def library(project, json_output):
 
 def _show_project(library_path: Path, project: str, json_output: bool):
     """Show a specific project."""
+    from scitex_dev import ErrorCode
+
     project_path = library_path / project
     if not project_path.exists():
-        result = {"success": False, "error": f"Project '{project}' not found"}
+        result = {
+            "success": False,
+            "error": f"Project '{project}' not found",
+            "error_code": ErrorCode.FILE_NOT_FOUND.value,
+        }
         if json_output:
             output_json(result)
         else:

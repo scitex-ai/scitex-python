@@ -41,8 +41,14 @@ def _check_socialia() -> bool:
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def social(ctx, help_recursive):
+def social(ctx, help_recursive, as_json):
     """
     Social media management (powered by socialia)
 
@@ -80,7 +86,12 @@ def social(ctx, help_recursive):
         print_help_recursive(ctx, social)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, social)
+        else:
+            click.echo(ctx.get_help())
 
 
 @social.command()
@@ -280,8 +291,14 @@ def thread(platform, file, delay, dry_run, as_json):
 
 
 @social.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def mcp(ctx):
+def mcp(ctx, as_json):
     """
     MCP (Model Context Protocol) server operations
 
@@ -298,7 +315,12 @@ def mcp(ctx):
       scitex social mcp doctor
     """
     if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, mcp)
+        else:
+            click.echo(ctx.get_help())
 
 
 @mcp.command()

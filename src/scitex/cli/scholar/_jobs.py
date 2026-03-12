@@ -12,12 +12,25 @@ import json
 import sys
 
 import click
+from scitex_dev import ErrorCode
 
 from ._utils import output_json
 
+_NOT_FOUND = ErrorCode.FILE_NOT_FOUND.value
+_CONFLICT = ErrorCode.CONFLICT.value
+_INTERNAL = ErrorCode.INTERNAL.value
+_CONFIG = ErrorCode.CONFIG.value
 
-@click.group()
-def jobs():
+
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def jobs(ctx, as_json):
     """
     Manage background jobs
 
@@ -28,7 +41,13 @@ def jobs():
         scitex scholar jobs start <job_id>
         scitex scholar jobs cancel <job_id>
     """
-    pass
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from scitex.cli import group_to_json
+
+            group_to_json(ctx, jobs)
+        else:
+            click.echo(ctx.get_help())
 
 
 @jobs.command("list")
@@ -80,7 +99,11 @@ def jobs_status(job_id, json_output):
     status = manager.get_status(job_id)
 
     if not status:
-        result = {"success": False, "error": f"Job '{job_id}' not found"}
+        result = {
+            "success": False,
+            "error": f"Job '{job_id}' not found",
+            "error_code": _NOT_FOUND,
+        }
         if json_output:
             output_json(result)
         else:
@@ -123,7 +146,11 @@ def jobs_start(job_id, json_output):
     job = manager.get_job(job_id)
 
     if not job:
-        result = {"success": False, "error": f"Job '{job_id}' not found"}
+        result = {
+            "success": False,
+            "error": f"Job '{job_id}' not found",
+            "error_code": _NOT_FOUND,
+        }
         if json_output:
             output_json(result)
         else:
@@ -131,7 +158,11 @@ def jobs_start(job_id, json_output):
         sys.exit(1)
 
     if job.status.value != "pending":
-        result = {"success": False, "error": f"Job is {job.status.value}, not pending"}
+        result = {
+            "success": False,
+            "error": f"Job is {job.status.value}, not pending",
+            "error_code": _CONFLICT,
+        }
         if json_output:
             output_json(result)
         else:
@@ -142,7 +173,11 @@ def jobs_start(job_id, json_output):
     executor = get_executor(job_type)
 
     if not executor:
-        result = {"success": False, "error": f"No executor for job type: {job_type}"}
+        result = {
+            "success": False,
+            "error": f"No executor for job type: {job_type}",
+            "error_code": _CONFIG,
+        }
         if json_output:
             output_json(result)
         else:
@@ -184,7 +219,13 @@ def jobs_start(job_id, json_output):
         job.cancel()
         job.save(manager.jobs_dir)
         if json_output:
-            output_json({"success": False, "error": "Cancelled by user"})
+            output_json(
+                {
+                    "success": False,
+                    "error": "Cancelled by user",
+                    "error_code": _INTERNAL,
+                }
+            )
         else:
             click.echo("\nJob cancelled by user")
         sys.exit(1)
@@ -225,6 +266,7 @@ def jobs_cancel(job_id, json_output):
         result = {
             "success": False,
             "error": f"Could not cancel job '{job_id}' (not found or finished)",
+            "error_code": _CONFLICT,
         }
 
     if json_output:
@@ -248,7 +290,11 @@ def jobs_result(job_id, json_output):
     job = manager.get_job(job_id)
 
     if not job:
-        result = {"success": False, "error": f"Job '{job_id}' not found"}
+        result = {
+            "success": False,
+            "error": f"Job '{job_id}' not found",
+            "error_code": _NOT_FOUND,
+        }
         if json_output:
             output_json(result)
         else:
@@ -256,7 +302,11 @@ def jobs_result(job_id, json_output):
         sys.exit(1)
 
     if not job.is_finished:
-        result = {"success": False, "error": f"Job is still {job.status.value}"}
+        result = {
+            "success": False,
+            "error": f"Job is still {job.status.value}",
+            "error_code": _CONFLICT,
+        }
         if json_output:
             output_json(result)
         else:
@@ -266,7 +316,11 @@ def jobs_result(job_id, json_output):
     if job.result:
         result = {"success": True, "job_id": job_id, "result": job.result}
     else:
-        result = {"success": False, "error": job.error or "No result available"}
+        result = {
+            "success": False,
+            "error": job.error or "No result available",
+            "error_code": _INTERNAL,
+        }
 
     if json_output:
         output_json(result)

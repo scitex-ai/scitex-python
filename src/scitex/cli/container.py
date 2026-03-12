@@ -6,9 +6,23 @@ from __future__ import annotations
 import click
 
 
-@click.group()
-def container():
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def container(ctx, as_json):
     """Container management (Apptainer/Singularity)."""
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, container)
+        else:
+            click.echo(ctx.get_help())
 
 
 @container.command()

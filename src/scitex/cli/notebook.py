@@ -11,8 +11,14 @@ import click
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def notebook(ctx, help_recursive):
+def notebook(ctx, help_recursive, as_json):
     """
     Jupyter notebook verification and compilation tools.
 
@@ -34,7 +40,12 @@ def notebook(ctx, help_recursive):
         _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, notebook)
+        else:
+            click.echo(ctx.get_help())
 
 
 def _print_help_recursive(ctx):

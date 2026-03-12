@@ -113,4 +113,21 @@ def format_python_signature(func, multiline: bool = True, indent: str = "  ") ->
     return name_s, sig_s
 
 
-__all__ = ["cli", "print_help_recursive", "format_python_signature"]
+def group_to_json(ctx, group: click.Group) -> None:
+    """Output a group's subcommands as Result JSON and exit.
+
+    Provides ``--json`` behavior for group-level commands, listing
+    available subcommands with their short help text.
+    """
+    from scitex_dev import Result
+
+    cmds = {}
+    for name in sorted(group.list_commands(ctx) or []):
+        cmd = group.get_command(ctx, name)
+        if cmd:
+            cmds[name] = cmd.get_short_help_str(limit=150)
+    click.echo(Result(success=True, data={"commands": cmds}).to_json())
+    ctx.exit(0)
+
+
+__all__ = ["cli", "print_help_recursive", "format_python_signature", "group_to_json"]

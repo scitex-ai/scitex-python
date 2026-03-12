@@ -17,8 +17,15 @@ from scitex.web.download_images import _get_default_download_dir
 logger = getLogger(__name__)
 
 
-@click.group()
-def web():
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def web(ctx, as_json):
     """
     Web scraping utilities
 
@@ -39,7 +46,13 @@ def web():
       scitex web take-screenshot https://example.com
       scitex web take-screenshot https://example.com --output ./screenshots
     """
-    pass
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, web)
+        else:
+            click.echo(ctx.get_help())
 
 
 @web.command()

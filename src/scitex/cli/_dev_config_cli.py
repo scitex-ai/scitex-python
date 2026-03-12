@@ -8,8 +8,14 @@ import click
 
 
 @click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def config(ctx):
+def config(ctx, as_json):
     r"""
     Manage configuration.
 
@@ -25,7 +31,12 @@ def config(ctx):
       scitex dev config create
     """
     if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, config)
+        else:
+            click.echo(ctx.get_help())
 
 
 @config.command("show")
