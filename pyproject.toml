@@ -89,6 +89,9 @@ scitex-ui = "scitex.ui.mcp_server:main"
 # Unified MCP Server (all modules in one)
 scitex-mcp-server = "scitex.mcp_server:main"
 
+[project.entry-points."scitex_dev.docs"]
+scitex = "scitex"
+
 # ============================================
 # Optional Dependencies - Module-Oriented
 # ============================================

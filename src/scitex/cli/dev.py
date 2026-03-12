@@ -347,5 +347,13 @@ dev.add_command(list_python_apis)
 dev.add_command(rename)
 dev.add_command(test)
 
+# docs — reusable mixin from scitex_dev
+try:
+    from scitex_dev.cli import docs_click_group
+
+    dev.add_command(docs_click_group(package="scitex"))
+except ImportError:
+    pass
+
 
 # EOF
