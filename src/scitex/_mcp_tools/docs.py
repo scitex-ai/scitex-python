@@ -15,7 +15,6 @@ def register_docs_tools(mcp) -> None:
 
         return wrap_as_mcp(
             get_docs,
-            next_steps=["docs_get for a specific package's documentation"],
             idempotent=True,
         )
 
@@ -37,10 +36,6 @@ def register_docs_tools(mcp) -> None:
 
         return wrap_as_mcp(
             get_docs,
-            next_steps=[
-                "docs_search to find specific topics",
-                "docs_build to rebuild if docs are outdated",
-            ],
             idempotent=True,
             package=package,
             format=format,
@@ -64,7 +59,6 @@ def register_docs_tools(mcp) -> None:
         return wrap_as_mcp(
             build_docs,
             side_effects=["file_create: Sphinx HTML output in _build directory"],
-            next_steps=["docs_get to view the built documentation"],
             package=package,
             formats=formats,
         )
@@ -95,10 +89,6 @@ def register_docs_tools(mcp) -> None:
 
         return wrap_as_mcp(
             search,
-            next_steps=[
-                "docs_get for full documentation of a matched package",
-                "introspect_source to read matched API source code",
-            ],
             idempotent=True,
             query=query,
             scope=scope,

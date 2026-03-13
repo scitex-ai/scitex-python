@@ -14,7 +14,6 @@ def register_usage_tools(mcp) -> None:
 
         return wrap_as_mcp(
             show,
-            next_steps=["usage_list to see all available topics"],
             idempotent=True,
             topic=topic or None,
         )
@@ -28,7 +27,6 @@ def register_usage_tools(mcp) -> None:
 
         return wrap_as_mcp(
             topics,
-            next_steps=["usage_show to see examples for a specific topic"],
             idempotent=True,
         )
 

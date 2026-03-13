@@ -26,10 +26,6 @@ def register_template_tools(mcp) -> None:
         return await async_wrap_as_mcp(
             clone_template_handler,
             side_effects=["file_create: new project directory from template"],
-            next_steps=[
-                "template_list_git_strategies if unsure about git_strategy",
-                "template_get_code_template for script boilerplate",
-            ],
             template_id=template_id,
             project_name=project_name,
             target_dir=target_dir,
@@ -47,7 +43,6 @@ def register_template_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             list_git_strategies_handler,
-            next_steps=["template_clone_template to create a project"],
             idempotent=True,
         )
 
@@ -64,7 +59,6 @@ def register_template_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             get_code_template_handler,
-            next_steps=["template_list_code_templates to see all available templates"],
             idempotent=True,
             template_id=template_id,
             filepath=filepath,
@@ -80,7 +74,6 @@ def register_template_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             list_code_templates_handler,
-            next_steps=["template_get_code_template to retrieve a specific template"],
             idempotent=True,
         )
 

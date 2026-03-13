@@ -42,7 +42,6 @@ def register_tunnel_tools(mcp) -> None:
         return wrap_as_mcp(
             remove,
             side_effects=["systemd_service: stops and disables autossh service"],
-            next_steps=["tunnel_status to confirm removal"],
             port=port,
         )
 
@@ -59,10 +58,6 @@ def register_tunnel_tools(mcp) -> None:
 
         return wrap_as_mcp(
             status,
-            next_steps=[
-                "tunnel_setup to create a new tunnel",
-                "tunnel_remove to remove an inactive tunnel",
-            ],
             idempotent=True,
             port=port if port else None,
         )
