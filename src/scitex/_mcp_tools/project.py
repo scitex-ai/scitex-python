@@ -40,10 +40,6 @@ def register_project_tools(mcp) -> None:
             success=True,
             data=result,
             idempotent=True,
-            next_steps=[
-                "project_read_file to read a specific file",
-                "project_search_files for content search",
-            ],
         ).to_json()
 
     @mcp.tool()
@@ -78,10 +74,6 @@ def register_project_tools(mcp) -> None:
             success=True,
             data=result,
             idempotent=True,
-            next_steps=[
-                "project_write_file to modify the file",
-                "project_search_files to find related files",
-            ],
         ).to_json()
 
     @mcp.tool()
@@ -119,7 +111,6 @@ def register_project_tools(mcp) -> None:
             success=True,
             data=result,
             side_effects=["file_modify: writes or creates file in project"],
-            next_steps=["project_read_file to verify written content"],
         ).to_json()
 
     @mcp.tool()
@@ -167,10 +158,6 @@ def register_project_tools(mcp) -> None:
             success=True,
             data=result,
             idempotent=True,
-            next_steps=[
-                "project_read_file to read matched files",
-                "project_list_files to browse directory",
-            ],
         ).to_json()
 
     @mcp.tool()
@@ -211,7 +198,6 @@ def register_project_tools(mcp) -> None:
             success=True,
             data=result,
             side_effects=["code_exec: runs Python code in project directory"],
-            next_steps=["project_list_files to see created files"],
         ).to_json()
 
     @mcp.tool()
@@ -252,7 +238,6 @@ def register_project_tools(mcp) -> None:
             success=True,
             data=result,
             side_effects=["shell_exec: runs shell command in project directory"],
-            next_steps=["project_list_files to see created files"],
         ).to_json()
 
 

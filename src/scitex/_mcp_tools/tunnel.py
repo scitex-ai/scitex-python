@@ -24,7 +24,6 @@ def register_tunnel_tools(mcp) -> None:
         return wrap_as_mcp(
             setup,
             side_effects=["systemd_service: creates autossh service"],
-            next_steps=["tunnel_status to verify the tunnel is active"],
             port=port,
             bastion_server=bastion_server,
             secret_key_path=secret_key_path,
