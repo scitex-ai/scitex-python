@@ -23,6 +23,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             search_papers_handler,
+            next_steps=[
+                "scholar_fetch_papers to download found papers",
+                "scholar_enrich_bibtex to add metadata",
+            ],
+            idempotent=True,
             query=query,
             limit=limit,
             year_min=year_min,
@@ -45,6 +50,8 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             resolve_dois_handler,
+            next_steps=["scholar_enrich_bibtex to add metadata to resolved DOIs"],
+            idempotent=True,
             titles=titles,
             bibtex_path=bibtex_path,
             project=project,
@@ -66,6 +73,9 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             enrich_bibtex_handler,
+            side_effects=["file_modify: output bibtex file"],
+            next_steps=["scholar_fetch_papers to download PDFs"],
+            idempotent=True,
             bibtex_path=bibtex_path,
             output_path=output_path,
             add_abstracts=add_abstracts,
@@ -89,6 +99,12 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             download_pdfs_batch_handler,
+            side_effects=["file_create: PDF files in output directory"],
+            next_steps=[
+                "scholar_validate_pdfs to check downloaded files",
+                "scholar_get_library_status to see overall progress",
+            ],
+            idempotent=True,
             dois=dois,
             bibtex_path=bibtex_path,
             project=project,
@@ -109,6 +125,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             get_library_status_handler,
+            next_steps=[
+                "scholar_download_pdfs_batch for missing PDFs",
+                "scholar_validate_pdfs to check existing files",
+            ],
+            idempotent=True,
             project=project,
             include_details=include_details,
         )
@@ -122,6 +143,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             parse_bibtex_handler,
+            next_steps=[
+                "scholar_enrich_bibtex to add metadata",
+                "scholar_resolve_dois for entries missing DOIs",
+            ],
+            idempotent=True,
             bibtex_path=bibtex_path,
         )
 
@@ -137,6 +163,8 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             validate_pdfs_handler,
+            next_steps=["scholar_download_pdfs_batch to re-download invalid PDFs"],
+            idempotent=True,
             project=project,
             pdf_paths=pdf_paths,
         )
@@ -154,6 +182,8 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             resolve_openurls_handler,
+            next_steps=["scholar_authenticate if institutional login needed"],
+            idempotent=True,
             dois=dois,
             resolver_url=resolver_url,
             resume=resume,
@@ -173,6 +203,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             authenticate_handler,
+            side_effects=["auth_session: institutional SSO login"],
+            next_steps=[
+                "scholar_check_auth_status to verify login",
+                "scholar_fetch_papers to download with auth",
+            ],
             method=method,
             institution=institution,
             force=force,
@@ -191,6 +226,8 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             check_auth_status_handler,
+            next_steps=["scholar_authenticate if not authenticated"],
+            idempotent=True,
             method=method,
             verify_live=verify_live,
         )
@@ -207,6 +244,7 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             logout_handler,
+            side_effects=["auth_session: clear SSO session"],
             method=method,
             clear_cache=clear_cache,
         )
@@ -225,6 +263,8 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             export_papers_handler,
+            side_effects=["file_create: exported file at output_path"],
+            idempotent=True,
             output_path=output_path,
             project=project,
             format=format,
@@ -243,6 +283,8 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             create_project_handler,
+            side_effects=["project_create: new scholar project"],
+            next_steps=["scholar_add_papers_to_project to populate it"],
             project_name=project_name,
             description=description,
         )
@@ -254,7 +296,10 @@ def register_scholar_tools(mcp) -> None:
 
         from scitex.scholar._mcp.handlers import list_projects_handler
 
-        return await async_wrap_as_mcp(list_projects_handler)
+        return await async_wrap_as_mcp(
+            list_projects_handler,
+            idempotent=True,
+        )
 
     @mcp.tool()
     async def scholar_add_papers_to_project(
@@ -269,6 +314,9 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             add_papers_to_project_handler,
+            side_effects=["project_modify: add papers to project"],
+            next_steps=["scholar_fetch_papers to download added papers"],
+            idempotent=True,
             project=project,
             dois=dois,
             bibtex_path=bibtex_path,
@@ -292,6 +340,7 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             parse_pdf_content_handler,
+            idempotent=True,
             pdf_path=pdf_path,
             doi=doi,
             project=project,
@@ -322,6 +371,15 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             fetch_papers_handler,
+            side_effects=[
+                "file_create: PDF files in output directory",
+                "network: browser-based paper download",
+            ],
+            next_steps=[
+                "scholar_get_job_status to check progress (async mode)",
+                "scholar_get_job_result to retrieve completed results",
+                "scholar_validate_pdfs to check downloaded files",
+            ],
             papers=papers,
             bibtex_path=bibtex_path,
             project=project,
@@ -345,6 +403,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             list_jobs_handler,
+            next_steps=[
+                "scholar_get_job_status for details on a specific job",
+                "scholar_cancel_job to cancel a running job",
+            ],
+            idempotent=True,
             status=status,
             limit=limit,
         )
@@ -358,6 +421,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             get_job_status_handler,
+            next_steps=[
+                "scholar_get_job_result if job is completed",
+                "scholar_cancel_job to stop a running job",
+            ],
+            idempotent=True,
             job_id=job_id,
         )
 
@@ -370,6 +438,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             start_job_handler,
+            side_effects=["job_start: begins background paper fetching"],
+            next_steps=[
+                "scholar_get_job_status to monitor progress",
+                "scholar_cancel_job to stop if needed",
+            ],
             job_id=job_id,
         )
 
@@ -382,6 +455,8 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             cancel_job_handler,
+            side_effects=["job_cancel: stops running background job"],
+            next_steps=["scholar_list_jobs to see remaining jobs"],
             job_id=job_id,
         )
 
@@ -394,6 +469,11 @@ def register_scholar_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             get_job_result_handler,
+            next_steps=[
+                "scholar_validate_pdfs to check downloaded files",
+                "scholar_get_library_status for overall progress",
+            ],
+            idempotent=True,
             job_id=job_id,
         )
 

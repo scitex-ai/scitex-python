@@ -13,7 +13,11 @@ def register_docs_tools(mcp) -> None:
         from scitex_dev.docs import get_docs
         from scitex_dev.mcp_utils import wrap_as_mcp
 
-        return wrap_as_mcp(get_docs)
+        return wrap_as_mcp(
+            get_docs,
+            next_steps=["docs_get for a specific package's documentation"],
+            idempotent=True,
+        )
 
     @mcp.tool()
     async def docs_get(
@@ -31,7 +35,17 @@ def register_docs_tools(mcp) -> None:
         from scitex_dev.docs import get_docs
         from scitex_dev.mcp_utils import wrap_as_mcp
 
-        return wrap_as_mcp(get_docs, package=package, format=format, page=page)
+        return wrap_as_mcp(
+            get_docs,
+            next_steps=[
+                "docs_search to find specific topics",
+                "docs_build to rebuild if docs are outdated",
+            ],
+            idempotent=True,
+            package=package,
+            format=format,
+            page=page,
+        )
 
     @mcp.tool()
     async def docs_build(
@@ -47,7 +61,13 @@ def register_docs_tools(mcp) -> None:
         from scitex_dev.docs import build_docs
         from scitex_dev.mcp_utils import wrap_as_mcp
 
-        return wrap_as_mcp(build_docs, package=package, formats=formats)
+        return wrap_as_mcp(
+            build_docs,
+            side_effects=["file_create: Sphinx HTML output in _build directory"],
+            next_steps=["docs_get to view the built documentation"],
+            package=package,
+            formats=formats,
+        )
 
     @mcp.tool()
     async def docs_search(
@@ -75,6 +95,11 @@ def register_docs_tools(mcp) -> None:
 
         return wrap_as_mcp(
             search,
+            next_steps=[
+                "docs_get for full documentation of a matched package",
+                "introspect_source to read matched API source code",
+            ],
+            idempotent=True,
             query=query,
             scope=scope,
             package=package,

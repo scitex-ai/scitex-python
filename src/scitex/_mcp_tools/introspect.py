@@ -24,6 +24,11 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             q_handler,
+            next_steps=[
+                "introspect_source to see full source code",
+                "introspect_docstring for detailed documentation",
+            ],
+            idempotent=True,
             dotted_path=dotted_path,
             include_defaults=include_defaults,
             include_annotations=include_annotations,
@@ -42,6 +47,11 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             qq_handler,
+            next_steps=[
+                "introspect_call_graph to see what this function calls",
+                "introspect_examples to find usage examples",
+            ],
+            idempotent=True,
             dotted_path=dotted_path,
             max_lines=max_lines,
             include_decorators=include_decorators,
@@ -61,6 +71,11 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             dir_handler,
+            next_steps=[
+                "introspect_signature for details on a specific member",
+                "introspect_api for recursive API tree",
+            ],
+            idempotent=True,
             dotted_path=dotted_path,
             filter=filter,
             kind=kind,
@@ -81,6 +96,11 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             list_api_handler,
+            next_steps=[
+                "introspect_signature for details on a specific API",
+                "introspect_source to read implementation",
+            ],
+            idempotent=True,
             dotted_path=dotted_path,
             max_depth=max_depth,
             docstring=docstring,
@@ -99,6 +119,11 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             docstring_handler,
+            next_steps=[
+                "introspect_signature for parameter details",
+                "introspect_examples for usage examples",
+            ],
+            idempotent=True,
             dotted_path=dotted_path,
             format=format,
         )
@@ -112,6 +137,8 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             exports_handler,
+            next_steps=["introspect_dir for all members including non-exported"],
+            idempotent=True,
             dotted_path=dotted_path,
         )
 
@@ -133,6 +160,8 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             examples_handler,
+            next_steps=["introspect_source to read the referenced source code"],
+            idempotent=True,
             dotted_path=dotted_path,
             search_paths=paths_list,
             max_results=max_results,
@@ -153,6 +182,8 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             class_hierarchy_handler,
+            next_steps=["introspect_source to read a specific class"],
+            idempotent=True,
             dotted_path=dotted_path,
             include_builtins=include_builtins,
             max_depth=max_depth,
@@ -170,6 +201,8 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             type_hints_handler,
+            next_steps=["introspect_signature for full signature with defaults"],
+            idempotent=True,
             dotted_path=dotted_path,
             include_extras=include_extras,
         )
@@ -186,6 +219,8 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             imports_handler,
+            next_steps=["introspect_dependencies for recursive dependency tree"],
+            idempotent=True,
             dotted_path=dotted_path,
             categorize=categorize,
         )
@@ -203,6 +238,8 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             dependencies_handler,
+            next_steps=["introspect_imports for detailed import analysis"],
+            idempotent=True,
             dotted_path=dotted_path,
             recursive=recursive,
             max_depth=max_depth,
@@ -222,6 +259,8 @@ def register_introspect_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             call_graph_handler,
+            next_steps=["introspect_source to read a specific function in the graph"],
+            idempotent=True,
             dotted_path=dotted_path,
             max_depth=max_depth,
             timeout_seconds=timeout_seconds,

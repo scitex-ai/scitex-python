@@ -25,6 +25,8 @@ def register_ui_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             notify_handler,
+            side_effects=["notification: sends desktop/system notification"],
+            next_steps=["ui_get_notification_config to check available backends"],
             message=message,
             title=title,
             level=level,
@@ -40,7 +42,11 @@ def register_ui_tools(mcp) -> None:
 
         from scitex.ui._mcp.handlers import get_config_handler
 
-        return await async_wrap_as_mcp(get_config_handler)
+        return await async_wrap_as_mcp(
+            get_config_handler,
+            next_steps=["ui_notify to send a notification"],
+            idempotent=True,
+        )
 
 
 # EOF

@@ -43,6 +43,7 @@ def register_audio_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             speak_handler,
+            side_effects=["audio_playback: plays audio through system speakers"],
             text=text,
             backend=backend,
             voice=voice,

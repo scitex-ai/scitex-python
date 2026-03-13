@@ -26,6 +26,8 @@ def register_capture_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(
             capture_screenshot_handler,
+            side_effects=["file_create: screenshot image file"],
+            idempotent=True,
             monitor_id=monitor_id,
             all=all,
             quality=quality,

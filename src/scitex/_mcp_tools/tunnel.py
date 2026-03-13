@@ -23,6 +23,8 @@ def register_tunnel_tools(mcp) -> None:
 
         return wrap_as_mcp(
             setup,
+            side_effects=["systemd_service: creates autossh service"],
+            next_steps=["tunnel_status to verify the tunnel is active"],
             port=port,
             bastion_server=bastion_server,
             secret_key_path=secret_key_path,
@@ -38,7 +40,12 @@ def register_tunnel_tools(mcp) -> None:
 
         from scitex.tunnel import remove
 
-        return wrap_as_mcp(remove, port=port)
+        return wrap_as_mcp(
+            remove,
+            side_effects=["systemd_service: stops and disables autossh service"],
+            next_steps=["tunnel_status to confirm removal"],
+            port=port,
+        )
 
     @mcp.tool()
     async def tunnel_status(port: int = 0) -> str:
@@ -51,7 +58,15 @@ def register_tunnel_tools(mcp) -> None:
 
         from scitex.tunnel import status
 
-        return wrap_as_mcp(status, port=port if port else None)
+        return wrap_as_mcp(
+            status,
+            next_steps=[
+                "tunnel_setup to create a new tunnel",
+                "tunnel_remove to remove an inactive tunnel",
+            ],
+            idempotent=True,
+            port=port if port else None,
+        )
 
 
 # EOF
