@@ -21,6 +21,7 @@ def register_audio_tools(mcp) -> None:
         agent_id: str | None = None,
         wait: bool = True,
         signature: bool = False,
+        num_threads: int | None = None,
     ) -> str:
         """Convert text to speech with smart routing.
 
@@ -38,6 +39,7 @@ def register_audio_tools(mcp) -> None:
         Args:
             save: Auto-save to timestamped file in SCITEX_DIR/audio/ if output_path not set.
             output_path: Explicit path to save audio file (e.g. /tmp/notify.mp3).
+            num_threads: CPU thread count (LuxTTS backend only). None uses PyTorch default.
 
         Environment variables:
         - SCITEX_AUDIO_MODE: 'local', 'remote', or 'auto' (default: auto)
@@ -61,6 +63,7 @@ def register_audio_tools(mcp) -> None:
             agent_id=agent_id,
             wait=wait,
             signature=signature,
+            num_threads=num_threads,
         )
 
 
