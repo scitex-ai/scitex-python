@@ -108,6 +108,12 @@ scitex = "scitex"
 # Each module can be installed independently
 # --------------------------------------------
 
+# App Module - Unified file storage SDK (local + cloud)
+# Use: pip install scitex[app]
+app = [
+    "scitex-app>=0.1.0",
+]
+
 # AI Module - LLM APIs and ML tools
 # Use: pip install scitex[ai]
 ai = [
@@ -824,6 +830,7 @@ dev = [
 # When adding a new module extras group, add a corresponding entry here.
 all = [
     "scitex[ai]",
+    "scitex[app]",
     "scitex[audio]",
     "scitex[audit]",
     "scitex[benchmark]",
