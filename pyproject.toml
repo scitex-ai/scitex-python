@@ -772,6 +772,16 @@ heavy = [
 # Development Tools
 # --------------------------------------------
 
+# Documentation
+# Use: pip install scitex[docs]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "myst-parser>=2.0",
+    "sphinx-copybutton>=0.5",
+    "sphinx-autodoc-typehints>=1.25",
+]
+
 # Development Tools
 # Use: pip install scitex[dev]
 dev = [
@@ -833,6 +843,7 @@ all = [
     "scitex[app]",
     "scitex[audio]",
     "scitex[audit]",
+    "scitex[docs]",
     "scitex[benchmark]",
     "scitex[bridge]",
     "scitex[browser]",
