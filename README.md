@@ -25,6 +25,8 @@
 
 # SciTeX — Modular Python Toolkit for Researchers and AI Agents
 
+The SciTeX system follows the Four Freedoms for Research below, inspired by [the Free Software Definition](https://www.gnu.org/philosophy/free-sw.en.html):
+
 >Four Freedoms for Research
 >
 >0. The freedom to **run** your research anywhere — your machine, your terms.
@@ -32,7 +34,7 @@
 >2. The freedom to **redistribute** your workflows, not just your papers.
 >3. The freedom to **modify** any module and share improvements with the community.
 >
->AGPL-3.0 — because research infrastructure deserves the same freedoms as the software it runs on.
+>AGPL-3.0 — because we believe research infrastructure deserves the same freedoms as the software it runs on.
 
 <p align="center">
     <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="800">
@@ -192,7 +194,7 @@ Turn AI agents into autonomous scientific researchers.
 | ui | 5 | Notifications |
 | linter | 3 | Code pattern checking |
 
-**Claude Desktop** (`~/.config/claude/claude_desktop_config.json`):
+**Claude Code Setup** — add `.mcp.json` to your project root. Use `SCITEX_ENV_SRC` to load all configuration from a `.src` file — this keeps `.mcp.json` static across environments:
 
 ```json
 {
@@ -206,6 +208,28 @@ Turn AI agents into autonomous scientific researchers.
     }
   }
 }
+```
+
+Switch environments via your shell profile:
+
+```bash
+# Local machine
+export SCITEX_ENV_SRC=~/.scitex/scitex/local.src
+
+# Remote server
+export SCITEX_ENV_SRC=~/.scitex/scitex/remote.src
+```
+
+Generate a template `.src` file:
+
+```bash
+scitex env-template -o ~/.scitex/scitex/local.src
+```
+
+Or install globally:
+
+```bash
+scitex mcp install
 ```
 
 → **[Full MCP tool reference](./docs/MCP_TOOLS.md)**

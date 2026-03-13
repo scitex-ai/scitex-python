@@ -139,7 +139,9 @@ Turn AI agents into autonomous scientific researchers.
      - 3
      - Code pattern checking
 
-Configure in Claude Desktop (``~/.config/claude/claude_desktop_config.json``):
+**Claude Code Setup** — add ``.mcp.json`` to your project root. Use ``SCITEX_ENV_SRC``
+to load all configuration from a ``.src`` file — this keeps ``.mcp.json`` static
+across environments:
 
 .. code-block:: json
 
@@ -147,10 +149,35 @@ Configure in Claude Desktop (``~/.config/claude/claude_desktop_config.json``):
      "mcpServers": {
        "scitex": {
          "command": "scitex",
-         "args": ["mcp", "start"]
+         "args": ["mcp", "start"],
+         "env": {
+           "SCITEX_ENV_SRC": "${SCITEX_ENV_SRC}"
+         }
        }
      }
    }
+
+Switch environments via your shell profile:
+
+.. code-block:: bash
+
+   # Local machine
+   export SCITEX_ENV_SRC=~/.scitex/scitex/local.src
+
+   # Remote server
+   export SCITEX_ENV_SRC=~/.scitex/scitex/remote.src
+
+Generate a template ``.src`` file:
+
+.. code-block:: bash
+
+   scitex env-template -o ~/.scitex/scitex/local.src
+
+Or install globally:
+
+.. code-block:: bash
+
+   scitex mcp install
 
 Complete Example
 ----------------

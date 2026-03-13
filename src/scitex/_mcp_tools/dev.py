@@ -386,6 +386,9 @@ def register_dev_tools(mcp) -> None:
         replacement: str,
         directory: str = ".",
         confirm: bool = False,
+        regex: bool = False,
+        scope: str = "",
+        recursive: bool = True,
         django_safe: bool = True,
         extra_excludes: list[str] | None = None,
         force: bool = False,
@@ -409,14 +412,24 @@ def register_dev_tools(mcp) -> None:
         Parameters
         ----------
         pattern : str
-            Pattern to search for (literal string, not regex).
+            Pattern to search for. Literal string by default, or regex if regex=True.
         replacement : str
-            String to replace matches with.
+            String to replace matches with. Supports regex backreferences
+            (\\1, \\g<name>) when regex=True.
         directory : str
             Target directory (default: current directory).
         confirm : bool
             If False (default), preview only (dry run).
             If True, execute the rename operation.
+        regex : bool
+            If True, treat pattern as a regular expression (re.DOTALL).
+            If False (default), treat as literal string.
+        scope : str
+            Glob pattern to restrict which files are matched (e.g., "README.md",
+            "*.py", "*.md"). Empty string matches all files.
+        recursive : bool
+            If True (default), recurse into subdirectories.
+            If False, only process files in the top-level directory.
         django_safe : bool
             Protect Django-specific patterns (db_table, related_name, etc).
         extra_excludes : list of str, optional
@@ -442,12 +455,15 @@ def register_dev_tools(mcp) -> None:
             replacement,
             directory,
             confirm,
+            regex,
             django_safe,
             extra_excludes,
             force,
             skip_ids=skip_ids,
             use_sudo=use_sudo,
             sudo_password=sudo_password,
+            scope=scope,
+            recursive=recursive,
         )
 
 
