@@ -29,6 +29,12 @@ def register_audio_tools(mcp) -> None:
         - If local audio available -> uses local
         - If neither available -> returns error with instructions
 
+        Available backends (fallback order):
+        - elevenlabs: Paid, highest quality (requires API key)
+        - luxtts: Open-source, offline, voice-cloning, 48kHz, near-realtime on CPU (default speed=2.0)
+        - gtts: Google TTS, free, requires internet (default speed=1.5)
+        - pyttsx3: System TTS, offline, free (espeak)
+
         Args:
             save: Auto-save to timestamped file in SCITEX_DIR/audio/ if output_path not set.
             output_path: Explicit path to save audio file (e.g. /tmp/notify.mp3).
@@ -37,9 +43,8 @@ def register_audio_tools(mcp) -> None:
         - SCITEX_AUDIO_MODE: 'local', 'remote', or 'auto' (default: auto)
         - SCITEX_AUDIO_RELAY_URL: Relay server URL for remote playback
         """
+        from scitex_audio._mcp.handlers import speak_handler
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.audio._mcp.handlers import speak_handler
 
         return await async_wrap_as_mcp(
             speak_handler,

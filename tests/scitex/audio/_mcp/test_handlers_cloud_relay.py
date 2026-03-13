@@ -46,7 +46,7 @@ class TestEmitBrowserSpeech:
 
     def test_emits_osc_escape_sequence(self):
         """_emit_browser_speech must write the OSC 9999 escape to stderr."""
-        from scitex.audio._mcp.handlers import _emit_browser_speech
+        from scitex_audio._mcp.handlers import _emit_browser_speech
 
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
@@ -58,7 +58,7 @@ class TestEmitBrowserSpeech:
 
     def test_emitted_text_is_base64_encoded(self):
         """The text embedded in the OSC escape must be valid base64 for the input."""
-        from scitex.audio._mcp.handlers import _emit_browser_speech
+        from scitex_audio._mcp.handlers import _emit_browser_speech
 
         input_text = "test payload"
         stderr_capture = io.StringIO()
@@ -70,7 +70,7 @@ class TestEmitBrowserSpeech:
 
     def test_emits_to_stderr_not_stdout(self):
         """Output must go to stderr so as not to corrupt MCP stdio protocol."""
-        from scitex.audio._mcp.handlers import _emit_browser_speech
+        from scitex_audio._mcp.handlers import _emit_browser_speech
 
         stdout_capture = io.StringIO()
         stderr_capture = io.StringIO()
@@ -92,7 +92,7 @@ class TestSpeakHandlerCloudRelayMode:
     def test_cloud_relay_emits_osc_escape(self, monkeypatch):
         """With SCITEX_CLOUD=true, stderr must contain the OSC escape for the text."""
         monkeypatch.setenv("SCITEX_CLOUD", "true")
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
@@ -106,7 +106,7 @@ class TestSpeakHandlerCloudRelayMode:
     def test_cloud_relay_returns_browser_relay_backend(self, monkeypatch):
         """Result dict must have backend='browser_relay' in cloud relay mode."""
         monkeypatch.setenv("SCITEX_CLOUD", "true")
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
@@ -117,7 +117,7 @@ class TestSpeakHandlerCloudRelayMode:
     def test_cloud_relay_returns_cloud_relay_mode(self, monkeypatch):
         """Result dict must have mode='cloud_relay' in cloud relay mode."""
         monkeypatch.setenv("SCITEX_CLOUD", "true")
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
@@ -128,7 +128,7 @@ class TestSpeakHandlerCloudRelayMode:
     def test_cloud_relay_returns_success_true(self, monkeypatch):
         """Result dict must have success=True in cloud relay mode."""
         monkeypatch.setenv("SCITEX_CLOUD", "true")
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
@@ -139,7 +139,7 @@ class TestSpeakHandlerCloudRelayMode:
     def test_cloud_relay_returns_played_true(self, monkeypatch):
         """Result dict must mark played=True even though audio is relayed, not local."""
         monkeypatch.setenv("SCITEX_CLOUD", "true")
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
@@ -152,10 +152,10 @@ class TestSpeakHandlerCloudRelayMode:
         monkeypatch.setenv("SCITEX_CLOUD", "true")
 
         fake_sig = "myhost. myproject. main. "
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
-        with patch("scitex.audio._mcp.handlers._get_signature", return_value=fake_sig):
+        with patch("scitex_audio._mcp.handlers._get_signature", return_value=fake_sig):
             with patch("sys.stderr", stderr_capture):
                 result = _run(speak_handler(text="important message", signature=True))
 
@@ -168,10 +168,10 @@ class TestSpeakHandlerCloudRelayMode:
         monkeypatch.setenv("SCITEX_CLOUD", "true")
 
         fake_sig = "myhost. myproject. main. "
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
-        with patch("scitex.audio._mcp.handlers._get_signature", return_value=fake_sig):
+        with patch("scitex_audio._mcp.handlers._get_signature", return_value=fake_sig):
             with patch("sys.stderr", stderr_capture):
                 result = _run(speak_handler(text="sig test", signature=True))
 
@@ -183,7 +183,7 @@ class TestSpeakHandlerCloudRelayMode:
     def test_cloud_relay_without_signature_no_sig_keys(self, monkeypatch):
         """When signature=False (default), result must not include 'signature' key."""
         monkeypatch.setenv("SCITEX_CLOUD", "true")
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
@@ -204,7 +204,7 @@ class TestSpeakHandlerLocalMode:
     def test_local_mode_does_not_emit_osc_escape(self, monkeypatch):
         """Without SCITEX_CLOUD, no OSC escape must appear on stderr."""
         monkeypatch.delenv("SCITEX_CLOUD", raising=False)
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         mock_speak_result = {
             "success": True,
@@ -216,7 +216,7 @@ class TestSpeakHandlerLocalMode:
         stderr_capture = io.StringIO()
         with patch("sys.stderr", stderr_capture):
             with patch(
-                "scitex.audio._mcp.handlers.asyncio.get_event_loop"
+                "scitex_audio._mcp.handlers.asyncio.get_event_loop"
             ) as mock_loop_fn:
                 mock_loop = MagicMock()
                 mock_loop.run_in_executor = AsyncMock(return_value=mock_speak_result)
@@ -229,7 +229,7 @@ class TestSpeakHandlerLocalMode:
     def test_local_mode_does_not_return_cloud_relay_mode(self, monkeypatch):
         """Local mode result must not have mode='cloud_relay'."""
         monkeypatch.delenv("SCITEX_CLOUD", raising=False)
-        from scitex.audio._mcp.handlers import speak_handler
+        from scitex_audio._mcp.handlers import speak_handler
 
         local_result = {
             "success": True,
@@ -238,7 +238,7 @@ class TestSpeakHandlerLocalMode:
             "mode": "local",
         }
 
-        with patch("scitex.audio._mcp.handlers.asyncio.get_event_loop") as mock_loop_fn:
+        with patch("scitex_audio._mcp.handlers.asyncio.get_event_loop") as mock_loop_fn:
             mock_loop = MagicMock()
             mock_loop.run_in_executor = AsyncMock(return_value=local_result)
             mock_loop_fn.return_value = mock_loop

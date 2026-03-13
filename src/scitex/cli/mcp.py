@@ -383,7 +383,7 @@ def doctor(verbose: bool):
         click.echo()
         click.secho("Handler Import Checks:", bold=True)
         handler_modules = [
-            ("scitex.audio._mcp.handlers", "speak_handler"),
+            ("scitex_audio._mcp.handlers", "speak_handler"),
             ("scitex.capture._mcp.handlers", "capture_screenshot_handler"),
             ("scitex.scholar._mcp.handlers", "search_papers_handler"),
             ("scitex.stats._mcp.handlers", "run_test_handler"),

@@ -2,7 +2,7 @@
 # Timestamp: 2026-01-04
 # File: tests/scitex/audio/test___main__.py
 
-"""Tests for scitex.audio.__main__ module (CLI entry point)."""
+"""Tests for scitex_audio.__main__ module (CLI entry point)."""
 
 import sys
 from io import StringIO  # noqa: F401
@@ -16,13 +16,13 @@ class TestMainFunction:
 
     def test_main_function_exists(self):
         """Test main function exists."""
-        from scitex.audio.__main__ import main
+        from scitex_audio.__main__ import main
 
         assert callable(main)
 
     def test_help_flag_shows_help(self):
         """Test --help flag shows help message."""
-        from scitex.audio.__main__ import main
+        from scitex_audio.__main__ import main
 
         with patch.object(sys, "argv", ["scitex.audio", "--help"]):
             with pytest.raises(SystemExit) as exc_info:
@@ -33,7 +33,7 @@ class TestMainFunction:
 
     def test_no_args_shows_help(self, capsys):
         """Test no arguments shows help."""
-        from scitex.audio.__main__ import main
+        from scitex_audio.__main__ import main
 
         with patch.object(sys, "argv", ["scitex.audio"]):
             main()
@@ -50,9 +50,9 @@ class TestMCPMode:
         mock_server_main = MagicMock()
 
         with patch.object(sys, "argv", ["scitex.audio", "--mcp"]):
-            with patch("scitex.audio.__main__.asyncio.run") as mock_run:
-                with patch("scitex.audio.mcp_server.main", mock_server_main):
-                    from scitex.audio.__main__ import main
+            with patch("scitex_audio.__main__.asyncio.run") as mock_run:
+                with patch("scitex_audio.mcp_server.main", mock_server_main):
+                    from scitex_audio.__main__ import main
 
                     main()
 
@@ -67,8 +67,8 @@ class TestSpeakCommand:
         mock_speak = MagicMock()
 
         with patch.object(sys, "argv", ["scitex.audio", "speak", "Hello world"]):
-            with patch("scitex.audio.speak", mock_speak):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.speak", mock_speak):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -81,8 +81,8 @@ class TestSpeakCommand:
         with patch.object(
             sys, "argv", ["scitex.audio", "speak", "Hello", "-b", "gtts"]
         ):
-            with patch("scitex.audio.speak", mock_speak):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.speak", mock_speak):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -94,8 +94,8 @@ class TestSpeakCommand:
         mock_speak = MagicMock()
 
         with patch.object(sys, "argv", ["scitex.audio", "speak", "Hello", "-v", "en"]):
-            with patch("scitex.audio.speak", mock_speak):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.speak", mock_speak):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -109,8 +109,8 @@ class TestSpeakCommand:
         with patch.object(
             sys, "argv", ["scitex.audio", "speak", "Hello", "-o", "/tmp/test.mp3"]
         ):
-            with patch("scitex.audio.speak", mock_speak):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.speak", mock_speak):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -122,8 +122,8 @@ class TestSpeakCommand:
         mock_speak = MagicMock()
 
         with patch.object(sys, "argv", ["scitex.audio", "speak", "Hello", "--no-play"]):
-            with patch("scitex.audio.speak", mock_speak):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.speak", mock_speak):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -137,8 +137,8 @@ class TestSpeakCommand:
         with patch.object(
             sys, "argv", ["scitex.audio", "speak", "Hello", "--no-fallback"]
         ):
-            with patch("scitex.audio.speak", mock_speak):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.speak", mock_speak):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -154,8 +154,8 @@ class TestBackendsCommand:
         mock_available = MagicMock(return_value=["gtts", "pyttsx3"])
 
         with patch.object(sys, "argv", ["scitex.audio", "backends"]):
-            with patch("scitex.audio.available_backends", mock_available):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.available_backends", mock_available):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -167,8 +167,8 @@ class TestBackendsCommand:
         mock_available = MagicMock(return_value=["gtts"])
 
         with patch.object(sys, "argv", ["scitex.audio", "backends"]):
-            with patch("scitex.audio.available_backends", mock_available):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.available_backends", mock_available):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -192,9 +192,9 @@ class TestVoicesCommand:
         mock_get_tts = MagicMock(return_value=mock_tts)
 
         with patch.object(sys, "argv", ["scitex.audio", "voices"]):
-            with patch("scitex.audio.available_backends", mock_available):
-                with patch("scitex.audio.get_tts", mock_get_tts):
-                    from scitex.audio.__main__ import main
+            with patch("scitex_audio.available_backends", mock_available):
+                with patch("scitex_audio.get_tts", mock_get_tts):
+                    from scitex_audio.__main__ import main
 
                     main()
 
@@ -209,8 +209,8 @@ class TestVoicesCommand:
         mock_get_tts = MagicMock(return_value=mock_tts)
 
         with patch.object(sys, "argv", ["scitex.audio", "voices", "-b", "elevenlabs"]):
-            with patch("scitex.audio.get_tts", mock_get_tts):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.get_tts", mock_get_tts):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -221,8 +221,8 @@ class TestVoicesCommand:
         mock_available = MagicMock(return_value=[])
 
         with patch.object(sys, "argv", ["scitex.audio", "voices"]):
-            with patch("scitex.audio.available_backends", mock_available):
-                from scitex.audio.__main__ import main
+            with patch("scitex_audio.available_backends", mock_available):
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -235,9 +235,9 @@ class TestVoicesCommand:
         mock_available = MagicMock(return_value=["gtts"])
 
         with patch.object(sys, "argv", ["scitex.audio", "voices"]):
-            with patch("scitex.audio.available_backends", mock_available):
-                with patch("scitex.audio.get_tts", mock_get_tts):
-                    from scitex.audio.__main__ import main
+            with patch("scitex_audio.available_backends", mock_available):
+                with patch("scitex_audio.get_tts", mock_get_tts):
+                    from scitex_audio.__main__ import main
 
                     main()
 
@@ -252,7 +252,7 @@ class TestArgumentParser:
         """Test backend argument accepts valid choices."""
         import argparse  # noqa: F401
 
-        from scitex.audio.__main__ import main  # noqa: F401
+        from scitex_audio.__main__ import main  # noqa: F401
 
         # Valid backends should not raise
         valid_backends = ["pyttsx3", "gtts", "elevenlabs"]
@@ -266,7 +266,7 @@ class TestArgumentParser:
             sys, "argv", ["scitex.audio", "speak", "Hello", "-b", "invalid"]
         ):
             with pytest.raises(SystemExit):
-                from scitex.audio.__main__ import main
+                from scitex_audio.__main__ import main
 
                 main()
 
@@ -277,14 +277,14 @@ class TestCLIIntegration:
     def test_cli_module_runnable(self):
         """Test module can be run as script."""
         # Just verify the module structure
-        from scitex.audio import __main__
+        from scitex_audio import __main__
 
         assert hasattr(__main__, "main")
 
     def test_cli_has_subcommands(self):
         """Test CLI has expected subcommands."""
         # Verify by checking help output
-        from scitex.audio.__main__ import main
+        from scitex_audio.__main__ import main
 
         with patch.object(sys, "argv", ["scitex.audio", "--help"]):
             with pytest.raises(SystemExit):
