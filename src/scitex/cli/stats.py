@@ -16,8 +16,14 @@ import click
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def stats(ctx, help_recursive):
+def stats(ctx, help_recursive, as_json):
     """
     Statistical analysis and testing utilities
 
@@ -38,7 +44,12 @@ def stats(ctx, help_recursive):
         _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, stats)
+        else:
+            click.echo(ctx.get_help())
 
 
 def _print_help_recursive(ctx):
@@ -134,7 +145,7 @@ def recommend(
         tests = recommend_tests(ctx, top_k=top_k)
 
         if as_json:
-            import json
+            from scitex_dev import Result
 
             output = {
                 "context": {
@@ -150,7 +161,7 @@ def recommend(
                 },
                 "recommended_tests": tests,
             }
-            click.echo(json.dumps(output, indent=2))
+            click.echo(Result(success=True, data=output).to_json())
         else:
             click.secho("Recommended Statistical Tests", fg="cyan", bold=True)
             click.echo("=" * 40)
@@ -207,13 +218,10 @@ def describe(data_path, column, as_json):
         result = describe_data(df)
 
         if as_json:
-            import json
+            from scitex_dev import Result
 
-            # Convert to JSON-serializable format
-            if hasattr(result, "to_dict"):
-                click.echo(json.dumps(result.to_dict(), indent=2, default=str))
-            else:
-                click.echo(json.dumps(result, indent=2, default=str))
+            data = result.to_dict() if hasattr(result, "to_dict") else result
+            click.echo(Result(success=True, data=data).to_json())
         else:
             click.secho(f"Descriptive Statistics: {path.name}", fg="cyan", bold=True)
             click.echo("=" * 50)
@@ -239,7 +247,16 @@ def describe(data_path, column, as_json):
     help="Output bundle path (.stats)",
 )
 @click.option("--as-zip", is_flag=True, help="Save as ZIP archive")
-def save(input_path, output, as_zip):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be saved without writing"
+)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def save(input_path, output, as_zip, dry_run, as_json):
     """
     Save statistical results to a SciTeX bundle
 
@@ -247,7 +264,14 @@ def save(input_path, output, as_zip):
     Examples:
       scitex stats save results.json --output analysis.stats
       scitex stats save comparisons.json --output analysis.stats --as-zip
+      scitex stats save results.json --output analysis.stats --dry-run
     """
+    if dry_run:
+        click.echo(f"[dry-run] Would save {input_path} -> {output}")
+        if as_zip:
+            click.echo("[dry-run] Format: ZIP archive")
+        return
+
     try:
         import json
 
@@ -267,7 +291,12 @@ def save(input_path, output, as_zip):
 
         # Save bundle
         result_path = save_stats(comparisons, output, as_zip=as_zip)
-        click.secho(f"Stats bundle saved: {result_path}", fg="green")
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(Result(success=True, data={"path": str(result_path)}).to_json())
+        else:
+            click.secho(f"Stats bundle saved: {result_path}", fg="green")
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
@@ -292,9 +321,9 @@ def load(bundle_path, as_json):
         data = load_stats(bundle_path)
 
         if as_json:
-            import json
+            from scitex_dev import Result
 
-            click.echo(json.dumps(data, indent=2, default=str))
+            click.echo(Result(success=True, data=data).to_json())
         else:
             click.secho(f"Statistics Bundle: {bundle_path}", fg="cyan", bold=True)
             click.echo("=" * 50)
@@ -314,7 +343,13 @@ def load(bundle_path, as_json):
 
 
 @stats.command()
-def tests():
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def tests(as_json):
     """
     List available statistical tests
 
@@ -325,9 +360,6 @@ def tests():
     try:
         from scitex.stats import TEST_RULES
 
-        click.secho("Available Statistical Tests", fg="cyan", bold=True)
-        click.echo("=" * 50)
-
         # Group by category
         categories = {}
         for rule in TEST_RULES:
@@ -335,6 +367,15 @@ def tests():
             if cat not in categories:
                 categories[cat] = []
             categories[cat].append(rule.name)
+
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(Result(success=True, data=categories).to_json())
+            return
+
+        click.secho("Available Statistical Tests", fg="cyan", bold=True)
+        click.echo("=" * 50)
 
         for cat, tests_list in sorted(categories.items()):
             click.secho(f"\n{cat.title()}:", fg="yellow")
@@ -344,152 +385,6 @@ def tests():
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
-
-
-@stats.group(invoke_without_command=True)
-@click.pass_context
-def mcp(ctx):
-    """
-    MCP (Model Context Protocol) server operations
-
-    \b
-    Commands:
-      start      - Start the MCP server
-      doctor     - Check MCP server health
-      list-tools - List available MCP tools
-
-    \b
-    Examples:
-      scitex stats mcp start
-      scitex stats mcp list-tools
-    """
-    if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
-
-
-@mcp.command()
-@click.option(
-    "-t",
-    "--transport",
-    type=click.Choice(["stdio", "sse", "http"]),
-    default="stdio",
-    help="Transport protocol (default: stdio)",
-)
-@click.option("--host", default="0.0.0.0", help="Host for HTTP/SSE (default: 0.0.0.0)")
-@click.option(
-    "--port", default=8095, type=int, help="Port for HTTP/SSE (default: 8095)"
-)
-def start(transport, host, port):
-    """
-    Start the stats MCP server
-
-    \b
-    Examples:
-      scitex stats mcp start
-      scitex stats mcp start -t http --port 8095
-    """
-    try:
-        from scitex.stats.mcp_server import main as run_server
-
-        if transport != "stdio":
-            click.secho(f"Starting stats MCP server ({transport})", fg="cyan")
-            click.echo(f"  Host: {host}")
-            click.echo(f"  Port: {port}")
-
-        run_server()
-
-    except ImportError as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        click.echo("\nInstall dependencies: pip install fastmcp")
-        sys.exit(1)
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
-
-
-@mcp.command()
-def doctor():
-    """
-    Check MCP server health and dependencies
-
-    \b
-    Example:
-      scitex stats mcp doctor
-    """
-    click.secho("Stats MCP Server Health Check", fg="cyan", bold=True)
-    click.echo()
-
-    click.echo("Checking FastMCP... ", nl=False)
-    try:
-        import fastmcp  # noqa: F401
-
-        click.secho("OK", fg="green")
-    except ImportError:
-        click.secho("NOT INSTALLED", fg="red")
-        click.echo("  Install with: pip install fastmcp")
-
-    click.echo("Checking stats module... ", nl=False)
-    try:
-        from scitex import stats as _  # noqa: F401
-
-        click.secho("OK", fg="green")
-    except ImportError as e:
-        click.secho(f"FAIL ({e})", fg="red")
-
-
-@mcp.command("list-tools")
-@click.option("-v", "--verbose", count=True, help="-v params, -vv returns")
-def list_tools(verbose):
-    """List available MCP tools for statistics."""
-    click.secho("Stats MCP Tools", fg="cyan", bold=True)
-    click.echo()
-    # (name, desc, params, returns)
-    tools = [
-        (
-            "recommend_tests",
-            "Recommend statistical tests",
-            "data_description: str",
-            "JSON",
-        ),
-        (
-            "run_test",
-            "Execute a statistical test",
-            "test_name: str, data: list",
-            "JSON",
-        ),
-        ("format_results", "Format results in journal style", "results: dict", "str"),
-        (
-            "power_analysis",
-            "Calculate power or sample size",
-            "test: str, effect=0.5",
-            "JSON",
-        ),
-        (
-            "correct_pvalues",
-            "Apply multiple comparison correction",
-            "pvalues: list",
-            "JSON",
-        ),
-        ("describe", "Calculate descriptive statistics", "data: list", "JSON"),
-        ("effect_size", "Calculate effect size", "group1: list, group2: list", "JSON"),
-        ("normality_test", "Test for normal distribution", "data: list", "JSON"),
-        ("posthoc_test", "Run post-hoc pairwise comparisons", "groups: list", "JSON"),
-        (
-            "p_to_stars",
-            "Convert p-value to significance stars",
-            "p_value: float",
-            "str",
-        ),
-    ]
-    for name, desc, params, returns in tools:
-        click.secho(f"  stats_{name}", fg="green", bold=True, nl=False)
-        click.echo(f": {desc}")
-        if verbose >= 1 and params:
-            click.echo(f"    params: {params}")
-        if verbose >= 2:
-            click.echo(f"    returns: {returns}")
-        if verbose >= 1:
-            click.echo()
 
 
 @stats.command("list-python-apis")
@@ -508,6 +403,12 @@ def list_python_apis(ctx, verbose, max_depth, as_json):
         max_depth=max_depth,
         as_json=as_json,
     )
+
+
+# Wire in sub-module commands
+from scitex.cli._stats_mcp import register_mcp_commands
+
+register_mcp_commands(stats)
 
 
 if __name__ == "__main__":

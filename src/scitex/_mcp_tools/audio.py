@@ -3,12 +3,6 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/audio.py
 """Audio module tools for FastMCP unified server."""
 
-import json
-
-
-def _json(data: dict) -> str:
-    return json.dumps(data, indent=2, default=str)
-
 
 def register_audio_tools(mcp) -> None:
     """Register audio tools with FastMCP server."""
@@ -43,9 +37,13 @@ def register_audio_tools(mcp) -> None:
         - SCITEX_AUDIO_MODE: 'local', 'remote', or 'auto' (default: auto)
         - SCITEX_AUDIO_RELAY_URL: Relay server URL for remote playback
         """
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.audio._mcp.handlers import speak_handler
 
-        result = await speak_handler(
+        return await async_wrap_as_mcp(
+            speak_handler,
+            side_effects=["audio_playback: plays audio through system speakers"],
             text=text,
             backend=backend,
             voice=voice,
@@ -59,7 +57,6 @@ def register_audio_tools(mcp) -> None:
             wait=wait,
             signature=signature,
         )
-        return _json(result)
 
 
 # EOF

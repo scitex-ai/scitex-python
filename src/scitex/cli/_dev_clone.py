@@ -31,7 +31,13 @@ import click
     is_flag=True,
     help="Show what would be done without executing",
 )
-def clone(package, branch, install, dry_run):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def clone(package, branch, install, dry_run, as_json):
     """
     Clone ecosystem repos and switch to a branch.
 
@@ -46,6 +52,7 @@ def clone(package, branch, install, dry_run):
       scitex dev clone -p figrecipe        # Clone only figrecipe
       scitex dev clone -e                  # Clone all + pip install -e .
       scitex dev clone --dry-run           # Preview without executing
+      scitex dev clone --json              # JSON output
     """
     from pathlib import Path
 
@@ -54,34 +61,91 @@ def clone(package, branch, install, dry_run):
     targets = {k: v for k, v in ECOSYSTEM.items() if not package or k in package}
 
     if not targets:
-        click.secho("No matching packages found.", fg="red")
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(
+                Result(success=False, error="No matching packages found.").to_json()
+            )
+        else:
+            click.secho("No matching packages found.", fg="red")
         return
 
-    click.secho(
-        f"Cloning {len(targets)} repos → branch '{branch}'", fg="cyan", bold=True
-    )
-    click.echo()
+    if dry_run:
+        plan = {
+            "action": "dry_run",
+            "branch": branch,
+            "install": install,
+            "targets": {
+                name: {
+                    "local_path": str(Path(info["local_path"]).expanduser()),
+                    "github_repo": info["github_repo"],
+                    "exists": Path(info["local_path"]).expanduser().exists(),
+                }
+                for name, info in targets.items()
+            },
+        }
+        if as_json:
+            from scitex_dev import Result
 
+            click.echo(Result(success=True, data=plan).to_json())
+        else:
+            click.secho(
+                f"[dry-run] Would clone {len(targets)} repos → branch '{branch}'",
+                fg="cyan",
+                bold=True,
+            )
+            for name, info in plan["targets"].items():
+                status = "exists" if info["exists"] else "clone"
+                click.echo(f"  {name}: {status} → {info['local_path']}")
+        return
+
+    if not as_json:
+        click.secho(
+            f"Cloning {len(targets)} repos → branch '{branch}'",
+            fg="cyan",
+            bold=True,
+        )
+        click.echo()
+
+    results = {}
     for name, info in targets.items():
         local = Path(info["local_path"]).expanduser()
         clone_url = f"git@github.com:{info['github_repo']}.git"
 
         if local.exists():
-            click.secho(f"  {name}: ", fg="yellow", nl=False)
-            click.echo(f"exists at {local}")
-            if not dry_run:
-                _checkout_branch(local, branch)
+            if not as_json:
+                click.secho(f"  {name}: ", fg="yellow", nl=False)
+                click.echo(f"exists at {local}")
+            _checkout_branch(local, branch)
+            results[name] = {"status": "exists", "path": str(local)}
         else:
-            click.secho(f"  {name}: ", fg="cyan", nl=False)
-            click.echo(f"cloning → {local}")
-            if not dry_run:
-                _clone_repo(clone_url, local, branch)
+            if not as_json:
+                click.secho(f"  {name}: ", fg="cyan", nl=False)
+                click.echo(f"cloning → {local}")
+            _clone_repo(clone_url, local, branch)
+            results[name] = {"status": "cloned", "path": str(local)}
 
-        if install and not dry_run and local.exists():
+        if install and local.exists():
             _pip_install(local)
+            results[name]["installed"] = True
 
-    click.echo()
-    click.secho("Done.", fg="green", bold=True)
+    if as_json:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=True,
+                data={
+                    "branch": branch,
+                    "repos": results,
+                    "total": len(results),
+                },
+            ).to_json()
+        )
+    else:
+        click.echo()
+        click.secho("Done.", fg="green", bold=True)
 
 
 def _checkout_branch(local, branch):

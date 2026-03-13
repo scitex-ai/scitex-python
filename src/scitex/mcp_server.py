@@ -151,6 +151,18 @@ if FASTMCP_AVAILABLE:
 
     register_all_tools(mcp)
 
+    # Annotate all tools with standardized Result envelope schema
+    try:
+        from scitex_dev.types import RESULT_SCHEMA
+
+        from scitex._mcp_tools._compat import get_tools_sync
+
+        for tool in get_tools_sync(mcp).values():
+            if getattr(tool, "output_schema", None) is None:
+                tool.output_schema = RESULT_SCHEMA
+    except Exception:
+        pass  # Non-critical: schema annotation is informational
+
     # Register documentation resources
     from scitex._mcp_resources import register_resources
 

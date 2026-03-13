@@ -17,7 +17,7 @@ def register_cloud_tools(mcp) -> None:
     try:
         from scitex_cloud._mcp_server import mcp as cloud_mcp
 
-        mcp.mount(cloud_mcp, prefix="cloud")
+        mcp.mount(cloud_mcp, namespace="cloud")
     except ImportError:
 
         @mcp.tool()

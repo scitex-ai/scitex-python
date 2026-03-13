@@ -6,9 +6,23 @@ from __future__ import annotations
 import click
 
 
-@click.group()
-def container():
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def container(ctx, as_json):
     """Container management (Apptainer/Singularity)."""
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, container)
+        else:
+            click.echo(ctx.get_help())
 
 
 @container.command()
@@ -18,12 +32,27 @@ def container():
 @click.option(
     "--base", is_flag=True, help="Build the base image instead of the final image."
 )
-def build(name, force, output_dir, base):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def build(name, force, output_dir, base, dry_run):
     """Build a SciTeX container from .def file."""
     from scitex.container import build as do_build
 
     if base:
         name = name.replace("final", "base")
+
+    if dry_run:
+        target = output_dir or "."
+        click.secho(
+            f"[dry-run] Would build container '{name}' into {target}", fg="cyan"
+        )
+        if force:
+            click.echo(
+                "[dry-run] --force set: would rebuild even if SIF already exists"
+            )
+        return
+
     try:
         sif_path = do_build(def_name=name, output_dir=output_dir, force=force)
         click.secho(f"SIF ready: {sif_path}", fg="green")
@@ -38,9 +67,20 @@ def build(name, force, output_dir, base):
 @container.command()
 @click.argument("sif_path", type=click.Path(exists=True))
 @click.option("--output-dir", "-o", type=click.Path(), help="Output directory.")
-def freeze(sif_path, output_dir):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def freeze(sif_path, output_dir, dry_run):
     """Extract pinned versions from built SIF for reproducibility."""
     from scitex.container import freeze as do_freeze
+
+    if dry_run:
+        target = output_dir or "."
+        click.secho(
+            f"[dry-run] Would extract pinned versions from {sif_path} into {target}",
+            fg="cyan",
+        )
+        return
 
     try:
         lock_files = do_freeze(sif_path=sif_path, output_dir=output_dir)
@@ -122,7 +162,10 @@ def list_containers(containers_dir):
     "--dir", "-d", "containers_dir", type=click.Path(), help="Containers directory."
 )
 @click.option("--sudo", is_flag=True, help="Use sudo for symlink operations.")
-def switch(version, containers_dir, sudo):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def switch(version, containers_dir, sudo, dry_run):
     """Switch active container to VERSION."""
     from pathlib import Path
 
@@ -135,6 +178,13 @@ def switch(version, containers_dir, sudo):
         raise SystemExit(1)
 
     old_version = get_active_version(cdir)
+
+    if dry_run:
+        if old_version:
+            click.secho(f"[dry-run] Would switch {old_version} -> {version}", fg="cyan")
+        else:
+            click.secho(f"[dry-run] Would activate version {version}", fg="cyan")
+        return
 
     try:
         switch_version(version, cdir, use_sudo=sudo)
@@ -197,7 +247,10 @@ def rollback(containers_dir, sudo):
     type=click.Path(),
     help="Source containers directory.",
 )
-def deploy(target_dir, containers_dir):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def deploy(target_dir, containers_dir, dry_run):
     """Copy active SIF to production target directory."""
     from pathlib import Path
 
@@ -209,6 +262,12 @@ def deploy(target_dir, containers_dir):
     except FileNotFoundError as e:
         click.secho(str(e), fg="red", err=True)
         raise SystemExit(1)
+
+    if dry_run:
+        click.secho(
+            f"[dry-run] Would copy active SIF from {cdir} to {target_dir}", fg="cyan"
+        )
+        return
 
     try:
         do_deploy(source_dir=cdir, target_dir=Path(target_dir))
@@ -231,18 +290,38 @@ def deploy(target_dir, containers_dir):
 @click.option(
     "--dir", "-d", "containers_dir", type=click.Path(), help="Containers directory."
 )
-def cleanup(keep, containers_dir):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def cleanup(keep, containers_dir, dry_run):
     """Remove old container versions, keeping the N most recent."""
     from pathlib import Path
 
     from scitex.container import cleanup as do_cleanup
-    from scitex.container import find_containers_dir
+    from scitex.container import find_containers_dir, list_versions
 
     try:
         cdir = Path(containers_dir) if containers_dir else find_containers_dir()
     except FileNotFoundError as e:
         click.secho(str(e), fg="red", err=True)
         raise SystemExit(1)
+
+    if dry_run:
+        versions = list_versions(cdir)
+        to_remove = versions[keep:] if len(versions) > keep else []
+        if to_remove:
+            click.secho(
+                f"[dry-run] Would remove {len(to_remove)} old version(s) (keeping {keep}):",
+                fg="cyan",
+            )
+            for v in to_remove:
+                click.echo(f"  {v['version']}")
+        else:
+            click.secho(
+                f"[dry-run] Nothing to remove — {len(versions)} version(s) within keep limit of {keep}.",
+                fg="cyan",
+            )
+        return
 
     removed = do_cleanup(cdir, keep=keep)
 

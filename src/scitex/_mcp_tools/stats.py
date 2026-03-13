@@ -18,12 +18,12 @@ def register_stats_tools(mcp) -> None:
     try:
         from scitex_stats._server import mcp as stats_mcp
 
-        mcp.mount(stats_mcp, prefix="stats")
+        mcp.mount(stats_mcp, namespace="stats")
     except ImportError:
         try:
             from scitex.stats._mcp.server import mcp as stats_mcp
 
-            mcp.mount(stats_mcp, prefix="stats")
+            mcp.mount(stats_mcp, namespace="stats")
         except ImportError:
 
             @mcp.tool()

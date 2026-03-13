@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-12-09 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/cli/config.py
 
@@ -14,8 +13,15 @@ import os
 import click
 
 
-@click.group()
-def config():
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def config(ctx, as_json):
     """
     Configuration management commands.
 
@@ -25,7 +31,13 @@ def config():
       scitex config list --env    # Show environment variables
       scitex config init          # Initialize all directories
     """
-    pass
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, config)
+        else:
+            click.echo(ctx.get_help())
 
 
 @config.command("list")
@@ -56,7 +68,7 @@ def list_config(env, exists, as_json):
       scitex config list --exists   # Only show existing directories
       scitex config list --json     # Output as JSON
     """
-    from scitex.config import ScitexPaths, get_scitex_dir
+    from scitex.config import ScitexPaths
 
     paths = ScitexPaths()
     all_paths = paths.list_all()
@@ -89,7 +101,7 @@ def list_config(env, exists, as_json):
         if scitex_dir:
             click.echo(f"  SCITEX_DIR = {scitex_dir}")
         else:
-            click.echo(f"  SCITEX_DIR = (not set, using default: ~/.scitex)")
+            click.echo("  SCITEX_DIR = (not set, using default: ~/.scitex)")
         click.echo()
 
     # Base directory

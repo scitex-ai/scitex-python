@@ -41,8 +41,14 @@ def _check_socialia() -> bool:
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def social(ctx, help_recursive):
+def social(ctx, help_recursive, as_json):
     """
     Social media management (powered by socialia)
 
@@ -80,7 +86,12 @@ def social(ctx, help_recursive):
         print_help_recursive(ctx, social)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, social)
+        else:
+            click.echo(ctx.get_help())
 
 
 @social.command()
@@ -132,8 +143,11 @@ def post(platform, text, file, reply_to, quote, subreddit, title, dry_run, as_js
 @social.command()
 @click.argument("platform", type=click.Choice(["twitter", "linkedin", "reddit"]))
 @click.argument("post_id")
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be deleted without deleting"
+)
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def delete(platform, post_id, as_json):
+def delete(platform, post_id, dry_run, as_json):
     """
     Delete a post from a platform
 
@@ -141,7 +155,11 @@ def delete(platform, post_id, as_json):
     Examples:
       scitex social delete twitter 1234567890
       scitex social delete reddit abc123
+      scitex social delete twitter 1234567890 --dry-run
     """
+    if dry_run:
+        click.echo(f"[dry-run] Would delete post {post_id} from {platform}")
+        sys.exit(0)
     sys.exit(_run_socialia("delete", platform, post_id, json_output=as_json))
 
 
@@ -280,8 +298,14 @@ def thread(platform, file, delay, dry_run, as_json):
 
 
 @social.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def mcp(ctx):
+def mcp(ctx, as_json):
     """
     MCP (Model Context Protocol) server operations
 
@@ -298,7 +322,12 @@ def mcp(ctx):
       scitex social mcp doctor
     """
     if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, mcp)
+        else:
+            click.echo(ctx.get_help())
 
 
 @mcp.command()

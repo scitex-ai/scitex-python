@@ -32,6 +32,13 @@ def _require_tunnel_pkg():
         sys.exit(1)
 
 
+_TUNNEL_COMMANDS = {
+    "setup": "Set up a persistent SSH reverse tunnel",
+    "remove": "Remove a persistent SSH reverse tunnel",
+    "status": "Check status of SSH reverse tunnels",
+}
+
+
 @click.command(
     context_settings={
         "help_option_names": ["-h", "--help"],
@@ -43,7 +50,7 @@ def _require_tunnel_pkg():
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def tunnel(ctx, args):
-    r"""SSH reverse tunnel for NAT traversal (delegates to scitex-tunnel).
+    """SSH reverse tunnel for NAT traversal (delegates to scitex-tunnel).
 
     \b
     Commands (from scitex-tunnel):
@@ -63,10 +70,27 @@ def tunnel(ctx, args):
       scitex tunnel --help
       scitex-tunnel --help
     """
+    args_list = list(args)
+
+    if args_list == ["--json"]:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=True,
+                data={"package": "scitex-tunnel", "commands": _TUNNEL_COMMANDS},
+            ).to_json()
+        )
+        return
+
+    if not args_list:
+        click.echo(ctx.get_help())
+        return
+
     _require_tunnel_pkg()
 
     # Delegate to scitex-tunnel CLI
-    cmd = ["scitex-tunnel"] + list(args)
+    cmd = ["scitex-tunnel"] + args_list
     sys.exit(subprocess.call(cmd))
 
 

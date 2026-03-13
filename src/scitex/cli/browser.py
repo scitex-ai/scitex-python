@@ -63,8 +63,18 @@ def _save_sessions(sessions):
     BROWSER_STATE_FILE.write_text(json.dumps(sessions, indent=2))
 
 
-@click.group(context_settings={"help_option_names": ["-h", "--help"]})
-def browser():
+@click.group(
+    context_settings={"help_option_names": ["-h", "--help"]},
+    invoke_without_command=True,
+)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def browser(ctx, as_json):
     """
     Browser automation utilities
 
@@ -82,7 +92,13 @@ def browser():
         scitex browser hide <id>               # Make browser headless
         scitex browser list                    # List active browsers
     """
-    pass
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, browser)
+        else:
+            click.echo(ctx.get_help())
 
 
 @browser.command()

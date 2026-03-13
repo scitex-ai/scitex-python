@@ -13,12 +13,26 @@ from datetime import datetime
 from pathlib import Path
 
 import click
+from scitex_dev import ErrorCode, classify_exception
 
 from scitex import logging
 
 from ._utils import output_json
 
 logger = logging.getLogger(__name__)
+
+
+def _error_dict(error: str | Exception, code: ErrorCode | None = None) -> dict:
+    """Build an error dict with classified error_code."""
+    if code is None and isinstance(error, Exception):
+        code = classify_exception(error)
+    elif code is None:
+        code = ErrorCode.VALIDATION
+    return {
+        "success": False,
+        "error": str(error),
+        "error_code": code.value,
+    }
 
 
 @click.command()
@@ -44,6 +58,9 @@ logger = logging.getLogger(__name__)
 @click.option("--output", "-o", help="Output path for enriched BibTeX")
 @click.option("--json", "json_output", is_flag=True, help="Output as JSON")
 @click.option("--async", "async_mode", is_flag=True, help="Run in background")
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be fetched without downloading"
+)
 def fetch(
     papers,
     bibtex_file,
@@ -55,6 +72,7 @@ def fetch(
     output,
     json_output,
     async_mode,
+    dry_run,
 ):
     """
     Fetch papers to your library
@@ -67,20 +85,57 @@ def fetch(
         scitex scholar fetch --from-bibtex papers.bib --project myresearch
     """
     if not papers and not bibtex_file:
-        error_msg = "Error: Provide DOIs/titles or use --from-bibtex"
+        error_msg = "Provide DOIs/titles or use --from-bibtex"
         if json_output:
-            output_json({"success": False, "error": error_msg})
+            output_json(_error_dict(error_msg))
         else:
-            click.echo(error_msg, err=True)
+            click.echo(f"Error: {error_msg}", err=True)
         sys.exit(1)
 
     if papers and bibtex_file:
-        error_msg = "Error: Cannot mix positional arguments with --from-bibtex"
+        error_msg = "Cannot mix positional arguments with --from-bibtex"
         if json_output:
-            output_json({"success": False, "error": error_msg})
+            output_json(_error_dict(error_msg))
         else:
-            click.echo(error_msg, err=True)
+            click.echo(f"Error: {error_msg}", err=True)
         sys.exit(1)
+
+    if dry_run:
+        if bibtex_file:
+            from scitex.scholar.bibtex import parse_bibtex_file
+
+            entries = parse_bibtex_file(bibtex_file)
+            plan = {
+                "action": "dry_run",
+                "source": "bibtex",
+                "bibtex_file": str(bibtex_file),
+                "paper_count": len(entries),
+                "papers": [
+                    {"key": e.get("ID", "?"), "title": e.get("title", "?")}
+                    for e in entries[:20]
+                ],
+                "project": project,
+            }
+        else:
+            plan = {
+                "action": "dry_run",
+                "source": "arguments",
+                "paper_count": len(papers),
+                "papers": list(papers),
+                "project": project,
+            }
+        if json_output:
+            output_json({"success": True, **plan})
+        else:
+            click.echo(f"[dry-run] Would fetch {plan['paper_count']} paper(s)")
+            for p in plan["papers"]:
+                if isinstance(p, dict):
+                    click.echo(f"  - {p.get('key', '?')}: {p.get('title', '?')}")
+                else:
+                    click.echo(f"  - {p}")
+            if project:
+                click.echo(f"[dry-run] Project: {project}")
+        return
 
     if async_mode:
         _fetch_async(
@@ -261,11 +316,11 @@ def _add_single(
                 logger.info(f"  Location: {result['path']}")
         return result
     except KeyboardInterrupt:
-        return {"success": False, "error": "Interrupted by user"}
+        return _error_dict("Interrupted by user", ErrorCode.INTERNAL)
     except Exception as e:
         if not json_output:
             logger.error(f"Failed: {e}")
-        return {"success": False, "error": str(e)}
+        return _error_dict(e)
 
 
 def _add_multiple(papers, project, workers, browser_mode, chrome_profile, json_output):
@@ -314,11 +369,11 @@ def _add_multiple(papers, project, workers, browser_mode, chrome_profile, json_o
             logger.success(f"{result['fetched']} papers fetched")
         return result
     except KeyboardInterrupt:
-        return {"success": False, "error": "Interrupted by user"}
+        return _error_dict("Interrupted by user", ErrorCode.INTERNAL)
     except Exception as e:
         if not json_output:
             logger.error(f"Failed: {e}")
-        return {"success": False, "error": str(e)}
+        return _error_dict(e)
 
 
 def _add_from_bibtex(
@@ -361,11 +416,11 @@ def _add_from_bibtex(
                 logger.info(f"  Enriched BibTeX: {output}")
         return result
     except KeyboardInterrupt:
-        return {"success": False, "error": "Interrupted by user"}
+        return _error_dict("Interrupted by user", ErrorCode.INTERNAL)
     except Exception as e:
         if not json_output:
             logger.error(f"Failed: {e}")
-        return {"success": False, "error": str(e)}
+        return _error_dict(e)
 
 
 # EOF

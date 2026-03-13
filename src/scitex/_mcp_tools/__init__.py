@@ -10,6 +10,7 @@ from .cloud import register_cloud_tools
 from .dataset import register_dataset_tools
 from .dev import register_dev_tools
 from .diagram import register_diagram_tools
+from .docs import register_docs_tools
 from .fr import register_fr_tools
 from .introspect import register_introspect_tools
 from .io import register_io_tools
@@ -35,6 +36,7 @@ _TOOL_GROUPS = {
     "CLOUD": register_cloud_tools,
     "DATASET": register_dataset_tools,
     "DEV": register_dev_tools,
+    "DOCS": register_docs_tools,
     "DIAGRAM": register_diagram_tools,
     "FR": register_fr_tools,
     "INTROSPECT": register_introspect_tools,

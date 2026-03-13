@@ -8,16 +8,27 @@ def register_usage_tools(mcp) -> None:
     @mcp.tool()
     def usage_show(topic: str = "") -> str:
         """Show usage examples for a scitex module (plt, stats, session, etc.)."""
+        from scitex_dev.mcp_utils import wrap_as_mcp
+
         from scitex.usage import show
 
-        return show(topic or None)
+        return wrap_as_mcp(
+            show,
+            idempotent=True,
+            topic=topic or None,
+        )
 
     @mcp.tool()
     def usage_list() -> str:
         """List available usage topics."""
+        from scitex_dev.mcp_utils import wrap_as_mcp
+
         from scitex.usage import topics
 
-        return "\n".join(topics())
+        return wrap_as_mcp(
+            topics,
+            idempotent=True,
+        )
 
 
 # EOF

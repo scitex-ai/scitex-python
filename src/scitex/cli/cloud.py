@@ -32,6 +32,22 @@ def _require_cloud_pkg():
         sys.exit(1)
 
 
+_CLOUD_COMMANDS = {
+    "completion": "Shell completion (bash, zsh, fish)",
+    "context": "Cloud context tools (get, eval, action)",
+    "deploy": "Deploy SciTeX Cloud",
+    "docker": "Docker container management",
+    "gitea": "Gitea/git operations (clone, create, push, pull, pr, issue)",
+    "logs": "View service logs",
+    "mcp": "MCP server commands (start, doctor, list-tools)",
+    "setup": "Setup environment",
+    "ssh": "SSH to cloud instance",
+    "ssh-copy-id": "Register SSH key with cloud instance",
+    "status": "Show deployment status",
+    "list-python-apis": "List Python APIs",
+}
+
+
 @click.command(
     context_settings={
         "help_option_names": ["-h", "--help"],
@@ -43,7 +59,7 @@ def _require_cloud_pkg():
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def cloud(ctx, args):
-    r"""Cloud operations and deployment (delegates to scitex-cloud).
+    """Cloud operations and deployment (delegates to scitex-cloud).
 
     \b
     Commands (from scitex-cloud):
@@ -73,10 +89,28 @@ def cloud(ctx, args):
       scitex cloud --help
       scitex-cloud --help
     """
+    args_list = list(args)
+
+    # Handle bare --json: list subcommands as Result JSON
+    if args_list == ["--json"]:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=True,
+                data={"package": "scitex-cloud", "commands": _CLOUD_COMMANDS},
+            ).to_json()
+        )
+        return
+
+    if not args_list:
+        click.echo(ctx.get_help())
+        return
+
     _require_cloud_pkg()
 
     # Delegate to scitex-cloud CLI
-    cmd = ["scitex-cloud"] + list(args)
+    cmd = ["scitex-cloud"] + args_list
     sys.exit(subprocess.call(cmd))
 
 

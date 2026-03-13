@@ -86,6 +86,7 @@ _LAZY_SUBCOMMANDS = {
     "convert": ("scitex.cli.convert", "convert", "File format conversion."),
     "dataset": ("scitex.cli.dataset", "dataset", "Dataset discovery and management."),
     "dev": ("scitex.cli.dev", "dev", "Developer tools."),
+    "docs": ("scitex.cli.docs", "docs", "Browse and search SciTeX documentation."),
     "event": ("scitex.cli.event", "event", "Event bus for async task results."),
     "introspect": ("scitex.cli.introspect", "introspect", "Code introspection tools."),
     "linter": ("scitex.cli.linter", "linter", "SciTeX linter."),
@@ -115,9 +116,15 @@ _LAZY_SUBCOMMANDS = {
 )
 @click.version_option()
 @click.option("--help-recursive", is_flag=True, help="Show help for all commands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def cli(ctx, help_recursive):
-    r"""
+def cli(ctx, help_recursive, as_json):
+    """
     Integrated Scientific Research Platform (SciTeX).
 
     \b
@@ -134,11 +141,22 @@ def cli(ctx, help_recursive):
       scitex completion          # Auto-install for your shell
       scitex completion --show   # Show installation instructions
     """
+    ctx.ensure_object(dict)["as_json"] = as_json
     if help_recursive:
-        _print_help_recursive(ctx)
+        if as_json:
+            from . import help_recursive_to_json
+
+            help_recursive_to_json(ctx, cli)
+        else:
+            _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, cli)
+        else:
+            click.echo(ctx.get_help())
 
 
 def _get_all_command_paths(group, prefix=""):
@@ -216,7 +234,7 @@ def _generate_completion_script(shell: str) -> str:
 @cli.group(invoke_without_command=True)
 @click.pass_context
 def completion(ctx):
-    r"""
+    """
     Shell completion for scitex CLI.
 
     \b
@@ -242,7 +260,7 @@ def completion(ctx):
     help="Shell type (auto-detected if not provided).",
 )
 def completion_install(shell):
-    r"""
+    """
     Install shell completion for scitex CLI.
 
     \b
@@ -300,7 +318,7 @@ def completion_install(shell):
 
 @completion.command("status")
 def completion_status():
-    r"""
+    """
     Check shell completion installation status.
 
     \b

@@ -15,8 +15,14 @@ import click
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def audio(ctx, help_recursive):
+def audio(ctx, help_recursive, as_json):
     """
     Text-to-speech utilities
 
@@ -39,7 +45,12 @@ def audio(ctx, help_recursive):
         print_help_recursive(ctx, audio)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, audio)
+        else:
+            click.echo(ctx.get_help())
 
 
 @audio.command()
@@ -58,7 +69,13 @@ def audio(ctx, help_recursive):
     "--speed", "-s", type=float, help="Speed multiplier (gtts only, e.g., 1.5)"
 )
 @click.option("--no-fallback", is_flag=True, help="Disable backend fallback on error")
-def speak(text, backend, voice, output, no_play, rate, speed, no_fallback):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def speak(text, backend, voice, output, no_play, rate, speed, no_fallback, as_json):
     """
     Convert text to speech
 
@@ -69,6 +86,7 @@ def speak(text, backend, voice, output, no_play, rate, speed, no_fallback):
       scitex audio speak "Test" --output speech.mp3 --no-play
       scitex audio speak "Fast speech" --backend pyttsx3 --rate 200
       scitex audio speak "Slow speech" --backend gtts --speed 0.8
+      scitex audio speak "Hello" --json
     """
     import logging
     import warnings
@@ -77,25 +95,32 @@ def speak(text, backend, voice, output, no_play, rate, speed, no_fallback):
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
-    try:
+    kwargs = {
+        "text": text,
+        "play": not no_play,
+        "fallback": not no_fallback,
+    }
+    if backend:
+        kwargs["backend"] = backend
+    if voice:
+        kwargs["voice"] = voice
+    if output:
+        kwargs["output_path"] = output
+    if rate:
+        kwargs["rate"] = rate
+    if speed:
+        kwargs["speed"] = speed
+
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
         from scitex.audio import speak as tts_speak
 
-        kwargs = {
-            "text": text,
-            "play": not no_play,
-            "fallback": not no_fallback,
-        }
+        wrap_as_cli(tts_speak, as_json=True, **kwargs)
+        return
 
-        if backend:
-            kwargs["backend"] = backend
-        if voice:
-            kwargs["voice"] = voice
-        if output:
-            kwargs["output_path"] = output
-        if rate:
-            kwargs["rate"] = rate
-        if speed:
-            kwargs["speed"] = speed
+    try:
+        from scitex.audio import speak as tts_speak
 
         result = tts_speak(**kwargs)
 
@@ -133,13 +158,13 @@ def list_backends(as_json):
         backends = available_backends()
 
         if as_json:
-            import json
+            from scitex_dev import Result
 
-            output = {
+            data = {
                 "available": backends,
                 "fallback_order": FALLBACK_ORDER,
             }
-            click.echo(json.dumps(output, indent=2))
+            click.echo(Result(success=True, data=data).to_json())
         else:
             click.secho("Available TTS Backends", fg="cyan", bold=True)
             click.echo("=" * 40)
@@ -190,9 +215,9 @@ def check(as_json):
         status = check_wsl_audio()
 
         if as_json:
-            import json
+            from scitex_dev import Result
 
-            click.echo(json.dumps(status, indent=2))
+            click.echo(Result(success=True, data=status).to_json())
         else:
             click.secho("Audio Status Check", fg="cyan", bold=True)
             click.echo("=" * 40)
@@ -235,44 +260,55 @@ def check(as_json):
 
 
 @audio.command()
-def stop():
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def stop(as_json):
     """
     Stop any currently playing speech
 
     \b
     Example:
       scitex audio stop
+      scitex audio stop --json
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        from scitex.audio import stop_speech
+
+        wrap_as_cli(stop_speech, as_json=True)
+        return
     try:
         from scitex.audio import stop_speech
 
         stop_speech()
         click.secho("Speech stopped", fg="green")
-
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
 
 
 @audio.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def mcp(ctx):
-    """
-    MCP (Model Context Protocol) server operations
-
-    \b
-    Commands:
-      start      - Start the MCP server
-      doctor     - Check MCP server health
-      list-tools - List available MCP tools
-
-    \b
-    Examples:
-      scitex audio mcp start
-      scitex audio mcp start -t http --port 31293
-    """
+def mcp(ctx, as_json):
+    """MCP (Model Context Protocol) server operations for audio."""
     if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, mcp)
+        else:
+            click.echo(ctx.get_help())
 
 
 @mcp.command()
@@ -295,22 +331,12 @@ def mcp(ctx):
     help="Port for HTTP/SSE transport (default: 31293)",
 )
 def start(transport, host, port):
-    """
-    Start the MCP server for remote audio playback
-
-    Enables remote agents (via SSH) to play audio on local speakers.
-
-    \b
-    Transports:
-      stdio  - Standard I/O (Claude Desktop, default)
-      sse    - Server-Sent Events
-      http   - HTTP Streamable
+    """Start the MCP server for remote audio playback.
 
     \b
     Examples:
       scitex audio mcp start
       scitex audio mcp start -t http --port 31293
-      scitex audio mcp start -t sse --port 31293
     """
     try:
         from scitex.audio.mcp_server import FASTMCP_AVAILABLE, run_server
@@ -423,25 +449,14 @@ def relay(host, port, force):
     """
     Run simple HTTP relay server for remote audio playback
 
-    Unlike 'serve' (MCP server), this exposes simple REST endpoints
-    that remote agents can POST to for audio playback.
-
     \b
-    Endpoints:
-      POST /speak        - Play text-to-speech
-      GET  /health       - Health check
-      GET  /list_backends - List available backends
+    Endpoints: POST /speak, GET /health, GET /list_backends
 
     \b
     Example:
-      # On your local machine (where you want audio)
       scitex audio relay --port 31293
-
-      # On remote server, set env var
-      export SCITEX_AUDIO_RELAY_URL=http://YOUR_LOCAL_IP:31293
-
-      # Or use SSH reverse tunnel
-      ssh -R 31293:localhost:31293 remote-server
+      # Remote: export SCITEX_AUDIO_RELAY_URL=http://LOCAL_IP:31293
+      # Or SSH: ssh -R 31293:localhost:31293 remote-server
     """
     try:
         from scitex.audio.mcp_server import run_relay_server

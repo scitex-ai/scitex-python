@@ -11,8 +11,14 @@ import click
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def notebook(ctx, help_recursive):
+def notebook(ctx, help_recursive, as_json):
     """
     Jupyter notebook verification and compilation tools.
 
@@ -34,7 +40,12 @@ def notebook(ctx, help_recursive):
         _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, notebook)
+        else:
+            click.echo(ctx.get_help())
 
 
 def _print_help_recursive(ctx):
@@ -170,7 +181,10 @@ def compile_cmd(path, output, mermaid, as_json):
     default="cell",
     help="Cell ordering: cell (notebook order) or dag (execution order)",
 )
-def convert_cmd(path, output, order):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+)
+def convert_cmd(path, output, order, dry_run):
     """
     Convert .ipynb to .py with @scitex.session wrappers.
 
@@ -191,6 +205,13 @@ def convert_cmd(path, output, order):
             from pathlib import Path
 
             output = str(Path(path).with_suffix(".py"))
+
+        if dry_run:
+            click.secho("[dry-run] Would convert:", fg="cyan")
+            click.echo(f"  input:  {path}  (.ipynb)")
+            click.echo(f"  output: {output}  (.py)")
+            click.echo(f"  order:  {order}")
+            return
 
         script = convert_notebook(path, output=output, order=order)
         click.secho(f"Converted to: {output}", fg="green")

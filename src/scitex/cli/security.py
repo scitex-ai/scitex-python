@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 SciTeX CLI - Security Commands
 """
@@ -18,8 +17,15 @@ from scitex.security import (
 )
 
 
-@click.group()
-def security():
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def security(ctx, as_json):
     """
     Security utilities - Check GitHub security alerts
 
@@ -30,7 +36,13 @@ def security():
       scitex security check --save             # Save to file
       scitex security latest                   # Show latest report
     """
-    pass
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, security)
+        else:
+            click.echo(ctx.get_help())
 
 
 @security.command()

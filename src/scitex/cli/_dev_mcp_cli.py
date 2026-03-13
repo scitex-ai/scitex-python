@@ -8,9 +8,15 @@ import click
 
 
 @click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def mcp(ctx):
-    r"""
+def mcp(ctx, as_json):
+    """
     MCP (Model Context Protocol) server operations.
 
     \b
@@ -22,7 +28,12 @@ def mcp(ctx):
       scitex dev mcp list-tools
     """
     if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, mcp)
+        else:
+            click.echo(ctx.get_help())
 
 
 @mcp.command("list-tools")

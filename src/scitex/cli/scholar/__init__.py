@@ -45,9 +45,15 @@ from ._openalex_scitex import openalex_scitex
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def scholar(ctx, help_recursive):
-    r"""Scientific paper management.
+def scholar(ctx, help_recursive, as_json):
+    """Scientific paper management.
 
     \b
     Fetch papers, manage your library, and track background jobs.
@@ -63,7 +69,12 @@ def scholar(ctx, help_recursive):
         _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from scitex.cli import group_to_json
+
+            group_to_json(ctx, scholar)
+        else:
+            click.echo(ctx.get_help())
 
 
 def _print_help_recursive(ctx):
@@ -102,7 +113,7 @@ def _print_help_recursive(ctx):
 @scholar.group(invoke_without_command=True)
 @click.pass_context
 def mcp(ctx):
-    r"""MCP (Model Context Protocol) server operations.
+    """MCP (Model Context Protocol) server operations.
 
     \b
     Commands:
@@ -132,7 +143,7 @@ def mcp(ctx):
     "--port", default=8085, type=int, help="Port for HTTP/SSE (default: 8085)"
 )
 def start(transport, host, port):
-    r"""Start the MCP server with scholar tools.
+    """Start the MCP server with scholar tools.
 
     \b
     NOTE: This now uses the unified scitex MCP server which includes
@@ -170,7 +181,7 @@ def start(transport, host, port):
 
 @mcp.command()
 def doctor():
-    r"""Check MCP server health and dependencies.
+    """Check MCP server health and dependencies.
 
     \b
     Example:
@@ -221,7 +232,7 @@ def doctor():
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.pass_context
 def list_tools(ctx, verbose, compact, as_json):
-    r"""List available scholar MCP tools (delegates to main MCP with -m scholar).
+    """List available scholar MCP tools (delegates to main MCP with -m scholar).
 
     \b
     Example:

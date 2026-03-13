@@ -17,8 +17,15 @@ from scitex.web.download_images import _get_default_download_dir
 logger = getLogger(__name__)
 
 
-@click.group()
-def web():
+@click.group(invoke_without_command=True)
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.pass_context
+def web(ctx, as_json):
     """
     Web scraping utilities
 
@@ -39,7 +46,13 @@ def web():
       scitex web take-screenshot https://example.com
       scitex web take-screenshot https://example.com --output ./screenshots
     """
-    pass
+    if ctx.invoked_subcommand is None:
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, web)
+        else:
+            click.echo(ctx.get_help())
 
 
 @web.command()
@@ -166,7 +179,12 @@ def get_image_urls_cmd(url, pattern, same_domain, output):
     default=5,
     help="Number of concurrent download threads (default: 5)",
 )
-def download_images_cmd(url, output, pattern, min_size, same_domain, max_workers):
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be downloaded without downloading"
+)
+def download_images_cmd(
+    url, output, pattern, min_size, same_domain, max_workers, dry_run
+):
     """
     Download all images from a webpage.
 
@@ -182,6 +200,17 @@ def download_images_cmd(url, output, pattern, min_size, same_domain, max_workers
       - Only images >= 100x100 pixels are downloaded by default
       - SVG files are automatically skipped (vector graphics)
     """
+    if dry_run:
+        output_dir = output or _get_default_download_dir()
+        click.echo(f"[dry-run] Would download images from: {url}")
+        click.echo(f"[dry-run] Output directory: {output_dir}")
+        if pattern:
+            click.echo(f"[dry-run] Filter pattern: {pattern}")
+        click.echo(
+            f"[dry-run] Min size: {min_size}, same-domain: {same_domain}, max-workers: {max_workers}"
+        )
+        sys.exit(0)
+
     try:
         click.echo(f"Downloading images from: {url}")
 
@@ -247,7 +276,12 @@ def download_images_cmd(url, output, pattern, min_size, same_domain, max_workers
     is_flag=True,
     help="Capture the full page (scrolling) instead of just viewport",
 )
-def take_screenshot_cmd(url, output, message, quality, full_page):
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what screenshot would be taken without capturing",
+)
+def take_screenshot_cmd(url, output, message, quality, full_page, dry_run):
     """
     Capture a screenshot of a webpage.
 
@@ -269,7 +303,21 @@ def take_screenshot_cmd(url, output, message, quality, full_page):
       scitex web take-screenshot https://example.com --output ./screenshots
       scitex web take-screenshot https://example.com --message "homepage-test"
       scitex web take-screenshot https://example.com --quality 95 --full-page
+      scitex web take-screenshot https://example.com --dry-run
     """
+    if dry_run:
+        output_dir = output or str(Path.home() / ".scitex" / "capture")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = (
+            f"screenshot_{timestamp}_{message}.png"
+            if message
+            else f"screenshot_{timestamp}.png"
+        )
+        click.echo(f"[dry-run] Would capture screenshot of: {url}")
+        click.echo(f"[dry-run] Output file: {Path(output_dir) / filename}")
+        click.echo(f"[dry-run] Quality: {quality}, full-page: {full_page}")
+        sys.exit(0)
+
     try:
         click.echo(f"Capturing screenshot of: {url}")
 

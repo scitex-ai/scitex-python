@@ -13,9 +13,15 @@ import click
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def event(ctx):
-    r"""
+def event(ctx, as_json):
+    """
     Event bus for async task results.
 
     \b
@@ -27,7 +33,12 @@ def event(ctx):
       scitex event types
     """
     if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, event)
+        else:
+            click.echo(ctx.get_help())
 
 
 @event.command("emit")

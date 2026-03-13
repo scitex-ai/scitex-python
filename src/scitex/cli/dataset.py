@@ -31,6 +31,15 @@ def _require_dataset_pkg():
         sys.exit(1)
 
 
+_DATASET_COMMANDS = {
+    "openneuro": "Fetch datasets from OpenNeuro (BIDS neuroimaging)",
+    "dandi": "Fetch datasets from DANDI Archive (NWB)",
+    "physionet": "Fetch datasets from PhysioNet (EEG/ECG)",
+    "db": "Local database for fast searching",
+    "mcp": "MCP server commands",
+}
+
+
 @click.command(
     context_settings={
         "help_option_names": ["-h", "--help"],
@@ -42,7 +51,7 @@ def _require_dataset_pkg():
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def dataset(ctx, args):
-    r"""
+    """
     Scientific dataset discovery (delegates to scitex-dataset).
 
     \b
@@ -66,10 +75,27 @@ def dataset(ctx, args):
       scitex dataset --help
       scitex-dataset --help
     """
+    args_list = list(args)
+
+    if args_list == ["--json"]:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=True,
+                data={"package": "scitex-dataset", "commands": _DATASET_COMMANDS},
+            ).to_json()
+        )
+        return
+
+    if not args_list:
+        click.echo(ctx.get_help())
+        return
+
     _require_dataset_pkg()
 
     # Delegate to scitex-dataset CLI
-    cmd = ["scitex-dataset"] + list(args)
+    cmd = ["scitex-dataset"] + args_list
     sys.exit(subprocess.call(cmd))
 
 

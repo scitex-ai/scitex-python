@@ -15,14 +15,25 @@ import click
 
 @click.group(invoke_without_command=True)
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def mcp(ctx, help_recursive):
+def mcp(ctx, help_recursive, as_json):
     """MCP (Model Context Protocol) server management."""  # noqa: D301
     if help_recursive:
         _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, mcp)
+        else:
+            click.echo(ctx.get_help())
 
 
 def _extract_return_keys(description: str) -> list:
@@ -43,8 +54,6 @@ def _extract_return_keys(description: str) -> list:
 
 def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> str:
     """Format tool as Python-like function signature with return type."""
-    import inspect
-
     params = []
     if hasattr(tool_obj, "parameters") and tool_obj.parameters:
         schema = tool_obj.parameters
@@ -61,25 +70,11 @@ def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> 
             else:
                 p = f"{click.style(name, fg='white', bold=True)}: {click.style(ptype, fg='cyan')} = {click.style('None', fg='yellow')}"
             params.append(p)
-    # Get return type from function annotation + dict keys from docstring
-    ret_type = ""
-    if hasattr(tool_obj, "fn") and tool_obj.fn:
-        try:
-            sig = inspect.signature(tool_obj.fn)
-            if sig.return_annotation != inspect.Parameter.empty:
-                ret = sig.return_annotation
-                ret_name = ret.__name__ if hasattr(ret, "__name__") else str(ret)
-                keys = (
-                    _extract_return_keys(tool_obj.description)
-                    if tool_obj.description
-                    else []
-                )
-                keys_str = (
-                    click.style(f"{{{', '.join(keys)}}}", fg="yellow") if keys else ""
-                )
-                ret_type = f" -> {click.style(ret_name, fg='magenta')}{keys_str}"
-        except Exception:
-            pass
+    # All MCP tools return standardized Result envelope
+    ret_type = (
+        f" -> {click.style('Result', fg='magenta')}"
+        f"{click.style('{success, data, error, next_steps}', fg='yellow')}"
+    )
     name_s = click.style(tool_obj.name, fg="green", bold=True)
     if multiline and len(params) > 2:
         param_indent = indent + "    "
@@ -201,7 +196,10 @@ def list_tools(
     if as_json:
         import json
 
+        from scitex_dev.types import RESULT_SCHEMA
+
         output = {
+            "result_envelope": RESULT_SCHEMA,
             "summary": summary,
             "total": sum(len(t) for t in modules.values()),
             "modules": {},
@@ -229,6 +227,10 @@ def list_tools(
         total = sum(len(t) for t in modules.values())
         click.secho(f"SciTeX MCP: {summary['name']}", fg="cyan", bold=True)
         click.echo(f"Tools: {total} ({len(modules)} modules)")
+        click.echo(
+            f"Returns: {click.style('Result', fg='magenta')}"
+            f"{click.style('{success, data, error, error_code, context, next_steps}', fg='yellow')}"
+        )
         if show_summary:
             click.echo(f"Context: ~{summary['total_context_tokens']:,} tokens")
             click.echo(f"  Instructions: ~{summary['instructions_tokens']:,} tokens")

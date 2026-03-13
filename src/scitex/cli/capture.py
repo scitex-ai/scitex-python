@@ -15,8 +15,14 @@ import click
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def capture(ctx, help_recursive):
+def capture(ctx, help_recursive, as_json):
     """
     Screen capture and monitoring utilities
 
@@ -44,7 +50,12 @@ def capture(ctx, help_recursive):
         print_help_recursive(ctx, capture)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, capture)
+        else:
+            click.echo(ctx.get_help())
 
 
 @capture.command()
@@ -57,7 +68,13 @@ def capture(ctx, help_recursive):
     "--monitor", type=int, default=0, help="Monitor number (0-based, default: 0)"
 )
 @click.option("--all-monitors", is_flag=True, help="Capture all monitors combined")
-def snap(message, output, quality, monitor, all_monitors):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def snap(message, output, quality, monitor, all_monitors, as_json):
     """
     Take a single screenshot
 
@@ -68,21 +85,29 @@ def snap(message, output, quality, monitor, all_monitors):
       scitex capture snap --all-monitors
       scitex capture snap --monitor 1 --quality 95
     """
+    # Build kwargs
+    kwargs = {"message": message}
+    if output:
+        kwargs["output_dir"] = output
+    if quality != 85:
+        kwargs["quality"] = quality
+    if all_monitors:
+        kwargs["capture_all"] = True
+    else:
+        kwargs["monitor_id"] = monitor
+
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        from scitex.capture import snap as take_snap
+
+        wrap_as_cli(take_snap, as_json=True, **kwargs)
+        return
+
     try:
         from scitex.capture import snap as take_snap
 
         click.echo("Taking screenshot...")
-
-        # Build kwargs
-        kwargs = {"message": message}
-        if output:
-            kwargs["output_dir"] = output
-        if quality != 85:
-            kwargs["quality"] = quality
-        if all_monitors:
-            kwargs["capture_all"] = True
-        else:
-            kwargs["monitor_id"] = monitor
 
         result = take_snap(**kwargs)
 
@@ -112,7 +137,13 @@ def snap(message, output, quality, monitor, all_monitors):
     "--monitor", type=int, default=0, help="Monitor number (0-based, default: 0)"
 )
 @click.option("--all-monitors", is_flag=True, help="Capture all monitors combined")
-def start(interval, output, quality, monitor, all_monitors):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def start(interval, output, quality, monitor, all_monitors, as_json):
     """
     Start continuous screenshot monitoring
 
@@ -122,21 +153,29 @@ def start(interval, output, quality, monitor, all_monitors):
       scitex capture start --interval 0.5    # Every 0.5 seconds
       scitex capture start --all-monitors
     """
+    kwargs = {"interval": interval}
+    if output:
+        kwargs["output_dir"] = output
+    if quality != 60:
+        kwargs["quality"] = quality
+    if all_monitors:
+        kwargs["capture_all"] = True
+    else:
+        kwargs["monitor_id"] = monitor
+
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        from scitex.capture import start as start_monitor
+
+        wrap_as_cli(start_monitor, as_json=True, **kwargs)
+        return
+
     try:
         from scitex.capture import start as start_monitor
 
         click.echo(f"Starting monitoring (interval: {interval}s)...")
         click.echo("Press Ctrl+C or run 'scitex capture stop' to stop")
-
-        kwargs = {"interval": interval}
-        if output:
-            kwargs["output_dir"] = output
-        if quality != 60:
-            kwargs["quality"] = quality
-        if all_monitors:
-            kwargs["capture_all"] = True
-        else:
-            kwargs["monitor_id"] = monitor
 
         start_monitor(**kwargs)
         click.secho("Monitoring started", fg="green")
@@ -147,7 +186,13 @@ def start(interval, output, quality, monitor, all_monitors):
 
 
 @capture.command()
-def stop():
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def stop(as_json):
     """
     Stop continuous monitoring
 
@@ -155,6 +200,14 @@ def stop():
     Example:
       scitex capture stop
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        from scitex.capture import stop as stop_monitor
+
+        wrap_as_cli(stop_monitor, as_json=True)
+        return
+
     try:
         from scitex.capture import stop as stop_monitor
 
@@ -184,7 +237,13 @@ def stop():
 @click.option(
     "--pattern", "-p", help="Glob pattern for images (alternative to session)"
 )
-def gif(session, output, duration, max_frames, pattern):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def gif(session, output, duration, max_frames, pattern, as_json):
     """
     Create animated GIF from screenshots
 
@@ -195,6 +254,40 @@ def gif(session, output, duration, max_frames, pattern):
       scitex capture gif --duration 0.3 --max-frames 50
       scitex capture gif --pattern "./screenshots/*.jpg"
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        def _run():
+            if pattern:
+                from scitex.capture import create_gif_from_pattern
+
+                return create_gif_from_pattern(
+                    pattern=pattern,
+                    output_path=output,
+                    duration=duration,
+                    max_frames=max_frames,
+                )
+            elif session:
+                from scitex.capture import create_gif_from_session
+
+                return create_gif_from_session(
+                    session_id=session,
+                    output_path=output,
+                    duration=duration,
+                    max_frames=max_frames,
+                )
+            else:
+                from scitex.capture import create_gif_from_latest_session
+
+                return create_gif_from_latest_session(
+                    output_path=output,
+                    duration=duration,
+                    max_frames=max_frames,
+                )
+
+        wrap_as_cli(_run, as_json=True)
+        return
+
     try:
         if pattern:
             from scitex.capture import create_gif_from_pattern
@@ -253,9 +346,9 @@ def info(as_json):
         info_data = get_info()
 
         if as_json:
-            import json
+            from scitex_dev import Result
 
-            click.echo(json.dumps(info_data, indent=2, default=str))
+            click.echo(Result(success=True, data=info_data).to_json())
         else:
             click.secho("Display Information", fg="cyan", bold=True)
             click.echo("=" * 50)
@@ -286,7 +379,13 @@ def info(as_json):
 @click.argument("handle", type=int)
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
 @click.option("--quality", "-q", type=int, default=85, help="JPEG quality 1-100")
-def window(handle, output, quality):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def window(handle, output, quality, as_json):
     """
     Capture a specific window by its handle
 
@@ -298,6 +397,14 @@ def window(handle, output, quality):
       scitex capture window 12345
       scitex capture window 12345 --output ./window.jpg
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        from scitex.capture import capture_window
+
+        wrap_as_cli(capture_window, as_json=True, handle=handle, output=output)
+        return
+
     try:
         from scitex.capture import capture_window
 
@@ -314,147 +421,9 @@ def window(handle, output, quality):
         sys.exit(1)
 
 
-@capture.group(invoke_without_command=True)
-@click.pass_context
-def mcp(ctx):
-    """
-    MCP (Model Context Protocol) server operations
+from ._capture_mcp import register_mcp
 
-    \b
-    Commands:
-      start      - Start the MCP server
-      doctor     - Check MCP server health
-      list-tools - List available MCP tools
-
-    \b
-    Examples:
-      scitex capture mcp start
-      scitex capture mcp list-tools
-    """
-    if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
-
-
-@mcp.command("start")
-@click.option(
-    "-t",
-    "--transport",
-    type=click.Choice(["stdio", "sse", "http"]),
-    default="stdio",
-    help="Transport protocol (default: stdio)",
-)
-@click.option("--host", default="0.0.0.0", help="Host for HTTP/SSE (default: 0.0.0.0)")
-@click.option(
-    "--port", default=8096, type=int, help="Port for HTTP/SSE (default: 8096)"
-)
-def mcp_start(transport, host, port):
-    """
-    Start the capture MCP server
-
-    \b
-    Examples:
-      scitex capture mcp start
-      scitex capture mcp start -t http --port 8096
-    """
-    try:
-        from scitex.capture.mcp_server import main as run_server
-
-        if transport != "stdio":
-            click.secho(f"Starting capture MCP server ({transport})", fg="cyan")
-            click.echo(f"  Host: {host}")
-            click.echo(f"  Port: {port}")
-
-        run_server()
-
-    except ImportError as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        click.echo("\nInstall dependencies: pip install fastmcp")
-        sys.exit(1)
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
-
-
-@mcp.command()
-def doctor():
-    """
-    Check MCP server health and dependencies
-
-    \b
-    Example:
-      scitex capture mcp doctor
-    """
-    click.secho("Capture MCP Server Health Check", fg="cyan", bold=True)
-    click.echo()
-
-    click.echo("Checking FastMCP... ", nl=False)
-    try:
-        import fastmcp  # noqa: F401
-
-        click.secho("OK", fg="green")
-    except ImportError:
-        click.secho("NOT INSTALLED", fg="red")
-        click.echo("  Install with: pip install fastmcp")
-
-    click.echo("Checking capture module... ", nl=False)
-    try:
-        from scitex import capture as _  # noqa: F401
-
-        click.secho("OK", fg="green")
-    except ImportError as e:
-        click.secho(f"FAIL ({e})", fg="red")
-
-
-@mcp.command("list-tools")
-@click.option("-v", "--verbose", count=True, help="-v params, -vv returns")
-def list_tools(verbose):
-    """List available MCP tools for capture."""
-    click.secho("Capture MCP Tools", fg="cyan", bold=True)
-    click.echo()
-    # (name, desc, params, returns)
-    tools = [
-        (
-            "capture_screenshot",
-            "Capture screenshot",
-            "output_path=None, monitor=0",
-            "str",
-        ),
-        (
-            "capture_window",
-            "Capture specific window",
-            "window_id: str, output=None",
-            "str",
-        ),
-        (
-            "start_monitoring",
-            "Start continuous capture",
-            "interval=5.0, monitor=0",
-            "str",
-        ),
-        ("stop_monitoring", "Stop monitoring", "session_id=None", "str"),
-        ("get_monitoring_status", "Get monitoring status", "", "JSON"),
-        (
-            "analyze_screenshot",
-            "Analyze screenshot for errors",
-            "image_path: str",
-            "JSON",
-        ),
-        ("list_recent_screenshots", "List recent screenshots", "limit=10", "JSON"),
-        ("clear_cache", "Clear screenshot cache", "older_than_hours=24", "JSON"),
-        ("create_gif", "Create animated GIF", "session_id: str, output=None", "str"),
-        ("list_sessions", "List monitoring sessions", "", "JSON"),
-        ("get_info", "Get monitor/window info", "", "JSON"),
-        ("list_windows", "List visible windows", "", "JSON"),
-    ]
-    for name, desc, params, returns in tools:
-        click.secho(f"  capture_{name}", fg="green", bold=True, nl=False)
-        click.echo(f": {desc}")
-        if verbose >= 1 and params:
-            click.echo(f"    params: {params}")
-        if verbose >= 2:
-            click.echo(f"    returns: {returns}")
-        if verbose >= 1:
-            click.echo()
+register_mcp(capture)
 
 
 @capture.command("list-python-apis")

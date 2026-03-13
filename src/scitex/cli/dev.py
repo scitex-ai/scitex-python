@@ -16,8 +16,14 @@ import click
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def dev(ctx, help_recursive):
+def dev(ctx, help_recursive, as_json):
     """Developer utilities (internal).
 
     \b
@@ -42,12 +48,22 @@ def dev(ctx, help_recursive):
       scitex dev config show                 # Show configuration
     """
     if help_recursive:
-        from . import print_help_recursive
+        if as_json:
+            from . import help_recursive_to_json
 
-        print_help_recursive(ctx, dev)
+            help_recursive_to_json(ctx, dev)
+        else:
+            from . import print_help_recursive
+
+            print_help_recursive(ctx, dev)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, dev)
+        else:
+            click.echo(ctx.get_help())
 
 
 # ---------------------------------------------------------------------------
@@ -92,7 +108,7 @@ def versions(ctx):
 @click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
 @click.option("--local-only", is_flag=True, help="Skip remote (PyPI) version checks")
 def versions_list(as_json, package, local_only):
-    r"""
+    """
     List local and PyPI versions (read-only).
 
     \b
@@ -126,7 +142,7 @@ def versions_list(as_json, package, local_only):
 @click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
 @click.option("--host", multiple=True, help="Check specific host(s)")
 def versions_list_hosts(as_json, package, host):
-    r"""
+    """
     List versions on SSH hosts.
 
     \b
@@ -160,7 +176,7 @@ def versions_list_hosts(as_json, package, host):
 @click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
 @click.option("--remote", multiple=True, help="Check specific remote(s)")
 def versions_list_remotes(as_json, package, remote):
-    r"""
+    """
     List versions on GitHub remotes.
 
     \b
@@ -192,7 +208,7 @@ def versions_list_remotes(as_json, package, remote):
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
 def versions_list_rtd(as_json, package):
-    r"""
+    """
     List Read the Docs build status.
 
     \b
@@ -224,7 +240,7 @@ def versions_list_rtd(as_json, package):
 @click.option("-p", "--package", multiple=True, help="Filter to specific package(s)")
 @click.option("--local-only", is_flag=True, help="Skip remote (PyPI) version checks")
 def versions_check(as_json, package, local_only):
-    r"""
+    """
     Check version consistency across ecosystem.
 
     \b
@@ -261,7 +277,7 @@ def versions_check(as_json, package, local_only):
 )
 @click.option("--stop", is_flag=True, help="Stop a running background dashboard")
 def versions_dashboard(port, force, no_browser, background, stop):
-    r"""
+    """
     Start the version dashboard GUI.
 
     \b
@@ -330,6 +346,14 @@ dev.add_command(mcp)
 dev.add_command(list_python_apis)
 dev.add_command(rename)
 dev.add_command(test)
+
+# docs — reusable mixin from scitex_dev
+try:
+    from scitex_dev.cli import docs_click_group
+
+    dev.add_command(docs_click_group(package="scitex"))
+except ImportError:
+    pass
 
 
 # EOF

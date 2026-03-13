@@ -3,12 +3,7 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/template.py
 """Template module tools for FastMCP unified server."""
 
-import json
 from typing import Optional
-
-
-def _json(data: dict) -> str:
-    return json.dumps(data, indent=2, default=str)
 
 
 def register_template_tools(mcp) -> None:
@@ -24,9 +19,13 @@ def register_template_tools(mcp) -> None:
         tag: Optional[str] = None,
     ) -> str:
         """Create a new project by cloning a template."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.template._mcp.handlers import clone_template_handler
 
-        result = await clone_template_handler(
+        return await async_wrap_as_mcp(
+            clone_template_handler,
+            side_effects=["file_create: new project directory from template"],
             template_id=template_id,
             project_name=project_name,
             target_dir=target_dir,
@@ -34,15 +33,18 @@ def register_template_tools(mcp) -> None:
             branch=branch,
             tag=tag,
         )
-        return _json(result)
 
     @mcp.tool()
     async def template_list_git_strategies() -> str:
         """List available git initialization strategies for template cloning."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.template._mcp.handlers import list_git_strategies_handler
 
-        result = await list_git_strategies_handler()
-        return _json(result)
+        return await async_wrap_as_mcp(
+            list_git_strategies_handler,
+            idempotent=True,
+        )
 
     @mcp.tool()
     async def template_get_code_template(
@@ -51,22 +53,29 @@ def register_template_tools(mcp) -> None:
         docstring: Optional[str] = None,
     ) -> str:
         """Get a code template for scripts and modules. Core: session, io, config. Module usage: plt, stats, scholar, audio, capture, diagram, canvas, writer. Use 'all' for all templates combined."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.template._mcp.handlers import get_code_template_handler
 
-        result = await get_code_template_handler(
+        return await async_wrap_as_mcp(
+            get_code_template_handler,
+            idempotent=True,
             template_id=template_id,
             filepath=filepath,
             docstring=docstring,
         )
-        return _json(result)
 
     @mcp.tool()
     async def template_list_code_templates() -> str:
         """List all available code templates for scripts and modules."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.template._mcp.handlers import list_code_templates_handler
 
-        result = await list_code_templates_handler()
-        return _json(result)
+        return await async_wrap_as_mcp(
+            list_code_templates_handler,
+            idempotent=True,
+        )
 
 
 # EOF

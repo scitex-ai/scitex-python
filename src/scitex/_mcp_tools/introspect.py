@@ -4,12 +4,7 @@
 
 """Introspection module tools for FastMCP unified server."""
 
-import json
 from typing import Optional
-
-
-def _json(data: dict) -> str:
-    return json.dumps(data, indent=2, default=str)
 
 
 def register_introspect_tools(mcp) -> None:
@@ -23,14 +18,17 @@ def register_introspect_tools(mcp) -> None:
         include_annotations: bool = True,
     ) -> str:
         """Get function/class signature with parameters and types."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import q_handler
 
-        result = await q_handler(
+        return await async_wrap_as_mcp(
+            q_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             include_defaults=include_defaults,
             include_annotations=include_annotations,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_source(
@@ -39,14 +37,17 @@ def register_introspect_tools(mcp) -> None:
         include_decorators: bool = True,
     ) -> str:
         """Get source code of a Python object."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import qq_handler
 
-        result = await qq_handler(
+        return await async_wrap_as_mcp(
+            qq_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             max_lines=max_lines,
             include_decorators=include_decorators,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_dir(
@@ -56,15 +57,18 @@ def register_introspect_tools(mcp) -> None:
         include_inherited: bool = False,
     ) -> str:
         """List members of module/class (like dir()). filter: all|public|private|dunder."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import dir_handler
 
-        result = await dir_handler(
+        return await async_wrap_as_mcp(
+            dir_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             filter=filter,
             kind=kind,
             include_inherited=include_inherited,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_api(
@@ -74,15 +78,18 @@ def register_introspect_tools(mcp) -> None:
         root_only: bool = False,
     ) -> str:
         """List the API tree of a module recursively."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import list_api_handler
 
-        result = await list_api_handler(
+        return await async_wrap_as_mcp(
+            list_api_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             max_depth=max_depth,
             docstring=docstring,
             root_only=root_only,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_docstring(
@@ -90,21 +97,29 @@ def register_introspect_tools(mcp) -> None:
         format: str = "raw",
     ) -> str:
         """Get docstring of a Python object. format: raw|parsed|summary."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import docstring_handler
 
-        result = await docstring_handler(
+        return await async_wrap_as_mcp(
+            docstring_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             format=format,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_exports(dotted_path: str) -> str:
         """Get __all__ exports of a module."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import exports_handler
 
-        result = await exports_handler(dotted_path=dotted_path)
-        return _json(result)
+        return await async_wrap_as_mcp(
+            exports_handler,
+            idempotent=True,
+            dotted_path=dotted_path,
+        )
 
     @mcp.tool()
     async def introspect_examples(
@@ -113,6 +128,8 @@ def register_introspect_tools(mcp) -> None:
         max_results: int = 10,
     ) -> str:
         """Find usage examples in tests/examples directories."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import examples_handler
 
         # Parse search_paths if provided as comma-separated string
@@ -120,12 +137,13 @@ def register_introspect_tools(mcp) -> None:
         if search_paths:
             paths_list = [p.strip() for p in search_paths.split(",")]
 
-        result = await examples_handler(
+        return await async_wrap_as_mcp(
+            examples_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             search_paths=paths_list,
             max_results=max_results,
         )
-        return _json(result)
 
     # Advanced introspection tools
 
@@ -136,14 +154,17 @@ def register_introspect_tools(mcp) -> None:
         max_depth: int = 10,
     ) -> str:
         """Get class inheritance hierarchy (MRO + subclasses)."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import class_hierarchy_handler
 
-        result = await class_hierarchy_handler(
+        return await async_wrap_as_mcp(
+            class_hierarchy_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             include_builtins=include_builtins,
             max_depth=max_depth,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_type_hints(
@@ -151,13 +172,16 @@ def register_introspect_tools(mcp) -> None:
         include_extras: bool = True,
     ) -> str:
         """Get detailed type hint analysis for function/class."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import type_hints_handler
 
-        result = await type_hints_handler(
+        return await async_wrap_as_mcp(
+            type_hints_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             include_extras=include_extras,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_imports(
@@ -165,13 +189,16 @@ def register_introspect_tools(mcp) -> None:
         categorize: bool = True,
     ) -> str:
         """Get all imports from a module (AST-based static analysis)."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import imports_handler
 
-        result = await imports_handler(
+        return await async_wrap_as_mcp(
+            imports_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             categorize=categorize,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_dependencies(
@@ -180,14 +207,17 @@ def register_introspect_tools(mcp) -> None:
         max_depth: int = 3,
     ) -> str:
         """Get module dependencies (what it imports)."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import dependencies_handler
 
-        result = await dependencies_handler(
+        return await async_wrap_as_mcp(
+            dependencies_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             recursive=recursive,
             max_depth=max_depth,
         )
-        return _json(result)
 
     @mcp.tool()
     async def introspect_call_graph(
@@ -197,12 +227,15 @@ def register_introspect_tools(mcp) -> None:
         internal_only: bool = True,
     ) -> str:
         """Get function call graph (with timeout protection)."""
+        from scitex_dev.mcp_utils import async_wrap_as_mcp
+
         from scitex.introspect._mcp.handlers import call_graph_handler
 
-        result = await call_graph_handler(
+        return await async_wrap_as_mcp(
+            call_graph_handler,
+            idempotent=True,
             dotted_path=dotted_path,
             max_depth=max_depth,
             timeout_seconds=timeout_seconds,
             internal_only=internal_only,
         )
-        return _json(result)

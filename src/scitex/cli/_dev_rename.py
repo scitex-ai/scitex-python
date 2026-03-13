@@ -33,7 +33,7 @@ def rename(
     as_json,
     force,
 ):
-    r"""
+    """
     Bulk rename files, contents, directories, and symlinks.
 
     \b

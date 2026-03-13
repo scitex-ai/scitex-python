@@ -16,8 +16,14 @@ import click
     invoke_without_command=True,
 )
 @click.option("--help-recursive", is_flag=True, help="Show help for all subcommands")
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
 @click.pass_context
-def template(ctx, help_recursive):
+def template(ctx, help_recursive, as_json):
     """
     Project template scaffolding
 
@@ -48,7 +54,12 @@ def template(ctx, help_recursive):
         _print_help_recursive(ctx)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        if as_json:
+            from . import group_to_json
+
+            group_to_json(ctx, template)
+        else:
+            click.echo(ctx.get_help())
 
 
 def _print_help_recursive(ctx):
@@ -84,9 +95,9 @@ def list_templates(as_json):
         templates = get_available_templates_info()
 
         if as_json:
-            import json
+            from scitex_dev import Result
 
-            click.echo(json.dumps(templates, indent=2))
+            click.echo(Result(success=True, data=templates).to_json())
         else:
             click.secho("Available SciTeX Templates", fg="cyan", bold=True)
             click.echo("=" * 60)
@@ -122,7 +133,16 @@ def list_templates(as_json):
 )
 @click.option("--branch", "-b", help="Specific branch to clone")
 @click.option("--tag", "-t", help="Specific tag/release to clone")
-def clone(template_type, destination, git_strategy, branch, tag):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+@click.option(
+    "--dry-run", is_flag=True, help="Show what would be done without making changes."
+)
+def clone(template_type, destination, git_strategy, branch, tag, as_json, dry_run):
     """
     Clone a project template
 
@@ -148,27 +168,42 @@ def clone(template_type, destination, git_strategy, branch, tag):
       scitex template clone pip-project ./my-package --git-strategy parent
       scitex template clone paper ./manuscript --branch develop
     """
+    # Validate mutual exclusivity
+    if branch and tag:
+        click.echo("Error: Cannot specify both --branch and --tag", err=True)
+        sys.exit(1)
+
+    # Convert git_strategy 'none' to None
+    if git_strategy == "none":
+        git_strategy = None
+
+    clone_kwargs = dict(
+        template_id=template_type,
+        project_dir=destination,
+        git_strategy=git_strategy,
+        branch=branch,
+        tag=tag,
+    )
+
+    if dry_run:
+        click.echo(f"[dry-run] Would clone '{template_type}' to {destination}")
+        click.echo(f"[dry-run] git_strategy={git_strategy}, branch={branch}, tag={tag}")
+        return
+
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        from scitex.template import clone_template as _clone_template
+
+        wrap_as_cli(_clone_template, as_json=True, **clone_kwargs)
+        return
+
     try:
-        # Validate mutual exclusivity
-        if branch and tag:
-            click.echo("Error: Cannot specify both --branch and --tag", err=True)
-            sys.exit(1)
-
-        # Convert git_strategy 'none' to None
-        if git_strategy == "none":
-            git_strategy = None
-
         from scitex.template import clone_template as _clone_template
 
         click.echo(f"Cloning {template_type} template to {destination}...")
 
-        result = _clone_template(
-            template_id=template_type,
-            project_dir=destination,
-            git_strategy=git_strategy,
-            branch=branch,
-            tag=tag,
-        )
+        result = _clone_template(**clone_kwargs)
 
         if result:
             dest_path = Path(destination).absolute()
@@ -234,7 +269,13 @@ def clone(template_type, destination, git_strategy, branch, tag):
     "--output", "-o", type=click.Path(), help="Save to file instead of printing"
 )
 @click.option("--docstring", "-d", help="Custom docstring for the template")
-def get(template_id, output, docstring):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def get(template_id, output, docstring, as_json):
     """
     Get a code template (print or save to file)
 
@@ -273,6 +314,26 @@ def get(template_id, output, docstring):
       scitex template get all                  # All templates
       scitex template get session -o script.py # Save to file
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        def _get():
+            if template_id == "all":
+                from scitex.template import get_all_templates
+
+                return get_all_templates()
+            else:
+                from scitex.template import get_code_template
+
+                return get_code_template(
+                    template_id,
+                    filepath=output if output else None,
+                    docstring=docstring,
+                )
+
+        wrap_as_cli(_get, as_json=True)
+        return
+
     try:
         if template_id == "all":
             from scitex.template import get_all_templates
@@ -303,7 +364,13 @@ def get(template_id, output, docstring):
 
 @template.command()
 @click.argument("template_id")
-def info(template_id):
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output as structured JSON (Result envelope).",
+)
+def info(template_id, as_json):
     """
     Show detailed information about a template
 
@@ -312,6 +379,24 @@ def info(template_id):
       scitex template info research
       scitex template info pip-project
     """
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        def _info():
+            from scitex.template import get_available_templates_info
+
+            templates = get_available_templates_info()
+            for tmpl in templates:
+                if (
+                    tmpl["id"] == template_id
+                    or tmpl["name"].lower() == template_id.lower()
+                ):
+                    return tmpl
+            raise LookupError(f"Template '{template_id}' not found")
+
+        wrap_as_cli(_info, as_json=True)
+        return
+
     try:
         from scitex.template import get_available_templates_info
 
