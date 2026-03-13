@@ -2,7 +2,7 @@
 # Timestamp: 2026-01-04
 # File: tests/scitex/audio/engines/test_elevenlabs_engine.py
 
-"""Tests for scitex.audio.engines.elevenlabs_engine module."""
+"""Tests for scitex_audio.engines.elevenlabs_engine module."""
 
 import os
 from unittest.mock import MagicMock, patch
@@ -15,63 +15,63 @@ class TestElevenLabsTTS:
 
     def test_name_property(self):
         """Test that name returns 'elevenlabs'."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.name == "elevenlabs"
 
     def test_requires_api_key_property(self):
         """Test that requires_api_key returns True."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.requires_api_key is True
 
     def test_requires_internet_property(self):
         """Test that requires_internet returns True."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.requires_internet is True
 
     def test_default_voice_is_rachel(self):
         """Test default voice is 'rachel'."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.voice == "rachel"
 
     def test_default_model_id(self):
         """Test default model ID."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.model_id == "eleven_multilingual_v2"
 
     def test_default_stability(self):
         """Test default stability value."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.stability == 0.5
 
     def test_default_similarity_boost(self):
         """Test default similarity_boost value."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.similarity_boost == 0.75
 
     def test_default_speed(self):
         """Test default speed value."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts.speed == 1.0
 
     def test_custom_api_key_initialization(self):
         """Test initializing with custom API key."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(api_key="test-api-key")
         assert tts.api_key == "test-api-key"
@@ -86,42 +86,42 @@ class TestElevenLabsTTS:
         with patch.dict(os.environ, env_patch, clear=False):
             # Need to delete the scitex key if it exists
             os.environ.pop("SCITEX_AUDIO_ELEVENLABS_API_KEY", None)
-            from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+            from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
             tts = ElevenLabsTTS()
             assert tts.api_key == "env-api-key"
 
     def test_custom_voice_initialization(self):
         """Test initializing with custom voice."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(voice="adam")
         assert tts.voice == "adam"
 
     def test_custom_model_initialization(self):
         """Test initializing with custom model."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(model_id="custom_model")
         assert tts.model_id == "custom_model"
 
     def test_custom_stability_initialization(self):
         """Test initializing with custom stability."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(stability=0.8)
         assert tts.stability == 0.8
 
     def test_custom_similarity_boost_initialization(self):
         """Test initializing with custom similarity_boost."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(similarity_boost=0.9)
         assert tts.similarity_boost == 0.9
 
     def test_custom_speed_initialization(self):
         """Test initializing with custom speed (clamped to API limits)."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         # Speed is clamped to ElevenLabs API limits (0.7-1.2)
         tts = ElevenLabsTTS(speed=1.5)
@@ -129,7 +129,7 @@ class TestElevenLabsTTS:
 
     def test_voices_dictionary_contains_presets(self):
         """Test VOICES dict contains preset voices."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         assert "rachel" in ElevenLabsTTS.VOICES
         assert "adam" in ElevenLabsTTS.VOICES
@@ -138,7 +138,7 @@ class TestElevenLabsTTS:
 
     def test_client_lazy_loading(self):
         """Test client is lazily loaded."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         assert tts._client is None
@@ -151,7 +151,7 @@ class TestElevenLabsTTS:
 
         with patch.dict("sys.modules", {"elevenlabs": MagicMock()}):
             with patch("elevenlabs.client.ElevenLabs", mock_elevenlabs):
-                from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+                from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
                 tts = ElevenLabsTTS(api_key="test-key")
 
@@ -166,14 +166,14 @@ class TestElevenLabsTTS:
 
     def test_inherits_from_base_tts(self):
         """Test that ElevenLabsTTS inherits from BaseTTS."""
-        from scitex.audio.engines._base import BaseTTS
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._base import BaseTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         assert issubclass(ElevenLabsTTS, BaseTTS)
 
     def test_get_voice_id_with_name(self):
         """Test _get_voice_id converts name to ID."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         voice_id = tts._get_voice_id("rachel")
@@ -181,7 +181,7 @@ class TestElevenLabsTTS:
 
     def test_get_voice_id_with_id(self):
         """Test _get_voice_id returns ID as-is if not found in VOICES."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         custom_id = "custom-voice-id-12345"
@@ -190,7 +190,7 @@ class TestElevenLabsTTS:
 
     def test_get_voice_id_case_insensitive(self):
         """Test _get_voice_id is case insensitive."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         voice_id_lower = tts._get_voice_id("rachel")
@@ -201,7 +201,7 @@ class TestElevenLabsTTS:
 
     def test_get_voice_id_uses_default_when_none(self):
         """Test _get_voice_id uses instance voice when None passed."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(voice="adam")
         voice_id = tts._get_voice_id(None)
@@ -213,7 +213,7 @@ class TestElevenLabsTTS:
         mock_audio = [b"audio", b"data"]
         mock_client.text_to_speech.convert.return_value = mock_audio
 
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(api_key="test-key")
         tts._client = mock_client
@@ -233,7 +233,7 @@ class TestElevenLabsTTS:
         mock_audio = [b"chunk1", b"chunk2", b"chunk3"]
         mock_client.text_to_speech.convert.return_value = mock_audio
 
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(api_key="test-key")
         tts._client = mock_client
@@ -249,7 +249,7 @@ class TestElevenLabsTTS:
         mock_client = MagicMock()
         mock_client.text_to_speech.convert.return_value = [b"audio"]
 
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(api_key="test-key")
         tts._client = mock_client
@@ -263,7 +263,7 @@ class TestElevenLabsTTS:
 
     def test_get_voices_returns_preset_voices(self):
         """Test get_voices returns preset voices."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         voices = tts.get_voices()
@@ -288,7 +288,7 @@ class TestElevenLabsTTS:
         mock_response.voices = [mock_voice]
         mock_client.voices.get_all.return_value = mock_response
 
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(api_key="test-key")
         tts._client = mock_client
@@ -305,7 +305,7 @@ class TestElevenLabsTTS:
         mock_client = MagicMock()
         mock_client.voices.get_all.side_effect = Exception("API Error")
 
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS(api_key="test-key")
         tts._client = mock_client
@@ -321,7 +321,7 @@ class TestElevenLabsTTSEdgeCases:
 
     def test_stability_boundary_values(self):
         """Test stability at boundary values."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts_min = ElevenLabsTTS(stability=0.0)
         assert tts_min.stability == 0.0
@@ -331,7 +331,7 @@ class TestElevenLabsTTSEdgeCases:
 
     def test_similarity_boost_boundary_values(self):
         """Test similarity_boost at boundary values."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts_min = ElevenLabsTTS(similarity_boost=0.0)
         assert tts_min.similarity_boost == 0.0
@@ -341,7 +341,7 @@ class TestElevenLabsTTSEdgeCases:
 
     def test_speed_boundary_values(self):
         """Test speed is clamped to ElevenLabs API limits (0.7-1.2)."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         # Values below MIN_SPEED are clamped to 0.7
         tts_slow = ElevenLabsTTS(speed=0.5)
@@ -361,7 +361,7 @@ class TestElevenLabsTTSEdgeCases:
             # Remove ELEVENLABS_API_KEY if present
             os.environ.pop("ELEVENLABS_API_KEY", None)
 
-            from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+            from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
             tts = ElevenLabsTTS()
             # API key should be None
@@ -369,7 +369,7 @@ class TestElevenLabsTTSEdgeCases:
 
     def test_voice_id_direct_passthrough(self):
         """Test that unknown voice IDs are passed through."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         tts = ElevenLabsTTS()
         custom_id = "some-custom-voice-id-that-doesnt-exist"
@@ -382,7 +382,7 @@ class TestElevenLabsTTSVoicePresets:
 
     def test_all_preset_voices_have_ids(self):
         """Test all preset voices have valid IDs."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         for name, voice_id in ElevenLabsTTS.VOICES.items():
             assert voice_id is not None
@@ -391,7 +391,7 @@ class TestElevenLabsTTSVoicePresets:
 
     def test_expected_voice_count(self):
         """Test expected number of preset voices."""
-        from scitex.audio.engines._elevenlabs_engine import ElevenLabsTTS
+        from scitex_audio.engines._elevenlabs_engine import ElevenLabsTTS
 
         # Should have at least 8 preset voices
         assert len(ElevenLabsTTS.VOICES) >= 8

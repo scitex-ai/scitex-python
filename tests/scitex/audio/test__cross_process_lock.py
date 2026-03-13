@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from scitex.audio._cross_process_lock import AudioPlaybackLock, acquire_audio_lock
+from scitex_audio._cross_process_lock import AudioPlaybackLock, acquire_audio_lock
 
 
 class TestAudioPlaybackLockInit:
@@ -248,7 +248,7 @@ class TestAcquireAudioLock:
         """Should yield True when lock is acquired."""
         with tempfile.TemporaryDirectory() as tmpdir:
             with patch(
-                "scitex.audio._cross_process_lock.LOCK_FILE",
+                "scitex_audio._cross_process_lock.LOCK_FILE",
                 Path(tmpdir) / "test.lock",
             ):
                 with acquire_audio_lock() as result:
@@ -265,7 +265,7 @@ class TestAcquireAudioLock:
 
             try:
                 with patch(
-                    "scitex.audio._cross_process_lock.LOCK_FILE",
+                    "scitex_audio._cross_process_lock.LOCK_FILE",
                     lock_path,
                 ):
                     with pytest.raises(TimeoutError) as excinfo:
@@ -281,7 +281,7 @@ class TestAcquireAudioLock:
             lock_path = Path(tmpdir) / "test.lock"
 
             with patch(
-                "scitex.audio._cross_process_lock.LOCK_FILE",
+                "scitex_audio._cross_process_lock.LOCK_FILE",
                 lock_path,
             ):
                 with acquire_audio_lock():
@@ -362,7 +362,7 @@ class TestIntegration:
             lock_path = Path(tmpdir) / "test.lock"
 
             with patch(
-                "scitex.audio._cross_process_lock.LOCK_FILE",
+                "scitex_audio._cross_process_lock.LOCK_FILE",
                 lock_path,
             ):
                 with acquire_audio_lock(timeout=5.0) as acquired:

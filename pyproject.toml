@@ -68,6 +68,7 @@ dependencies = [
     "scitex-dev>=0.1.0",
     "scitex-io>=0.2.0",
     "scitex-stats>=0.2.0",
+    "scitex-audio>=0.1.0",
 ]
 
 [project.urls]
@@ -79,7 +80,7 @@ Repository = "https://github.com/ywatanabe1989/scitex-python"
 [project.scripts]
 scitex = "scitex.__main__:main"
 # MCP Server entry points (individual modules)
-scitex-audio = "scitex.audio.mcp_server:main"
+# scitex-audio entry point now in standalone scitex-audio package
 scitex-canvas = "scitex.canvas.mcp_server:main"
 scitex-capture = "scitex.capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
@@ -147,12 +148,7 @@ ai = [
 # Audio Module - Text-to-Speech
 # Use: pip install scitex[audio]
 audio = [
-    "pyttsx3",
-    "gTTS",
-    "pydub",
-    "elevenlabs",
-    "mcp",
-    "pytest-asyncio",
+    "scitex-audio>=0.1.0",
 ]
 
 # Audit Module - Code and security auditing
@@ -772,6 +768,16 @@ heavy = [
 # Development Tools
 # --------------------------------------------
 
+# Documentation
+# Use: pip install scitex[docs]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "myst-parser>=2.0",
+    "sphinx-copybutton>=0.5",
+    "sphinx-autodoc-typehints>=1.25",
+]
+
 # Development Tools
 # Use: pip install scitex[dev]
 dev = [
@@ -833,6 +839,7 @@ all = [
     "scitex[app]",
     "scitex[audio]",
     "scitex[audit]",
+    "scitex[docs]",
     "scitex[benchmark]",
     "scitex[bridge]",
     "scitex[browser]",

@@ -2,7 +2,7 @@
 # Timestamp: 2026-01-04
 # File: tests/scitex/audio/test__tts.py
 
-"""Tests for scitex.audio._tts module (legacy ElevenLabs TTS)."""
+"""Tests for scitex_audio._tts module (legacy ElevenLabs TTS)."""
 
 import os
 from pathlib import Path
@@ -16,63 +16,63 @@ class TestTTSConfig:
 
     def test_default_voice_id(self):
         """Test default voice ID is Rachel."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.voice_id == "21m00Tcm4TlvDq8ikWAM"
 
     def test_default_voice_name_is_none(self):
         """Test default voice name is None."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.voice_name is None
 
     def test_default_model_id(self):
         """Test default model ID."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.model_id == "eleven_multilingual_v2"
 
     def test_default_stability(self):
         """Test default stability."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.stability == 0.5
 
     def test_default_similarity_boost(self):
         """Test default similarity_boost."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.similarity_boost == 0.75
 
     def test_default_style(self):
         """Test default style."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.style == 0.0
 
     def test_default_speed(self):
         """Test default speed."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.speed == 1.0
 
     def test_default_output_format(self):
         """Test default output format."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig()
         assert config.output_format == "mp3_44100_128"
 
     def test_custom_values(self):
         """Test custom configuration values."""
-        from scitex.audio._tts import TTSConfig
+        from scitex_audio._tts import TTSConfig
 
         config = TTSConfig(
             voice_id="custom-id",
@@ -99,7 +99,7 @@ class TestTTS:
 
     def test_voices_dictionary(self):
         """Test VOICES dictionary contains expected voices."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         assert "rachel" in TTS.VOICES
         assert "adam" in TTS.VOICES
@@ -109,7 +109,7 @@ class TestTTS:
 
     def test_api_key_from_parameter(self):
         """Test API key from parameter."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(api_key="test-api-key")
         assert tts.api_key == "test-api-key"
@@ -117,21 +117,21 @@ class TestTTS:
     def test_api_key_from_environment(self):
         """Test API key from environment variable."""
         with patch.dict(os.environ, {"ELEVENLABS_API_KEY": "env-api-key"}):
-            from scitex.audio._tts import TTS
+            from scitex_audio._tts import TTS
 
             tts = TTS()
             assert tts.api_key == "env-api-key"
 
     def test_voice_name_sets_voice_id(self):
         """Test voice_name parameter sets voice_id."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(voice_name="rachel")
         assert tts.config.voice_id == TTS.VOICES["rachel"]
 
     def test_voice_id_overrides_voice_name(self):
         """Test voice_id parameter overrides voice_name."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         custom_id = "custom-voice-id"
         tts = TTS(voice_name="rachel", voice_id=custom_id)
@@ -139,7 +139,7 @@ class TestTTS:
 
     def test_config_kwargs_passed(self):
         """Test kwargs are passed to config."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(stability=0.8, speed=1.5)
         assert tts.config.stability == 0.8
@@ -147,14 +147,14 @@ class TestTTS:
 
     def test_client_lazy_loading(self):
         """Test client is lazily loaded."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
         assert tts._client is None
 
     def test_client_import_error(self):
         """Test ImportError when elevenlabs not installed."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
 
@@ -174,7 +174,7 @@ class TestTTS:
 
     def test_speak_method_exists(self):
         """Test speak method exists."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
         assert hasattr(tts, "speak")
@@ -182,7 +182,7 @@ class TestTTS:
 
     def test_list_voices_method_exists(self):
         """Test list_voices method exists."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
         assert hasattr(tts, "list_voices")
@@ -194,7 +194,7 @@ class TestTTS:
         mock_audio = [b"audio", b"data"]
         mock_client.text_to_speech.convert.return_value = mock_audio
 
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(api_key="test-key")
         tts._client = mock_client
@@ -212,7 +212,7 @@ class TestTTS:
         mock_client = MagicMock()
         mock_client.text_to_speech.convert.return_value = [b"audio"]
 
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(api_key="test-key")
         tts._client = mock_client
@@ -232,7 +232,7 @@ class TestTTS:
         mock_client = MagicMock()
         mock_client.text_to_speech.convert.return_value = [b"audio"]
 
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(api_key="test-key")
         tts._client = mock_client
@@ -253,7 +253,7 @@ class TestTTS:
         mock_client = MagicMock()
         mock_client.text_to_speech.convert.return_value = [b"audio"]
 
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(api_key="test-key")
         tts._client = mock_client
@@ -267,7 +267,7 @@ class TestTTS:
         mock_client = MagicMock()
         mock_client.text_to_speech.convert.return_value = [b"audio"]
 
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(api_key="test-key")
         tts._client = mock_client
@@ -289,7 +289,7 @@ class TestTTS:
         mock_response.voices = [mock_voice]
         mock_client.voices.get_all.return_value = mock_response
 
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS(api_key="test-key")
         tts._client = mock_client
@@ -306,7 +306,7 @@ class TestTTSPlayAudio:
 
     def test_play_audio_tries_multiple_players(self, tmp_path):
         """Test _play_audio tries multiple players."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
         test_file = tmp_path / "test.mp3"
@@ -319,7 +319,7 @@ class TestTTSPlayAudio:
 
     def test_play_audio_windows_fallback(self, tmp_path):
         """Test Windows fallback is tried in WSL."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
         test_file = tmp_path / "test.mp3"
@@ -334,7 +334,7 @@ class TestTTSPlayAudio:
 
     def test_play_audio_windows_returns_false_non_wsl(self, tmp_path):
         """Test _play_audio_windows returns False when not in WSL."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
         test_file = tmp_path / "test.mp3"
@@ -350,13 +350,13 @@ class TestModuleLevelSpeak:
 
     def test_speak_function_exists(self):
         """Test speak function exists at module level."""
-        from scitex.audio._tts import speak
+        from scitex_audio._tts import speak
 
         assert callable(speak)
 
     def test_speak_creates_default_tts(self):
         """Test speak creates default TTS instance."""
-        from scitex.audio import _tts
+        from scitex_audio import _tts
 
         # Reset the default TTS
         _tts._default_tts = None
@@ -378,7 +378,7 @@ class TestModuleLevelSpeak:
         # Just verify the function signature
         import inspect
 
-        from scitex.audio._tts import speak
+        from scitex_audio._tts import speak
 
         sig = inspect.signature(speak)
         assert "voice" in sig.parameters
@@ -391,7 +391,7 @@ class TestTTSEdgeCases:
 
     def test_empty_text(self):
         """Test handling of empty text."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts = TTS()
         # Should not raise during initialization
@@ -399,7 +399,7 @@ class TestTTSEdgeCases:
 
     def test_voice_name_case_insensitive(self):
         """Test voice_name is case insensitive."""
-        from scitex.audio._tts import TTS
+        from scitex_audio._tts import TTS
 
         tts_lower = TTS(voice_name="rachel")
         tts_upper = TTS(voice_name="RACHEL")
@@ -734,13 +734,13 @@ if __name__ == "__main__":
 #         import scitex
 #
 #         # Simple speak
-#         scitex.audio.speak("Hello!")
+#         scitex_audio.speak("Hello!")
 #
 #         # With specific voice
-#         scitex.audio.speak("Processing complete", voice="Adam")
+#         scitex_audio.speak("Processing complete", voice="Adam")
 #
 #         # Save without playing
-#         scitex.audio.speak("Test", play=False, output_path="/tmp/test.mp3")
+#         scitex_audio.speak("Test", play=False, output_path="/tmp/test.mp3")
 #     """
 #     global _default_tts
 #

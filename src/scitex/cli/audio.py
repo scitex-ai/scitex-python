@@ -30,6 +30,7 @@ def audio(ctx, help_recursive, as_json):
     Backends (fallback order):
       pyttsx3    - System TTS (offline, free)
       gtts       - Google TTS (free, needs internet)
+      luxtts     - LuxTTS (open-source, offline, voice-cloning)
       elevenlabs - ElevenLabs (paid, high quality)
 
     \b
@@ -58,7 +59,7 @@ def audio(ctx, help_recursive, as_json):
 @click.option(
     "--backend",
     "-b",
-    type=click.Choice(["pyttsx3", "gtts", "elevenlabs"]),
+    type=click.Choice(["pyttsx3", "gtts", "luxtts", "elevenlabs"]),
     help="TTS backend (auto-selects with fallback if not specified)",
 )
 @click.option("--voice", "-v", help="Voice name, ID, or language code")
@@ -339,7 +340,7 @@ def start(transport, host, port):
       scitex audio mcp start -t http --port 31293
     """
     try:
-        from scitex.audio.mcp_server import FASTMCP_AVAILABLE, run_server
+        from scitex_audio.mcp_server import FASTMCP_AVAILABLE, run_server
 
         if not FASTMCP_AVAILABLE:
             click.secho("Error: fastmcp not installed", fg="red", err=True)
@@ -383,7 +384,7 @@ def doctor():
     # Check fastmcp
     click.echo("Checking FastMCP... ", nl=False)
     try:
-        from scitex.audio.mcp_server import FASTMCP_AVAILABLE
+        from scitex_audio.mcp_server import FASTMCP_AVAILABLE
 
         if FASTMCP_AVAILABLE:
             click.secho("OK", fg="green")
@@ -459,11 +460,11 @@ def relay(host, port, force):
       # Or SSH: ssh -R 31293:localhost:31293 remote-server
     """
     try:
-        from scitex.audio.mcp_server import run_relay_server
+        from scitex_audio.mcp_server import run_relay_server
 
         # Handle force flag
         if force:
-            from scitex.audio._utils import kill_process_on_port
+            from scitex_audio._utils import kill_process_on_port
 
             kill_process_on_port(port)
 
