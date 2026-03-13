@@ -23,6 +23,7 @@ coverage_report.txt
 htmlcov/
 
 ## Sensitive files
+.env.d/
 .env.zenrows
 .env.local
 .env.*.local
