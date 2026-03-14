@@ -979,6 +979,7 @@ filterwarnings = [
 source = ["src/scitex"]
 branch = true
 parallel = true
+relative_files = true
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
