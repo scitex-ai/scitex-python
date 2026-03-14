@@ -135,8 +135,9 @@ class TestAudioBackends:
                 import json
 
                 output = json.loads(result.output)
-                assert "available" in output
-                assert "fallback_order" in output
+                data = output.get("data", output)
+                assert "available" in data
+                assert "fallback_order" in data
 
     def test_backends_no_available(self):
         """Test backends list when none available."""

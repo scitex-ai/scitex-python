@@ -15,6 +15,7 @@ GITIGNORED
 singularity
 
 ## Logs and temporary files
+logs/
 slurm_logs/
 coverage_report.txt
 /coverage-*.json
