@@ -391,7 +391,7 @@ def doctor(verbose: bool):
             ("scitex.canvas._mcp.handlers", "create_canvas_handler"),
             ("scitex.diagram._mcp.handlers", "create_diagram_handler"),
             ("scitex.template._mcp.handlers", "list_templates_handler"),
-            ("scitex.ui._mcp.handlers", "notify_handler"),
+            ("scitex.notify._mcp.handlers", "notify_handler"),
             ("scitex.writer._mcp.handlers", "compile_manuscript_handler"),
         ]
 

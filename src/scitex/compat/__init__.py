@@ -41,25 +41,25 @@ def deprecated(new_name: str, removal_version: str = "2.0"):
 
 # UI/Notification compatibility
 def notify(*args, **kwargs):
-    """Deprecated: Use scitex.ui.alert() instead."""
+    """Deprecated: Use scitex.notify.alert() instead."""
     warnings.warn(
-        "scitex.compat.notify is deprecated. Use scitex.ui.alert instead.",
+        "scitex.compat.notify is deprecated. Use scitex.notify.alert instead.",
         DeprecationWarning,
         stacklevel=2,
     )
-    from scitex.ui import alert
+    from scitex.notify import alert
 
     return alert(*args, **kwargs)
 
 
 async def notify_async(*args, **kwargs):
-    """Deprecated: Use scitex.ui.alert_async() instead."""
+    """Deprecated: Use scitex.notify.alert_async() instead."""
     warnings.warn(
-        "scitex.compat.notify_async is deprecated. Use scitex.ui.alert_async instead.",
+        "scitex.compat.notify_async is deprecated. Use scitex.notify.alert_async instead.",
         DeprecationWarning,
         stacklevel=2,
     )
-    from scitex.ui import alert_async
+    from scitex.notify import alert_async
 
     return await alert_async(*args, **kwargs)
 

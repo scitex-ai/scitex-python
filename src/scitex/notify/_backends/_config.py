@@ -98,7 +98,7 @@ DEFAULT_CONFIG = {
 
 
 class UIConfig:
-    """Configuration manager for scitex.ui using ScitexConfig pattern."""
+    """Configuration manager for scitex.notify using ScitexConfig pattern."""
 
     _instance: Optional[UIConfig] = None
     _config: dict
