@@ -209,8 +209,9 @@ def main():
     # Paths
     script_dir = Path(__file__).parent
     src_dir = script_dir.parent.parent / "src" / "scitex"
-    modules_dir = script_dir / "modules"
-    modules_dir.mkdir(exist_ok=True)
+    # Output to source/api/ (where Sphinx actually reads from)
+    modules_dir = script_dir / "source" / "api"
+    modules_dir.mkdir(parents=True, exist_ok=True)
 
     if not src_dir.exists():
         print(f"Error: Source directory not found: {src_dir}")
