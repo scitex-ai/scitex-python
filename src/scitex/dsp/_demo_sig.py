@@ -37,7 +37,7 @@ except ImportError:
     TENSORPAC_AVAILABLE = False
     pac_signals_wavelet = None
 
-from scitex.io._load_configs import load_configs
+from scitex.io import load_configs
 
 # Config
 CONFIG = load_configs(verbose=False)
@@ -78,8 +78,8 @@ def demo_sig(
     """
     Generate demo signals for various signal types.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     sig_type : str, optional
         Type of signal to generate. Options are "uniform", "gauss", "periodic", "chirp", "ripple", "meg", "tensorpac", "pac".
         Default is "periodic".
@@ -98,8 +98,8 @@ def demo_sig(
     verbose : bool, optional
         If True, print additional information. Default is False.
 
-    Returns:
-    --------
+    Returns
+    -------
     tuple
         A tuple containing:
         - np.ndarray: Generated signal(s) with shape (batch_size, n_chs, time_samples) or (batch_size, n_chs, n_segments, time_samples) for tensorpac and pac signals.
@@ -202,7 +202,9 @@ def _demo_sig_pac(
 ):
     """
     Generate a demo signal with phase-amplitude coupling.
-    Parameters:
+
+    Parameters
+    ----------
         batch_size (int): Number of batches.
         n_chs (int): Number of channels.
         t_sec (int): Duration of the signal in seconds.
@@ -212,7 +214,9 @@ def _demo_sig_pac(
         noise (float): Noise level added to the signal.
         n_segments (int): Number of segments.
         verbose (bool): If True, print additional information.
-    Returns:
+
+    Returns
+    -------
         np.array: Generated signals with shape (batch_size, n_chs, n_segments, seq_len).
     """
     seq_len = t_sec * fs
@@ -285,7 +289,6 @@ def _demo_sig_meg(batch_size=8, n_chs=19, t_sec=10, fs=512, verbose=False, **kwa
 
 def _demo_sig_periodic_1d(t_sec=10, fs=512, freqs_hz=None, verbose=False, **kwargs):
     """Returns a demo signal with the shape (t_sec*fs,)."""
-
     if freqs_hz is None:
         n_freqs = random.randint(1, 5)
         freqs_hz = np.random.permutation(np.arange(fs))[:n_freqs]

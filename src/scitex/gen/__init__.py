@@ -27,8 +27,8 @@ def _deprecation_warning(old_path, new_path):
     )
 
 
-# ci -> scitex.stats.descriptive.ci (with re-export for backward compat)
-from scitex.stats.descriptive import ci
+# ci -> scitex_stats.descriptive.ci (with re-export for backward compat)
+from scitex_stats.descriptive import ci
 
 # Optional: DimHandler requires torch
 try:

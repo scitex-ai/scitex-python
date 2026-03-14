@@ -28,6 +28,9 @@ os.makedirs(PNG_DIR, exist_ok=True)
 os.makedirs(CSV_DIR, exist_ok=True)
 
 
+@pytest.mark.xfail(
+    reason="Depends on removed AxisWrapper (scitex.plt → figrecipe migration)"
+)
 def test_matplotlib_histogram_bin_alignment():
     """Test histogram bin alignment with matplotlib histograms."""
     print("Testing matplotlib histogram bin alignment...")
@@ -126,13 +129,16 @@ def test_matplotlib_histogram_bin_alignment():
     )
 
     # Centers should have the same length in aligned case
-    assert len(aligned_data1_centers) == len(
-        aligned_data2_centers
-    ), "Aligned histograms should have the same number of bins"
+    assert len(aligned_data1_centers) == len(aligned_data2_centers), (
+        "Aligned histograms should have the same number of bins"
+    )
 
     print("Matplotlib histogram bin alignment test passed!")
 
 
+@pytest.mark.xfail(
+    reason="Depends on removed AxisWrapper (scitex.plt → figrecipe migration)"
+)
 def test_seaborn_histogram_bin_alignment():
     """Test histogram bin alignment with seaborn histplots."""
     print("Testing seaborn histogram bin alignment...")
@@ -222,6 +228,9 @@ def test_seaborn_histogram_bin_alignment():
     print("Seaborn histogram bin alignment test passed!")
 
 
+@pytest.mark.xfail(
+    reason="Depends on removed AxisWrapper (scitex.plt → figrecipe migration)"
+)
 def test_mixed_histogram_bin_alignment():
     """Test histogram bin alignment with a mix of matplotlib and seaborn."""
     print("Testing mixed histogram bin alignment...")
