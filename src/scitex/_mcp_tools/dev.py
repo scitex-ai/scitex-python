@@ -12,7 +12,7 @@ def register_dev_tools(mcp) -> None:
     """Register developer tools with FastMCP server."""
 
     @mcp.tool()
-    async def dev_versions_list(
+    async def dev_ecosystem_list(
         packages: list[str] | None = None,
     ) -> str:
         """List versions across the scitex ecosystem.
@@ -190,7 +190,7 @@ def register_dev_tools(mcp) -> None:
         return await test_hpc_result_handler(job_id)
 
     @mcp.tool()
-    async def dev_versions_sync(
+    async def dev_ecosystem_sync(
         hosts: list[str] | None = None,
         packages: list[str] | None = None,
         install: bool = True,
@@ -223,7 +223,7 @@ def register_dev_tools(mcp) -> None:
         return await sync_handler(hosts, packages, install, confirm)
 
     @mcp.tool()
-    async def dev_versions_sync_local(
+    async def dev_ecosystem_sync_local(
         packages: list[str] | None = None,
         confirm: bool = False,
     ) -> str:
@@ -250,7 +250,7 @@ def register_dev_tools(mcp) -> None:
         return await sync_local_handler(packages, confirm)
 
     @mcp.tool()
-    async def dev_fix_mismatches(
+    async def dev_ecosystem_fix_mismatches(
         hosts: list[str] | None = None,
         packages: list[str] | None = None,
         local: bool = True,
@@ -288,14 +288,14 @@ def register_dev_tools(mcp) -> None:
         return await fix_mismatches_handler(hosts, packages, local, remote, confirm)
 
     @mcp.tool()
-    async def dev_versions_diff(
+    async def dev_ecosystem_diff(
         host: str | None = None,
         packages: list[str] | None = None,
     ) -> str:
         """Show git diff on remote host(s). Read-only operation.
 
         Shows uncommitted changes (git status + git diff) on remote hosts.
-        Use this to review changes before committing with dev_versions_commit.
+        Use this to review changes before committing with dev_ecosystem_commit.
 
         Parameters
         ----------
@@ -314,7 +314,7 @@ def register_dev_tools(mcp) -> None:
         return await remote_diff_handler(host, packages)
 
     @mcp.tool()
-    async def dev_versions_commit(
+    async def dev_ecosystem_commit(
         host: str,
         packages: list[str] | None = None,
         message: str | None = None,
@@ -350,7 +350,7 @@ def register_dev_tools(mcp) -> None:
         return await remote_commit_handler(host, packages, message, push, confirm)
 
     @mcp.tool()
-    async def dev_versions_pull(
+    async def dev_ecosystem_pull(
         packages: list[str] | None = None,
         confirm: bool = False,
         stash: bool = True,
@@ -358,7 +358,7 @@ def register_dev_tools(mcp) -> None:
         """Pull latest from origin to local repos.
 
         Safety: call first without confirm to preview, then with confirm=True
-        to execute. Use after dev_versions_commit to sync remote changes locally.
+        to execute. Use after dev_ecosystem_commit to sync remote changes locally.
 
         Parameters
         ----------
