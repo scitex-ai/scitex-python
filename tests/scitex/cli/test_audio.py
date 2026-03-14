@@ -183,8 +183,9 @@ class TestAudioCheck:
             import json
 
             output = json.loads(result.output)
-            assert "is_wsl" in output
-            assert "recommended" in output
+            data = output.get("data", output)
+            assert "is_wsl" in data
+            assert "recommended" in data
 
     def test_check_non_wsl(self):
         """Test audio check on non-WSL system."""
