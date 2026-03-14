@@ -1,6 +1,6 @@
 # scitex.notify
 
-Multi-backend notification system for SciTeX. Sends alerts via audio (TTS), phone calls (Twilio), email, desktop notifications, Emacs, browser popups, and webhooks.
+Multi-backend notification system for SciTeX. Sends alerts via audio (TTS), phone calls (Twilio), SMS, email, desktop notifications, Emacs, browser popups, and webhooks.
 
 ## Quick Start
 
@@ -12,6 +12,9 @@ scitex.notify.alert("Task complete!")
 
 # Phone call via Twilio
 scitex.notify.call("Wake up! Your experiment finished.")
+
+# SMS via Twilio
+scitex.notify.sms("Build finished!")
 
 # Specify backend explicitly
 scitex.notify.alert("Error in pipeline", backend="email", level="error")
@@ -29,7 +32,7 @@ scitex.notify.available_backends()
 | Backend | Description | Requirements |
 |---------|-------------|--------------|
 | `audio` | Text-to-Speech | `scitex-audio` package |
-| `twilio` | Phone call | Twilio account + env vars |
+| `twilio` | Phone call / SMS | Twilio account + env vars |
 | `email` | SMTP email | SMTP server config |
 | `emacs` | Minibuffer message | Running Emacs server |
 | `desktop` | System notification | Windows/macOS |
@@ -70,6 +73,31 @@ To receive calls while in Do Not Disturb / silent mode:
 1. Save the Twilio number as a contact (e.g., "SciTeX Alert")
 2. **Settings -> Focus -> Do Not Disturb -> Allow Repeated Calls** -> ON
 3. Use `repeat=2` -- the second call within 3 minutes bypasses silent mode
+
+## SMS (Twilio)
+
+Uses the same Twilio env vars as phone calls.
+
+```python
+import scitex
+
+# Simple SMS
+scitex.notify.sms("Build finished!")
+
+# With title prefix
+scitex.notify.sms("Pipeline error on node 3", title="SciTeX Alert")
+
+# Override destination
+scitex.notify.sms("Urgent!", to_number="+61400000000")
+```
+
+CLI:
+
+```bash
+scitex notify sms "Build finished!"
+scitex notify sms "Alert!" --to +61400000000
+scitex notify sms "Error" --title "SciTeX"
+```
 
 ## Configuration
 
@@ -135,12 +163,33 @@ scitex.notify.call(
     **kwargs,
 ) -> bool
 
+# Send SMS (no fallback)
+scitex.notify.sms(
+    message: str,
+    title: str = None,          # Prepended to message
+    to_number: str = None,      # Override default
+    **kwargs,
+) -> bool
+
 # Async versions
 await scitex.notify.alert_async(...)
 await scitex.notify.call_async(...)
+await scitex.notify.sms_async(...)
 
 # List available backends
 scitex.notify.available_backends() -> list[str]
+```
+
+## CLI Commands
+
+```bash
+scitex notify send "Task complete!"                      # Auto-fallback
+scitex notify send "Error" --backend email --level error  # Specific backend
+scitex notify call "Wake up!" --repeat 2                  # Phone call
+scitex notify sms "Build finished!"                       # SMS
+scitex notify backends                                    # List backends
+scitex notify config                                      # Show config
+scitex notify --help-recursive                            # All help
 ```
 
 ## MCP Tools
@@ -149,8 +198,8 @@ Available via `scitex mcp serve`:
 
 | Tool | Description |
 |------|-------------|
-| `notify` | Send notification via backend(s) |
-| `notify_by_level` | Send using level-configured backends |
-| `list_notification_backends` | List all backends and status |
-| `available_notification_backends` | List working backends |
-| `get_notification_config` | Get current configuration |
+| `notify_send` | Send notification via backend(s) |
+| `notify_call` | Make a phone call via Twilio |
+| `notify_sms` | Send an SMS via Twilio |
+| `notify_backends` | List all backends and availability |
+| `notify_config` | Get current configuration |
