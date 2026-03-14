@@ -12,6 +12,7 @@ from ._emacs import EmacsBackend
 from ._email import EmailBackend
 from ._matplotlib import MatplotlibBackend
 from ._playwright import PlaywrightBackend
+from ._twilio import TwilioBackend
 from ._types import BaseNotifyBackend, NotifyLevel, NotifyResult
 from ._webhook import WebhookBackend
 
@@ -26,6 +27,7 @@ __all__ = [
     "WebhookBackend",
     "MatplotlibBackend",
     "PlaywrightBackend",
+    "TwilioBackend",
     "BACKENDS",
     "get_backend",
     "available_backends",
@@ -40,6 +42,7 @@ BACKENDS: dict[str, type[BaseNotifyBackend]] = {
     "webhook": WebhookBackend,
     "matplotlib": MatplotlibBackend,
     "playwright": PlaywrightBackend,
+    "twilio": TwilioBackend,
 }
 
 
