@@ -238,6 +238,8 @@ print('FORCE_COLOR:', mod.FORCE_COLOR)
         )
         assert "FORCE_COLOR: True" in result.stdout
 
+    @pytest.mark.slow
+    @pytest.mark.timeout(120)
     def test_force_color_adds_ansi_codes(self):
         """Test that FORCE_COLOR=1 adds ANSI color codes to piped output."""
         import subprocess
@@ -247,8 +249,8 @@ print('FORCE_COLOR:', mod.FORCE_COLOR)
                 "python",
                 "-c",
                 """
-from scitex import logging
-logger = logging.getLogger('test')
+from scitex.logging import getLogger
+logger = getLogger('test')
 logger.warning('test warning')
 """,
             ],
@@ -260,12 +262,15 @@ logger.warning('test warning')
             capture_output=True,
             text=True,
             cwd=self.project_root,
+            timeout=90,
         )
         # ANSI color codes should be present (yellow for warning: \033[33m)
         # Logging output goes to stderr
         output = result.stdout + result.stderr
         assert "\033[33m" in output or "\x1b[33m" in output
 
+    @pytest.mark.slow
+    @pytest.mark.timeout(120)
     def test_no_force_color_no_ansi_codes(self):
         """Test that without FORCE_COLOR, piped output has no ANSI codes."""
         import subprocess
@@ -279,8 +284,8 @@ logger.warning('test warning')
                 "python",
                 "-c",
                 """
-from scitex import logging
-logger = logging.getLogger('test')
+from scitex.logging import getLogger
+logger = getLogger('test')
 logger.warning('test warning')
 """,
             ],
@@ -288,6 +293,7 @@ logger.warning('test warning')
             capture_output=True,
             text=True,
             cwd=self.project_root,
+            timeout=90,
         )
         # ANSI color codes should NOT be present when piped without FORCE_COLOR
         # Logging output goes to stderr

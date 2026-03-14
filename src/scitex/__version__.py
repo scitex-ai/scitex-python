@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/__version__.py
+# File: /home/ywatanabe/proj/scitex-python/src/scitex/__version__.py
 
 """
 Version is sourced from pyproject.toml via importlib.metadata.

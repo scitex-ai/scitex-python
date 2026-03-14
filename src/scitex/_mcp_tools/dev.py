@@ -12,7 +12,7 @@ def register_dev_tools(mcp) -> None:
     """Register developer tools with FastMCP server."""
 
     @mcp.tool()
-    async def dev_versions_list(
+    async def dev_ecosystem_list(
         packages: list[str] | None = None,
     ) -> str:
         """List versions across the scitex ecosystem.
@@ -190,7 +190,7 @@ def register_dev_tools(mcp) -> None:
         return await test_hpc_result_handler(job_id)
 
     @mcp.tool()
-    async def dev_versions_sync(
+    async def dev_ecosystem_sync(
         hosts: list[str] | None = None,
         packages: list[str] | None = None,
         install: bool = True,
@@ -223,7 +223,7 @@ def register_dev_tools(mcp) -> None:
         return await sync_handler(hosts, packages, install, confirm)
 
     @mcp.tool()
-    async def dev_versions_sync_local(
+    async def dev_ecosystem_sync_local(
         packages: list[str] | None = None,
         confirm: bool = False,
     ) -> str:
@@ -250,7 +250,7 @@ def register_dev_tools(mcp) -> None:
         return await sync_local_handler(packages, confirm)
 
     @mcp.tool()
-    async def dev_fix_mismatches(
+    async def dev_ecosystem_fix_mismatches(
         hosts: list[str] | None = None,
         packages: list[str] | None = None,
         local: bool = True,
@@ -288,14 +288,14 @@ def register_dev_tools(mcp) -> None:
         return await fix_mismatches_handler(hosts, packages, local, remote, confirm)
 
     @mcp.tool()
-    async def dev_versions_diff(
+    async def dev_ecosystem_diff(
         host: str | None = None,
         packages: list[str] | None = None,
     ) -> str:
         """Show git diff on remote host(s). Read-only operation.
 
         Shows uncommitted changes (git status + git diff) on remote hosts.
-        Use this to review changes before committing with dev_versions_commit.
+        Use this to review changes before committing with dev_ecosystem_commit.
 
         Parameters
         ----------
@@ -314,7 +314,7 @@ def register_dev_tools(mcp) -> None:
         return await remote_diff_handler(host, packages)
 
     @mcp.tool()
-    async def dev_versions_commit(
+    async def dev_ecosystem_commit(
         host: str,
         packages: list[str] | None = None,
         message: str | None = None,
@@ -350,7 +350,7 @@ def register_dev_tools(mcp) -> None:
         return await remote_commit_handler(host, packages, message, push, confirm)
 
     @mcp.tool()
-    async def dev_versions_pull(
+    async def dev_ecosystem_pull(
         packages: list[str] | None = None,
         confirm: bool = False,
         stash: bool = True,
@@ -358,7 +358,7 @@ def register_dev_tools(mcp) -> None:
         """Pull latest from origin to local repos.
 
         Safety: call first without confirm to preview, then with confirm=True
-        to execute. Use after dev_versions_commit to sync remote changes locally.
+        to execute. Use after dev_ecosystem_commit to sync remote changes locally.
 
         Parameters
         ----------
@@ -386,6 +386,9 @@ def register_dev_tools(mcp) -> None:
         replacement: str,
         directory: str = ".",
         confirm: bool = False,
+        regex: bool = False,
+        scope: str = "",
+        recursive: bool = True,
         django_safe: bool = True,
         extra_excludes: list[str] | None = None,
         force: bool = False,
@@ -409,14 +412,24 @@ def register_dev_tools(mcp) -> None:
         Parameters
         ----------
         pattern : str
-            Pattern to search for (literal string, not regex).
+            Pattern to search for. Literal string by default, or regex if regex=True.
         replacement : str
-            String to replace matches with.
+            String to replace matches with. Supports regex backreferences
+            (\\1, \\g<name>) when regex=True.
         directory : str
             Target directory (default: current directory).
         confirm : bool
             If False (default), preview only (dry run).
             If True, execute the rename operation.
+        regex : bool
+            If True, treat pattern as a regular expression (re.DOTALL).
+            If False (default), treat as literal string.
+        scope : str
+            Glob pattern to restrict which files are matched (e.g., "README.md",
+            "*.py", "*.md"). Empty string matches all files.
+        recursive : bool
+            If True (default), recurse into subdirectories.
+            If False, only process files in the top-level directory.
         django_safe : bool
             Protect Django-specific patterns (db_table, related_name, etc).
         extra_excludes : list of str, optional
@@ -442,12 +455,15 @@ def register_dev_tools(mcp) -> None:
             replacement,
             directory,
             confirm,
+            regex,
             django_safe,
             extra_excludes,
             force,
             skip_ids=skip_ids,
             use_sudo=use_sudo,
             sudo_password=sudo_password,
+            scope=scope,
+            recursive=recursive,
         )
 
 

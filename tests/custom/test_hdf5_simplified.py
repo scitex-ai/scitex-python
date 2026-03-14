@@ -16,18 +16,13 @@ __DIR__ = os.path.dirname(__FILE__)
 Test simplified HDF5 save/load functionality
 """
 
-import sys
 import tempfile
 import time
 
 import h5py
 import numpy as np
-
-# Add parent directory to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__FILE__), "../.."))
-
-from src.scitex.io._load_modules._hdf5 import _load_hdf5
-from src.scitex.io._save_modules._hdf5 import _save_hdf5
+from scitex_io._load_modules._hdf5 import _load_hdf5
+from scitex_io._save_modules._hdf5 import _save_hdf5
 
 
 def test_basic_save_load():

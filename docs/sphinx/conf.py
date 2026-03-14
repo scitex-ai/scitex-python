@@ -15,7 +15,13 @@ sys.path.insert(0, os.path.abspath("../../src"))
 project = "SciTeX"
 copyright = "2024-2026, Yusuke Watanabe"
 author = "Yusuke Watanabe"
-release = "2.17.9"
+
+try:
+    from scitex.__version__ import __version__
+
+    release = __version__
+except ImportError:
+    release = "2.24.0"
 
 # -- General configuration ---------------------------------------------------
 

@@ -93,9 +93,9 @@ class ScholarNotifier:
         title: str = "SciTeX Scholar",
         level: str = "info",
     ) -> bool:
-        """Send alert via scitex.ui with configured backends (excluding email)."""
+        """Send alert via scitex.notify with configured backends (excluding email)."""
         try:
-            from scitex.ui import alert_async
+            from scitex.notify import alert_async
 
             # Use non-email backends for immediate UI feedback
             ui_backends = [b for b in self._backends if b != "email"]

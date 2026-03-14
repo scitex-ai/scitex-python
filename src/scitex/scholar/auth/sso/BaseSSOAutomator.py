@@ -230,9 +230,9 @@ class BaseSSOAutomator(ABC):
             event_type, **kwargs
         )
 
-        # Audio alert (immediate feedback) - uses scitex.ui.alert
+        # Audio alert (immediate feedback) - uses scitex.notify.alert
         try:
-            from scitex.ui import alert_async
+            from scitex.notify import alert_async
 
             audio_msg = self._generate_audio_message(event_type, **kwargs)
             level = "critical" if priority == "high" else "info"

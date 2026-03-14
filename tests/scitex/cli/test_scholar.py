@@ -202,7 +202,8 @@ class TestScholarFetch:
                     scholar, ["fetch", "10.1038/nature12373", "--json"]
                 )
                 try:
-                    data = json.loads(result.output)
+                    output = json.loads(result.output)
+                    data = output.get("data", output)
                     # Verify granular success flags are present
                     assert "success_doi" in data
                     assert "success_metadata" in data
@@ -250,9 +251,10 @@ class TestScholarFetch:
                     scholar, ["fetch", "10.1038/nature12373", "--json"]
                 )
                 try:
-                    data = json.loads(result.output)
+                    output = json.loads(result.output)
+                    data = output.get("data", output)
                     # Overall success is False (no PDF)
-                    assert data["success"] is False
+                    assert output.get("success", data.get("success")) is False
                     # But metadata was obtained
                     assert data["success_doi"] is True
                     assert data["success_metadata"] is True
@@ -407,8 +409,9 @@ class TestScholarLibrary:
 
                 result = runner.invoke(scholar, ["library", "--json"])
                 assert result.exit_code == 0
-                data = json.loads(result.output)
-                assert data["success"] is True
+                output = json.loads(result.output)
+                data = output.get("data", output)
+                assert output.get("success", data.get("success")) is True
                 assert "total_papers" in data
 
 
@@ -445,8 +448,9 @@ class TestScholarConfig:
 
             result = runner.invoke(scholar, ["config", "--json"])
             assert result.exit_code == 0
-            data = json.loads(result.output)
-            assert data["success"] is True
+            output = json.loads(result.output)
+            data = output.get("data", output)
+            assert output.get("success", data.get("success")) is True
             assert "library_path" in data
 
 
@@ -541,8 +545,9 @@ class TestScholarJobsList:
 
             result = runner.invoke(scholar, ["jobs", "list", "--json"])
             assert result.exit_code == 0
-            data = json.loads(result.output)
-            assert data["success"] is True
+            output = json.loads(result.output)
+            data = output.get("data", output)
+            assert output.get("success", data.get("success")) is True
             assert data["count"] == 1
 
 
@@ -600,8 +605,9 @@ class TestScholarJobsStatus:
 
             result = runner.invoke(scholar, ["jobs", "status", "job-12345", "--json"])
             assert result.exit_code == 0
-            data = json.loads(result.output)
-            assert data["success"] is True
+            output = json.loads(result.output)
+            data = output.get("data", output)
+            assert output.get("success", data.get("success")) is True
             assert data["job_id"] == "job-12345"
 
 
@@ -746,8 +752,9 @@ class TestScholarJobsClean:
 
             result = runner.invoke(scholar, ["jobs", "clean", "--json"])
             assert result.exit_code == 0
-            data = json.loads(result.output)
-            assert data["success"] is True
+            output = json.loads(result.output)
+            data = output.get("data", output)
+            assert output.get("success", data.get("success")) is True
             assert data["deleted"] == 2
 
 

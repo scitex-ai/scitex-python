@@ -86,8 +86,9 @@ class TestConfigList:
             assert result.exit_code == 0
             # Verify output is valid JSON
             output_json = json.loads(result.output)
-            assert "paths" in output_json
-            assert "logs" in output_json["paths"]
+            data = output_json.get("data", output_json)
+            assert "paths" in data
+            assert "logs" in data["paths"]
 
     def test_list_with_json_and_env(self):
         """Test config list with both --json and --env flags."""
@@ -101,8 +102,9 @@ class TestConfigList:
             result = runner.invoke(config, ["list", "--json", "--env"])
             assert result.exit_code == 0
             output_json = json.loads(result.output)
-            assert "environment" in output_json
-            assert "SCITEX_DIR" in output_json["environment"]
+            data = output_json.get("data", output_json)
+            assert "environment" in data
+            assert "SCITEX_DIR" in data["environment"]
 
     def test_list_with_exists_flag(self):
         """Test config list with --exists flag filters non-existing paths."""

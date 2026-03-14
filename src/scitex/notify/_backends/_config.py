@@ -8,8 +8,8 @@ Priority resolution (same as ScitexConfig):
     direct → config (YAML) → env → default
 
 Configuration sources:
-1. YAML file: ~/.scitex/config.yaml or custom path via SCITEX_UI_CONFIG
-2. Environment variables: SCITEX_UI_*
+1. YAML file: ~/.scitex/config.yaml or custom path via SCITEX_NOTIFY_CONFIG
+2. Environment variables: SCITEX_NOTIFY_* (SCITEX_UI_* for backward compat)
 
 Example YAML (in default.yaml or custom file):
     ui:
@@ -28,13 +28,15 @@ Example YAML (in default.yaml or custom file):
         playwright: 5.0
 
 Environment variables:
-    SCITEX_UI_CONFIG: Path to custom UI config file
-    SCITEX_UI_DEFAULT_BACKEND: audio
-    SCITEX_UI_BACKEND_PRIORITY: audio,desktop,email (comma-separated)
-    SCITEX_UI_INFO_BACKENDS: audio (comma-separated)
-    SCITEX_UI_WARNING_BACKENDS: audio,desktop
-    SCITEX_UI_ERROR_BACKENDS: audio,desktop,email
-    SCITEX_UI_CRITICAL_BACKENDS: audio,desktop,email
+    SCITEX_NOTIFY_CONFIG: Path to custom UI config file
+    SCITEX_NOTIFY_DEFAULT_BACKEND: audio (preferred)
+    SCITEX_UI_CONFIG: (deprecated) use SCITEX_NOTIFY_CONFIG
+    SCITEX_UI_DEFAULT_BACKEND: (deprecated) use SCITEX_NOTIFY_DEFAULT_BACKEND
+    SCITEX_NOTIFY_BACKEND_PRIORITY: audio,desktop,email (comma-separated)
+    SCITEX_NOTIFY_INFO_BACKENDS: audio (comma-separated)
+    SCITEX_NOTIFY_WARNING_BACKENDS: audio,desktop
+    SCITEX_NOTIFY_ERROR_BACKENDS: audio,desktop,email
+    SCITEX_NOTIFY_CRITICAL_BACKENDS: audio,desktop,email
 """
 
 from __future__ import annotations
@@ -98,7 +100,7 @@ DEFAULT_CONFIG = {
 
 
 class UIConfig:
-    """Configuration manager for scitex.ui using ScitexConfig pattern."""
+    """Configuration manager for scitex.notify using ScitexConfig pattern."""
 
     _instance: Optional[UIConfig] = None
     _config: dict
@@ -131,7 +133,12 @@ class UIConfig:
             from scitex.config import get_config
 
             # Support custom config path via env var or constructor
-            config_path = self._config_path or os.getenv("SCITEX_UI_CONFIG")
+            # Check SCITEX_NOTIFY_CONFIG first, fall back to SCITEX_UI_CONFIG
+            config_path = (
+                self._config_path
+                or os.getenv("SCITEX_NOTIFY_CONFIG")
+                or os.getenv("SCITEX_UI_CONFIG")
+            )
             scitex_config = get_config(config_path)
 
             # Get UI section from config
@@ -164,27 +171,40 @@ class UIConfig:
         self._load_env_overrides()
 
     def _load_env_overrides(self):
-        """Load environment variable overrides."""
-        if os.getenv("SCITEX_UI_DEFAULT_BACKEND"):
-            self._config["default_backend"] = os.getenv("SCITEX_UI_DEFAULT_BACKEND")
+        """Load environment variable overrides.
 
-        if os.getenv("SCITEX_UI_BACKEND_PRIORITY"):
-            self._config["backend_priority"] = os.getenv(
-                "SCITEX_UI_BACKEND_PRIORITY"
-            ).split(",")
+        Checks SCITEX_NOTIFY_* first, falls back to SCITEX_UI_* for backward compat.
+        """
+        default_backend = os.getenv("SCITEX_NOTIFY_DEFAULT_BACKEND") or os.getenv(
+            "SCITEX_UI_DEFAULT_BACKEND"
+        )
+        if default_backend:
+            self._config["default_backend"] = default_backend
+
+        backend_priority = os.getenv("SCITEX_NOTIFY_BACKEND_PRIORITY") or os.getenv(
+            "SCITEX_UI_BACKEND_PRIORITY"
+        )
+        if backend_priority:
+            self._config["backend_priority"] = backend_priority.split(",")
 
         # Level-specific backends from env
         for level in ["info", "warning", "error", "critical"]:
-            env_key = f"SCITEX_UI_{level.upper()}_BACKENDS"
-            if os.getenv(env_key):
-                self._config["level_backends"][level] = os.getenv(env_key).split(",")
+            level_upper = level.upper()
+            env_val = os.getenv(f"SCITEX_NOTIFY_{level_upper}_BACKENDS") or os.getenv(
+                f"SCITEX_UI_{level_upper}_BACKENDS"
+            )
+            if env_val:
+                self._config["level_backends"][level] = env_val.split(",")
 
         # Timeouts from env
         for backend in ["matplotlib", "playwright"]:
-            env_key = f"SCITEX_UI_TIMEOUT_{backend.upper()}"
-            if os.getenv(env_key):
+            backend_upper = backend.upper()
+            env_val = os.getenv(f"SCITEX_NOTIFY_TIMEOUT_{backend_upper}") or os.getenv(
+                f"SCITEX_UI_TIMEOUT_{backend_upper}"
+            )
+            if env_val:
                 try:
-                    self._config["timeouts"][backend] = float(os.getenv(env_key))
+                    self._config["timeouts"][backend] = float(env_val)
                 except ValueError:
                     pass
 
