@@ -258,8 +258,8 @@ class TestConvertValidate:
                 }
                 zf.writestr("spec.json", json.dumps(spec))
 
-            # Patch at the source module where FTS is imported
-            with patch("scitex.io.bundle.FTS") as mock_bundle_cls:
+            # Patch at the source module where Bundle is imported
+            with patch("scitex.io.bundle.Bundle") as mock_bundle_cls:
                 mock_bundle = MagicMock()
                 mock_bundle.__enter__ = MagicMock(return_value=mock_bundle)
                 mock_bundle.__exit__ = MagicMock(return_value=False)
@@ -283,8 +283,8 @@ class TestConvertValidate:
                 }
                 zf.writestr("spec.json", json.dumps(spec))
 
-            # Patch at the source module where FTS is imported
-            with patch("scitex.io.bundle.FTS") as mock_bundle_cls:
+            # Patch at the source module where Bundle is imported
+            with patch("scitex.io.bundle.Bundle") as mock_bundle_cls:
                 mock_bundle = MagicMock()
                 mock_bundle.__enter__ = MagicMock(return_value=mock_bundle)
                 mock_bundle.__exit__ = MagicMock(return_value=False)
@@ -336,8 +336,8 @@ class TestConvertInfo:
                 zf.writestr("spec.json", json.dumps(spec))
                 zf.writestr("data.txt", "test data")
 
-            # Patch at the source module where FTS is imported
-            with patch("scitex.io.bundle.FTS") as mock_bundle_cls:
+            # Patch at the source module where Bundle is imported
+            with patch("scitex.io.bundle.Bundle") as mock_bundle_cls:
                 mock_bundle = MagicMock()
                 mock_bundle.__enter__ = MagicMock(return_value=mock_bundle)
                 mock_bundle.__exit__ = MagicMock(return_value=False)

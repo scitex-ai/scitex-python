@@ -287,13 +287,11 @@ class TestPltServe:
     """Tests for the plt serve command."""
 
     def test_serve_help(self):
-        """Test serve command help."""
+        """Test mcp command help (formerly serve)."""
         runner = CliRunner()
-        result = runner.invoke(plt, ["serve", "--help"])
+        result = runner.invoke(plt, ["mcp", "--help"])
         assert result.exit_code == 0
-        assert "MCP server" in result.output
-        assert "--transport" in result.output
-        assert "--port" in result.output
+        assert "MCP" in result.output
 
 
 class TestFigrecipeAvailability:

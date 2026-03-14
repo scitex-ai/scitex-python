@@ -21,7 +21,7 @@ class TestCLIGroup:
         runner = CliRunner()
         result = runner.invoke(cli, ["--help"])
         assert result.exit_code == 0
-        assert "SciTeX - Integrated Scientific Research Platform" in result.output
+        assert "Integrated Scientific Research Platform" in result.output
 
     def test_cli_short_help(self):
         """Test that -h also shows help."""

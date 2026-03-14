@@ -74,7 +74,8 @@ class TestStatsRecommend:
                 )
                 assert result.exit_code == 0
                 output = json.loads(result.output)
-                assert "recommended_tests" in output
+                data = output.get("data", output)
+                assert "recommended_tests" in data
 
     def test_recommend_with_paired(self):
         """Test recommend command with paired flag."""
@@ -152,7 +153,8 @@ class TestStatsDescribe:
                 result = runner.invoke(stats, ["describe", temp_path, "--json"])
                 assert result.exit_code == 0
                 output = json.loads(result.output)
-                assert "count" in output
+                data = output.get("data", output)
+                assert "count" in data
         finally:
             os.unlink(temp_path)
 
@@ -248,7 +250,8 @@ class TestStatsLoad:
                 result = runner.invoke(stats, ["load", temp_path, "--json"])
                 assert result.exit_code == 0
                 output = json.loads(result.output)
-                assert "p_value" in output or "comparisons" in output
+                data = output.get("data", output)
+                assert "p_value" in data or "comparisons" in data
         finally:
             os.unlink(temp_path)
 

@@ -235,7 +235,8 @@ class TestCaptureInfo:
             result = runner.invoke(capture, ["info", "--json"])
             assert result.exit_code == 0
             output = json.loads(result.output)
-            assert "Monitors" in output
+            data = output.get("data", output)
+            assert "Monitors" in data
 
 
 class TestCaptureWindow:

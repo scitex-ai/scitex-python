@@ -71,8 +71,9 @@ class TestTemplateList:
             result = runner.invoke(template, ["list", "--json"])
             assert result.exit_code == 0
             output = json.loads(result.output)
-            assert isinstance(output, list)
-            assert len(output) > 0
+            data = output.get("data", output)
+            assert isinstance(data, list)
+            assert len(data) > 0
 
     def test_list_empty(self):
         """Test list command when no templates available."""
