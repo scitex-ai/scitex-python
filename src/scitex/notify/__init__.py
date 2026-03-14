@@ -122,7 +122,7 @@ async def alert_async(
         if name not in available:
             continue
         try:
-            b = _get_backend(name, **kwargs)
+            b = _get_backend(name)
             result = await b.send(message, title=title, level=lvl, **kwargs)
             if result.success:
                 return True

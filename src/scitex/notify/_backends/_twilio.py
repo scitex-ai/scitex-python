@@ -58,10 +58,10 @@ class TwilioBackend(BaseNotifyBackend):
         **kwargs,
     ) -> NotifyResult:
         try:
-            to_number = kwargs.get("to_number", self.to_number)
-            from_number = kwargs.get("from_number", self.from_number)
-            flow_sid = kwargs.get("flow_sid", self.flow_sid)
-            repeat = kwargs.get("repeat", self.repeat)
+            to_number = kwargs.get("to_number") or self.to_number
+            from_number = kwargs.get("from_number") or self.from_number
+            flow_sid = kwargs.get("flow_sid") or self.flow_sid
+            repeat = kwargs.get("repeat") or self.repeat
 
             if not all([self.account_sid, self.auth_token, from_number, to_number]):
                 raise ValueError(
