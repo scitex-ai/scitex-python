@@ -36,12 +36,14 @@ class TwilioBackend(BaseNotifyBackend):
         from_number: Optional[str] = None,
         to_number: Optional[str] = None,
         flow_sid: Optional[str] = None,
+        repeat: int = 1,
     ):
         self.account_sid = account_sid or os.getenv("SCITEX_NOTIFY_TWILIO_SID", "")
         self.auth_token = auth_token or os.getenv("SCITEX_NOTIFY_TWILIO_TOKEN", "")
         self.from_number = from_number or os.getenv("SCITEX_NOTIFY_TWILIO_FROM", "")
         self.to_number = to_number or os.getenv("SCITEX_NOTIFY_TWILIO_TO", "")
         self.flow_sid = flow_sid or os.getenv("SCITEX_NOTIFY_TWILIO_FLOW", "")
+        self.repeat = repeat
 
     def is_available(self) -> bool:
         return bool(
@@ -59,6 +61,7 @@ class TwilioBackend(BaseNotifyBackend):
             to_number = kwargs.get("to_number", self.to_number)
             from_number = kwargs.get("from_number", self.from_number)
             flow_sid = kwargs.get("flow_sid", self.flow_sid)
+            repeat = kwargs.get("repeat", self.repeat)
 
             if not all([self.account_sid, self.auth_token, from_number, to_number]):
                 raise ValueError(
@@ -68,53 +71,61 @@ class TwilioBackend(BaseNotifyBackend):
 
             loop = asyncio.get_event_loop()
 
-            if flow_sid:
-                # Use Studio Flow execution
-                await loop.run_in_executor(
-                    None,
-                    lambda: _execute_flow(
-                        self.account_sid,
-                        self.auth_token,
-                        flow_sid,
-                        from_number,
-                        to_number,
-                    ),
-                )
-            else:
-                # Direct TwiML call with message
-                full_message = f"{title}. {message}" if title else message
-                if level == NotifyLevel.CRITICAL:
-                    full_message = f"Critical alert! {full_message}"
-                elif level == NotifyLevel.ERROR:
-                    full_message = f"Error. {full_message}"
+            for attempt in range(max(1, repeat)):
+                if attempt > 0:
+                    # Wait 30s between calls (iOS "Repeated Calls" needs
+                    # same number within 3 min to bypass silent mode)
+                    await asyncio.sleep(30)
 
-                twiml = (
-                    f"<Response>"
-                    f'<Say voice="alice" language="en-US">'
-                    f"{_escape_xml(full_message)}</Say>"
-                    f'<Pause length="2"/>'
-                    f'<Say voice="alice" language="en-US">'
-                    f"{_escape_xml(full_message)}</Say>"
-                    f"</Response>"
-                )
+                if flow_sid:
+                    await loop.run_in_executor(
+                        None,
+                        lambda: _execute_flow(
+                            self.account_sid,
+                            self.auth_token,
+                            flow_sid,
+                            from_number,
+                            to_number,
+                        ),
+                    )
+                else:
+                    full_message = f"{title}. {message}" if title else message
+                    if level == NotifyLevel.CRITICAL:
+                        full_message = f"Critical alert! {full_message}"
+                    elif level == NotifyLevel.ERROR:
+                        full_message = f"Error. {full_message}"
 
-                await loop.run_in_executor(
-                    None,
-                    lambda: _make_call(
-                        self.account_sid,
-                        self.auth_token,
-                        from_number,
-                        to_number,
-                        twiml,
-                    ),
-                )
+                    twiml = (
+                        f"<Response>"
+                        f'<Say voice="alice" language="en-US">'
+                        f"{_escape_xml(full_message)}</Say>"
+                        f'<Pause length="2"/>'
+                        f'<Say voice="alice" language="en-US">'
+                        f"{_escape_xml(full_message)}</Say>"
+                        f"</Response>"
+                    )
+
+                    await loop.run_in_executor(
+                        None,
+                        lambda: _make_call(
+                            self.account_sid,
+                            self.auth_token,
+                            from_number,
+                            to_number,
+                            twiml,
+                        ),
+                    )
 
             return NotifyResult(
                 success=True,
                 backend=self.name,
                 message=message,
                 timestamp=datetime.now().isoformat(),
-                details={"to": to_number, "flow": flow_sid or "direct"},
+                details={
+                    "to": to_number,
+                    "flow": flow_sid or "direct",
+                    "repeat": repeat,
+                },
             )
         except Exception as e:
             return NotifyResult(
@@ -194,6 +205,105 @@ def _make_call(
     result = _twilio_request(url, account_sid, auth_token, data)
     if result.get("status") in ("failed", "canceled"):
         raise RuntimeError(f"Twilio call failed: {result.get('message', 'unknown')}")
+
+
+def _send_sms(
+    account_sid: str,
+    auth_token: str,
+    from_number: str,
+    to_number: str,
+    body: str,
+) -> dict:
+    """Send an SMS via Twilio REST API (no SDK dependency)."""
+    import urllib.parse
+
+    url = f"https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json"
+    data = urllib.parse.urlencode(
+        {
+            "To": to_number,
+            "From": from_number,
+            "Body": body,
+        }
+    ).encode("utf-8")
+
+    result = _twilio_request(url, account_sid, auth_token, data)
+    if result.get("status") == "failed":
+        raise RuntimeError(f"Twilio SMS failed: {result.get('message', 'unknown')}")
+    return result
+
+
+async def send_sms(
+    message: str,
+    title: Optional[str] = None,
+    to_number: Optional[str] = None,
+    from_number: Optional[str] = None,
+    account_sid: Optional[str] = None,
+    auth_token: Optional[str] = None,
+) -> NotifyResult:
+    """Send an SMS message via Twilio.
+
+    Parameters
+    ----------
+    message : str
+        SMS body text
+    title : str, optional
+        Prepended to message if provided
+    to_number : str, optional
+        Override SCITEX_NOTIFY_TWILIO_TO
+    from_number : str, optional
+        Override SCITEX_NOTIFY_TWILIO_FROM
+    account_sid : str, optional
+        Override SCITEX_NOTIFY_TWILIO_SID
+    auth_token : str, optional
+        Override SCITEX_NOTIFY_TWILIO_TOKEN
+
+    Returns
+    -------
+    NotifyResult
+    """
+    sid = account_sid or os.getenv("SCITEX_NOTIFY_TWILIO_SID", "")
+    token = auth_token or os.getenv("SCITEX_NOTIFY_TWILIO_TOKEN", "")
+    from_num = from_number or os.getenv("SCITEX_NOTIFY_TWILIO_FROM", "")
+    to_num = to_number or os.getenv("SCITEX_NOTIFY_TWILIO_TO", "")
+
+    if not all([sid, token, from_num, to_num]):
+        return NotifyResult(
+            success=False,
+            backend="twilio_sms",
+            message=message,
+            timestamp=datetime.now().isoformat(),
+            error=(
+                "Twilio SMS requires: account_sid, auth_token, from_number, to_number. "
+                "Set SCITEX_NOTIFY_TWILIO_SID/TOKEN/FROM/TO env vars."
+            ),
+        )
+
+    try:
+        body = f"{title}: {message}" if title else message
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            None,
+            lambda: _send_sms(sid, token, from_num, to_num, body),
+        )
+        return NotifyResult(
+            success=True,
+            backend="twilio_sms",
+            message=message,
+            timestamp=datetime.now().isoformat(),
+            details={
+                "to": to_num,
+                "sid": result.get("sid", ""),
+                "status": result.get("status", ""),
+            },
+        )
+    except Exception as e:
+        return NotifyResult(
+            success=False,
+            backend="twilio_sms",
+            message=message,
+            timestamp=datetime.now().isoformat(),
+            error=str(e),
+        )
 
 
 def _escape_xml(text: str) -> str:

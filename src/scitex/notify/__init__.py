@@ -19,8 +19,12 @@ Usage:
     # Use fallback explicitly
     scitex.notify.alert("Important", fallback=True)
 
+    # Make a phone call via Twilio
+    scitex.notify.call("Critical alert!")
+
 Environment Variables:
-    SCITEX_UI_DEFAULT_BACKEND: audio, email, desktop, webhook
+    SCITEX_NOTIFY_DEFAULT_BACKEND: audio, email, desktop, webhook
+    SCITEX_UI_DEFAULT_BACKEND: (deprecated) use SCITEX_NOTIFY_DEFAULT_BACKEND
 """
 
 from __future__ import annotations
@@ -33,7 +37,15 @@ from ._backends import NotifyLevel as _AlertLevel
 from ._backends import available_backends as _available_backends
 from ._backends import get_backend as _get_backend
 
-__all__ = ["alert", "alert_async", "available_backends"]
+__all__ = [
+    "alert",
+    "alert_async",
+    "available_backends",
+    "call",
+    "call_async",
+    "sms",
+    "sms_async",
+]
 
 # Default fallback priority order
 DEFAULT_FALLBACK_ORDER = [
@@ -87,7 +99,9 @@ async def alert_async(
     # Determine backends to try
     if backend is None:
         # No backend specified: use fallback priority
-        default = os.getenv("SCITEX_UI_DEFAULT_BACKEND", "audio")
+        default = os.getenv("SCITEX_NOTIFY_DEFAULT_BACKEND") or os.getenv(
+            "SCITEX_UI_DEFAULT_BACKEND", "audio"
+        )
         if fallback:
             # Start with default, then try others in priority order
             backends = [default] + [b for b in DEFAULT_FALLBACK_ORDER if b != default]
@@ -168,6 +182,116 @@ def alert(
         return asyncio.run(
             alert_async(message, title, backend, level, fallback, **kwargs)
         )
+
+
+def call(
+    message: str,
+    title: Optional[str] = None,
+    level: str = "info",
+    to_number: Optional[str] = None,
+    **kwargs,
+) -> bool:
+    """Make a phone call via Twilio.
+
+    Convenience wrapper for alert(backend="twilio").
+    """
+    return alert(
+        message,
+        title=title,
+        backend="twilio",
+        level=level,
+        fallback=False,
+        to_number=to_number,
+        **kwargs,
+    )
+
+
+async def call_async(
+    message: str,
+    title: Optional[str] = None,
+    level: str = "info",
+    to_number: Optional[str] = None,
+    **kwargs,
+) -> bool:
+    """Make a phone call via Twilio (async)."""
+    return await alert_async(
+        message,
+        title=title,
+        backend="twilio",
+        level=level,
+        fallback=False,
+        to_number=to_number,
+        **kwargs,
+    )
+
+
+async def sms_async(
+    message: str,
+    title: Optional[str] = None,
+    to_number: Optional[str] = None,
+    **kwargs,
+) -> bool:
+    """Send an SMS via Twilio (async).
+
+    Parameters
+    ----------
+    message : str
+        SMS body text
+    title : str, optional
+        Prepended to message if provided
+    to_number : str, optional
+        Override SCITEX_NOTIFY_TWILIO_TO
+
+    Returns
+    -------
+    bool
+        True if SMS sent successfully
+    """
+    from ._backends._twilio import send_sms as _send_sms
+
+    result = await _send_sms(
+        message,
+        title=title,
+        to_number=to_number,
+        **kwargs,
+    )
+    return result.success
+
+
+def sms(
+    message: str,
+    title: Optional[str] = None,
+    to_number: Optional[str] = None,
+    **kwargs,
+) -> bool:
+    """Send an SMS via Twilio.
+
+    Parameters
+    ----------
+    message : str
+        SMS body text
+    title : str, optional
+        Prepended to message if provided
+    to_number : str, optional
+        Override SCITEX_NOTIFY_TWILIO_TO
+
+    Returns
+    -------
+    bool
+        True if SMS sent successfully
+    """
+    try:
+        asyncio.get_running_loop()
+        import concurrent.futures
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(
+                asyncio.run,
+                sms_async(message, title, to_number, **kwargs),
+            )
+            return future.result(timeout=30)
+    except RuntimeError:
+        return asyncio.run(sms_async(message, title, to_number, **kwargs))
 
 
 # EOF
