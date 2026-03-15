@@ -307,8 +307,12 @@ def list_backends(as_json):
       scitex notify backends --json
     """
     try:
-        from scitex.notify import DEFAULT_FALLBACK_ORDER, available_backends
-        from scitex.notify._backends import BACKENDS
+        from scitex_notification._backends import BACKENDS  # noqa: E402
+
+        from scitex.notify import (  # noqa: E402
+            DEFAULT_FALLBACK_ORDER,
+            available_backends,
+        )
 
         available = available_backends()
 
@@ -363,7 +367,7 @@ def config(as_json):
       scitex notify config --json
     """
     try:
-        from scitex.notify._backends._config import get_config
+        from scitex_notification._backends._config import get_config
 
         cfg = get_config()
 
