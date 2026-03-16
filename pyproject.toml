@@ -69,6 +69,7 @@ dependencies = [
     "scitex-io>=0.2.0",
     "scitex-stats>=0.2.0",
     "scitex-audio>=0.1.0",
+    "scitex-notification>=0.1.0",
 ]
 
 [project.urls]

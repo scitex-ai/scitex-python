@@ -18,8 +18,7 @@ def register_notify_tools(mcp) -> None:
     ) -> str:
         """Send a notification via configured backends."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.notify._mcp.handlers import notify_handler
+        from scitex_notification._mcp.handlers import notify_handler
 
         return await async_wrap_as_mcp(
             notify_handler,
@@ -46,8 +45,7 @@ def register_notify_tools(mcp) -> None:
         Use repeat=2 to bypass iOS silent/manner mode (calls 30s apart).
         """
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.notify._mcp.handlers import notify_handler
+        from scitex_notification._mcp.handlers import notify_handler
 
         kwargs = {"repeat": repeat}
         if to_number:
@@ -74,8 +72,7 @@ def register_notify_tools(mcp) -> None:
     ) -> str:
         """Send an SMS via Twilio."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.notify._backends._twilio import send_sms
+        from scitex_notification._backends._twilio import send_sms
 
         kwargs = {}
         if to_number:
@@ -93,8 +90,7 @@ def register_notify_tools(mcp) -> None:
     async def notify_backends() -> str:
         """List all notification backends and their availability."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.notify._mcp.handlers import list_backends_handler
+        from scitex_notification._mcp.handlers import list_backends_handler
 
         return await async_wrap_as_mcp(
             list_backends_handler,
@@ -105,8 +101,7 @@ def register_notify_tools(mcp) -> None:
     async def notify_config() -> str:
         """Get current notification configuration."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.notify._mcp.handlers import get_config_handler
+        from scitex_notification._mcp.handlers import get_config_handler
 
         return await async_wrap_as_mcp(
             get_config_handler,

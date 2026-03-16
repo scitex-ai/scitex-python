@@ -43,6 +43,12 @@ ECOSYSTEM: Dict[str, PackageInfo] = {
         "github_repo": "ywatanabe1989/scitex-clew",
         "import_name": "scitex_clew",
     },
+    "scitex-notification": {
+        "local_path": "~/proj/scitex-notification",
+        "pypi_name": "scitex-notification",
+        "github_repo": "ywatanabe1989/scitex-notification",
+        "import_name": "scitex_notification",
+    },
     "scitex-cloud": {
         "local_path": "~/proj/scitex-cloud",
         "pypi_name": "scitex-cloud",

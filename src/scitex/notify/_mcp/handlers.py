@@ -25,6 +25,7 @@ async def notify_handler(
     backend: Optional[str] = None,
     backends: Optional[list[str]] = None,
     timeout: float = 5.0,
+    **kwargs,
 ) -> dict:
     """Send notification via specified backend(s)."""
     from .._backends import BACKENDS, NotifyLevel, get_backend
@@ -61,12 +62,13 @@ async def notify_handler(
                     )
                     continue
 
-                b = get_backend(backend_name)
+                b = get_backend(backend_name, **kwargs)
                 result = await b.send(
                     message,
                     title=title,
                     level=notify_level,
                     timeout=timeout,
+                    **kwargs,
                 )
 
                 results.append(
