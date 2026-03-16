@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-02-16 10:13:53
+!-- Timestamp: 2026-03-16 17:14:33
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -43,7 +43,7 @@ SciTeX provides a **modular Python toolkit** that unifies the research workflow 
 
 ## Demo
 
-**40 min, zero human intervention** — AI agent conducts full research pipeline:
+**40 min, minimal human intervention** — AI agent conducts full research pipeline:
 
 > Literature search → Data analysis → Statistics → Figures → 21-page manuscript → Peer review simulation
 
@@ -301,6 +301,18 @@ The SciTeX system follows the Four Freedoms for Research below, inspired by [the
 >3. The freedom to **modify** any module and share improvements with the community.
 >
 >AGPL-3.0 — because we believe research infrastructure deserves the same freedoms as the software it runs on.
+
+---
+
+## Star History
+
+<a href="https://star-history.com/#ywatanabe1989/scitex-python&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ywatanabe1989/scitex-python&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ywatanabe1989/scitex-python&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ywatanabe1989/scitex-python&type=Date" />
+ </picture>
+</a>
 
 ---
 
