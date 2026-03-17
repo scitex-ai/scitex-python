@@ -13,12 +13,8 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
+from .clone_app import clone_app
 from .clone_module import clone_module
-
-try:
-    from scitex_app.template import clone_app
-except ImportError:
-    from .clone_app import clone_app  # fallback if scitex-app not installed
 from .clone_pip_project import clone_pip_project
 from .clone_research import clone_research
 from .clone_research_minimal import clone_research_minimal
