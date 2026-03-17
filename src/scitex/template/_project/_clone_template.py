@@ -11,8 +11,9 @@ Django, MCP, and CLI all delegate to this function.
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Optional
 
+from .clone_app import clone_app
 from .clone_module import clone_module
 from .clone_pip_project import clone_pip_project
 from .clone_research import clone_research
@@ -29,6 +30,7 @@ TEMPLATES = {
     "singularity": clone_singularity,
     "paper_directory": clone_writer_directory,
     "module": clone_module,
+    "scitex_app": clone_app,
 }
 
 ALIASES = {
@@ -36,6 +38,7 @@ ALIASES = {
     "pip-project": "pip_project",
     "paper": "paper_directory",
     "stx-module": "module",
+    "app": "scitex_app",
 }
 
 
@@ -57,8 +60,10 @@ def clone_template(
     ----------
     template_id : str
         Template identifier. Canonical IDs: research, research_minimal,
-        scitex_minimal, pip_project, singularity, paper_directory.
-        Aliases: minimal (->scitex_minimal), pip-project, paper.
+        scitex_minimal, pip_project, singularity, paper_directory,
+        module, scitex_app.
+        Aliases: minimal (->scitex_minimal), pip-project, paper,
+        stx-module, app (->scitex_app).
     project_dir : str
         Path to project directory (will be created).
     git_strategy : str, optional
