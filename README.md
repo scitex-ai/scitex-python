@@ -29,7 +29,7 @@
 
 ## Problem
 
-Researchers face a fragmented toolchain — literature search, statistical analysis, figure creation, and manuscript writing each require separate tools with incompatible formats. AI agents can automate these steps, but lack a unified interface that connects them into a coherent pipeline.
+Researchers face a fragmented toolchain -- literature search, statistical analysis, figure creation, and manuscript writing each require separate tools with incompatible formats. AI agents can automate these steps, but lack a unified interface that connects them into a coherent pipeline.
 
 ## Solution
 
@@ -39,13 +39,13 @@ SciTeX provides a **modular Python toolkit** that unifies the research workflow 
     <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="800">
 </p>
 
-<p align="center"><sub><b>Figure 1.</b> SciTeX research pipeline — AI agents orchestrate the full workflow from literature search to manuscript compilation.</sub></p>
+<p align="center"><sub><b>Figure 1.</b> SciTeX research pipeline -- AI agents orchestrate the full workflow from literature search to manuscript compilation.</sub></p>
 
 ## Demo
 
-**40 min, minimal human intervention** — AI agent conducts full research pipeline:
+**40 min, minimal human intervention** -- AI agent conducts full research pipeline:
 
-> Literature search → Data analysis → Statistics → Figures → 21-page manuscript → Peer review simulation
+> Literature search -> Data analysis -> Statistics -> Figures -> 21-page manuscript -> Peer review simulation
 
 <p align="center">
   <a href="https://scitex.ai/demos/watch/scitex-automated-research/" title="Watch full demo at scitex.ai/demos/">
@@ -86,7 +86,7 @@ scitex.io.save(fig, "figure.png")  # Saves figure.png + figure.csv
 
 <br>
 
-**`@scitex.session`** — Reproducible Experiment Tracking
+**`@scitex.session`** -- Reproducible Experiment Tracking
 
 ```python
 import scitex
@@ -109,7 +109,7 @@ script_out/FINISHED_SUCCESS/2025-01-08_12-30-00_AbC1/
 └── logs/{stdout,stderr}.log    # Execution logs
 ```
 
-**`scitex.io`** — Universal File I/O (30+ formats)
+**`scitex.io`** -- Universal File I/O (30+ formats)
 
 ```python
 scitex.io.save(df, "output.csv")
@@ -117,7 +117,7 @@ scitex.io.save(fig, "output.jpg")
 df = scitex.io.load("output.csv")
 ```
 
-**`scitex.stats`** — Publication-Ready Statistics (23 tests)
+**`scitex.stats`** -- Publication-Ready Statistics (23 tests)
 
 ```python
 result = scitex.stats.test_ttest_ind(group1, group2, return_as="dataframe")
@@ -152,13 +152,13 @@ scitex introspect api scitex.stats   # List APIs for specific module
 </details>
 
 <details>
-<summary><strong>MCP Server — for AI Agents</strong></summary>
+<summary><strong>MCP Server -- for AI Agents</strong></summary>
 
 <br>
 
 Turn AI agents into autonomous scientific researchers via the [Model Context Protocol](https://modelcontextprotocol.io/).
 
-**Typical workflow**: Scholar (find papers) → Stats (analyze) → Plt (visualize) → Writer (manuscript) → Capture (verify)
+**Typical workflow**: Scholar (find papers) -> Stats (analyze) -> Plt (visualize) -> Writer (manuscript) -> Capture (verify)
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -183,7 +183,7 @@ Turn AI agents into autonomous scientific researchers via the [Model Context Pro
 
 #### Claude Code Setup
 
-Add `.mcp.json` to your project root. Use `SCITEX_ENV_SRC` to load all configuration from a `.src` file — this keeps `.mcp.json` static across environments:
+Add `.mcp.json` to your project root. Use `SCITEX_ENV_SRC` to load all configuration from a `.src` file -- this keeps `.mcp.json` static across environments:
 
 ```json
 {
@@ -283,6 +283,30 @@ pip install scitex[plt]      # Or via scitex
 
 </details>
 
+## Role in SciTeX Ecosystem
+
+`scitex` is the **unified orchestrator** package. It re-exports functionality from sub-packages so users have a single import (`import scitex`). It does not contain runtime logic itself -- it delegates to sub-packages.
+
+```
+scitex (this package) -- orchestrator, templates, CLI, MCP server
+  |-- scitex.app  <-  scitex-app   (runtime SDK: file I/O, config, validation)
+  |-- scitex.ui   <-  scitex-ui    (React/TS components: workspace, data-table)
+  +-- scitex.plt  <-  figrecipe    (figures: plotting, diagrams, recipes)
+```
+
+**What this package owns:**
+
+- All project templates (`scitex template clone app my_app`, `research`, `pip`, `paper`, `singularity`)
+- CLI entry point (`scitex <module> <command>`)
+- MCP server (120+ tools aggregated from sub-packages)
+- Session decorator (`@scitex.session`) and reproducibility tracking
+
+**What this package does NOT own:**
+
+- Runtime app SDK -- see [scitex-app](https://github.com/ywatanabe1989/scitex-app)
+- Frontend components -- see [scitex-ui](https://github.com/ywatanabe1989/scitex-ui)
+- Figure/diagram engine -- see [figrecipe](https://github.com/ywatanabe1989/figrecipe)
+
 ## Part of SciTeX
 
 SciTeX is an open-source research automation platform at [scitex.ai](https://scitex.ai).
@@ -295,12 +319,12 @@ The SciTeX system follows the Four Freedoms for Research below, inspired by [the
 
 >Four Freedoms for Research
 >
->0. The freedom to **run** your research anywhere — your machine, your terms.
->1. The freedom to **study** how every step works — from raw data to final manuscript.
+>0. The freedom to **run** your research anywhere -- your machine, your terms.
+>1. The freedom to **study** how every step works -- from raw data to final manuscript.
 >2. The freedom to **redistribute** your workflows, not just your papers.
 >3. The freedom to **modify** any module and share improvements with the community.
 >
->AGPL-3.0 — because we believe research infrastructure deserves the same freedoms as the software it runs on.
+>AGPL-3.0 -- because we believe research infrastructure deserves the same freedoms as the software it runs on.
 
 ---
 

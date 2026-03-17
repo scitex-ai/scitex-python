@@ -1,6 +1,6 @@
 .. SciTeX documentation master file
 
-SciTeX — Modular Python Toolkit for Researchers and AI Agents
+SciTeX -- Modular Python Toolkit for Researchers and AI Agents
 =============================================================
 
 A Python framework for reproducible scientific research.
@@ -10,15 +10,33 @@ A Python framework for reproducible scientific research.
    :align: center
    :width: 800px
 
+Role in SciTeX Ecosystem
+------------------------
+
+``scitex`` is the **unified orchestrator** package. It re-exports from sub-packages
+so users have a single import (``import scitex``). It does not contain runtime logic
+itself -- it delegates to sub-packages.
+
+.. code-block:: text
+
+   scitex (this package) -- orchestrator, templates, CLI, MCP server
+     |-- scitex.app  <-  scitex-app   (runtime SDK: file I/O, config, validation)
+     |-- scitex.ui   <-  scitex-ui    (React/TS components: workspace, data-table)
+     +-- scitex.plt  <-  figrecipe    (figures: plotting, diagrams, recipes)
+
+- **scitex-app** (`docs <https://scitex-app.readthedocs.io/>`_): Runtime SDK that apps import at execution time
+- **scitex-ui** (`docs <https://scitex-ui.readthedocs.io/>`_): Shared React/TypeScript component library
+- **figrecipe** (`docs <https://figrecipe.readthedocs.io/>`_): Reference app -- figures, diagrams, recipes
+
 Four Freedoms for Research
 --------------------------
 
-0. The freedom to **run** your research anywhere — your machine, your terms.
-1. The freedom to **study** how every step works — from raw data to final manuscript.
+0. The freedom to **run** your research anywhere -- your machine, your terms.
+1. The freedom to **study** how every step works -- from raw data to final manuscript.
 2. The freedom to **redistribute** your workflows, not just your papers.
 3. The freedom to **modify** any module and share improvements with the community.
 
-AGPL-3.0 — because research infrastructure deserves the same freedoms as the software it runs on.
+AGPL-3.0 -- because research infrastructure deserves the same freedoms as the software it runs on.
 
 .. code-block:: python
 
