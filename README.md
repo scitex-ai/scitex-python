@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-18 15:22:11
+!-- Timestamp: 2026-03-18 15:31:55
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -47,19 +47,19 @@ Researchers face a fragmented toolchain -- literature search, statistical analys
 SciTeX unifies the research workflow from raw data to manuscript -- with **cryptographic verification** built into every step. Each module works standalone or together, accessible through **Python API**, **CLI**, and **MCP** for AI agents. SciTeX also serves as the computational engine behind [SciTeX Cloud](https://github.com/ywatanabe1989/scitex-cloud) ([scitex.ai](https://scitex.ai)) -- a self-hostable web platform for collaborative research.
 
 ```
-                            SciTeX Ecosystem
-  ┌─────────────────────────────────────────────────────────────┐
-  │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
-  │    Writer | Scholar | Apps | Hub | Clew Verification        │
-  ├─────────────────────────────────────────────────────────────┤
-  │  scitex (this package) -- Python engine & orchestrator      │
-  │    @session | io | stats | plt | scholar | writer | clew    │
-  ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-  │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
-  │ io       │ stats    │ recipe   │ writer   │  (verification) │
-  │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
-  └──────────┴──────────┴──────────┴──────────┴─────────────────┘
-    Each package: standalone (pip install scitex-io) or unified (scitex.io)
+                                SciTeX Ecosystem
+      ┌─────────────────────────────────────────────────────────────┐
+      │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
+      │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
+      ├─────────────────────────────────────────────────────────────┤
+      │  scitex (this package) -- Python engine & orchestrator      │
+      │    @session | io | stats | plt | scholar | writer | clew    │
+      ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
+      │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
+      │ io       │ stats    │ recipe   │ writer   │  (verification) │
+      │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
+      └──────────┴──────────┴──────────┴──────────┴─────────────────┘
+       Each package: standalone (pip install scitex-io) or unified (scitex.io)
 ```
 
 <p align="center">
@@ -71,24 +71,24 @@ SciTeX unifies the research workflow from raw data to manuscript -- with **crypt
 
 ```bash
 pip install scitex[all]                # Recommended: everything
-pip install scitex                     # Core only (minimal)
-pip install scitex[plt,stats,scholar]  # Typical research setup
 ```
 
 <details>
 <summary><strong>Per-module extras</strong></summary>
 
 ```bash
-pip install scitex[plt]       # Publication-ready figures (figrecipe)
-pip install scitex[stats]     # Statistical testing (23+ tests)
-pip install scitex[scholar]   # Literature search, PDF download, BibTeX enrichment
-pip install scitex[writer]    # LaTeX manuscript compilation
-pip install scitex[audio]     # Text-to-speech
-pip install scitex[ai]        # LLM APIs (OpenAI, Anthropic, Google) + ML tools
-pip install scitex[dataset]   # Scientific datasets (DANDI, OpenNeuro, PhysioNet)
-pip install scitex[browser]   # Web automation (Playwright)
-pip install scitex[capture]   # Screenshot capture and monitoring
-pip install scitex[cloud]     # Cloud platform integration
+pip install scitex                     # Core only (minimal)
+pip install scitex[plt,stats,scholar]  # Typical research setup
+pip install scitex[plt]                # Publication-ready figures (figrecipe)
+pip install scitex[stats]              # Statistical testing (23+ tests)
+pip install scitex[scholar]            # Literature search, PDF download, BibTeX enrichment
+pip install scitex[writer]             # LaTeX manuscript compilation
+pip install scitex[audio]              # Text-to-speech
+pip install scitex[ai]                 # LLM APIs (OpenAI, Anthropic, Google) + ML tools
+pip install scitex[dataset]            # Scientific datasets (DANDI, OpenNeuro, PhysioNet)
+pip install scitex[browser]            # Web automation (Playwright)
+pip install scitex[capture]            # Screenshot capture and monitoring
+pip install scitex[cloud]              # Cloud platform integration
 ```
 
 Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast installs.
@@ -96,14 +96,15 @@ Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast in
 
 ## Quick Start
 
-<details open>
+<details>
 <summary><strong><code>@scitex.session</code> -- Reproducible Experiment Tracking</strong></summary>
 
 One decorator gives you: auto-CLI, YAML config injection, random seed fixation, structured output, and logging.
 
 ```python
 import scitex as stx
-
+import numpy as np
+    
 @stx.session
 def main(
     data_path,                       # Positional arg: python script.py data.csv
@@ -113,14 +114,22 @@ def main(
     logger=stx.session.INJECTED,     # Session logger
 ):
     """Analyze data. Docstring becomes --help text."""
-    import numpy as np
+    
+    # Load
     data = stx.io.load(data_path)
+    
+    # Demo data
     x = np.linspace(0, 2 * np.pi, n_samples)
     y = np.sin(x) + np.random.randn(n_samples) * 0.1
+    
+    # FigRecipe Plot
     fig, ax = stx.plt.subplots()
     ax.plot_line(x, y)
     ax.set_xyt("Time", "Amplitude", "Noisy Sine Wave")
-    stx.io.save(fig, "sine.png")       # Saves sine.png + sine.csv
+    
+    # Save sine.png + sine.csv with logging message
+    stx.io.save(fig, "sine.png")
+    
     return 0
 
 if __name__ == "__main__":
@@ -142,7 +151,7 @@ script_out/FINISHED_SUCCESS/2026-03-18_14-30-00_Z5MR/
 ```
 </details>
 
-<details open>
+<details>
 <summary><strong><code>scitex.clew</code> -- Cryptographic Verification for AI-Driven Science</strong></summary>
 
 As AI agents produce research at scale, the question shifts from *"could this be reproduced?"* to *"has this been verified?"*. Clew builds a **SHA-256 hash-chain DAG** linking every manuscript claim back to source data.
@@ -213,18 +222,6 @@ Supports: CSV, JSON, YAML, TOML, HDF5, NPY, NPZ, PKL, PNG, JPG, SVG, PDF, Excel,
 </details>
 
 <details>
-<summary><strong><code>scitex.stats</code> -- Publication-Ready Statistics (23+ Tests)</strong></summary>
-
-```python
-import scitex as stx
-result = stx.stats.run_test("ttest_ind", group1, group2, return_as="dataframe")
-# Returns: p-value, effect size (Cohen's d), CI, normality check, power
-recommendations = stx.stats.recommend_tests(data)
-stx.stats.format_results(result, style="apa")   # "t(58) = 2.34, p = .021, d = 0.60"
-```
-</details>
-
-<details>
 <summary><strong><code>scitex.plt</code> -- Reproducible, Restylable Figures</strong></summary>
 
 Powered by [figrecipe](https://github.com/ywatanabe1989/figrecipe). Figures are **reproducible nodes** in the Clew verification DAG -- scientific data and visual style are decomposed, so figures can be restyled (fonts, colors, layout) without altering the underlying data hash. Every figure auto-exports its data as CSV + a YAML recipe for exact reproduction.
@@ -244,6 +241,18 @@ stx.io.save(fig, "analysis.png")  # Saves analysis.png + analysis.csv + analysis
 
 # Restyle without changing data (hash stays valid for Clew verification)
 stx.plt.reproduce("analysis.yaml", style="nature")
+```
+</details>
+
+<details>
+<summary><strong><code>scitex.stats</code> -- Publication-Ready Statistics (23+ Tests)</strong></summary>
+
+```python
+import scitex as stx
+result = stx.stats.run_test("ttest_ind", group1, group2, return_as="dataframe")
+# Returns: p-value, effect size (Cohen's d), CI, normality check, power
+recommendations = stx.stats.recommend_tests(data)
+stx.stats.format_results(result, style="apa")   # "t(58) = 2.34, p = .021, d = 0.60"
 ```
 </details>
 
@@ -348,29 +357,21 @@ Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotoco
 > **[Full MCP reference](./docs/02_MCP_TOOLS.md)**
 </details>
 
-## Architecture
+## SciTeX Platform
 
-SciTeX **orchestrates** standalone packages under one namespace:
+`scitex` (this package) is the Python engine. It powers the full SciTeX platform:
 
-```
-import scitex as stx           # One import, all modules
-  stx.clew    <-  scitex-clew        (cryptographic verification DAG)
-  stx.io      <-  scitex-io          (30+ format file I/O)
-  stx.stats   <-  scitex-stats       (23+ statistical tests)
-  stx.plt     <-  figrecipe           (publication-ready figures)
-  stx.writer  <-  scitex-writer       (LaTeX manuscripts)
-  stx.scholar <-  scitex-scholar      (literature management)
-  stx.notification  <-  scitex-notification (desktop/call/SMS/email alerts)
-  stx.dev     <-  scitex-dev          (ecosystem tools)
-  stx.app     <-  scitex-app          (runtime app SDK)
-  stx.cloud   <-  scitex-cloud        (self-hosted cloud platform)
-  stx.ui      <-  scitex-ui           (React/TS frontend components)
-```
+| Layer | Package | Role |
+|-------|---------|------|
+| **Cloud** | [scitex-cloud](https://github.com/ywatanabe1989/scitex-cloud) | Self-hosted Django web application ([scitex.ai](https://scitex.ai)) -- Writer, Scholar, App Store, Hub, Clew verification |
+| **Frontend** | [scitex-ui](https://github.com/ywatanabe1989/scitex-ui) | React/TypeScript components -- workspace, data tables, editors |
+| **App SDK** | [scitex-app](https://github.com/ywatanabe1989/scitex-app) | Runtime SDK for building and sharing custom research apps |
+| **Engine** | **scitex** (this) | Python orchestrator -- `@session`, `io`, `stats`, `plt`, `clew`, CLI, MCP |
 
-Each package works standalone (`pip install scitex-clew`) or unified (`pip install scitex[all]`).
+Each standalone package (`pip install scitex-io`) also works unified (`stx.io`).
 
 <details>
-<summary><strong>Full Ecosystem</strong></summary>
+<summary><strong>Full Ecosystem (17 packages)</strong></summary>
 
 | Package | Module | Description |
 |---------|--------|-------------|
@@ -385,8 +386,8 @@ Each package works standalone (`pip install scitex-clew`) or unified (`pip insta
 | [scitex-dev](https://github.com/ywatanabe1989/scitex-dev) | `stx.dev` | Developer tools, ecosystem management |
 | [scitex-linter](https://github.com/ywatanabe1989/scitex-linter) | `stx.linter` | AST-based code pattern checking |
 | [scitex-dataset](https://github.com/ywatanabe1989/scitex-dataset) | `stx.dataset` | Scientific datasets |
-| [scitex-app](https://github.com/ywatanabe1989/scitex-app) | `stx.app` | Runtime SDK for SciTeX apps |
-| [scitex-cloud](https://github.com/ywatanabe1989/scitex-cloud) | `stx.cloud` | Self-hosted research platform ([scitex.ai](https://scitex.ai)) |
+| [scitex-cloud](https://github.com/ywatanabe1989/scitex-cloud) | `stx.cloud` | Self-hosted research platform |
+| [scitex-app](https://github.com/ywatanabe1989/scitex-app) | `stx.app` | Runtime SDK for research apps |
 | [scitex-ui](https://github.com/ywatanabe1989/scitex-ui) | `stx.ui` | React/TS frontend components |
 | [crossref-local](https://github.com/ywatanabe1989/crossref-local) | `stx.scholar` | Local CrossRef (167M+ papers) |
 | [openalex-local](https://github.com/ywatanabe1989/openalex-local) | `stx.scholar` | Local OpenAlex (250M+ works) |
