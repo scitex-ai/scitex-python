@@ -176,20 +176,28 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 
 ```python
 import scitex as stx
-stx.io.save(df, "results.csv");      df = stx.io.load("results.csv")
-stx.io.save(arr, "data.npy");        arr = stx.io.load("data.npy")
+
+# Save and load -- format detected from extension
+stx.io.save(df, "results.csv")
+df = stx.io.load("results.csv")
+
+stx.io.save(arr, "data.npy")
+arr = stx.io.load("data.npy")
+
 stx.io.save(fig, "figure.png")       # Also exports figure data as CSV
-stx.io.save(config, "config.yaml");  config = stx.io.load("config.yaml")
-stx.io.save(model, "model.pkl");     model = stx.io.load("model.pkl")
+stx.io.save(config, "config.yaml")
+stx.io.save(model, "model.pkl")
 
 # Register custom formats
 @stx.io.register_saver(".custom")
 def save_custom(obj, path, **kw):
-    with open(path, "w") as f: f.write(str(obj))
+    with open(path, "w") as f:
+        f.write(str(obj))
 
 @stx.io.register_loader(".custom")
 def load_custom(path, **kw):
-    with open(path) as f: return f.read()
+    with open(path) as f:
+        return f.read()
 ```
 
 Supports: CSV, JSON, YAML, TOML, HDF5, NPY, NPZ, PKL, PNG, JPG, SVG, PDF, Excel, Parquet, Zarr, INI, TXT, MAT, WAV, MP3, BibTeX, and more.
@@ -215,9 +223,14 @@ Powered by [figrecipe](https://github.com/ywatanabe1989/figrecipe). Figures are 
 ```python
 import scitex as stx
 fig, axes = stx.plt.subplots(1, 3)
-axes[0].stx_line(x, y);                      axes[0].set_xyt("Time", "Value", "Line")
-axes[1].stx_violin([g1, g2, g3]);             axes[1].set_xyt("Group", "Score", "Violin")
-axes[2].stx_heatmap(corr_matrix);             axes[2].set_xyt("X", "Y", "Heatmap")
+axes[0].stx_line(x, y)
+axes[0].set_xyt("Time", "Value", "Line")
+
+axes[1].stx_violin([g1, g2, g3])
+axes[1].set_xyt("Group", "Score", "Violin")
+
+axes[2].stx_heatmap(corr_matrix)
+axes[2].set_xyt("X", "Y", "Heatmap")
 stx.io.save(fig, "analysis.png")  # Saves analysis.png + analysis.csv + analysis.yaml
 
 # Restyle without changing data (hash stays valid for Clew verification)
