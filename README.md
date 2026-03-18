@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-18 15:40:59
+!-- Timestamp: 2026-03-18 15:42:46
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -39,19 +39,19 @@ SciTeX unifies the research workflow from raw data to manuscript -- with **crypt
 ## SciTeX Ecosystem
 
 ```
-                                       SciTeX Ecosystem
-             ┌─────────────────────────────────────────────────────────────┐
-             │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
-             │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
-             ├─────────────────────────────────────────────────────────────┤
-             │  scitex (this package) -- Python engine & orchestrator      │
-             │    @session | io | stats | plt | scholar | writer | clew    │
-             ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-             │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
-             │ io       │ stats    │ recipe   │ writer   │  (verification) │
-             │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
-             └──────────┴──────────┴──────────┴──────────┴─────────────────┘
-       Each package: standalone (pip install scitex-io) or unified (scitex.io)
+                                            SciTeX Ecosystem
+                  ┌─────────────────────────────────────────────────────────────┐
+                  │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
+                  │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
+                  ├─────────────────────────────────────────────────────────────┤
+                  │  scitex (this package) -- Python engine & orchestrator      │
+                  │    @session | io | stats | plt | scholar | writer | clew    │
+                  ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
+                  │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
+                  │ io       │ stats    │ recipe   │ writer   │  (verification) │
+                  │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
+                  └──────────┴──────────┴──────────┴──────────┴─────────────────┘
+              Each package: standalone (pip install scitex-io) or unified (scitex.io)
 ```
 
 ## SciTeX and Research Workflow
@@ -331,27 +331,29 @@ scitex stats recommend                   # Suggest statistical tests
 scitex clew status                       # Project verification overview
 scitex clew dag --claims                 # Verify all manuscript claims
 scitex audio speak "Analysis complete"   # Text-to-speech
-scitex notification alert "Job finished"       # Multi-backend notification
+scitex notification alert "Job finished" # Multi-backend notification
 scitex template clone research my_proj   # Scaffold a project
 scitex dev versions                      # Check ecosystem versions
-scitex mcp list-tools                    # List all MCP tools (120+)
+scitex mcp list-tools                    # List all MCP tools (293)
 ```
 
 > **[Full CLI reference](./docs/01_CLI_COMMANDS.md)**
 </details>
 
 <details>
-<summary><strong>MCP Server (120+ tools for AI agents)</strong></summary>
+<summary><strong>MCP Server (293 tools across 23 modules)</strong></summary>
 
 Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotocol.io/).
 
-| Category | Tools | | Category | Tools |
-|----------|-------|-|----------|-------|
-| writer | 28 | | stats | 10 |
-| scholar | 23 | | plt | 9 |
-| capture | 12 | | diagram | 9 |
-| introspect | 12 | | clew | 9 |
-| audio | 10 | | dataset | 8 |
+| Category | Tools | | Category | Tools | | Category | Tools |
+|----------|-------|-|----------|-------|-|----------|-------|
+| plt | 73 | | crossref | 15 | | io | 5 |
+| cloud | 50 | | dev | 13 | | template | 4 |
+| writer | 38 | | introspect | 12 | | openalex | 4 |
+| scholar | 22 | | stats | 10 | | linter | 3 |
+| clew | 9 | | dataset | 8 | | social | 3 |
+| project | 6 | | notify | 5 | | tunnel | 3 |
+| docs | 4 | | ui | 2 | | usage | 2 |
 
 ```json
 {"mcpServers": {"scitex": {"command": "scitex", "args": ["mcp", "start"],
