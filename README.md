@@ -43,24 +43,6 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 
 ## SciTeX Ecosystem
 
-<!-- ```
- !--                                                SciTeX Ecosystem
- !--                      ┌─────────────────────────────────────────────────────────────┐
- !--                      │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
- !--                      │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
- !--                      ├─────────────────────────────────────────────────────────────┤
- !--                      │  scitex (this package) -- Python engine & orchestrator      │
- !--                      │    @session | io | stats | plt | scholar | writer | clew    │
- !--                      ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
- !--                      │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
- !--                      │ io       │ stats    │ recipe   │ writer   │  (verification) │
- !--                      │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
- !--                      └──────────┴──────────┴──────────┴──────────┴─────────────────┘
- !--                  Each package: standalone (pip install scitex-io) or unified (scitex.io)
- !-- ```
- !-- 
- !-- ## SciTeX and Research Workflow -->
-
 <p align="center">
     <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="600">
 </p>
@@ -116,8 +98,8 @@ import numpy as np
     
 @stx.session
 def main(
-    data_path,                       # Positional arg: python script.py data.csv
-    n_samples=100,                   # Keyword arg:    python script.py data.csv --n-samples 200
+    data_path: str = "./data.csv",   # --data-path data.csv
+    n_samples: int = 100,            # --n-samples 200
     CONFIG=stx.session.INJECTED,     # Aggregated ./config/*.yaml
     plt=stx.session.INJECTED,        # Pre-configured matplotlib
     logger=stx.session.INJECTED,     # Session logger
@@ -133,7 +115,7 @@ def main(
     
     # FigRecipe Plot
     fig, ax = stx.plt.subplots()
-    ax.plot_line(x, y)
+    ax.plot(x, y)
     ax.set_xyt("Time", "Amplitude", "Noisy Sine Wave")
     
     # Save sine.png + sine.csv with logging message
@@ -146,9 +128,9 @@ if __name__ == "__main__":
 ```
 
 ```bash
-$ python script.py data.csv --n-samples 200
+$ python script.py --data-path experiment.csv --n-samples 200
 $ python script.py --help
-# usage: script.py [-h] [--n-samples N_SAMPLES] data_path
+# usage: script.py [-h] [--data-path DATA_PATH] [--n-samples N_SAMPLES]
 # Analyze data. Docstring becomes --help text.
 ```
 
@@ -314,7 +296,7 @@ def main(CONFIG=stx.session.INJECTED): ...
 ```
 </details>
 
-> **[Full API reference](https://scitex-python.readthedocs.io/en/latest/api/index.html)** &middot; **[Module status](./docs/04_MODULE_STATUS.md)**
+> **[Full API reference](https://scitex-python.readthedocs.io/en/latest/api/index.html)** &middot; **[Examples](./examples/)** &middot; **[Module status](./docs/04_MODULE_STATUS.md)**
 
 ## Module Overview
 
@@ -413,8 +395,6 @@ source .env.d/entry.src        # 3. Source in shell
 </details>
 
 ## Part of SciTeX
-
-SciTeX is an open-source research automation platform at [scitex.ai](https://scitex.ai). [SciTeX Cloud](https://github.com/ywatanabe1989/scitex-cloud) provides a self-hostable web application -- GitHub for research -- with Writer, Scholar, App Store, and Clew verification built in.
 
 >Four Freedoms for Research
 >
