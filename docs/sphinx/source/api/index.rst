@@ -64,17 +64,25 @@ All modules are accessible via ``import scitex as stx`` followed by ``stx.<modul
    browser
    capture
    audio
-   notify
+   notification
    social
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Development
+
+   dev
+   template
+   linter
+   introspect
+   audit
 
 .. toctree::
    :maxdepth: 2
    :caption: Utilities
 
    gen
-   template
    decorators
-   introspect
    str
    dict
    path
@@ -101,13 +109,10 @@ All modules are accessible via ``import scitex as stx`` followed by ``stx.<modul
    security
    ui
    usage
-   dev
-   audit
 
 .. toctree::
    :maxdepth: 2
    :caption: Other
 
    events
-   linter
    project

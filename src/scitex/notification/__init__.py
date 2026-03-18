@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""SciTeX Notify — thin wrapper delegating to scitex-notification package.
+"""SciTeX Notification — thin wrapper delegating to scitex-notification package.
 
 All notification logic lives in the standalone scitex-notification package.
-This module re-exports the public API for backward compatibility.
+This module re-exports the public API.
 """
 
 from scitex_notification import (
