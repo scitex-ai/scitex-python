@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-19 01:30:39
+!-- Timestamp: 2026-03-19 01:39:46
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -41,10 +41,10 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 | 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **293 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
 | 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-app](https://github.com/ywatanabe1989/scitex-app) SDK and share via [SciTeX Cloud](https://scitex.ai) |
 
-## SciTeX Ecosystem
+## Research Workflow
 
 <p align="center">
-    <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="600">
+    <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Research Workflow" width="600">
 </p>
 <p align="center"><sub><b>Figure 1.</b> SciTeX research pipeline -- from literature search to manuscript compilation, with every step cryptographically linked.</sub></p>
 
@@ -85,6 +85,22 @@ pip install scitex[cloud]              # Cloud platform integration
 Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast installs.
 </details>
 
+<details>
+<summary><strong>Module Overview</strong></summary>
+
+| Category | Modules | Description |
+|----------|---------|-------------|
+| **Core** | `session`, `io`, `config`, `clew` | Experiment tracking, file I/O, config, cryptographic verification |
+| **Analysis** | `stats`, `plt`, `dsp`, `linalg` | Statistics, plotting, signal processing, linear algebra |
+| **Research** | `scholar`, `writer`, `diagram`, `canvas` | Literature, manuscripts, diagrams, figure composition |
+| **ML/AI** | `ai`, `nn`, `torch`, `cv`, `benchmark` | LLM APIs, neural networks, PyTorch, computer vision |
+| **Data** | `pd`, `db`, `dataset`, `schema` | Pandas utilities, databases, scientific datasets |
+| **Infra** | `app`, `cloud`, `tunnel`, `container` | App SDK, cloud, SSH tunnels, containers |
+| **Automation** | `browser`, `capture`, `audio`, `notification` | Web automation, screenshots, TTS, notifications |
+| **Dev** | `dev`, `template`, `linter`, `introspect` | Ecosystem tools, scaffolding, code analysis |
+
+</details>
+
 ## Quick Start
 
 <details>
@@ -95,7 +111,7 @@ One decorator gives you: auto-CLI, YAML config injection, random seed fixation, 
 ```python
 import scitex as stx
 import numpy as np
-    
+
 @stx.session
 def main(
     data_path: str = "./data.csv",   # --data-path data.csv
@@ -298,19 +314,6 @@ def main(CONFIG=stx.session.INJECTED): ...
 
 > **[Full API reference](https://scitex-python.readthedocs.io/en/latest/api/index.html)** &middot; **[Examples](./examples/)** &middot; **[Module status](./docs/04_MODULE_STATUS.md)**
 
-## Module Overview
-
-| Category | Modules | Description |
-|----------|---------|-------------|
-| **Core** | `session`, `io`, `config`, `clew` | Experiment tracking, file I/O, config, cryptographic verification |
-| **Analysis** | `stats`, `plt`, `dsp`, `linalg` | Statistics, plotting, signal processing, linear algebra |
-| **Research** | `scholar`, `writer`, `diagram`, `canvas` | Literature, manuscripts, diagrams, figure composition |
-| **ML/AI** | `ai`, `nn`, `torch`, `cv`, `benchmark` | LLM APIs, neural networks, PyTorch, computer vision |
-| **Data** | `pd`, `db`, `dataset`, `schema` | Pandas utilities, databases, scientific datasets |
-| **Infra** | `app`, `cloud`, `tunnel`, `container` | App SDK, cloud, SSH tunnels, containers |
-| **Automation** | `browser`, `capture`, `audio`, `notification` | Web automation, screenshots, TTS, notifications |
-| **Dev** | `dev`, `template`, `linter`, `introspect` | Ecosystem tools, scaffolding, code analysis |
-
 <details>
 <summary><strong>CLI Commands</strong></summary>
 
@@ -354,7 +357,18 @@ Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotoco
 > **[Full MCP reference](./docs/02_MCP_TOOLS.md)**
 </details>
 
-## About SciTeX Cloud
+## Configuration
+
+```bash
+cp -r .env.d.examples .env.d   # 1. Copy examples
+$EDITOR .env.d/                # 2. Edit credentials
+source .env.d/entry.src        # 3. Source in shell
+```
+
+> **[Full configuration reference](./.env.d.examples/README.md)**
+
+
+## SciTeX Ecosystem
 
 [`scitex-cloud`](https://github.com/ywatanabe1989/scitex-cloud) is a self-hosted web application that serves as a collaborative research workspace — with a built-in Writer, Scholar, and App Store where researchers build custom tools using [`scitex-app`](https://github.com/ywatanabe1989/scitex-app) SDK and [`scitex-ui`](https://github.com/ywatanabe1989/scitex-ui) components, then share them with the community. A live instance is hosted at [scitex.ai](https://scitex.ai).
 
@@ -381,20 +395,6 @@ Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotoco
 | [openalex-local](https://github.com/ywatanabe1989/openalex-local) | `stx.scholar` | Local OpenAlex (250M+ works) |
 | [socialia](https://github.com/ywatanabe1989/socialia) | `stx.social` | Social media (Twitter, LinkedIn) |
 </details>
-
-<details>
-<summary><strong>Configuration</strong></summary>
-
-```bash
-cp -r .env.d.examples .env.d  # 1. Copy examples
-$EDITOR .env.d/                # 2. Edit credentials
-source .env.d/entry.src        # 3. Source in shell
-```
-
-> **[Full configuration reference](./.env.d.examples/README.md)**
-</details>
-
-## Part of SciTeX
 
 >Four Freedoms for Research
 >
