@@ -106,13 +106,15 @@ import scitex as stx
 
 @stx.session
 def main(
-    n_samples=100,                   # CLI: --n-samples 200
+    data_path,                       # Positional arg: python script.py data.csv
+    n_samples=100,                   # Keyword arg:    python script.py data.csv --n-samples 200
     CONFIG=stx.session.INJECTED,     # Aggregated ./config/*.yaml
     plt=stx.session.INJECTED,        # Pre-configured matplotlib
     logger=stx.session.INJECTED,     # Session logger
 ):
     """Analyze data. Docstring becomes --help text."""
     import numpy as np
+    data = stx.io.load(data_path)
     x = np.linspace(0, 2 * np.pi, n_samples)
     y = np.sin(x) + np.random.randn(n_samples) * 0.1
     fig, ax = stx.plt.subplots()
@@ -123,6 +125,13 @@ def main(
 
 if __name__ == "__main__":
     main()
+```
+
+```bash
+$ python script.py data.csv --n-samples 200
+$ python script.py --help
+# usage: script.py [-h] [--n-samples N_SAMPLES] data_path
+# Analyze data. Docstring becomes --help text.
 ```
 
 ```
