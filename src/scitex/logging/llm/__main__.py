@@ -84,7 +84,26 @@ def main() -> int:
         "--open", action="store_true", help="Open HTML index in browser"
     )
 
+    # spa
+    p_spa = sub.add_parser("spa", help="Generate browseable SPA dashboard")
+    p_spa.add_argument(
+        "-o", "--output", default="/tmp/claude_spa.html", help="Output HTML"
+    )
+    p_spa.add_argument("--claude-dir", default="~/.claude", help="Claude config dir")
+    p_spa.add_argument("--open", action="store_true", help="Open in browser")
+
     args = parser.parse_args()
+
+    if args.command == "spa":
+        from ._spa import render_spa
+
+        path = render_spa(args.output, args.claude_dir)
+        print(f"SPA: {path}")
+        if args.open:
+            import subprocess
+
+            subprocess.Popen(["xdg-open", str(path)])
+        return 0
 
     if args.command == "scripts":
         from ._replay import export_scripts

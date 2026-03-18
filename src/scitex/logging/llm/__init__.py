@@ -22,6 +22,7 @@ from ._dag import build_dag, to_mermaid
 from ._dashboard import discover_sessions, render_dashboard
 from ._parser import ClaudeCodeSession, Entry, ToolCall, ToolResult, load
 from ._replay import export_scripts
+from ._spa import render_spa
 
 __all__ = [
     "load",
@@ -38,6 +39,7 @@ __all__ = [
     "discover_sessions",
     "render_dashboard",
     "export_scripts",
+    "render_spa",
 ]
 
 # EOF
