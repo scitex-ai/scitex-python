@@ -39,6 +39,7 @@ Usage:
 
 import logging as _logging
 
+from . import llm
 from ._config import (
     configure,
     enable_file_logging,
@@ -156,6 +157,8 @@ __all__ = [
     "CRITICAL",
     "SUCCESS",
     "FAIL",
+    # LLM session logs
+    "llm",
     # Configuration
     "configure",
     "set_level",
