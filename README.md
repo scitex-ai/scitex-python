@@ -30,11 +30,16 @@
 
 ---
 
-## Why SciTeX?
+## Problem and Solution
 
-Researchers face a fragmented toolchain -- literature search, statistical analysis, figure creation, and manuscript writing each require separate tools. AI agents can automate these steps, but lack a unified interface. And as AI-accelerated research compounds both volume and opacity, the gap between what is published and what can be verified continues to widen.
+| # | Problem | Solution |
+|---|---------|----------|
+| 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides 50+ modules under one namespace, accessible via Python API, CLI, and MCP |
+| 2 | **No verification** -- AI-accelerated research compounds volume and opacity; existing tools address whether work *could* be reproduced, not whether it *has* been | **Cryptographic verification** -- Clew builds SHA-256 hash-chain DAGs linking every manuscript claim back to source data |
+| 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **293 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
+| 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-app](https://github.com/ywatanabe1989/scitex-app) SDK and share via [SciTeX Cloud](https://scitex.ai) |
 
-SciTeX unifies the research workflow from raw data to manuscript -- with **cryptographic verification** built into every step. Each module works standalone or together, accessible through **Python API**, **CLI**, and **MCP** for AI agents. SciTeX also serves as the computational engine behind [SciTeX Cloud](https://github.com/ywatanabe1989/scitex-cloud) ([scitex.ai](https://scitex.ai)) -- a self-hostable web platform for collaborative research.
+SciTeX serves as the computational engine behind [SciTeX Cloud](https://github.com/ywatanabe1989/scitex-cloud) ([scitex.ai](https://scitex.ai)) -- a self-hostable web platform for collaborative research.
 
 ## SciTeX Ecosystem
 
