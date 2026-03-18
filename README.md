@@ -214,7 +214,7 @@ stx.io.save(config, "config.yaml")
 stx.io.save(model, "model.pkl")
 
 # Aggregate ./config/*.yaml into a single DotDict
-CONFIG = stx.io.load_configs("./config/*.yaml")
+CONFIG = stx.io.load_configs(config_dir="./config")
 print(CONFIG.MODEL.hidden_size)      # Dot-notation access
 
 # Register custom formats
