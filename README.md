@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-19 01:12:24
+!-- Timestamp: 2026-03-19 01:30:39
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -43,23 +43,23 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 
 ## SciTeX Ecosystem
 
-```
-                                               SciTeX Ecosystem
-                     ┌─────────────────────────────────────────────────────────────┐
-                     │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
-                     │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
-                     ├─────────────────────────────────────────────────────────────┤
-                     │  scitex (this package) -- Python engine & orchestrator      │
-                     │    @session | io | stats | plt | scholar | writer | clew    │
-                     ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-                     │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
-                     │ io       │ stats    │ recipe   │ writer   │  (verification) │
-                     │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
-                     └──────────┴──────────┴──────────┴──────────┴─────────────────┘
-                 Each package: standalone (pip install scitex-io) or unified (scitex.io)
-```
-
-## SciTeX and Research Workflow
+<!-- ```
+ !--                                                SciTeX Ecosystem
+ !--                      ┌─────────────────────────────────────────────────────────────┐
+ !--                      │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
+ !--                      │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
+ !--                      ├─────────────────────────────────────────────────────────────┤
+ !--                      │  scitex (this package) -- Python engine & orchestrator      │
+ !--                      │    @session | io | stats | plt | scholar | writer | clew    │
+ !--                      ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
+ !--                      │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
+ !--                      │ io       │ stats    │ recipe   │ writer   │  (verification) │
+ !--                      │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
+ !--                      └──────────┴──────────┴──────────┴──────────┴─────────────────┘
+ !--                  Each package: standalone (pip install scitex-io) or unified (scitex.io)
+ !-- ```
+ !-- 
+ !-- ## SciTeX and Research Workflow -->
 
 <p align="center">
     <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="600">
@@ -75,8 +75,6 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
     <img src="docs/assets/images/scitex-demo.gif" alt="SciTeX Demo" width="800">
   </a>
 </p>
-
-<p align="center"><sub><b>Video 1.</b> 40 min, minimal human intervention -- AI agent conducts: literature search -> data analysis -> statistics -> figures -> 21-page manuscript -> peer review simulation</sub></p>
 
 ## Installation
 
@@ -374,18 +372,9 @@ Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotoco
 > **[Full MCP reference](./docs/02_MCP_TOOLS.md)**
 </details>
 
-## SciTeX Platform
+## About SciTeX Cloud
 
-`scitex` (this package) is the Python engine. It powers the full SciTeX platform:
-
-| Layer | Package | Role |
-|-------|---------|------|
-| **Cloud** | [scitex-cloud](https://github.com/ywatanabe1989/scitex-cloud) | Self-hosted Django web application ([scitex.ai](https://scitex.ai)) -- Writer, Scholar, App Store, Hub, Clew verification |
-| **Frontend** | [scitex-ui](https://github.com/ywatanabe1989/scitex-ui) | React/TypeScript components -- workspace, data tables, editors |
-| **App SDK** | [scitex-app](https://github.com/ywatanabe1989/scitex-app) | Runtime SDK for building and sharing custom research apps |
-| **Engine** | **scitex** (this) | Python orchestrator -- `@session`, `io`, `stats`, `plt`, `clew`, CLI, MCP |
-
-Each standalone package (`pip install scitex-io`) also works unified (`stx.io`).
+[`scitex-cloud`](https://github.com/ywatanabe1989/scitex-cloud) is a self-hosted web application that serves as a collaborative research workspace — with a built-in Writer, Scholar, and App Store where researchers build custom tools using [`scitex-app`](https://github.com/ywatanabe1989/scitex-app) SDK and [`scitex-ui`](https://github.com/ywatanabe1989/scitex-ui) components, then share them with the community. A live instance is hosted at [scitex.ai](https://scitex.ai).
 
 <details>
 <summary><strong>Full Ecosystem (17 packages)</strong></summary>
