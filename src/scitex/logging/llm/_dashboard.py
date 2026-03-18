@@ -12,6 +12,39 @@ from pathlib import Path
 from typing import Any
 
 
+def _decode_project_path(encoded: str) -> str:
+    """Decode Claude Code's encoded project directory name back to a path.
+
+    Claude Code encodes paths by replacing '/' with '-'.
+    e.g. '-home-ywatanabe-proj-scitex-python' -> '/home/ywatanabe/proj/scitex-python'
+
+    We greedily resolve from left to right, preferring existing directories.
+    """
+    if not encoded.startswith("-"):
+        return encoded
+
+    # Split on '-', first element is empty (leading '-')
+    parts = encoded.split("-")
+    parts = parts[1:]  # remove leading empty string
+
+    # Greedy left-to-right: try to find longest existing directory segments
+    result = ""
+    i = 0
+    while i < len(parts):
+        # Try joining remaining parts with '-' and check if adding to path works
+        best_len = 1
+        for j in range(len(parts), i, -1):
+            candidate_segment = "-".join(parts[i:j])
+            candidate_path = result + "/" + candidate_segment
+            if Path(candidate_path).exists():
+                best_len = j - i
+                break
+        result += "/" + "-".join(parts[i : i + best_len])
+        i += best_len
+
+    return result
+
+
 def discover_sessions(
     claude_dir: str | Path = "~/.claude",
 ) -> dict[str, list[dict[str, Any]]]:
@@ -40,9 +73,7 @@ def discover_sessions(
             continue
 
         # Decode project path from directory name
-        project_name = project_dir.name.replace("-", "/")
-        if project_name.startswith("/"):
-            project_name = project_name  # absolute path
+        project_name = _decode_project_path(project_dir.name)
         sessions = []
 
         for jsonl_file in sorted(project_dir.glob("*.jsonl")):
