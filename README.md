@@ -185,7 +185,7 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 **L1** hash comparison (ms) / **L2** sandbox re-execution (min) / **L3** registered timestamp proof (optional).
 
 <p align="center">
-  <img src="docs/assets/images/clew-dag.png" alt="Clew DAG" width="300">
+  <img src="docs/clew-dag.png" alt="Clew DAG" width="300">
 </p>
 <p align="center"><sub><b>Figure 2.</b> Clew verification DAG -- green nodes are verified (hash match), red nodes have mismatches. Each node shows its SHA-256 hash prefix.</sub></p>
 
