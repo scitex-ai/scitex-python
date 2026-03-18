@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-18 18:15:24
+!-- Timestamp: 2026-03-19 01:12:24
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -30,16 +30,16 @@
 
 ---
 
+This repository provides `scitex`, the orchestration layer of the SciTeX ecosystem — solving key problems in scientific research:
+
 ## Problem and Solution
 
 | # | Problem | Solution |
 |---|---------|----------|
 | 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides 50+ modules under one namespace, accessible via Python API, CLI, and MCP |
-| 2 | **No verification** -- AI-accelerated research compounds volume and opacity; existing tools address whether work *could* be reproduced, not whether it *has* been | **Cryptographic verification** -- Clew builds SHA-256 hash-chain DAGs linking every manuscript claim back to source data |
+| 2 | **No verification** -- existing tools address whether work *could* be reproduced, not whether it *has* been verified | **Cryptographic verification** -- Clew builds SHA-256 hash-chain DAGs linking every manuscript claim back to source data |
 | 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **293 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
 | 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-app](https://github.com/ywatanabe1989/scitex-app) SDK and share via [SciTeX Cloud](https://scitex.ai) |
-
-SciTeX serves as the computational engine behind [SciTeX Cloud](https://github.com/ywatanabe1989/scitex-cloud) ([scitex.ai](https://scitex.ai)) -- a self-hostable web platform for collaborative research.
 
 ## SciTeX Ecosystem
 
