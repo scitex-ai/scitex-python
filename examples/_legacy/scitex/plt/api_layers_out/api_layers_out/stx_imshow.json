@@ -1,0 +1,87 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:55:57.257307"
+    },
+    "figure": {
+        "size_px": [
+            422,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 307,
+                "y0": 236,
+                "x1": 637,
+                "y1": 566
+            },
+            "position": [
+                0.325,
+                0.29411764705882354,
+                0.35000000000000003,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -0.5,
+                9.5
+            ],
+            "ylim": [
+                9.5,
+                -0.5
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_image_00": {
+            "id": "ax_00_image_00",
+            "axes_id": "ax_00",
+            "element_type": "image",
+            "label": "image_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 0,
+                    "y0": 0,
+                    "x1": 330,
+                    "y1": 330
+                }
+            },
+            "style": {
+                "cmap": "viridis",
+                "alpha": null
+            },
+            "editable_styles": [
+                "cmap",
+                "alpha",
+                "clim"
+            ],
+            "zorder": 0,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_imshow.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-imshow-0_variable-row",
+            "ax-row-0-col-0_trace-id-stx-imshow-0_variable-col",
+            "ax-row-0-col-0_trace-id-stx-imshow-0_variable-value"
+        ],
+        "csv_hash": "11099b83fadf9464"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

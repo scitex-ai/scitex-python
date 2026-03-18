@@ -1,0 +1,78 @@
+RandomStateManager initialized with seed 42
+Fixed random seeds for: random, numpy, torch
+✅ LaTeX rendering enabled and tested
+
+----------------------------------------
+Matplotlib has been configured as follows:
+
+Figure DPI (Display): 100 DPI
+Figure DPI (Save): 300 DPI
+Figure Size (Not the Axis Size): 160.0 x 100.0 mm (width x height)
+
+Hide Top and Right Axes: True
+Line Width: 1.0
+
+Custom Colors (RGBA):
+  white: [255, 255, 255, 0.9]
+  black: [0, 0, 0, 0.9]
+  blue: [0, 128, 192, 0.9]
+  red: [255, 70, 50, 0.9]
+  pink: [255, 150, 200, 0.9]
+  green: [20, 180, 20, 0.9]
+  yellow: [230, 160, 20, 0.9]
+  gray: [128, 128, 128, 0.9]
+  grey: [128, 128, 128, 0.9]
+  purple: [200, 50, 255, 0.9]
+  light_blue: [20, 200, 200, 0.9]
+  brown: [128, 0, 0, 0.9]
+  navy: [0, 0, 100, 0.9]
+  orange: [228, 94, 50, 0.9]
+----------------------------------------
+
+========================================
+SciTeX v2.1.3
+2025Y-11M-05D-20h48m03s_e2BA (PID: 400161)
+
+/home/ywatanabe/proj/scitex-code/./examples/session_decorator_demo/scripts/session_decorator_demo.py
+
+Arguments:
+    n_samples: 100
+    verbose: False
+========================================
+
+
+----------------------------------------
+
+{'ARGS': {'n_samples': 100, 'verbose': False},
+ 'FILE': '/home/ywatanabe/proj/scitex-code/./examples/session_decorator_demo/scripts/session_decorator_demo.py',
+ 'FILE_PATH': PosixPath('/home/ywatanabe/proj/scitex-code/examples/session_decorator_demo/scripts/session_decorator_demo.py'),
+ 'ID': '2025Y-11M-05D-20h48m03s_e2BA',
+ 'PID': 400161,
+ 'REL_SDIR': 'examples/session_decorator_demo/./scripts/session_decorator_demo_out/2025Y-11M-05D-20h48m03s_e2BA-main',
+ 'REL_SDIR_PATH': PosixPath('examples/session_decorator_demo/scripts/session_decorator_demo_out/2025Y-11M-05D-20h48m03s_e2BA-main'),
+ 'SDIR': '/home/ywatanabe/proj/scitex-code/examples/session_decorator_demo/scripts/session_decorator_demo_out/RUNNING/2025Y-11M-05D-20h48m03s_e2BA-main/',
+ 'SDIR_PATH': PosixPath('/home/ywatanabe/proj/scitex-code/examples/session_decorator_demo/scripts/session_decorator_demo_out/RUNNING/2025Y-11M-05D-20h48m03s_e2BA-main'),
+ 'START_TIME': datetime.datetime(2025, 11, 5, 20, 48, 3, 841667),
+ 'capture': {'cache': {'max_size_gb': 1.0},
+             'gif': {'duration': 0.5, 'max_frames': None, 'optimize': True},
+             'monitoring': {'capture_all': False,
+                            'interval': 1.0,
+                            'quality': 60,
+                            'verbose': True},
+             'screenshot': {'monitor_id': 0,
+                            'output_dir': None,
+                            'quality': 85}},
+ 'demo': {'xxx': 111, 'yyy': 222},
+ 'sys': <module 'sys' (built-in)>}
+
+----------------------------------------
+
+
+
+
+
+
+START TIME: 2025-11-05 20:48:03.841667
+END TIME: 2025-11-05 20:48:10.583441
+RUN TIME: 00:00:06
+

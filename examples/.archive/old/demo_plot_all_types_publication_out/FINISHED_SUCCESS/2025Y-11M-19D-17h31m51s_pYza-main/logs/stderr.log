@@ -1,0 +1,555 @@
+[90mINFO: ============================================================[0m
+[90mINFO: Injected Global Variables (available in your function):[0m
+[90mINFO:   • CONFIG - Session configuration dict[0m
+[90mINFO:       - CONFIG['ID']: 2025Y-11M-19D-17h31m51s_pYza[0m
+[90mINFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-17h31m51s_pYza-main[0m
+[90mINFO:       - CONFIG['PID']: 178163[0m
+[90mINFO:   • plt - matplotlib.pyplot (configured for session)[0m
+[90mINFO:   • COLORS - CustomColors (for consistent plotting)[0m
+[90mINFO:   • rng_manager - RandomStateManager (for reproducibility)[0m
+[90mINFO:   • logger - SciTeX logger (configured for your script)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Running main with injected parameters:[0m
+[90mINFO:     {'verbose': 'bool'}[0m
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 97, in demo_publication_plot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 129, in demo_publication_scatter
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 168, in demo_publication_bar
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 223, in demo_publication_hist
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 279, in demo_publication_boxplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 313, in demo_publication_errorbar
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 358, in demo_publication_barh
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 394, in demo_publication_fill_between
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 432, in demo_publication_imshow
+    fig, ax = stx.plt.subplots(**style)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 466, in demo_publication_contour
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 499, in demo_publication_violinplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 539, in demo_publication_plot_heatmap
+    fig, ax = stx.plt.subplots(**style)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 576, in demo_publication_plot_line
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 606, in demo_publication_plot_shaded_line
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 646, in demo_publication_plot_violin
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 685, in demo_publication_plot_ecdf
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 715, in demo_publication_plot_box
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 743, in demo_publication_plot_mean_std
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 782, in demo_publication_plot_kde
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 820, in demo_publication_sns_boxplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py:409: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`). Consider using `matplotlib.pyplot.close()`.
+  self._fig_mpl = plt.figure(figsize=figsize_inch, dpi=dpi, facecolor='none')
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 856, in demo_publication_sns_violinplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 892, in demo_publication_sns_scatterplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 934, in demo_publication_sns_lineplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 979, in demo_publication_sns_histplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1022, in demo_publication_sns_barplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1058, in demo_publication_sns_stripplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1100, in demo_publication_sns_kdeplot
+    fig, ax = stx.plt.subplots(**SCITEX_STYLE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1145, in demo_publication_multi_panel_2x2
+    fig, axes = stx.plt.subplots(2, 2, **SCITEX_STYLE)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1223, in demo_publication_multi_panel_1x3
+    fig, axes = stx.plt.subplots(
+                ^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1289, in demo_publication_style_override
+    fig, ax = stx.plt.subplots(**custom_style)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/__init__.py", line 74, in subplots
+    return _subplots(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 227, in __call__
+    return self._create_with_mm_control(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_SubplotsWrapper.py", line 495, in _create_with_mm_control
+    apply_style_mm(ax_mpl, style_dict)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_mm.py", line 270, in apply_style_mm
+    ax.title.set_pad(title_pad_pt)
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'Text' object has no attribute 'set_pad'

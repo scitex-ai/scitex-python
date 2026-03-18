@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h25m53s_epXY
+PID: 3297
+START_DATETIME: 2026-03-03 21:25:54.005157
+FILE: /scitex-python/examples/scitex/clew/01_source_a.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/01_source_a_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/01_source_a_out/RUNNING/2026Y-03M-03D-21h25m53s_epXY-main
+ARGS:
+    n_samples: 200
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:26:46.907830
+RUN_DURATION: 00:00:52

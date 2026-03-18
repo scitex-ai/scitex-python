@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h39m25s_6rAl
+PID: 10867
+START_DATETIME: 2026-03-03 21:39:25.039909
+FILE: /scitex-python/examples/scitex/clew/06_preprocess_c.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/06_preprocess_c_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/06_preprocess_c_out/RUNNING/2026Y-03M-03D-21h39m25s_6rAl-main
+ARGS:
+    input_file:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:40:07.346579
+RUN_DURATION: 00:00:42

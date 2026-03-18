@@ -1,0 +1,59 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-20D-12h54m14s_3a3s
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main
+INFO:       - CONFIG['PID']: 1304678
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     { 'CONFIG': 'DotDict',
+          'logger': 'SciTeXLogger',
+          'plt': 'module',
+          'rng_manager': 'RandomStateManager'}
+INFO: Starting FTS plot bundle demo
+INFO: Creating basic plot bundle
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:388: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:396: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+SUCC: Saved to: ./examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main/line_plot.stx (60.1 KiB)
+SUCC: Basic bundle created
+INFO: Creating bundle with DataFrame
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:388: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:396: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+SUCC: Saved to: ./examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main/with_data.stx (83.7 KiB)
+SUCC: DataFrame bundle created
+INFO: Creating scatter bundle
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:388: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:396: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+SUCC: Saved to: ./examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main/scatter.stx (50.2 KiB)
+INFO: Creating histogram bundle
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:388: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:396: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+SUCC: Saved to: ./examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main/histogram.stx (40.1 KiB)
+INFO: Creating dark mode bundle
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:388: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:396: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+SUCC: Saved to: ./examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main/dark_mode.stx (67.1 KiB)
+INFO: Creating custom size bundle
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:388: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_scitex.py:396: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.savefig(
+SUCC: Saved to: ./examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main/custom_size.stx (95.4 KiB)
+INFO: Creating ZIP archive
+WARN: Unsupported file format. /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2025Y-12M-20D-12h54m14s_3a3s-main/bar_chart.zip was not saved.
+SUCC: ZIP bundle created
+SUCC: Demo completed

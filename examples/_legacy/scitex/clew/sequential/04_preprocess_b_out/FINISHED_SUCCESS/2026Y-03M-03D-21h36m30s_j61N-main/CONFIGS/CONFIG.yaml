@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h36m30s_j61N
+PID: 9183
+START_DATETIME: 2026-03-03 21:36:30.602739
+FILE: /scitex-python/examples/scitex/clew/04_preprocess_b.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/04_preprocess_b_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/04_preprocess_b_out/RUNNING/2026Y-03M-03D-21h36m30s_j61N-main
+ARGS:
+    input_file:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:37:12.204282
+RUN_DURATION: 00:00:41

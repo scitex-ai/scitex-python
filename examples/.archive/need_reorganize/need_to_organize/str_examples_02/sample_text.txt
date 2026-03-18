@@ -1,0 +1,9 @@
+
+This is a sample text for demonstrating search functionality.
+The text contains multiple lines and various patterns.
+We have numbers like 123, 456, and 789.
+Email addresses: john@example.com, jane.doe@university.edu
+Phone numbers: (555) 123-4567, 555-987-6543
+URLs: https://www.example.com, http://test.org
+Some special characters: !@#$%^&*()
+And finally, this text ends here.

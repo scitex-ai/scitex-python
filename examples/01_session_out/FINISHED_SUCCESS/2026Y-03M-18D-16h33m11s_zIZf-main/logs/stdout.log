@@ -1,0 +1,14 @@
+[94m
+========================================
+SciTeX v2.24.0 | 2026Y-03M-18D-16h33m11s_zIZf (PID: 1309777)
+
+/home/ywatanabe/proj/scitex-python/examples/01_session.py
+
+Arguments:
+    data_path: ./data.csv
+    n_samples: 50
+    learning_rate: 0.001
+========================================
+[0m
+  Hitmap: /home/ywatanabe/proj/scitex-python/examples/01_session_out/sine_hitmap.png
+Saved: /home/ywatanabe/proj/scitex-python/examples/01_session_out/sine.png + /home/ywatanabe/proj/scitex-python/examples/01_session_out/sine.yaml (Reproducible Validation: PASSED)

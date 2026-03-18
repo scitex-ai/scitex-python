@@ -1,0 +1,344 @@
+
+
+============================================================
+SciTeX Verify Module - Multi-Script Pipeline Demo
+============================================================
+[0;90mINFO: Log file: /scitex-python/examples/scitex/clew/.00_run_all.sh.log[0m
+
+[0;90mINFO: Cleaning output directories...[0m
+[0;32mSUCC: Done.[0m
+
+[0;94m[1/8] Source A (with config)[0m
+------------------------------------------------------------
+2026-03-03 21:26:03.236090: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h25m53s_epXY (PID: 3297)
+
+/scitex-python/examples/scitex/clew/01_source_a.py
+
+Arguments:
+    n_samples: 200
+========================================
+[0m
+INFO: Generating source A
+SUCC: Saved to: ./01_source_a_out/source_A.csv (4.7 KiB)
+SUCC: Saved to: ./01_source_a_out/config_A.json (65.0 B)
+INFO: Generated 200 samples for source A
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/01_source_a_out/FINISHED_SUCCESS/2026Y-03M-03D-21h25m53s_epXY-main
+
+[0;94m[2/8] Preprocess A[0m
+------------------------------------------------------------
+2026-03-03 21:27:27.107844: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h27m26s_dlK5 (PID: 3969)
+
+/scitex-python/examples/scitex/clew/02_preprocess_a.py
+
+Arguments:
+    input_file: None
+    config_file: None
+========================================
+[0m
+INFO: Preprocessing source A
+SUCC: Saved to: ./02_preprocess_a_out/clean_A.csv (2.6 KiB)
+INFO: Preprocessed 100 rows from source A
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/02_preprocess_a_out/FINISHED_SUCCESS/2026Y-03M-03D-21h27m26s_dlK5-main
+
+[0;94m[3/8] Source B[0m
+------------------------------------------------------------
+2026-03-03 21:28:33.000201: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h28m31s_Juc2 (PID: 4646)
+
+/scitex-python/examples/scitex/clew/03_source_b.py
+
+Arguments:
+    n_samples: 300
+========================================
+[0m
+INFO: Generating source B
+SUCC: Saved to: ./03_source_b_out/source_B.csv (7.0 KiB)
+INFO: Generated 300 samples for source B
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/03_source_b_out/FINISHED_SUCCESS/2026Y-03M-03D-21h28m31s_Juc2-main
+
+[0;94m[4/8] Preprocess B[0m
+------------------------------------------------------------
+2026-03-03 21:29:46.169351: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h29m44s_tAPG (PID: 5156)
+
+/scitex-python/examples/scitex/clew/04_preprocess_b.py
+
+Arguments:
+    input_file: None
+========================================
+[0m
+INFO: Preprocessing source B
+SUCC: Saved to: ./04_preprocess_b_out/clean_B.csv (6.7 KiB)
+INFO: Preprocessed 268 rows from source B
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/04_preprocess_b_out/FINISHED_SUCCESS/2026Y-03M-03D-21h29m44s_tAPG-main
+
+[0;94m[5/8] Source C[0m
+------------------------------------------------------------
+2026-03-03 21:30:54.950778: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h30m53s_u3aF (PID: 5923)
+
+/scitex-python/examples/scitex/clew/05_source_c.py
+
+Arguments:
+    n_samples: 250
+========================================
+[0m
+INFO: Generating source C
+SUCC: Saved to: ./05_source_c_out/source_C.csv (5.7 KiB)
+INFO: Generated 250 samples for source C
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/05_source_c_out/FINISHED_SUCCESS/2026Y-03M-03D-21h30m53s_u3aF-main
+
+[0;94m[6/8] Preprocess C[0m
+------------------------------------------------------------
+2026-03-03 21:32:18.631094: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h32m17s_8cFy (PID: 6664)
+
+/scitex-python/examples/scitex/clew/06_preprocess_c.py
+
+Arguments:
+    input_file: None
+========================================
+[0m
+INFO: Preprocessing source C
+SUCC: Saved to: ./06_preprocess_c_out/clean_C.csv (4.5 KiB)
+INFO: Preprocessed 182 rows from source C
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/06_preprocess_c_out/FINISHED_SUCCESS/2026Y-03M-03D-21h32m17s_8cFy-main
+
+[0;94m[7/8] Merge all branches[0m
+------------------------------------------------------------
+2026-03-03 21:33:38.205773: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h33m36s_BxQe (PID: 7463)
+
+/scitex-python/examples/scitex/clew/07_merge.py
+
+Arguments:
+    input_a: None
+    input_b: None
+    input_c: None
+========================================
+[0m
+INFO: Merging all branches
+SUCC: Saved to: ./07_merge_out/final.csv (23.6 KiB)
+INFO: Merged 550 total rows from 3 sources
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/07_merge_out/FINISHED_SUCCESS/2026Y-03M-03D-21h33m36s_BxQe-main
+
+[0;94m[8/8] Analyze final data[0m
+------------------------------------------------------------
+2026-03-03 21:35:05.552111: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h35m04s_YGzF (PID: 8222)
+
+/scitex-python/examples/scitex/clew/08_analyze.py
+
+Arguments:
+    input_file: None
+========================================
+[0m
+INFO: Analyzing final merged data
+SUCC: Saved to: ./08_analyze_out/stats_by_source.csv (171.0 B)
+SUCC: Saved to: ./08_analyze_out/report.json (279.0 B)
+INFO: Analysis complete
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/08_analyze_out/FINISHED_SUCCESS/2026Y-03M-03D-21h35m04s_YGzF-main
+
+============================================================
+[0;32mSUCC: Pipeline complete! Now demonstrating verification states...[0m
+============================================================
+
+[0;94m[Demo] Recording rerun verification for branch A sessions...[0m
+2026-03-03 21:36:23.169205: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h36m22s_SiqL (PID: 9014)
+
+/scitex-python/examples/scitex/clew/09_demo_verification.py
+
+Arguments:
+    action: rerun
+========================================
+[0m
+INFO: Recording rerun verification...
+  ✓✓ source_A.csv
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/09_demo_verification_out/FINISHED_SUCCESS/2026Y-03M-03D-21h36m22s_SiqL-main
+
+[0;94m[Demo] Modifying clean_C.csv to simulate failure...[0m
+2026-03-03 21:39:16.923798: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h39m15s_k1L2 (PID: 10744)
+
+/scitex-python/examples/scitex/clew/09_demo_verification.py
+
+Arguments:
+    action: break
+========================================
+[0m
+INFO: Breaking chain by modifying clean_C.csv...
+  Modified clean_C.csv to simulate failure
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/09_demo_verification_out/FINISHED_SUCCESS/2026Y-03M-03D-21h39m15s_k1L2-main
+
+[0;94m[Demo] Generating DAG visualization...[0m
+2026-03-03 21:40:40.857941: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h40m39s_Fmqm (PID: 11315)
+
+/scitex-python/examples/scitex/clew/09_demo_verification.py
+
+Arguments:
+    action: visualize
+========================================
+[0m
+INFO: Generating DAG visualization...
+  Generated: /scitex-python/examples/scitex/clew/09_demo_verification_out/dag.html
+  Generated: /scitex-python/examples/scitex/clew/09_demo_verification_out/dag.svg
+  Generated: /scitex-python/examples/scitex/clew/09_demo_verification_out/dag.png
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/09_demo_verification_out/FINISHED_SUCCESS/2026Y-03M-03D-21h40m39s_Fmqm-main
+
+[0;94m[Demo] Programmatic verification API...[0m
+2026-03-03 21:42:02.266349: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h42m01s_O2BS (PID: 12044)
+
+/scitex-python/examples/scitex/clew/10_programmatic_verification.py
+
+Arguments:
+========================================
+[0m
+INFO: === Database Statistics ===
+INFO: Total runs: 39
+INFO: Success runs: 38
+INFO: Failed runs: 0
+
+INFO: === Recent Runs ===
+INFO:   2026Y-03M-03D-21h42m01s_O2BS: 10_programmatic_verification.py [running]
+INFO:   2026Y-03M-03D-21h41m56s_CkIE: 08_analyze.py [success]
+INFO:   2026Y-03M-03D-21h41m01s_algt: 09_demo_verification.py [success]
+INFO:   2026Y-03M-03D-21h40m49s_vF7V: 07_merge.py [success]
+INFO:   2026Y-03M-03D-21h40m39s_Fmqm: 09_demo_verification.py [success]
+
+INFO: === Chain Verification ===
+INFO: Target: report.json
+INFO: Chain length: 4
+INFO: Overall status: verified
+INFO: Is verified: True
+INFO: Failed runs: 0
+
+INFO: Runs in chain:
+INFO:   ✓ 2026Y-03M-03D-21h35m04s_YGzF: 08_analyze.py
+INFO:   ✓ 2026Y-03M-03D-21h33m36s_BxQe: 07_merge.py
+INFO:   ✓ 2026Y-03M-03D-21h27m26s_dlK5: 02_preprocess_a.py
+INFO:   ✓ 2026Y-03M-03D-21h25m53s_epXY: 01_source_a.py
+
+INFO: === Verification Summary ===
+INFO: Use these commands for more details:
+INFO:   scitex clew status     # Show changed items
+INFO:   scitex clew list       # List all tracked runs
+INFO:   scitex clew chain FILE # Trace file dependencies
+
+SUCC: Congratulations! The script completed: /scitex-python/examples/scitex/clew/10_programmatic_verification_out/FINISHED_SUCCESS/2026Y-03M-03D-21h42m01s_O2BS-main
+
+============================================================
+[0;32mSUCC: Verification states demonstrated:[0m
+============================================================
+  ✓   Cache-verified (fast hash check)
+  ✓✓  Rerun-verified (re-executed script)
+  ✗   Failed (hash mismatch after modification)
+
+View DAG visualization:
+  file:///scitex-python/examples/scitex/clew/09_demo_verification_out/dag.html
+
+CLI commands:
+  scitex clew status     # Show changed items
+  scitex clew list       # List all tracked runs
+  scitex clew chain FILE # Trace file dependencies
+
+[0;32mSUCC: Log saved to: /scitex-python/examples/scitex/clew/.00_run_all.sh.log[0m

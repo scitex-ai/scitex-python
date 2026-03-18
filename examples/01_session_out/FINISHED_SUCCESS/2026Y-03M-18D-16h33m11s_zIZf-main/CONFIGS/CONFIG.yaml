@@ -1,0 +1,14 @@
+ID: 2026Y-03M-18D-16h33m11s_zIZf
+PID: 1309777
+START_DATETIME: 2026-03-18 16:33:11.112731
+FILE: /home/ywatanabe/proj/scitex-python/examples/01_session.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-python/examples/01_session_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/01_session_out/RUNNING/2026Y-03M-18D-16h33m11s_zIZf-main
+ARGS:
+    data_path: ./data.csv
+    n_samples: 50
+    learning_rate: 0.001
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-18 16:33:16.719601
+RUN_DURATION: 00:00:05

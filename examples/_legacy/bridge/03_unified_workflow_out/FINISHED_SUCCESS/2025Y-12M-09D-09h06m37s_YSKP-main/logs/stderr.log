@@ -1,0 +1,48 @@
+[90mINFO: ============================================================[0m
+[90mINFO: Injected Global Variables (available in your function):[0m
+[90mINFO:   • CONFIG - Session configuration dict[0m
+[90mINFO:       - CONFIG['ID']: 2025Y-12M-09D-09h06m37s_YSKP[0m
+[90mINFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/bridge/03_unified_workflow_out/RUNNING/2025Y-12M-09D-09h06m37s_YSKP-main[0m
+[90mINFO:       - CONFIG['PID']: 1517561[0m
+[90mINFO:   • plt - matplotlib.pyplot (configured for session)[0m
+[90mINFO:   • COLORS - CustomColors (for consistent plotting)[0m
+[90mINFO:   • rng_manager - RandomStateManager (for reproducibility)[0m
+[90mINFO:   • logger - SciTeX logger (configured for your script)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Running main with injected parameters:[0m
+[90mINFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger', 'plt': 'module'}[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Statistical Result[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Pearson r: 0.089[0m
+[90mINFO: P-value: 3.7970e-01[0m
+[90mINFO: Formatted: (r = 0.09, p = 0.380)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Vis FigureModel[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Size: 128.0 x 68.0 mm[0m
+[90mINFO: Axes count: 2[0m
+[90mINFO:   Axes 0: Time Series, 0 annotations[0m
+[90mINFO:   Axes 1: Correlation, 1 annotations[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Collected Figure Data[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Figure dimensions: 128.0 x 68.0 mm[0m
+[90mINFO: Number of axes: 2[0m
+[32mSUCC: Saved to: ./examples/bridge/03_unified_workflow_out/unified_workflow.json (5.1 KiB)[0m
+[90mINFO: JSON exported to: /home/ywatanabe/proj/scitex-code/examples/bridge/03_unified_workflow_out/unified_workflow.json[0m
+[90mINFO:   • Auto-collected metadata from figure[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/bridge/03_unified_workflow_out/unified_workflow.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:165: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(f"Could not extract dimension info for metadata: {e}")
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:307: UserWarning: Could not extract Phase 1 metadata: 'function' object has no attribute 'get_xlabel'
+  warnings.warn(f"Could not extract Phase 1 metadata: {e}")
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:68: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/bridge/03_unified_workflow_out/unified_workflow.csv (11.3 KiB)[0m
+[32mSUCC: Saved to: ./examples/bridge/03_unified_workflow_out/unified_workflow.json (3.5 KiB)[0m
+[32mSUCC: Saved to: ./examples/bridge/03_unified_workflow_out/unified_workflow.png (2.1 MiB)[0m
+[90mINFO: Figure saved to: /home/ywatanabe/proj/scitex-code/examples/bridge/03_unified_workflow_out/unified_workflow.png[0m
+[90mINFO: Done![0m

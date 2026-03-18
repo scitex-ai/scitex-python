@@ -1,0 +1,43 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h28m22s_Alx3
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/RUNNING/2025Y-12M-11D-09h28m22s_Alx3-main
+INFO:       - CONFIG['PID']: 969305
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Full Pipeline: Word -> Structured Data -> PDF
+INFO: ============================================================
+INFO: 
+1. Loading Word document to structured data...
+INFO:    Loaded document with 33 blocks
+INFO: 
+2. Inspecting structured data...
+INFO:    Document keys: ['blocks', 'metadata', 'images', 'references', 'warnings']
+INFO:    Block types:
+INFO:      caption: 3
+INFO:      heading: 9
+INFO:      image: 2
+INFO:      paragraph: 9
+INFO:      reference-paragraph: 9
+INFO:      table: 1
+INFO:    Title: TITLE/TITRE
+INFO:    Author: Adrian Chan
+INFO:    Images extracted: 2
+INFO: 
+3. Manipulating structured data...
+ERRO: Error in main: module 'scitex' has no attribute 'now'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 244, in _run_with_session
+    result = func(**filtered_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf.py", line 97, in main
+    doc["metadata"]["export_date"] = stx.now().isoformat()
+                                     ^^^^^^^
+AttributeError: module 'scitex' has no attribute 'now'

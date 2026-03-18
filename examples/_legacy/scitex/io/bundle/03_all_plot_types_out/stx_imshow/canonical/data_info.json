@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-stx-imshow-0_variable-row",
+    "ax-row-0-col-0_trace-id-stx-imshow-0_variable-col",
+    "ax-row-0-col-0_trace-id-stx-imshow-0_variable-value"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-stx-imshow-0_variable-row": "int64",
+    "ax-row-0-col-0_trace-id-stx-imshow-0_variable-col": "int64",
+    "ax-row-0-col-0_trace-id-stx-imshow-0_variable-value": "float64"
+  },
+  "shape": [
+    100,
+    3
+  ]
+}

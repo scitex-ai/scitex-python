@@ -1,0 +1,16 @@
+ID: 2026Y-03M-04D-19h53m44s_uJj9
+PID: 804741
+START_DATETIME: 2026-03-04 19:53:44.229916
+FILE: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/03_run_experiment.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/03_run_experiment_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/03_run_experiment_out/RUNNING/2026Y-03M-04D-19h53m44s_uJj9-main
+ARGS:
+    subjects_file:
+    stimuli_file:
+    covariates_file:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-04 19:53:46.983017
+RUN_DURATION: 00:00:02

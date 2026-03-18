@@ -1,0 +1,16 @@
+/home/ywatanabe/proj/scitex-code/src/scitex/session/_lifecycle.py:244: UserWarning: Arial font not found on system. Using fallback fonts (Helvetica/DejaVu Sans). For publication-quality figures with Arial, install Microsoft Core Fonts: sudo apt-get install ttf-mscorefonts-installer && fc-cache -fv
+  _, COLORS = configure_mpl(plt, **mpl_kwargs)
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 608, in <module>
+    main()
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 116, in wrapper
+    return _run_with_session(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 168, in _run_with_session
+    CONFIG, stdout, stderr, plt, COLORS, rng_manager = start(
+                                                       ^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_lifecycle.py", line 549, in start
+    _print_header(ID, PID, file, args, CONFIGS, verbose)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_lifecycle.py", line 139, in _print_header
+    sleep(1)
+KeyboardInterrupt

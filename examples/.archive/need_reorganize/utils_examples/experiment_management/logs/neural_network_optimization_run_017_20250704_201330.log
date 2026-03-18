@@ -1,0 +1,7 @@
+Experiment: neural_network_optimization_run_017_20250704_201330
+Parameters: {'learning_rate': 0.1, 'batch_size': 128, 'optimizer': 'adam'}
+Status: running
+Started: 2025-07-04 20:13:30
+Completed: 2025-07-04 20:13:30
+Results: {'accuracy': 0.7325255678689641, 'precision': 0.786808433024099, 'recall': 0.7029966991487566, 'training_time': 87.50545453794047, 'memory_usage': 1413.4553171572584, 'converged': True}
+Final status: completed

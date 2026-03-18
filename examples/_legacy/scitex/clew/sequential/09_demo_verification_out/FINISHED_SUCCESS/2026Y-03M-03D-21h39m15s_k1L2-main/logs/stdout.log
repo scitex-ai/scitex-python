@@ -1,0 +1,11 @@
+[94m
+========================================
+SciTeX v2.21.1 | 2026Y-03M-03D-21h39m15s_k1L2 (PID: 10744)
+
+/scitex-python/examples/scitex/clew/09_demo_verification.py
+
+Arguments:
+    action: break
+========================================
+[0m
+  Modified clean_C.csv to simulate failure

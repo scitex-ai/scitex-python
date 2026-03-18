@@ -1,0 +1,12 @@
+ID: 2025Y-12M-11D-08h31m20s_HaV1
+PID: 835754
+START_DATETIME: 2025-12-11 08:31:20.990919
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/RUNNING/2025Y-12M-11D-08h31m20s_HaV1-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 08:31:31.518268
+RUN_DURATION: 00:00:10

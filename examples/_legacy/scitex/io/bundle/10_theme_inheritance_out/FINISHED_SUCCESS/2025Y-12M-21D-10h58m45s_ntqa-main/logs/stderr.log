@@ -1,0 +1,48 @@
+INFO: Example 11: Theme Configuration Demo
+
+INFO: ============================================================
+INFO: LIGHT MODE THEME
+INFO: ============================================================
+SUCC: Saved to: ./examples/scitex/fts/11_theme_inheritance_out/theme_light.zip (72.7 KiB)
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-plot-0', skipping
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-plot-1', skipping
+WARN: Plotting records not found. Cannot export empty data.
+WARN: Plotting records not found. Cannot export empty data.
+INFO: Light theme configured:
+INFO:   mode: light
+INFO:   colors: Colors(palette=['#1f77b4', '#ff7f0e', '#2ca02c'], primary='#1f77b4', secondary='#ff7f0e', background='#ffffff', text='#333333', axis='#666666', grid='#e0e0e0')
+INFO:   fonts: None
+
+INFO: ============================================================
+INFO: DARK MODE THEME
+INFO: ============================================================
+SUCC: Saved to: ./examples/scitex/fts/11_theme_inheritance_out/theme_dark.zip (73.2 KiB)
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-plot-0', skipping
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-plot-1', skipping
+WARN: Plotting records not found. Cannot export empty data.
+WARN: Plotting records not found. Cannot export empty data.
+INFO: Dark theme configured:
+INFO:   mode: dark
+INFO:   colors: Colors(palette=['#1f77b4', '#ff7f0e', '#2ca02c'], primary='#00ff88', secondary='#ff6b6b', background='#1a1a1a', text='#e8e8e8', axis='#888888', grid='#333333')
+
+INFO: ============================================================
+INFO: THEME SWITCHING DEMO
+INFO: ============================================================
+INFO: Original mode: light
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-plot-0', skipping
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-plot-1', skipping
+WARN: Plotting records not found. Cannot export empty data.
+WARN: Plotting records not found. Cannot export empty data.
+INFO: Switched to: dark
+INFO: Verified mode: dark
+
+INFO: ============================================================
+INFO: Theme Structure Summary:
+INFO:   mode: 'light' | 'dark'
+INFO:   colors: {primary, secondary, background, text, axis, grid}
+INFO:   fonts: {family, title_size, label_size, tick_size}
+INFO:   figure_title: {text, prefix, number}
+INFO:   caption: {text, panels: [{label, description}]}
+INFO:   panel_labels: {style, fontsize, fontweight, position}
+INFO: ============================================================
+SUCC: Example 11 completed!

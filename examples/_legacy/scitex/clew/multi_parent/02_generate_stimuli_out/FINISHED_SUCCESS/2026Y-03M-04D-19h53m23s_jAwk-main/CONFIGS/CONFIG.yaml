@@ -1,0 +1,14 @@
+ID: 2026Y-03M-04D-19h53m23s_jAwk
+PID: 804402
+START_DATETIME: 2026-03-04 19:53:23.211503
+FILE: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/02_generate_stimuli.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/02_generate_stimuli_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/02_generate_stimuli_out/RUNNING/2026Y-03M-04D-19h53m23s_jAwk-main
+ARGS:
+    n_stimuli: 40
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-04 19:53:25.798947
+RUN_DURATION: 00:00:02

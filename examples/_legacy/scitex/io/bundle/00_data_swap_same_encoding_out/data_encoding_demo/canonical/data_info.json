@@ -1,0 +1,26 @@
+{
+  "columns": [
+    {
+      "name": "x",
+      "dtype": "unknown"
+    },
+    {
+      "name": "y",
+      "dtype": "unknown"
+    },
+    {
+      "name": "label",
+      "dtype": "unknown"
+    }
+  ],
+  "format": {
+    "type": "csv",
+    "encoding": "utf-8",
+    "delimiter": ",",
+    "header_row": 0
+  },
+  "shape": [
+    50,
+    3
+  ]
+}

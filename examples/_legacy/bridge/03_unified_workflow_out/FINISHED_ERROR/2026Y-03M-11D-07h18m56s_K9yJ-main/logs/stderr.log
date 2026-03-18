@@ -1,0 +1,12 @@
+/home/ywatanabe/proj/figrecipe/src/figrecipe/_wrappers/_axes.py:137: UserWarning: *c* argument looks like a single numeric RGB or RGBA sequence, which should be avoided as value-mapping will have precedence in case its length matches with *x* & *y*.  Please use the *color* keyword-argument or provide a 2D array with a single row if you intend to specify the same RGB or RGBA value for all points.
+  result = method(*args, **kwargs)
+ERRO: Error in main: 'StatResult' object is not iterable
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/session/_decorator.py", line 252, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-python/examples/bridge/03_unified_workflow.py", line 76, in main
+ERRO:     add_stats_from_results(
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/bridge/_helpers.py", line 86, in add_stats_from_results
+ERRO:     for stat in stat_results:
+ERRO: TypeError: 'StatResult' object is not iterable

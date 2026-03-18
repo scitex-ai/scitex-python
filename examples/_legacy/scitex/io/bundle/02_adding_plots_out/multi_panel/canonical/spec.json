@@ -1,0 +1,72 @@
+{
+  "id": "f5862ffe-d500-4850-8015-48fa9b3ae475",
+  "kind": "figure",
+  "scitex_schema": "scitex.fts.spec",
+  "scitex_schema_version": "1.0.0",
+  "bbox_norm": {
+    "x0": 0.0,
+    "y0": 0.0,
+    "x1": 1.0,
+    "y1": 1.0
+  },
+  "name": "Multi-Panel Figure",
+  "size_mm": {
+    "width": 170,
+    "height": 130
+  },
+  "children": [
+    "912a08bd.zip",
+    "8e80c3d3.zip",
+    "d34a6b88.zip",
+    "131e5d7f.zip"
+  ],
+  "layout": {
+    "rows": 2,
+    "cols": 2,
+    "panels": [
+      {
+        "child": "912a08bd.zip",
+        "child_id": "912a08bd-8a9b-4bdc-94c3-74220a80e4b6",
+        "row": 0,
+        "col": 0,
+        "row_span": 1,
+        "col_span": 1,
+        "label": "A"
+      },
+      {
+        "child": "8e80c3d3.zip",
+        "child_id": "8e80c3d3-bffc-484e-a366-671178c29fdb",
+        "row": 0,
+        "col": 1,
+        "row_span": 1,
+        "col_span": 1,
+        "label": "B"
+      },
+      {
+        "child": "d34a6b88.zip",
+        "child_id": "d34a6b88-7c6c-4056-a025-0c06339f5577",
+        "row": 1,
+        "col": 0,
+        "row_span": 1,
+        "col_span": 1,
+        "label": "C"
+      },
+      {
+        "child": "131e5d7f.zip",
+        "child_id": "131e5d7f-260a-421d-be44-5c5bfbbb8e70",
+        "row": 1,
+        "col": 1,
+        "row_span": 1,
+        "col_span": 1,
+        "label": "D"
+      }
+    ]
+  },
+  "refs": {
+    "encoding": "encoding.json",
+    "theme": "theme.json",
+    "stats": "stats/stats.json"
+  },
+  "created_at": "2025-12-20T23:49:53.740465Z",
+  "modified_at": "2025-12-20T23:49:53.924993Z"
+}

@@ -1,0 +1,38 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-20D-12h57m40s_SXIn
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/scitex/stats/statsz_out/RUNNING/2025Y-12M-20D-12h57m40s_SXIn-main
+INFO:       - CONFIG['PID']: 1312619
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     { 'COLORS': 'DotDict',
+          'CONFIG': 'DotDict',
+          'logger': 'SciTeXLogger',
+          'plt': 'module',
+          'rng_manager': 'RandomStateManager'}
+INFO: Starting FTS stats bundle demo
+INFO: Creating basic comparison bundle
+INFO: Loaded 1 comparisons
+SUCC: Basic bundle created and verified
+INFO: Creating longitudinal study bundle
+INFO: Loaded 4 comparisons with metadata
+SUCC: Longitudinal bundle created
+INFO: Creating bootstrap results bundle
+SUCC: Bootstrap bundle created
+INFO: Creating ZIP archive
+SUCC: ZIP bundle created
+INFO: Results summary:
+ERRO: Error in main: 'name'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 244, in _run_with_session
+    result = func(**filtered_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/examples/scitex/stats/statsz.py", line 160, in main
+    f"  {comp['name']}: p={comp['p_value']:.4f}, "
+         ~~~~^^^^^^^^
+KeyError: 'name'

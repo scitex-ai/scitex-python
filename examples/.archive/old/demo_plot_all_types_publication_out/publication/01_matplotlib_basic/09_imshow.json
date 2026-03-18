@@ -1,0 +1,109 @@
+{
+    "metadata_version": "1.1.0",
+    "scitex": {
+        "version": "2.3.0",
+        "created_at": "2025-12-01T04:18:15.049494",
+        "created_with": "scitex.plt.subplots (mm-control)",
+        "mode": "publication",
+        "axes_size_mm": [
+            40,
+            30
+        ],
+        "position_in_grid": [
+            0,
+            0
+        ],
+        "style_mm": {
+            "axis_thickness_mm": 0.2,
+            "tick_length_mm": 0.8,
+            "tick_thickness_mm": 0.2,
+            "trace_thickness_mm": 0.2,
+            "axis_font_size_pt": 7,
+            "tick_font_size_pt": 7,
+            "title_font_size_pt": 8,
+            "legend_font_size_pt": 6,
+            "label_pad_pt": 0.5,
+            "tick_pad_pt": 2.0,
+            "title_pad_pt": 1.0,
+            "font_family": "Arial",
+            "n_ticks": 4,
+            "font_family_requested": "Arial",
+            "font_family_actual": "Arial"
+        }
+    },
+    "matplotlib": {
+        "version": "3.10.3"
+    },
+    "id": "09_imshow",
+    "dimensions": {
+        "figure_size_mm": [
+            80.0,
+            70.0
+        ],
+        "figure_size_inch": [
+            3.1496062992125986,
+            2.7559055118110236
+        ],
+        "figure_size_px": [
+            944,
+            826
+        ],
+        "axes_size_mm": [
+            31.999999999999993,
+            29.99999999999999
+        ],
+        "axes_size_inch": [
+            1.2598425196850391,
+            1.181102362204724
+        ],
+        "axes_size_px": [
+            377,
+            354
+        ],
+        "axes_position": [
+            0.25,
+            0.2857142857142857,
+            0.3999999999999999,
+            0.4285714285714285
+        ],
+        "dpi": 300
+    },
+    "margins_mm": {
+        "left": 20.0,
+        "bottom": 20.0,
+        "right": 28.000000000000007,
+        "top": 20.000000000000014
+    },
+    "axes_bbox_px": {
+        "x0": 236,
+        "y0": 236,
+        "x1": 613,
+        "y1": 590,
+        "width": 377,
+        "height": 354
+    },
+    "axes_bbox_mm": {
+        "x0": 20.0,
+        "y0": 20.000000000000007,
+        "x1": 51.99999999999999,
+        "y1": 50.0,
+        "width": 31.999999999999993,
+        "height": 29.99999999999999
+    },
+    "axes": {
+        "x": {
+            "label": "",
+            "unit": "",
+            "scale": "linear",
+            "n_ticks": 4
+        },
+        "y": {
+            "label": "",
+            "unit": "",
+            "scale": "linear",
+            "n_ticks": 4
+        }
+    },
+    "plot_type": "image",
+    "method": "imshow"
+}

@@ -1,0 +1,402 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-11M-19D-17h27m28s_mBD2
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-17h27m28s_mBD2-main
+INFO:       - CONFIG['PID']: 153550
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'verbose': 'bool'}
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Matplotlib method 'plot()' does not support full data tracking for CSV export. Consider using 'ax.plot()' instead for better data export support.
+  df = _export_as_csv(self.history)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.png (40.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.jpg (42.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.pdf (17.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/02_scatter.csv (3.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/02_scatter.png (37.8 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/02_scatter.csv (3.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/02_scatter.jpg (37.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/02_scatter.csv (3.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/02_scatter.pdf (18.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/03_bar.csv (142.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/03_bar.png (35.3 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/03_bar.csv (142.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/03_bar.jpg (43.5 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/03_bar.csv (142.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/03_bar.pdf (15.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/04_hist.csv (31.4 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/04_hist.png (35.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/04_hist.csv (31.4 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/04_hist.jpg (36.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/04_hist.csv (31.4 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/04_hist.pdf (16.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/05_boxplot.csv (5.6 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/05_boxplot.png (23.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/05_boxplot.csv (5.6 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/05_boxplot.jpg (32.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/05_boxplot.csv (5.6 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/05_boxplot.pdf (14.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/06_errorbar.csv (885.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/06_errorbar.png (42.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/06_errorbar.csv (885.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/06_errorbar.jpg (34.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/06_errorbar.csv (885.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/06_errorbar.pdf (16.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/07_barh.csv (84.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/07_barh.png (24.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/07_barh.csv (84.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/07_barh.jpg (38.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/07_barh.csv (84.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/07_barh.pdf (14.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/08_fill_between.csv (5.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/08_fill_between.png (54.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/08_fill_between.csv (5.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/08_fill_between.jpg (38.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/08_fill_between.csv (5.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/08_fill_between.pdf (18.8 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Matplotlib method 'imshow()' does not support full data tracking for CSV export. Consider using 'ax.plot_imshow()' instead for better data export support.
+  df = _export_as_csv(self.history)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/09_imshow.png (26.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/09_imshow.jpg (54.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/09_imshow.pdf (19.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/10_contour.csv (2.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/10_contour.png (58.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/10_contour.csv (2.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/10_contour.jpg (49.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/10_contour.csv (2.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/10_contour.pdf (13.5 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/11_violinplot.csv (8.3 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/11_violinplot.png (25.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/11_violinplot.csv (8.3 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/11_violinplot.jpg (31.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/11_violinplot.csv (8.3 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/11_violinplot.pdf (20.8 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/01_plot_heatmap.csv (2.3 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/01_plot_heatmap.png (127.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/01_plot_heatmap.csv (2.3 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/01_plot_heatmap.jpg (79.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/01_plot_heatmap.csv (2.3 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/01_plot_heatmap.pdf (19.3 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/02_plot_line.csv (2.2 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/02_plot_line.png (33.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/02_plot_line.csv (2.2 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/02_plot_line.jpg (34.8 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/02_plot_line.csv (2.2 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/02_plot_line.pdf (15.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/03_plot_shaded_line.csv (3.8 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/03_plot_shaded_line.png (39.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/03_plot_shaded_line.csv (3.8 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/03_plot_shaded_line.jpg (38.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/03_plot_shaded_line.csv (3.8 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/03_plot_shaded_line.pdf (17.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/04_plot_violin.csv (7.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/04_plot_violin.png (31.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/04_plot_violin.csv (7.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/04_plot_violin.jpg (32.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/04_plot_violin.csv (7.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/04_plot_violin.pdf (19.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/05_plot_ecdf.csv (75.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/05_plot_ecdf.png (29.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/05_plot_ecdf.csv (75.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/05_plot_ecdf.jpg (35.5 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/05_plot_ecdf.csv (75.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/05_plot_ecdf.pdf (22.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/06_plot_box.csv (2.0 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/06_plot_box.png (14.5 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/06_plot_box.csv (2.0 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/06_plot_box.jpg (23.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/06_plot_box.csv (2.0 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/06_plot_box.pdf (11.3 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/07_plot_mean_std.csv (1.6 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/07_plot_mean_std.png (34.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/07_plot_mean_std.csv (1.6 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/07_plot_mean_std.jpg (37.8 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/07_plot_mean_std.csv (1.6 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_custom_scitex/07_plot_mean_std.pdf (16.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_functional/01_plot_kde.csv (43.8 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_functional/01_plot_kde.png (36.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_functional/01_plot_kde.csv (43.8 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_functional/01_plot_kde.jpg (37.5 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_functional/01_plot_kde.csv (43.8 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_functional/01_plot_kde.pdf (15.8 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/01_sns_boxplot.csv (3.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/01_sns_boxplot.png (20.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/01_sns_boxplot.csv (3.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/01_sns_boxplot.jpg (28.8 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/01_sns_boxplot.csv (3.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/01_sns_boxplot.pdf (14.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Method 'sns_violinplot()' does not support data tracking for CSV export. Consider using scitex plot methods (e.g., plot_image, plot_imshow) for data export support.
+  df = _export_as_csv(self.history)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/02_sns_violinplot.png (31.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/02_sns_violinplot.jpg (30.5 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/02_sns_violinplot.pdf (19.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/03_sns_scatterplot.csv (4.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/03_sns_scatterplot.png (65.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/03_sns_scatterplot.csv (4.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/03_sns_scatterplot.jpg (39.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/03_sns_scatterplot.csv (4.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/03_sns_scatterplot.pdf (18.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Method 'sns_lineplot()' does not support data tracking for CSV export. Consider using scitex plot methods (e.g., plot_image, plot_imshow) for data export support.
+  df = _export_as_csv(self.history)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/04_sns_lineplot.png (55.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/04_sns_lineplot.jpg (47.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/04_sns_lineplot.pdf (16.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_AdjustmentMixin.py:215: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  legend_obj = self._axis_mpl.legend(*args, loc=loc, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/05_sns_histplot.csv (1.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/05_sns_histplot.png (35.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/05_sns_histplot.csv (1.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/05_sns_histplot.jpg (35.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/05_sns_histplot.csv (1.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/05_sns_histplot.pdf (16.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/06_sns_barplot.csv (3.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/06_sns_barplot.png (21.5 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/06_sns_barplot.csv (3.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/06_sns_barplot.jpg (30.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/06_sns_barplot.csv (3.1 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/06_sns_barplot.pdf (13.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/07_sns_stripplot.csv (1.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/07_sns_stripplot.png (33.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/07_sns_stripplot.csv (1.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/07_sns_stripplot.jpg (29.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/07_sns_stripplot.csv (1.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_seaborn/07_sns_stripplot.pdf (15.4 KiB)
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1368, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1113, in demo_publication_sns_kdeplot
+    ax.sns_kdeplot(
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_SeabornMixin.py", line 25, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_SeabornMixin.py", line 290, in sns_kdeplot
+    self.plot_kde(_data, xlim=lim, label=hue, id=hue, **kwargs)
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin.py", line 113, in plot_kde
+    self._axis_mpl.plot(xx, density, **kwargs)
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_axes.py", line 1779, in plot
+    lines = [*self._get_lines(self, *args, data=data, **kwargs)]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 296, in __call__
+    yield from self._plot_args(
+               ^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 545, in _plot_args
+    return [l[0] for l in result]
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 545, in <listcomp>
+    return [l[0] for l in result]
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 538, in <genexpr>
+    result = (make_artist(axes, x[:, j % ncx], y[:, j % ncy], kw,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 337, in _make_line
+    seg = mlines.Line2D(x, y, **kw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/lines.py", line 428, in __init__
+    self._internal_update(kwargs)
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/artist.py", line 1241, in _internal_update
+    return self._update_props(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/artist.py", line 1214, in _update_props
+    raise AttributeError(
+AttributeError: Line2D.set() got an unexpected keyword argument 'xlim'
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:120: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/01_2x2_scitex.csv (17.5 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/01_2x2_scitex.png (70.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/01_2x2_scitex.csv (17.5 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/01_2x2_scitex.jpg (97.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:120: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/01_2x2_scitex.csv (17.5 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/01_2x2_scitex.pdf (26.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:120: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/02_1x3_varied_widths.csv (7.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/02_1x3_varied_widths.png (39.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/02_1x3_varied_widths.csv (7.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/02_1x3_varied_widths.jpg (47.2 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:120: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/02_1x3_varied_widths.csv (7.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_multi_panel/02_1x3_varied_widths.pdf (22.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/style_override.png (38.7 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:102: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/style_override.jpg (44.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:172: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/style_override.pdf (17.9 KiB)

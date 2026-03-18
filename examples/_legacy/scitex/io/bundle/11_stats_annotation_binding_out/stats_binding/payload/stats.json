@@ -1,0 +1,25 @@
+{
+  "analyses": [
+    {
+      "result_id": "08e32a92-8ac9-4b69-ae1c-8b6c8a37c790",
+      "method": {
+        "name": "independent_t_test"
+      },
+      "results": {
+        "statistic": -7.7984646568031515,
+        "statistic_name": "t",
+        "p_value": 1.3340105766833465e-10,
+        "effect_size": {
+          "name": "d",
+          "value": 2.3085093998176425,
+          "ci_lower": 1.8085093998176425,
+          "ci_upper": 2.8085093998176425
+        },
+        "significant": true
+      },
+      "inputs": {
+        "comparison_name": "Control vs Treatment"
+      }
+    }
+  ]
+}

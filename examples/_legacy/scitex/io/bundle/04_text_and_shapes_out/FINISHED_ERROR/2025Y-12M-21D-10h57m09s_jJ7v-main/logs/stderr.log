@@ -1,0 +1,21 @@
+INFO: Example 04: FTS Node Types
+INFO: Creating text node...
+ERRO: Error in main: 'Node' object has no attribute 'text_params'
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 246, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes.py", line 92, in main
+ERRO:     create_text_node(out_dir, logger)
+ERRO:   File "/home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes.py", line 32, in create_text_node
+ERRO:     text_bundle.save()
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 562, in save
+ERRO:     fig = self.render()
+ERRO:           ^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 300, in render
+ERRO:     return self._render_annotation()
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 412, in _render_annotation
+ERRO:     text_params = self._node.text_params
+ERRO:                   ^^^^^^^^^^^^^^^^^^^^^^
+ERRO: AttributeError: 'Node' object has no attribute 'text_params'

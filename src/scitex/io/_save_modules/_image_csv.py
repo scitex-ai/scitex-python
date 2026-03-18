@@ -11,9 +11,9 @@ from scitex import logging
 from ._figure_utils import get_figure_with_data
 from ._legends import save_separate_legends
 
-# Optional: plotly-dependent save_image
+# save_image from standalone scitex-io package
 try:
-    from ._image import save_image
+    from scitex_io._save_modules._image import save_image
 except ImportError:
     save_image = None
 from ._symlink import symlink, symlink_to

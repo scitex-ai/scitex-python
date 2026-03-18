@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h40m39s_Fmqm
+PID: 11315
+START_DATETIME: 2026-03-03 21:40:39.907945
+FILE: /scitex-python/examples/scitex/clew/09_demo_verification.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/09_demo_verification_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/09_demo_verification_out/RUNNING/2026Y-03M-03D-21h40m39s_Fmqm-main
+ARGS:
+    action: visualize
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:41:21.975532
+RUN_DURATION: 00:00:42

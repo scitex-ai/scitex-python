@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-stx-kde-0_variable-kde_x",
+    "ax-row-0-col-0_trace-id-stx-kde-0_variable-kde_density",
+    "ax-row-0-col-0_trace-id-stx-kde-0_variable-kde_n"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-stx-kde-0_variable-kde_x": "float64",
+    "ax-row-0-col-0_trace-id-stx-kde-0_variable-kde_density": "float64",
+    "ax-row-0-col-0_trace-id-stx-kde-0_variable-kde_n": "int64"
+  },
+  "shape": [
+    1000,
+    3
+  ]
+}

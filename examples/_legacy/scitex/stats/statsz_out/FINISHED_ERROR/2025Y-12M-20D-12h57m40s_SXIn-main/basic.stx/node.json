@@ -1,0 +1,18 @@
+{
+  "id": "9d502ac4-3c73-4937-875a-2b475dade7b6",
+  "type": "stats",
+  "bbox_norm": {
+    "x0": 0.0,
+    "y0": 0.0,
+    "x1": 1.0,
+    "y1": 1.0
+  },
+  "name": "basic",
+  "refs": {
+    "encoding": "encoding.json",
+    "theme": "theme.json",
+    "stats": "stats/stats.json"
+  },
+  "created_at": "2025-12-20T01:57:42.957710Z",
+  "modified_at": "2025-12-20T01:57:42.959089Z"
+}

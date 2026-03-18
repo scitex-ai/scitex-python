@@ -1,0 +1,280 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:24.367942"
+    },
+    "figure": {
+        "size_px": [
+            580,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -3.687549873694631,
+                3.31125365074575
+            ],
+            "ylim": [
+                0.0,
+                92.4
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_bars": {
+            "id": "ax_00_bars",
+            "axes_id": "ax_00",
+            "element_type": "bar",
+            "label": "bars",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 15,
+                    "x1": 450,
+                    "y1": 330
+                },
+                "rectangles": [
+                    {
+                        "x": 21.5,
+                        "y": 319.3,
+                        "width": 14.3,
+                        "height": 10.7
+                    },
+                    {
+                        "x": 35.8,
+                        "y": 326.4,
+                        "width": 14.3,
+                        "height": 3.6
+                    },
+                    {
+                        "x": 50.1,
+                        "y": 319.3,
+                        "width": 14.3,
+                        "height": 10.7
+                    },
+                    {
+                        "x": 64.4,
+                        "y": 326.4,
+                        "width": 14.3,
+                        "height": 3.6
+                    },
+                    {
+                        "x": 78.7,
+                        "y": 315.7,
+                        "width": 14.3,
+                        "height": 14.3
+                    },
+                    {
+                        "x": 93.0,
+                        "y": 305.0,
+                        "width": 14.3,
+                        "height": 25.0
+                    },
+                    {
+                        "x": 107.3,
+                        "y": 283.6,
+                        "width": 14.3,
+                        "height": 46.4
+                    },
+                    {
+                        "x": 121.6,
+                        "y": 272.9,
+                        "width": 14.3,
+                        "height": 57.1
+                    },
+                    {
+                        "x": 135.9,
+                        "y": 226.4,
+                        "width": 14.3,
+                        "height": 103.6
+                    },
+                    {
+                        "x": 150.2,
+                        "y": 187.1,
+                        "width": 14.3,
+                        "height": 142.9
+                    },
+                    {
+                        "x": 164.5,
+                        "y": 187.1,
+                        "width": 14.3,
+                        "height": 142.9
+                    },
+                    {
+                        "x": 178.8,
+                        "y": 126.4,
+                        "width": 14.3,
+                        "height": 203.6
+                    },
+                    {
+                        "x": 193.1,
+                        "y": 101.4,
+                        "width": 14.3,
+                        "height": 228.6
+                    },
+                    {
+                        "x": 207.4,
+                        "y": 55.0,
+                        "width": 14.3,
+                        "height": 275.0
+                    },
+                    {
+                        "x": 221.7,
+                        "y": 15.7,
+                        "width": 14.3,
+                        "height": 314.3
+                    },
+                    {
+                        "x": 236.0,
+                        "y": 65.7,
+                        "width": 14.3,
+                        "height": 264.3
+                    },
+                    {
+                        "x": 250.3,
+                        "y": 30.0,
+                        "width": 14.3,
+                        "height": 300.0
+                    },
+                    {
+                        "x": 264.6,
+                        "y": 44.3,
+                        "width": 14.3,
+                        "height": 285.7
+                    },
+                    {
+                        "x": 278.9,
+                        "y": 90.7,
+                        "width": 14.3,
+                        "height": 239.3
+                    },
+                    {
+                        "x": 293.2,
+                        "y": 112.1,
+                        "width": 14.3,
+                        "height": 217.9
+                    },
+                    {
+                        "x": 307.5,
+                        "y": 158.6,
+                        "width": 14.3,
+                        "height": 171.4
+                    },
+                    {
+                        "x": 321.8,
+                        "y": 169.3,
+                        "width": 14.3,
+                        "height": 160.7
+                    },
+                    {
+                        "x": 336.1,
+                        "y": 208.6,
+                        "width": 14.3,
+                        "height": 121.4
+                    },
+                    {
+                        "x": 350.4,
+                        "y": 233.6,
+                        "width": 14.3,
+                        "height": 96.4
+                    },
+                    {
+                        "x": 364.7,
+                        "y": 269.3,
+                        "width": 14.3,
+                        "height": 60.7
+                    },
+                    {
+                        "x": 379.0,
+                        "y": 301.4,
+                        "width": 14.3,
+                        "height": 28.6
+                    },
+                    {
+                        "x": 393.3,
+                        "y": 319.3,
+                        "width": 14.3,
+                        "height": 10.7
+                    },
+                    {
+                        "x": 407.6,
+                        "y": 305.0,
+                        "width": 14.3,
+                        "height": 25.0
+                    },
+                    {
+                        "x": 421.9,
+                        "y": 326.4,
+                        "width": 14.3,
+                        "height": 3.6
+                    },
+                    {
+                        "x": 436.2,
+                        "y": 326.4,
+                        "width": 14.3,
+                        "height": 3.6
+                    }
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.8
+                ],
+                "edgecolor": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.8
+                ],
+                "linewidth": 0.5669291338582677,
+                "alpha": 0.8
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha",
+                "linewidth"
+            ],
+            "zorder": 0.5,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "mpl_hist.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-hist-0_variable-raw-data"
+        ],
+        "csv_hash": "91aac84fedbe51dc"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

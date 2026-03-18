@@ -1,0 +1,25 @@
+{
+  "id": "15e3c6a0-6110-49f5-bcde-8e0e8e294468",
+  "kind": "plot",
+  "scitex_schema": "scitex.fts.spec",
+  "scitex_schema_version": "1.0.0",
+  "bbox_norm": {
+    "x0": 0.0,
+    "y0": 0.0,
+    "x1": 1.0,
+    "y1": 1.0
+  },
+  "name": "stx_contour",
+  "size_mm": {
+    "width": 80.0,
+    "height": 68.0
+  },
+  "payload_schema": "scitex.fts.payload.plot@1",
+  "refs": {
+    "encoding": "encoding.json",
+    "theme": "theme.json",
+    "stats": "stats/stats.json"
+  },
+  "created_at": "2025-12-20T23:50:14.545192Z",
+  "modified_at": "2025-12-20T23:50:14.545192Z"
+}

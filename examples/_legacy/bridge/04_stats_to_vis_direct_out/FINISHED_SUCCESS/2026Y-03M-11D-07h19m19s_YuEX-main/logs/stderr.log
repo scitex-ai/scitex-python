@@ -1,0 +1,39 @@
+INFO: ============================================================
+INFO: Created StatResults
+INFO: ============================================================
+INFO:   t-test: t = 3.45, p = 0.0010, stars = '***'
+INFO:   pearson: r = 0.85, p = 0.0001, stars = '***'
+INFO:   anova: F = 12.30, p = 0.0020, stars = '**'
+INFO: ------------------------------------------------------------
+INFO: Converted to AnnotationModels
+INFO: ------------------------------------------------------------
+INFO:   Type: text
+INFO:   Text: 't = 3.450***'
+INFO:   Position: (0.5, 0.95)
+INFO:   Type: text
+INFO:   Text: 'r = 0.850***'
+INFO:   Position: (0.5, 0.95)
+INFO:   Type: text
+INFO:   Text: 'F = 12.300**'
+INFO:   Position: (0.5, 0.95)
+INFO: ------------------------------------------------------------
+INFO: FigureModel with Stats
+INFO: ------------------------------------------------------------
+INFO: Dimensions: 170 x 120 mm
+INFO: Axes 0 (Comparison):
+INFO:   Annotations: 2
+INFO:     [0] text='***', pos=(0.5, 0.95)
+INFO:     [1] text='***', pos=(0.5, 0.8999999999999999)
+INFO: Axes 1 (Correlation):
+INFO:   Annotations: 1
+INFO:     [0] text='F = 12.300**', pos=(0.5, 0.95)
+INFO: ------------------------------------------------------------
+INFO: Custom Positioning
+INFO: ------------------------------------------------------------
+INFO:   top-right      : x=  95.0, y=  950.0 (data)
+INFO:   top-left       : x=   5.0, y=  950.0 (data)
+INFO:   bottom-right   : x=  95.0, y=   50.0 (data)
+INFO:   bottom-left    : x=   5.0, y=   50.0 (data)
+SUCC: Saved to: ./bridge/04_stats_to_vis_direct_out/stats_to_vis_direct.json (2.1 KiB)
+INFO: JSON exported to: /home/ywatanabe/proj/scitex-python/examples/bridge/04_stats_to_vis_direct_out/stats_to_vis_direct.json
+INFO: Done!

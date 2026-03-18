@@ -1,0 +1,1128 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:04.736259"
+    },
+    "figure": {
+        "size_px": [
+            564,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -0.5,
+                3.5
+            ],
+            "ylim": [
+                -2.740429774612791,
+                6.220001791985832
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_line_00": {
+            "id": "ax_00_line_00",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 59,
+                    "y0": 136,
+                    "x1": 59,
+                    "y1": 289
+                },
+                "path_simplified": [
+                    [
+                        59.0,
+                        288.7
+                    ],
+                    [
+                        59.0,
+                        135.8
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.875,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_01": {
+            "id": "ax_00_line_01",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_1",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 59,
+                    "y0": 202,
+                    "x1": 59,
+                    "y1": 250
+                },
+                "path_simplified": [
+                    [
+                        59.0,
+                        250.5
+                    ],
+                    [
+                        59.0,
+                        202.3
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 5.625,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_02": {
+            "id": "ax_00_line_02",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_2",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 59,
+                    "y0": 224,
+                    "x1": 59,
+                    "y1": 224
+                },
+                "path_simplified": [
+                    [
+                        59.0,
+                        224.0
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "_",
+                "markersize": 4.6875
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_03": {
+            "id": "ax_00_line_03",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_3",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 177,
+                    "y0": 115,
+                    "x1": 177,
+                    "y1": 286
+                },
+                "path_simplified": [
+                    [
+                        177.0,
+                        285.8
+                    ],
+                    [
+                        177.0,
+                        114.8
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.875,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_04": {
+            "id": "ax_00_line_04",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_4",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 177,
+                    "y0": 167,
+                    "x1": 177,
+                    "y1": 224
+                },
+                "path_simplified": [
+                    [
+                        177.0,
+                        223.6
+                    ],
+                    [
+                        177.0,
+                        166.8
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 5.625,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_05": {
+            "id": "ax_00_line_05",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_5",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 177,
+                    "y0": 192,
+                    "x1": 177,
+                    "y1": 192
+                },
+                "path_simplified": [
+                    [
+                        177.0,
+                        191.7
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "_",
+                "markersize": 4.6875
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_06": {
+            "id": "ax_00_line_06",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_6",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 295,
+                    "y0": 82,
+                    "x1": 295,
+                    "y1": 242
+                },
+                "path_simplified": [
+                    [
+                        295.0,
+                        242.2
+                    ],
+                    [
+                        295.0,
+                        82.2
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.875,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_07": {
+            "id": "ax_00_line_07",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_7",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 295,
+                    "y0": 134,
+                    "x1": 295,
+                    "y1": 178
+                },
+                "path_simplified": [
+                    [
+                        295.0,
+                        177.6
+                    ],
+                    [
+                        295.0,
+                        134.2
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 5.625,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_08": {
+            "id": "ax_00_line_08",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_8",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 295,
+                    "y0": 158,
+                    "x1": 295,
+                    "y1": 158
+                },
+                "path_simplified": [
+                    [
+                        295.0,
+                        158.0
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "_",
+                "markersize": 4.6875
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_09": {
+            "id": "ax_00_line_09",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_9",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 413,
+                    "y0": 42,
+                    "x1": 413,
+                    "y1": 198
+                },
+                "path_simplified": [
+                    [
+                        413.0,
+                        198.5
+                    ],
+                    [
+                        413.0,
+                        42.5
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.875,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_10": {
+            "id": "ax_00_line_10",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_10",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 413,
+                    "y0": 94,
+                    "x1": 413,
+                    "y1": 145
+                },
+                "path_simplified": [
+                    [
+                        413.0,
+                        144.9
+                    ],
+                    [
+                        413.0,
+                        94.3
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 5.625,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_11": {
+            "id": "ax_00_line_11",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_11",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 413,
+                    "y0": 122,
+                    "x1": 413,
+                    "y1": 122
+                },
+                "path_simplified": [
+                    [
+                        413.0,
+                        121.7
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "_",
+                "markersize": 4.6875
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_fill_00": {
+            "id": "ax_00_fill_00",
+            "axes_id": "ax_00",
+            "element_type": "fill",
+            "label": "fill_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 12,
+                    "y0": 110,
+                    "x1": 106,
+                    "y1": 315
+                },
+                "polygon": [
+                    [
+                        59.4,
+                        315.0
+                    ],
+                    [
+                        55.6,
+                        300.5
+                    ],
+                    [
+                        51.3,
+                        292.2
+                    ],
+                    [
+                        18.5,
+                        250.7
+                    ],
+                    [
+                        14.2,
+                        238.2
+                    ],
+                    [
+                        11.8,
+                        221.6
+                    ],
+                    [
+                        13.1,
+                        213.3
+                    ],
+                    [
+                        16.0,
+                        207.1
+                    ],
+                    [
+                        40.3,
+                        178.0
+                    ],
+                    [
+                        48.4,
+                        163.5
+                    ],
+                    [
+                        56.1,
+                        132.4
+                    ],
+                    [
+                        58.8,
+                        109.5
+                    ],
+                    [
+                        61.9,
+                        132.4
+                    ],
+                    [
+                        69.6,
+                        163.5
+                    ],
+                    [
+                        77.7,
+                        178.0
+                    ],
+                    [
+                        102.0,
+                        207.1
+                    ],
+                    [
+                        104.9,
+                        213.3
+                    ],
+                    [
+                        106.2,
+                        221.6
+                    ],
+                    [
+                        103.8,
+                        238.2
+                    ],
+                    [
+                        99.5,
+                        250.7
+                    ],
+                    [
+                        66.7,
+                        292.2
+                    ],
+                    [
+                        61.0,
+                        304.6
+                    ],
+                    [
+                        59.4,
+                        315.0
+                    ]
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.09375,
+                    0.46875000000000017,
+                    0.65625,
+                    1.0
+                ],
+                "edgecolor": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    1.0
+                ],
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha"
+            ],
+            "zorder": 1,
+            "visible": true
+        },
+        "ax_00_fill_01": {
+            "id": "ax_00_fill_01",
+            "axes_id": "ax_00",
+            "element_type": "fill",
+            "label": "fill_1",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 130,
+                    "y0": 86,
+                    "x1": 224,
+                    "y1": 315
+                },
+                "polygon": [
+                    [
+                        177.2,
+                        314.6
+                    ],
+                    [
+                        175.2,
+                        289.2
+                    ],
+                    [
+                        172.4,
+                        275.3
+                    ],
+                    [
+                        166.3,
+                        263.8
+                    ],
+                    [
+                        145.2,
+                        233.8
+                    ],
+                    [
+                        132.2,
+                        201.4
+                    ],
+                    [
+                        129.8,
+                        189.9
+                    ],
+                    [
+                        131.2,
+                        178.3
+                    ],
+                    [
+                        135.6,
+                        166.8
+                    ],
+                    [
+                        171.6,
+                        111.4
+                    ],
+                    [
+                        175.3,
+                        99.8
+                    ],
+                    [
+                        176.7,
+                        86.0
+                    ],
+                    [
+                        179.2,
+                        102.2
+                    ],
+                    [
+                        182.4,
+                        111.4
+                    ],
+                    [
+                        218.4,
+                        166.8
+                    ],
+                    [
+                        222.2,
+                        176.0
+                    ],
+                    [
+                        224.2,
+                        187.6
+                    ],
+                    [
+                        221.8,
+                        201.4
+                    ],
+                    [
+                        208.8,
+                        233.8
+                    ],
+                    [
+                        187.7,
+                        263.8
+                    ],
+                    [
+                        181.6,
+                        275.3
+                    ],
+                    [
+                        178.8,
+                        289.2
+                    ],
+                    [
+                        177.2,
+                        314.6
+                    ]
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.9000000000000001,
+                    0.35249999999999987,
+                    0.2999999999999998,
+                    1.0
+                ],
+                "edgecolor": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    1.0
+                ],
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha"
+            ],
+            "zorder": 1,
+            "visible": true
+        },
+        "ax_00_fill_02": {
+            "id": "ax_00_fill_02",
+            "axes_id": "ax_00",
+            "element_type": "fill",
+            "label": "fill_2",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 248,
+                    "y0": 57,
+                    "x1": 342,
+                    "y1": 268
+                },
+                "polygon": [
+                    [
+                        295.2,
+                        267.6
+                    ],
+                    [
+                        291.6,
+                        233.5
+                    ],
+                    [
+                        286.6,
+                        216.5
+                    ],
+                    [
+                        277.7,
+                        203.7
+                    ],
+                    [
+                        254.8,
+                        180.3
+                    ],
+                    [
+                        249.8,
+                        171.8
+                    ],
+                    [
+                        247.8,
+                        163.3
+                    ],
+                    [
+                        249.9,
+                        150.5
+                    ],
+                    [
+                        255.7,
+                        137.7
+                    ],
+                    [
+                        284.6,
+                        99.4
+                    ],
+                    [
+                        294.5,
+                        56.8
+                    ],
+                    [
+                        305.4,
+                        99.4
+                    ],
+                    [
+                        334.3,
+                        137.7
+                    ],
+                    [
+                        340.1,
+                        150.5
+                    ],
+                    [
+                        342.2,
+                        161.1
+                    ],
+                    [
+                        341.0,
+                        169.7
+                    ],
+                    [
+                        336.7,
+                        178.2
+                    ],
+                    [
+                        312.3,
+                        203.7
+                    ],
+                    [
+                        303.4,
+                        216.5
+                    ],
+                    [
+                        298.4,
+                        233.5
+                    ],
+                    [
+                        295.2,
+                        267.6
+                    ]
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.94875,
+                    0.6412499999999999,
+                    0.78375,
+                    1.0
+                ],
+                "edgecolor": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    1.0
+                ],
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha"
+            ],
+            "zorder": 1,
+            "visible": true
+        },
+        "ax_00_fill_03": {
+            "id": "ax_00_fill_03",
+            "axes_id": "ax_00",
+            "element_type": "fill",
+            "label": "fill_3",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 366,
+                    "y0": 15,
+                    "x1": 460,
+                    "y1": 226
+                },
+                "polygon": [
+                    [
+                        413.3,
+                        226.0
+                    ],
+                    [
+                        410.5,
+                        208.9
+                    ],
+                    [
+                        403.3,
+                        189.7
+                    ],
+                    [
+                        393.5,
+                        172.7
+                    ],
+                    [
+                        370.3,
+                        142.8
+                    ],
+                    [
+                        365.8,
+                        130.1
+                    ],
+                    [
+                        375.9,
+                        87.4
+                    ],
+                    [
+                        380.8,
+                        78.9
+                    ],
+                    [
+                        398.7,
+                        57.6
+                    ],
+                    [
+                        405.3,
+                        47.0
+                    ],
+                    [
+                        410.2,
+                        34.2
+                    ],
+                    [
+                        412.8,
+                        15.0
+                    ],
+                    [
+                        415.8,
+                        34.2
+                    ],
+                    [
+                        420.7,
+                        47.0
+                    ],
+                    [
+                        427.3,
+                        57.6
+                    ],
+                    [
+                        445.2,
+                        78.9
+                    ],
+                    [
+                        450.1,
+                        87.4
+                    ],
+                    [
+                        460.2,
+                        127.9
+                    ],
+                    [
+                        458.9,
+                        136.5
+                    ],
+                    [
+                        455.7,
+                        142.8
+                    ],
+                    [
+                        432.5,
+                        172.7
+                    ],
+                    [
+                        422.7,
+                        189.7
+                    ],
+                    [
+                        415.5,
+                        208.9
+                    ],
+                    [
+                        413.3,
+                        226.0
+                    ]
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.15874999999999995,
+                    0.63125,
+                    0.15874999999999995,
+                    1.0
+                ],
+                "edgecolor": [
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    0.22499999999999998,
+                    1.0
+                ],
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha"
+            ],
+            "zorder": 1,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_violinplot.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-violin-0_variable-group",
+            "ax-row-0-col-0_trace-id-stx-violin-0_variable-value"
+        ],
+        "csv_hash": "957836b19e766d6f"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

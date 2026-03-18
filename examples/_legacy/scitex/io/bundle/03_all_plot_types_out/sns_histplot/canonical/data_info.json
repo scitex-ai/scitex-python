@@ -1,0 +1,20 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-centers",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-counts",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-widths",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-edges-left",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-edges-right"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-centers": "float64",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-counts": "int64",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-widths": "float64",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-edges-left": "float64",
+    "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-edges-right": "float64"
+  },
+  "shape": [
+    60,
+    5
+  ]
+}

@@ -1,0 +1,14 @@
+ID: 2025Y-11M-19D-15h53m17s_CeX3
+PID: 179563
+START_DATETIME: 2025-11-19 15:53:17.049668
+FILE: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-15h53m17s_CeX3-main
+ARGS:
+    verbose: true
+EXIT_STATUS: 0
+END_DATETIME: 2025-11-19 15:53:26.770960
+RUN_DURATION: 00:00:09

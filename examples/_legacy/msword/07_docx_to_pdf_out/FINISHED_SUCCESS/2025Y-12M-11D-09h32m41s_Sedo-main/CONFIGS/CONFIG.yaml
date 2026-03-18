@@ -1,0 +1,11 @@
+ID: 2025Y-12M-11D-09h32m41s_Sedo
+PID: 979071
+START_DATETIME: 2025-12-11 09:32:41.592589
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/RUNNING/2025Y-12M-11D-09h32m41s_Sedo-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 09:32:51.038003
+RUN_DURATION: 00:00:09

@@ -1,0 +1,4 @@
+ax-row-0-col-0_trace-id-classification-results_variable-conf-mat-true_class,ax-row-0-col-0_trace-id-classification-results_variable-conf-mat-predicted_0,ax-row-0-col-0_trace-id-classification-results_variable-conf-mat-predicted_1,ax-row-0-col-0_trace-id-classification-results_variable-conf-mat-predicted_2
+True_0,45,5,2
+True_1,3,42,8
+True_2,1,6,48

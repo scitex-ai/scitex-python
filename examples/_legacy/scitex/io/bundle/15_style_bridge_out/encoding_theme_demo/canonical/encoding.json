@@ -1,0 +1,32 @@
+{
+  "traces": [
+    {
+      "trace_id": "Signal",
+      "x": {
+        "column": "time"
+      },
+      "y": {
+        "column": "signal"
+      },
+      "color": {}
+    },
+    {
+      "trace_id": "Noise",
+      "x": {
+        "column": "time"
+      },
+      "y": {
+        "column": "noise"
+      },
+      "color": {}
+    }
+  ],
+  "axes": {
+    "x": {
+      "title": "Time (s)"
+    },
+    "y": {
+      "title": "Amplitude (mV)"
+    }
+  }
+}

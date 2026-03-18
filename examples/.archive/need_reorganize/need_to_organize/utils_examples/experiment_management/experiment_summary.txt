@@ -1,0 +1,37 @@
+EXPERIMENT SUMMARY REPORT
+==================================================
+
+System Information:
+--------------------
+Hostname: ywata-note-win
+Username: ywatanabe
+Git branch: develop
+Generated: 2025-07-04 20:26:54
+
+Experiment Statistics:
+----------------------
+Total experiments: 18
+Completed: 17
+Success rate: 94.4%
+
+Best accuracy: 0.9269
+Mean accuracy: 0.7518
+Std accuracy: 0.0916
+
+Top 3 Experiments:
+------------------
+1. neural_network_optimization_run_009_20250704_202653 - Accuracy: 0.9269
+   Parameters: {'learning_rate': 0.01, 'batch_size': 64, 'optimizer': 'adam'}
+2. neural_network_optimization_run_011_20250704_202654 - Accuracy: 0.8995
+   Parameters: {'learning_rate': 0.01, 'batch_size': 128, 'optimizer': 'adam'}
+3. neural_network_optimization_run_008_20250704_202653 - Accuracy: 0.8826
+   Parameters: {'learning_rate': 0.01, 'batch_size': 32, 'optimizer': 'sgd'}
+
+
+
+------------------------------
+Sent via
+- Host: user@host
+- Script: notebook.ipynb
+- Source: scitex v2.0.0 (github.com/ywatanabe1989/scitex/blob/main/src/scitex/gen/system_ops/_notify.py)
+------------------------------

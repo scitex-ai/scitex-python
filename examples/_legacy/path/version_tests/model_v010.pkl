@@ -1,0 +1,3 @@
+Content of model_v010.pkl
+Version: 6
+Created: 1751627660.9813204

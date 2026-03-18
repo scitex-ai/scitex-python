@@ -1,0 +1,10 @@
+{
+  "traces": [
+    {
+      "trace_id": "ax-row-0-col-0_trace-id-stackplot-0",
+      "x": {
+        "column": "ax-row-0-col-0_trace-id-stackplot-0_variable-x"
+      }
+    }
+  ]
+}

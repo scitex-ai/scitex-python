@@ -1,0 +1,20 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-plot-0_variable-x",
+    "ax-row-0-col-0_trace-id-plot-0_variable-y",
+    "ax-row-0-col-0_trace-id-stx-fillv-0_variable-x",
+    "ax-row-0-col-0_trace-id-stx-fillv-0_variable-y",
+    "ax-row-0-col-0_trace-id-stx-fillv-0_variable-type"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-plot-0_variable-x": "int64",
+    "ax-row-0-col-0_trace-id-plot-0_variable-y": "float64",
+    "ax-row-0-col-0_trace-id-stx-fillv-0_variable-x": "float64",
+    "ax-row-0-col-0_trace-id-stx-fillv-0_variable-y": "float64",
+    "ax-row-0-col-0_trace-id-stx-fillv-0_variable-type": "object"
+  },
+  "shape": [
+    100,
+    5
+  ]
+}

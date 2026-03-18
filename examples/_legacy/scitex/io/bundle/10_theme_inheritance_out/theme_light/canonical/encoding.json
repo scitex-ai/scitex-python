@@ -1,0 +1,22 @@
+{
+  "traces": [
+    {
+      "trace_id": "ax-row-0-col-0_trace-id-plot-0",
+      "x": {
+        "column": "ax-row-0-col-0_trace-id-plot-0_variable-x"
+      },
+      "y": {
+        "column": "ax-row-0-col-0_trace-id-plot-0_variable-y"
+      }
+    },
+    {
+      "trace_id": "ax-row-0-col-0_trace-id-plot-1",
+      "x": {
+        "column": "ax-row-0-col-0_trace-id-plot-1_variable-x"
+      },
+      "y": {
+        "column": "ax-row-0-col-0_trace-id-plot-1_variable-y"
+      }
+    }
+  ]
+}

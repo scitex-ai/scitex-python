@@ -1,0 +1,232 @@
+[94m
+========================================
+SciTeX v2.2.2
+2025Y-11M-19D-17h31m51s_pYza (PID: 178163)
+
+/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+
+Arguments:
+    verbose: True
+========================================
+[0m
+
+======================================================================
+ PUBLICATION-READY FIGURE DEMONSTRATION
+ Using Unified Style System
+======================================================================
+
+This demo showcases scitex.plt.subplots() with mm-control
+integration for creating publication-ready figures.
+
+
+======================================================================
+Demo: Publication Line Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_plot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Scatter Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_scatter: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Bar Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_bar: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Histogram (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_hist: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Boxplot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_boxplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Error Bar Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_errorbar: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Horizontal Bar Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_barh: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Fill Between (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_fill_between: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Imshow (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_imshow: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Contour (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_contour: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Violinplot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_violinplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Heatmap (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_heatmap: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Line (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_line: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Shaded Line (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_shaded_line: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Violin (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_violin: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication ECDF (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_ecdf: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Box (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_box: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Mean±Std (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_mean_std: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication KDE (Functional)
+======================================================================
+
+[ERROR] in demo_publication_plot_kde: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn Boxplot
+======================================================================
+
+[ERROR] in demo_publication_sns_boxplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn Violinplot
+======================================================================
+
+[ERROR] in demo_publication_sns_violinplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn Scatterplot
+======================================================================
+
+[ERROR] in demo_publication_sns_scatterplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn Lineplot
+======================================================================
+
+[ERROR] in demo_publication_sns_lineplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn Histplot
+======================================================================
+
+[ERROR] in demo_publication_sns_histplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn Barplot
+======================================================================
+
+[ERROR] in demo_publication_sns_barplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn Stripplot
+======================================================================
+
+[ERROR] in demo_publication_sns_stripplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Publication Seaborn KDE Plot
+======================================================================
+
+[ERROR] in demo_publication_sns_kdeplot: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Multi-Panel Figure 2x2 (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_multi_panel_2x2: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Multi-Panel Figure 1x3 with Individual Widths
+======================================================================
+
+[ERROR] in demo_publication_multi_panel_1x3: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+Demo: Style Override Pattern
+======================================================================
+
+[ERROR] in demo_publication_style_override: 'Text' object has no attribute 'set_pad'
+
+======================================================================
+ DEMONSTRATION COMPLETE
+======================================================================
+
+Output locations:
+  Session output: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/
+  Matplotlib basic: publication/01_matplotlib_basic/
+  Custom scitex: publication/02_custom_scitex/
+  Functional: publication/03_functional/
+  Seaborn: publication/04_seaborn/
+  Multi-panels: publication/05_multi_panel/
+  Root (style override): publication/
+
+Coverage:
+  - Matplotlib basic plots (11): plot, scatter, bar, barh, hist, boxplot,
+    errorbar, fill_between, imshow, contour, violinplot
+  - Custom scitex plots (7): plot_heatmap, plot_line, plot_shaded_line,
+    plot_violin, plot_ecdf, plot_box, plot_mean_std
+  - Functional plots (1): plot_kde
+  - Seaborn integration (8): sns_boxplot, sns_violinplot, sns_scatterplot,
+    sns_lineplot, sns_histplot, sns_barplot, sns_stripplot, sns_kdeplot
+  - Multi-panel (2): 2x2 grid, 1x3 with varied widths
+  - Total: 30 publication-ready plot demonstrations
+
+All figures are publication-ready:
+  - Multiple formats: PNG, JPG, PDF
+  - 300 DPI resolution (PNG/JPG)
+  - Vector graphics (PDF)
+  - Precise mm-based dimensions
+  - Consistent SCITEX_STYLE preset
+  - Embedded metadata for reproducibility

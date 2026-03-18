@@ -1,0 +1,46 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h31m57s_2JZs
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/RUNNING/2025Y-12M-11D-09h31m57s_2JZs-main
+INFO:       - CONFIG['PID']: 978279
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Example: Extract Content from Word Documents
+INFO: ============================================================
+INFO: 
+1. Extract Images
+INFO:    Found 2 images
+INFO:    Saved: image_1.png (16,066 bytes)
+INFO:    Saved: image_2.png (16,066 bytes)
+INFO: 
+2. Extract References
+INFO:    Found 9 references
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/references.txt
+INFO: 
+3. Extract Captions
+INFO:    Figure captions: 0
+INFO:    Table captions: 1
+INFO: 
+4. Document Structure
+INFO:    Sections: 9
+INFO:    [H1] Title of paper in bold sentence case
+INFO:    [H1] INTRODUCTION
+INFO:    [H1] SUBMISSION INSTRUCTIONS
+INFO:    [H1] LAYOUT
+INFO:    [H1] HEADINGS
+INFO:      [H2] Example of a first level sub-heading
+INFO:      [H2] Example of a second level sub-heading
+INFO:    [H1] FIGURES AND TABLES
+INFO:    [H1] REFERENCES
+INFO: 
+5. Export to JSON
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/document_structure.json
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out

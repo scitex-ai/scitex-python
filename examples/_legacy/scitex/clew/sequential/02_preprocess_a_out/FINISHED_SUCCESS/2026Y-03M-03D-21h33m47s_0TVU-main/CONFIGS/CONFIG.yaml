@@ -1,0 +1,13 @@
+ID: 2026Y-03M-03D-21h33m47s_0TVU
+PID: 7574
+START_DATETIME: 2026-03-03 21:33:47.725158
+FILE: /scitex-python/examples/scitex/clew/02_preprocess_a.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/02_preprocess_a_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/02_preprocess_a_out/RUNNING/2026Y-03M-03D-21h33m47s_0TVU-main
+ARGS:
+    input_file:
+    config_file:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:34:30.058403
+RUN_DURATION: 00:00:42

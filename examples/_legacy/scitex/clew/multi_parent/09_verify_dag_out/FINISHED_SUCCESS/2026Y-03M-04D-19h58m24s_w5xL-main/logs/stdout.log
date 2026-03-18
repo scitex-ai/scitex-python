@@ -1,0 +1,39 @@
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h58m24s_w5xL (PID: 825201)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py
+
+Arguments:
+    action: all
+========================================
+[0m
+
+--- Multi-Target DAG Verification ---
+  Targets:           2 files
+  Runs in DAG:       8
+  Edges:             9
+  Status:            verified
+  Verified:          True
+  Topological order: 8 sessions
+
+  ✓ 04_load_covariates.py (2026Y-03M-04D-19h53m...)
+  ✓ 02_generate_stimuli.py (2026Y-03M-04D-19h53m...)
+  ✓ 01_generate_subjects.py (2026Y-03M-04D-19h53m...)
+  ✓ 03_run_experiment.py (2026Y-03M-04D-19h53m...)
+  ✓ 05_analyze_behavior.py (2026Y-03M-04D-19h53m...)
+  ✓ 06_analyze_neural.py (2026Y-03M-04D-19h54m...)
+  ✓ 07_merge_results.py (2026Y-03M-04D-19h54m...)
+  ✓ 08_make_figures.py (2026Y-03M-04D-19h54m...)
+
+--- Claims Registration ---
+  Registered 2 claims
+
+--- Claims-to-Sources DAG ---
+  Runs in claims DAG: 8
+  Edges:              9
+  Verified:           True
+
+--- DAG Rendering ---
+  Generated: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag_out/dag.html
+  Generated: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag_out/dag.mmd

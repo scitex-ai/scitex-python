@@ -1,0 +1,20 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-true_class",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_0",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_1",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_2",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_3"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-true_class": "object",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_0": "int64",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_1": "int64",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_2": "int64",
+    "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_3": "int64"
+  },
+  "shape": [
+    4,
+    5
+  ]
+}

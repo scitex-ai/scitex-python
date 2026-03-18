@@ -1,0 +1,42 @@
+INFO: ============================================================
+INFO: Statistical Test Results
+INFO: ============================================================
+INFO: t-statistic: -3.103
+INFO: p-value: 0.0030
+INFO: Stars: **
+INFO: Format (asterisk): **
+INFO: Format (compact): t = -3.103**
+INFO: Format (publication): (t = -3.10, p < 0.01)
+INFO: ------------------------------------------------------------
+INFO: Extracted Statistics from Plot
+INFO: ------------------------------------------------------------
+INFO: Stat 1:
+INFO:   Test type: t-test
+INFO:   Statistic: t = -3.103
+INFO:   P-value: 0.0030
+INFO:   Stars: **
+INFO: Stat 2:
+INFO:   Test type: t-test
+INFO:   Statistic: t = -3.103
+INFO:   P-value: 0.0030
+INFO:   Stars: **
+SUCC: Saved to: ./bridge/02_add_stats_to_plot_out/add_stats_to_plot_detailed.csv (272.0 B)
+INFO: Detailed stats saved to: /home/ywatanabe/proj/scitex-python/examples/bridge/02_add_stats_to_plot_out/add_stats_to_plot_detailed.csv
+INFO:   • Auto-collected metadata (editable v0.3 schema)
+INFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-python/examples/bridge/02_add_stats_to_plot_out/add_stats_to_plot.png
+INFO:   • Auto-added URL: https://scitex.ai
+INFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)
+SUCC: Saved to: ./bridge/02_add_stats_to_plot_out/add_stats_to_plot.png (49.2 KiB) [W: 202.9mm, H: 152.4mm]
+INFO: Figure saved to: /home/ywatanabe/proj/scitex-python/examples/bridge/02_add_stats_to_plot_out/add_stats_to_plot.png
+ERRO: Error in main: 'Figure' object has no attribute 'close'
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/session/_decorator.py", line 252, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-python/examples/bridge/02_add_stats_to_plot.py", line 148, in main
+ERRO:     fig.close()
+ERRO:     ^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/figrecipe/src/figrecipe/_wrappers/_figure.py", line 370, in __getattr__
+ERRO:     return getattr(self._fig, name)
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO: AttributeError: 'Figure' object has no attribute 'close'

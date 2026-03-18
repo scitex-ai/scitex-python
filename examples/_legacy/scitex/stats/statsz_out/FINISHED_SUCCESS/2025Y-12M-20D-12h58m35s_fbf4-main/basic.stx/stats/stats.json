@@ -1,0 +1,25 @@
+{
+  "analyses": [
+    {
+      "result_id": "11715b50-59a1-4c66-b05b-04babf2f2a9c",
+      "method": {
+        "name": "t-test"
+      },
+      "results": {
+        "statistic": 0.0,
+        "statistic_name": "",
+        "p_value": 0.003,
+        "effect_size": {
+          "name": "d",
+          "value": 1.21,
+          "ci_lower": 0.5,
+          "ci_upper": 1.8
+        },
+        "significant": true
+      },
+      "inputs": {
+        "comparison_name": "Control vs Treatment A"
+      }
+    }
+  ]
+}

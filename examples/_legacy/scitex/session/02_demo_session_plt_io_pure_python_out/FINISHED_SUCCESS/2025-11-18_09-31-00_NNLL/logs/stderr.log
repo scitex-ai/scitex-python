@@ -1,0 +1,18 @@
+INFO: ============================================================
+INFO: Session ID: 2025-11-18_09-31-00_NNLL
+INFO: Output directory: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/RUNNING/2025-11-18_09-31-00_NNLL
+INFO: PID: 494069
+INFO: ============================================================
+INFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/demo.jpg
+INFO:   • Auto-added URL: https://scitex.ai
+INFO:   • Embedded metadata: {'exp': 's01', 'subj': 'S001', 'url': 'https://scitex.ai'}
+INFO: ✅ Saved to: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/demo.csv (38.0 KiB)
+INFO: ✅ Saved to: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/demo.jpg (138.6 KiB)
+INFO: ✅ Symlinked: /home/ywatanabe/proj/scitex-code/examples/data/demo.jpg -> /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/demo.jpg
+INFO: ✅ Loading image with metadata from: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/demo.jpg
+INFO:   • Embedded metadata found:
+INFO:     - exp: s01
+INFO:     - subj: S001
+INFO:     - url: https://scitex.ai
+INFO: 
+✅ Congratulations! The script completed: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/FINISHED_SUCCESS/2025-11-18_09-31-00_NNLL

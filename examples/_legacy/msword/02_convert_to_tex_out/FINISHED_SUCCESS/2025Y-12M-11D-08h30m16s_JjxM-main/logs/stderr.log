@@ -1,0 +1,28 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-08h30m16s_JjxM
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/RUNNING/2025Y-12M-11D-08h30m16s_JjxM-main
+INFO:       - CONFIG['PID']: 829815
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Example: Word to LaTeX Conversion
+INFO: ============================================================
+INFO: 
+1. Two-Step Conversion: RESNA 2025 Scientific Paper Template.docx
+INFO:    Loaded 31 blocks
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/resna_two_step.tex
+INFO: 
+2. Direct Conversion: IOP-SCIENCE-Word-template-Double-anonymous.docx
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/iop_direct.tex
+INFO: 
+3. Custom LaTeX Export Options
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/resna_custom.tex
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out

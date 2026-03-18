@@ -1,0 +1,14 @@
+ID: 2025Y-11M-19D-15h51m50s_M2io
+PID: 176969
+START_DATETIME: 2025-11-19 15:51:50.369002
+FILE: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-15h51m50s_M2io-main
+ARGS:
+    verbose: true
+EXIT_STATUS: 0
+END_DATETIME: 2025-11-19 15:51:58.073662
+RUN_DURATION: 00:00:07

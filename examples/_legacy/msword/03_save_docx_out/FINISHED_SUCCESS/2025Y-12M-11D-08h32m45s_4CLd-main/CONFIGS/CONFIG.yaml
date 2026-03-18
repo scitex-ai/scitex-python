@@ -1,0 +1,11 @@
+ID: 2025Y-12M-11D-08h32m45s_4CLd
+PID: 839564
+START_DATETIME: 2025-12-11 08:32:45.379738
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/RUNNING/2025Y-12M-11D-08h32m45s_4CLd-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 08:32:56.263056
+RUN_DURATION: 00:00:10

@@ -1,0 +1,34 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2026Y-02M-12D-09h17m00s_0mVG
+PID: 3147150
+START_DATETIME: 2026-02-12 09:17:00.522784
+FILE: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/decorators/schematic_session_concept.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/decorators/schematic_session_concept_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/decorators/schematic_session_concept_out/RUNNING/2026Y-02M-12D-09h17m00s_0mVG-main
+ARGS: {}
+EXIT_STATUS: 1
+END_DATETIME: 2026-02-12 09:17:04.788413
+RUN_DURATION: 00:00:04

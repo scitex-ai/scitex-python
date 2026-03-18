@@ -1,0 +1,194 @@
+figrecipe: '1.0'
+id: fig_e5d91e7d
+created: '2026-03-04T19:54:28.965821'
+matplotlib_version: 3.10.8
+figure:
+  figsize:
+    - 2.7559055118110236
+    - 2.1653543307086616
+  dpi: 300
+  style:
+    axes_width_mm: 40
+    axes_height_mm: 28
+    axes_thickness_mm: 0.2
+    margins_left_mm: 1
+    margins_right_mm: 1
+    margins_bottom_mm: 1
+    margins_top_mm: 1
+    spacing_horizontal_mm: 10
+    spacing_vertical_mm: 15
+    ticks_length_mm: 0.8
+    ticks_thickness_mm: 0.2
+    ticks_direction: "out"
+    ticks_n_ticks_min: 3
+    ticks_n_ticks_max: 4
+    lines_trace_mm: 0.12
+    lines_errorbar_mm: 0.12
+    lines_errorbar_cap_mm: 0.8
+    lines_grid_mm: 0.12
+    markers_size_mm: 0.8
+    markers_scatter_mm: 0.8
+    markers_flier_mm: 0.8
+    markers_edge_width_mm:
+    boxplot_line_mm: 0.2
+    boxplot_whisker_mm: 0.2
+    boxplot_cap_mm: 0.2
+    boxplot_median_mm: 0.2
+    boxplot_median_color: "black"
+    boxplot_flier_edge_mm: 0.2
+    violinplot_line_mm: 0.2
+    violinplot_inner: "box"
+    violinplot_box_width_mm: 1.5
+    violinplot_whisker_mm: 0.2
+    violinplot_median_mm: 0.8
+    barplot_edge_mm: 0.2
+    histogram_edge_mm: 0.2
+    pie_text_pt: 6
+    pie_show_axes: false
+    imshow_show_axes: false
+    imshow_show_labels: false
+    fonts_family: "DejaVu Sans"
+    fonts_axis_label_pt: 7
+    fonts_tick_label_pt: 7
+    fonts_title_pt: 8
+    fonts_suptitle_pt: 9
+    fonts_legend_pt: 6
+    fonts_annotation_pt: 6
+    padding_label_pt: 2.0
+    padding_tick_pt: 2.0
+    padding_title_pt: 4.0
+    output_dpi: 300
+    output_transparent: false
+    output_format: "png"
+    theme_mode: "light"
+    theme_colors:
+      figure_bg: "white"
+      axes_bg: "white"
+      legend_bg: "white"
+      text: "black"
+      spine: "black"
+      tick: "black"
+      grid: "#cccccc"
+    color_palette:
+      -   - 0
+          - 128
+          - 192
+      -   - 255
+          - 70
+          - 50
+      -   - 20
+          - 180
+          - 20
+      -   - 230
+          - 160
+          - 20
+      -   - 200
+          - 50
+          - 255
+      -   - 20
+          - 200
+          - 200
+      -   - 228
+          - 94
+          - 50
+      -   - 255
+          - 150
+          - 200
+    behavior_hide_top_spine: true
+    behavior_hide_right_spine: true
+    behavior_grid: false
+    behavior_auto_scale_axes: true
+    behavior_constrained_layout: true
+    colorbar:
+      auto: true
+      outline_mm: 0.2
+      n_ticks_min: 3
+      n_ticks_max: 4
+      shrink: 1.0
+      aspect: 20
+    margin_left_mm: 1
+    margin_right_mm: 1
+    margin_bottom_mm: 1
+    margin_top_mm: 1
+    space_w_mm: 10
+    space_h_mm: 15
+    tick_length_mm: 0.8
+    tick_thickness_mm: 0.2
+    n_ticks_min: 3
+    n_ticks_max: 4
+    trace_thickness_mm: 0.12
+    marker_size_mm: 0.8
+    font_family: "DejaVu Sans"
+    axis_font_size_pt: 7
+    tick_font_size_pt: 7
+    title_font_size_pt: 8
+    suptitle_font_size_pt: 9
+    legend_font_size_pt: 6
+    label_pad_pt: 2.0
+    tick_pad_pt: 2.0
+    title_pad_pt: 4.0
+    dpi: 300
+    theme: "light"
+    hide_top_spine: true
+    hide_right_spine: true
+    grid: false
+    auto_scale_axes: true
+    constrained_layout: true
+  constrained_layout: true
+  mm_layout:
+    axes_width_mm: 40
+    axes_height_mm: 28
+    margin_left_mm: 20
+    margin_right_mm: 10
+    margin_bottom_mm: 15
+    margin_top_mm: 12
+    space_w_mm: 10
+    space_h_mm: 15
+    crop_margin_left_mm: 1
+    crop_margin_right_mm: 1
+    crop_margin_bottom_mm: 1
+    crop_margin_top_mm: 1
+axes:
+  ax_0_0:
+    calls:
+      - id: bar_000
+        function: bar
+        args:
+          - name: x
+            data:
+              - control
+              - treatment
+          - name: height
+            data: figure1_data/bar_000_height.csv
+            dtype: float64
+        kwargs:
+          clip_on: false
+          color: '#0080c0'
+        timestamp: '2026-03-04T19:54:29.009505'
+    decorations:
+      - id: set_xlabel_000
+        function: set_xlabel
+        args:
+          - name: xlabel
+            data: Group
+        kwargs: {}
+        timestamp: '2026-03-04T19:54:29.021369'
+      - id: set_ylabel_000
+        function: set_ylabel
+        args:
+          - name: ylabel
+            data: Accuracy
+        kwargs: {}
+        timestamp: '2026-03-04T19:54:29.036608'
+      - id: set_title_000
+        function: set_title
+        args:
+          - name: label
+            data: Behavioral Performance
+        kwargs: {}
+        timestamp: '2026-03-04T19:54:29.048656'
+    bbox:
+      - 0.16251946349206348
+      - 0.15180962020202018
+      - 0.822360279365079
+      - 0.7473585373737375

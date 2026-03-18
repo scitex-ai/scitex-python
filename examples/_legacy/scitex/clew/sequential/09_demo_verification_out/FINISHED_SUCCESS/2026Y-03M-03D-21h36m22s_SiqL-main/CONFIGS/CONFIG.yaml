@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h36m22s_SiqL
+PID: 9014
+START_DATETIME: 2026-03-03 21:36:22.205935
+FILE: /scitex-python/examples/scitex/clew/09_demo_verification.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/09_demo_verification_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/09_demo_verification_out/RUNNING/2026Y-03M-03D-21h36m22s_SiqL-main
+ARGS:
+    action: rerun
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:38:26.582829
+RUN_DURATION: 00:02:04

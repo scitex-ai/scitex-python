@@ -1,0 +1,227 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:36.021422"
+    },
+    "figure": {
+        "size_px": [
+            564,
+            474
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -0.9500000000000001,
+                19.95
+            ],
+            "ylim": [
+                -0.40854862380605284,
+                9.068304069697154
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_line_00": {
+            "id": "ax_00_line_00",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 15,
+                    "x1": 451,
+                    "y1": 315
+                },
+                "path_simplified": [
+                    [
+                        21.5,
+                        192.0
+                    ],
+                    [
+                        44.0,
+                        15.1
+                    ],
+                    [
+                        66.6,
+                        168.7
+                    ],
+                    [
+                        89.2,
+                        175.6
+                    ],
+                    [
+                        111.8,
+                        35.4
+                    ],
+                    [
+                        134.4,
+                        15.0
+                    ],
+                    [
+                        157.0,
+                        20.8
+                    ],
+                    [
+                        179.5,
+                        95.2
+                    ],
+                    [
+                        202.1,
+                        28.2
+                    ],
+                    [
+                        224.7,
+                        90.5
+                    ],
+                    [
+                        247.3,
+                        94.4
+                    ],
+                    [
+                        269.9,
+                        122.5
+                    ],
+                    [
+                        292.5,
+                        301.0
+                    ],
+                    [
+                        315.0,
+                        298.7
+                    ],
+                    [
+                        337.6,
+                        91.4
+                    ],
+                    [
+                        360.2,
+                        170.2
+                    ],
+                    [
+                        382.8,
+                        315.0
+                    ],
+                    [
+                        405.4,
+                        108.9
+                    ],
+                    [
+                        428.0,
+                        27.6
+                    ],
+                    [
+                        450.5,
+                        194.6
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.9
+                ],
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_bars": {
+            "id": "ax_00_bars",
+            "axes_id": "ax_00",
+            "element_type": "bar",
+            "label": "bars",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 134,
+                    "y0": 281,
+                    "x1": 360,
+                    "y1": 315
+                },
+                "rectangles": [
+                    {
+                        "x": 134.4,
+                        "y": 281.0,
+                        "width": 225.8,
+                        "height": 34.8
+                    }
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.3
+                ],
+                "edgecolor": [
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.3
+                ],
+                "linewidth": 1.0,
+                "alpha": 0.3
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha",
+                "linewidth"
+            ],
+            "zorder": 0.5,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "mpl_axvspan.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-plot-0_variable-x",
+            "ax-row-0-col-0_trace-id-plot-0_variable-y"
+        ],
+        "csv_hash": "9a36b290c5d745e6"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

@@ -1,0 +1,67 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:55:59.060382"
+    },
+    "figure": {
+        "size_px": [
+            564,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -4.635044561191048,
+                104.6200244420203
+            ],
+            "ylim": [
+                -1.33,
+                10.33
+            ]
+        }
+    },
+    "elements": {},
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_raster.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-0",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-1",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-2",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-3",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-4",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-5",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-6",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-7",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-8",
+            "ax-row-0-col-0_trace-id-stx-raster-0_variable-raster-9"
+        ],
+        "csv_hash": "54a019bc7dc1cf23"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

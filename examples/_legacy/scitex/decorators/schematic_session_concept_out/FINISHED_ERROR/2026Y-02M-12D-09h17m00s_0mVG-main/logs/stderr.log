@@ -1,0 +1,17 @@
+ERRO: Error in main: 2 validation error(s):
+ERRO:   R5/R6: Text 'start' too close to 'decorator' edge: gap=-0.2mm (min=2.0mm)
+ERRO:   R7: 'arrow:decorator->inputs' visibility 49% < 90%. Occluded by: text:'start'
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/session/_decorator.py", line 269, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-python/examples/scitex/decorators/schematic_session_concept.py", line 129, in main
+ERRO:     fr.save(fig, out / "stx_session_concept.png", validate=False)
+ERRO:   File "/home/ywatanabe/proj/figrecipe/src/figrecipe/_api/_public.py", line 153, in save
+ERRO:     return save_figure(
+ERRO:            ^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/figrecipe/src/figrecipe/_api/_save.py", line 438, in save_figure
+ERRO:     raise ValueError("\n  ".join(_schematic_errors))
+ERRO: ValueError: 2 validation error(s):
+ERRO:   R5/R6: Text 'start' too close to 'decorator' edge: gap=-0.2mm (min=2.0mm)
+ERRO:   R7: 'arrow:decorator->inputs' visibility 49% < 90%. Occluded by: text:'start'

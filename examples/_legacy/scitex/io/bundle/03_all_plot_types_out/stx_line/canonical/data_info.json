@@ -1,0 +1,14 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-stx-line-0_variable-x",
+    "ax-row-0-col-0_trace-id-stx-line-0_variable-y"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-stx-line-0_variable-x": "int64",
+    "ax-row-0-col-0_trace-id-stx-line-0_variable-y": "float64"
+  },
+  "shape": [
+    100,
+    2
+  ]
+}

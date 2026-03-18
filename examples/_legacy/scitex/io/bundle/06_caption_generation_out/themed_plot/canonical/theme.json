@@ -1,0 +1,65 @@
+{
+  "mode": "light",
+  "colors": {
+    "palette": [
+      "#1f77b4",
+      "#ff7f0e",
+      "#2ca02c"
+    ],
+    "background": "white",
+    "text": "black",
+    "axis": "#333333",
+    "grid": "#e0e0e0",
+    "primary": "#1f77b4",
+    "secondary": "#ff7f0e"
+  },
+  "typography": {
+    "family": "sans-serif",
+    "size_pt": 8.0,
+    "title_size_pt": 14,
+    "label_size_pt": 12,
+    "tick_size_pt": 10
+  },
+  "lines": {
+    "width_pt": 1.0,
+    "style": "solid"
+  },
+  "markers": {
+    "size_pt": 4.0,
+    "symbol": "circle"
+  },
+  "grid": {
+    "show": true,
+    "major_width_pt": 0.5,
+    "minor_width_pt": 0.25,
+    "major_alpha": 0.3,
+    "minor_alpha": 0.1
+  },
+  "figure_title": {
+    "text": "Experimental Results",
+    "prefix": "Figure",
+    "fontweight": "bold",
+    "number": 1
+  },
+  "caption": {
+    "text": "Comparison of sine and cosine functions over one period.",
+    "panels": [
+      {
+        "label": "A",
+        "description": "Sine function showing periodic oscillation"
+      },
+      {
+        "label": "B",
+        "description": "Cosine function phase-shifted by \u03c0/2"
+      }
+    ]
+  },
+  "panel_labels": {
+    "style": "uppercase",
+    "fontsize": 12,
+    "fontweight": "bold",
+    "position": "top-left",
+    "offset_x": 0.02,
+    "offset_y": 0.98
+  }
+}

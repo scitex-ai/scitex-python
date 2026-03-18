@@ -239,7 +239,10 @@ sh = _LazyModule("sh")  # Shell command execution
 os = _LazyModule("os")  # OS utilities (file operations)
 cv = _LazyModule("cv")  # Computer vision utilities
 ui = _LazyModule("ui")  # User interface utilities
-notify = _LazyModule("notify")  # Notification backends (formerly scitex.ui)
+notification = _LazyModule(
+    "notification"
+)  # Multi-backend notifications (scitex-notification)
+notify = notification  # Backward compat alias
 git = _LazyModule("git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
 canvas = _LazyModule("canvas")  # Canvas utilities for figure composition

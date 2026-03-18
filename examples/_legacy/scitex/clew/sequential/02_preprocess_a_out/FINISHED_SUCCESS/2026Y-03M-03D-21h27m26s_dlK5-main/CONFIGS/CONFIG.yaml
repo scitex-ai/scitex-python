@@ -1,0 +1,13 @@
+ID: 2026Y-03M-03D-21h27m26s_dlK5
+PID: 3969
+START_DATETIME: 2026-03-03 21:27:26.121929
+FILE: /scitex-python/examples/scitex/clew/02_preprocess_a.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/02_preprocess_a_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/02_preprocess_a_out/RUNNING/2026Y-03M-03D-21h27m26s_dlK5-main
+ARGS:
+    input_file:
+    config_file:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:27:57.811374
+RUN_DURATION: 00:00:31

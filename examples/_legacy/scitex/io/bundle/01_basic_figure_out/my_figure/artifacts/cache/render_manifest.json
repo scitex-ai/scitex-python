@@ -1,0 +1,11 @@
+{
+  "dpi": 300,
+  "formats": [
+    "png",
+    "svg",
+    "pdf"
+  ],
+  "canonical_hash": "7252a3c31ca5abdd",
+  "effective_theme_hash": "00b90f8e65f4c422",
+  "renderer_version": "1.0.0"
+}

@@ -1,0 +1,332 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:09.861414"
+    },
+    "figure": {
+        "size_px": [
+            566,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -2.883567970484288,
+                4.044832125739253
+            ],
+            "ylim": [
+                0.0,
+                7.35
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_bars": {
+            "id": "ax_00_bars",
+            "axes_id": "ax_00",
+            "element_type": "bar",
+            "label": "bars",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 15,
+                    "x1": 450,
+                    "y1": 330
+                },
+                "rectangles": [
+                    {
+                        "x": 64.4,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 150.2,
+                        "y": 240.2,
+                        "width": 21.5,
+                        "height": 89.8
+                    },
+                    {
+                        "x": 171.6,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 193.1,
+                        "y": 150.4,
+                        "width": 21.5,
+                        "height": 179.6
+                    },
+                    {
+                        "x": 214.5,
+                        "y": 240.2,
+                        "width": 21.5,
+                        "height": 89.8
+                    },
+                    {
+                        "x": 236.0,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 257.5,
+                        "y": 150.4,
+                        "width": 21.5,
+                        "height": 179.6
+                    },
+                    {
+                        "x": 278.9,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 300.4,
+                        "y": 150.4,
+                        "width": 21.5,
+                        "height": 179.6
+                    },
+                    {
+                        "x": 321.8,
+                        "y": 150.4,
+                        "width": 21.5,
+                        "height": 179.6
+                    },
+                    {
+                        "x": 343.3,
+                        "y": 240.2,
+                        "width": 21.5,
+                        "height": 89.8
+                    },
+                    {
+                        "x": 364.7,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 429.1,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 128.7,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 171.6,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 193.1,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 236.0,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 257.5,
+                        "y": 105.5,
+                        "width": 21.5,
+                        "height": 224.5
+                    },
+                    {
+                        "x": 278.9,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 300.4,
+                        "y": 105.5,
+                        "width": 21.5,
+                        "height": 224.5
+                    },
+                    {
+                        "x": 321.8,
+                        "y": 60.6,
+                        "width": 21.5,
+                        "height": 269.4
+                    },
+                    {
+                        "x": 343.3,
+                        "y": 150.4,
+                        "width": 21.5,
+                        "height": 179.6
+                    },
+                    {
+                        "x": 364.7,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 386.2,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 407.6,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 429.1,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 21.5,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 85.8,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 107.3,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 128.7,
+                        "y": 285.1,
+                        "width": 21.5,
+                        "height": 44.9
+                    },
+                    {
+                        "x": 150.2,
+                        "y": 150.4,
+                        "width": 21.5,
+                        "height": 179.6
+                    },
+                    {
+                        "x": 171.6,
+                        "y": 15.7,
+                        "width": 21.5,
+                        "height": 314.3
+                    },
+                    {
+                        "x": 193.1,
+                        "y": 240.2,
+                        "width": 21.5,
+                        "height": 89.8
+                    },
+                    {
+                        "x": 214.5,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 236.0,
+                        "y": 150.4,
+                        "width": 21.5,
+                        "height": 179.6
+                    },
+                    {
+                        "x": 257.5,
+                        "y": 195.3,
+                        "width": 21.5,
+                        "height": 134.7
+                    },
+                    {
+                        "x": 278.9,
+                        "y": 240.2,
+                        "width": 21.5,
+                        "height": 89.8
+                    },
+                    {
+                        "x": 300.4,
+                        "y": 240.2,
+                        "width": 21.5,
+                        "height": 89.8
+                    }
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    1.0,
+                    0.59,
+                    0.78,
+                    0.5
+                ],
+                "edgecolor": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "linewidth": 0.5153901216893336,
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha",
+                "linewidth"
+            ],
+            "zorder": 1,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "sns_histplot.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-centers",
+            "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-counts",
+            "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-widths",
+            "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-edges-left",
+            "ax-row-0-col-0_trace-id-sns-histplot-0_variable-bin-edges-right"
+        ],
+        "csv_hash": "160892bfdf57e9c9"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

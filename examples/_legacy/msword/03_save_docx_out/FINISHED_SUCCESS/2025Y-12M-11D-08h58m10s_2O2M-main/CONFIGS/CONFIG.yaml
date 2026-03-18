@@ -1,0 +1,11 @@
+ID: 2025Y-12M-11D-08h58m10s_2O2M
+PID: 905990
+START_DATETIME: 2025-12-11 08:58:10.292102
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/RUNNING/2025Y-12M-11D-08h58m10s_2O2M-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 08:58:21.675347
+RUN_DURATION: 00:00:11

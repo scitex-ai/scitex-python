@@ -1,0 +1,44 @@
+[90mINFO: Example 08: Round-Trip Edit Demo[0m
+
+[90mINFO: ============================================================[0m
+[90mINFO: STEP 1: Create initial bundle[0m
+[90mINFO: ============================================================[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/08_roundtrip_edit_out/roundtrip_demo.zip (71.8 KiB)[0m
+[31mERRO: Error in main: No columns to parse from file
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 246, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/examples/scitex/fts/08_roundtrip_edit.py", line 159, in main
+ERRO:     create_initial_bundle(plt, bundle_path, logger)
+ERRO:   File "/home/ywatanabe/proj/scitex-code/examples/scitex/fts/08_roundtrip_edit.py", line 60, in create_initial_bundle
+ERRO:     bundle.save()
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 476, in save
+ERRO:     fig = self.render()
+ERRO:           ^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 296, in render
+ERRO:     return self._render_from_encoding()
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 349, in _render_from_encoding
+ERRO:     data = self._load_payload_data()
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 378, in _load_payload_data
+ERRO:     return pd.read_csv(StringIO(csv_bytes.decode("utf-8")))
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+ERRO:     return _read(filepath_or_buffer, kwds)
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+ERRO:     parser = TextFileReader(filepath_or_buffer, **kwds)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+ERRO:     self._engine = self._make_engine(f, self.engine)
+ERRO:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1898, in _make_engine
+ERRO:     return mapping[engine](f, **self.options)
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 93, in __init__
+ERRO:     self._reader = parsers.TextReader(src, **kwds)
+ERRO:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "pandas/_libs/parsers.pyx", line 581, in pandas._libs.parsers.TextReader.__cinit__
+ERRO: pandas.errors.EmptyDataError: No columns to parse from file[0m

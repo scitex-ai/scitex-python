@@ -1,0 +1,14 @@
+ID: 2026Y-03M-04D-19h53m10s_9J2N
+PID: 804168
+START_DATETIME: 2026-03-04 19:53:10.441475
+FILE: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/01_generate_subjects.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/01_generate_subjects_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/01_generate_subjects_out/RUNNING/2026Y-03M-04D-19h53m10s_9J2N-main
+ARGS:
+    n_subjects: 30
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-04 19:53:13.575888
+RUN_DURATION: 00:00:03

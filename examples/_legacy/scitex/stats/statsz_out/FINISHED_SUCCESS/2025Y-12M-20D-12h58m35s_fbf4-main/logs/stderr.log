@@ -1,0 +1,34 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-20D-12h58m35s_fbf4
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/scitex/stats/statsz_out/RUNNING/2025Y-12M-20D-12h58m35s_fbf4-main
+INFO:       - CONFIG['PID']: 1314961
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     { 'COLORS': 'DotDict',
+          'CONFIG': 'DotDict',
+          'logger': 'SciTeXLogger',
+          'plt': 'module',
+          'rng_manager': 'RandomStateManager'}
+INFO: Starting FTS stats bundle demo
+INFO: Creating basic comparison bundle
+INFO: Loaded 1 comparisons
+SUCC: Basic bundle created and verified
+INFO: Creating longitudinal study bundle
+INFO: Loaded 4 comparisons with metadata
+SUCC: Longitudinal bundle created
+INFO: Creating bootstrap results bundle
+SUCC: Bootstrap bundle created
+INFO: Creating ZIP archive
+SUCC: ZIP bundle created
+INFO: Results summary:
+INFO:   Baseline vs Week 1: p=0.1200, d=0.35, ns
+INFO:   Baseline vs Week 2: p=0.0300, d=0.72, *
+INFO:   Baseline vs Week 4: p=0.0010, d=1.45, **
+INFO:   Week 1 vs Week 4: p=0.0080, d=0.98, **
+SUCC: Demo completed

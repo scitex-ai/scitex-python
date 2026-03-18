@@ -1,0 +1,25 @@
+{
+  "id": "0c72c805-ad69-4939-954d-3c2148a468b7",
+  "kind": "plot",
+  "scitex_schema": "scitex.fts.spec",
+  "scitex_schema_version": "1.0.0",
+  "bbox_norm": {
+    "x0": 0.0,
+    "y0": 0.0,
+    "x1": 1.0,
+    "y1": 1.0
+  },
+  "name": "mpl_scatter",
+  "size_mm": {
+    "width": 80.0,
+    "height": 68.0
+  },
+  "payload_schema": "scitex.fts.payload.plot@1",
+  "refs": {
+    "encoding": "encoding.json",
+    "theme": "theme.json",
+    "stats": "stats/stats.json"
+  },
+  "created_at": "2025-12-20T23:50:50.179485Z",
+  "modified_at": "2025-12-20T23:50:50.179485Z"
+}

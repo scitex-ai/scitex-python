@@ -1,0 +1,17 @@
+/home/ywatanabe/proj/figrecipe/src/figrecipe/_wrappers/_axes.py:137: UserWarning: *c* argument looks like a single numeric RGB or RGBA sequence, which should be avoided as value-mapping will have precedence in case its length matches with *x* & *y*.  Please use the *color* keyword-argument or provide a 2D array with a single row if you intend to specify the same RGB or RGBA value for all points.
+  result = method(*args, **kwargs)
+ERRO: Error in main: 'list' object has no attribute 'get_xlabel'
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/session/_decorator.py", line 252, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-python/examples/bridge/01_plt_to_vis_model.py", line 58, in main
+ERRO:     model = figure_to_vis_model(fig)
+ERRO:             ^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/bridge/_plt_vis.py", line 101, in figure_to_vis_model
+ERRO:     axes_model = axes_to_vis_axes(
+ERRO:                  ^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/bridge/_plt_vis.py", line 152, in axes_to_vis_axes
+ERRO:     xlabel=mpl_ax.get_xlabel() or None,
+ERRO:            ^^^^^^^^^^^^^^^^^
+ERRO: AttributeError: 'list' object has no attribute 'get_xlabel'

@@ -1,0 +1,719 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:00.240628"
+    },
+    "figure": {
+        "size_px": [
+            431,
+            479
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 307,
+                "y0": 236,
+                "x1": 637,
+                "y1": 566
+            },
+            "position": [
+                0.32500000000000007,
+                0.2941176470588236,
+                0.34999999999999987,
+                0.4117647058823528
+            ],
+            "xlim": [
+                0.0,
+                4.0
+            ],
+            "ylim": [
+                0.0,
+                4.0
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_text_00": {
+            "id": "ax_00_text_00",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "74",
+            "text": "74",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 25,
+                    "y0": 276,
+                    "x1": 58,
+                    "y1": 304
+                },
+                "anchor": {
+                    "x": 41.2,
+                    "y": 288.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": "w",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_01": {
+            "id": "ax_00_text_01",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "19",
+            "text": "19",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 108,
+                    "y0": 276,
+                    "x1": 140,
+                    "y1": 304
+                },
+                "anchor": {
+                    "x": 123.8,
+                    "y": 288.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_02": {
+            "id": "ax_00_text_02",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "14",
+            "text": "14",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 191,
+                    "y0": 276,
+                    "x1": 223,
+                    "y1": 304
+                },
+                "anchor": {
+                    "x": 206.2,
+                    "y": 288.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_03": {
+            "id": "ax_00_text_03",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "13",
+            "text": "13",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 273,
+                    "y0": 276,
+                    "x1": 306,
+                    "y1": 304
+                },
+                "anchor": {
+                    "x": 288.8,
+                    "y": 288.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_04": {
+            "id": "ax_00_text_04",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "28",
+            "text": "28",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 25,
+                    "y0": 193,
+                    "x1": 58,
+                    "y1": 221
+                },
+                "anchor": {
+                    "x": 41.2,
+                    "y": 206.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_05": {
+            "id": "ax_00_text_05",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "52",
+            "text": "52",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 108,
+                    "y0": 193,
+                    "x1": 140,
+                    "y1": 221
+                },
+                "anchor": {
+                    "x": 123.8,
+                    "y": 206.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": "w",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_06": {
+            "id": "ax_00_text_06",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "77",
+            "text": "77",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 191,
+                    "y0": 193,
+                    "x1": 223,
+                    "y1": 221
+                },
+                "anchor": {
+                    "x": 206.2,
+                    "y": 206.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": "w",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_07": {
+            "id": "ax_00_text_07",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "19",
+            "text": "19",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 273,
+                    "y0": 193,
+                    "x1": 306,
+                    "y1": 221
+                },
+                "anchor": {
+                    "x": 288.8,
+                    "y": 206.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_08": {
+            "id": "ax_00_text_08",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "0",
+            "text": "0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 33,
+                    "y0": 110,
+                    "x1": 50,
+                    "y1": 138
+                },
+                "anchor": {
+                    "x": 41.2,
+                    "y": 123.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_09": {
+            "id": "ax_00_text_09",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "97",
+            "text": "97",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 108,
+                    "y0": 110,
+                    "x1": 140,
+                    "y1": 138
+                },
+                "anchor": {
+                    "x": 123.8,
+                    "y": 123.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": "w",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_10": {
+            "id": "ax_00_text_10",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "47",
+            "text": "47",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 191,
+                    "y0": 110,
+                    "x1": 223,
+                    "y1": 138
+                },
+                "anchor": {
+                    "x": 206.2,
+                    "y": 123.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": "w",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_11": {
+            "id": "ax_00_text_11",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "28",
+            "text": "28",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 273,
+                    "y0": 110,
+                    "x1": 306,
+                    "y1": 138
+                },
+                "anchor": {
+                    "x": 288.8,
+                    "y": 123.8
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_12": {
+            "id": "ax_00_text_12",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "52",
+            "text": "52",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 25,
+                    "y0": 28,
+                    "x1": 58,
+                    "y1": 56
+                },
+                "anchor": {
+                    "x": 41.2,
+                    "y": 41.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": "w",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_13": {
+            "id": "ax_00_text_13",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "37",
+            "text": "37",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 108,
+                    "y0": 28,
+                    "x1": 140,
+                    "y1": 56
+                },
+                "anchor": {
+                    "x": 123.8,
+                    "y": 41.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_14": {
+            "id": "ax_00_text_14",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "4",
+            "text": "4",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 199,
+                    "y0": 28,
+                    "x1": 215,
+                    "y1": 56
+                },
+                "anchor": {
+                    "x": 206.2,
+                    "y": 41.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        },
+        "ax_00_text_15": {
+            "id": "ax_00_text_15",
+            "axes_id": "ax_00",
+            "element_type": "text",
+            "label": "23",
+            "text": "23",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 273,
+                    "y0": 28,
+                    "x1": 306,
+                    "y1": 56
+                },
+                "anchor": {
+                    "x": 288.8,
+                    "y": 41.2
+                }
+            },
+            "style": {
+                "fontsize": 7.0,
+                "color": ".15",
+                "fontweight": "normal",
+                "fontstyle": "normal",
+                "fontfamily": [
+                    "Arial"
+                ],
+                "alpha": null,
+                "ha": "center",
+                "va": "center",
+                "rotation": 0.0
+            },
+            "editable_styles": [
+                "fontsize",
+                "color",
+                "fontweight",
+                "alpha"
+            ],
+            "zorder": 3,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_conf_mat.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-true_class",
+            "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_0",
+            "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_1",
+            "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_2",
+            "ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_3"
+        ],
+        "csv_hash": "893a958f22e0cdba"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

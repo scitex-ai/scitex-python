@@ -1,0 +1,19 @@
+INFO: Starting FTS plot bundle demo
+INFO: Creating basic plot bundle
+WARN: Unsupported file format. /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2026Y-01M-07D-03h58m21s_CVU3-main/line_plot.stx was not saved.
+SUCC: Basic bundle created
+INFO: Creating bundle with DataFrame
+WARN: Unsupported file format. /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2026Y-01M-07D-03h58m21s_CVU3-main/with_data.stx was not saved.
+SUCC: DataFrame bundle created
+INFO: Creating scatter bundle
+WARN: Unsupported file format. /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2026Y-01M-07D-03h58m21s_CVU3-main/scatter.stx was not saved.
+INFO: Creating histogram bundle
+WARN: Unsupported file format. /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2026Y-01M-07D-03h58m21s_CVU3-main/histogram.stx was not saved.
+INFO: Creating dark mode bundle
+WARN: Unsupported file format. /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2026Y-01M-07D-03h58m21s_CVU3-main/dark_mode.stx was not saved.
+INFO: Creating custom size bundle
+WARN: Unsupported file format. /home/ywatanabe/proj/scitex-code/examples/scitex/io/bundle/plot_out/RUNNING/2026Y-01M-07D-03h58m21s_CVU3-main/custom_size.stx was not saved.
+INFO: Creating ZIP archive
+ERRO: Error occurred while saving: No module named 'scitex.io._fig'
+SUCC: ZIP bundle created
+SUCC: Demo completed

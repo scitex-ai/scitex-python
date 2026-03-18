@@ -1,0 +1,12 @@
+{
+  "dpi": 300,
+  "formats": [
+    "png",
+    "svg",
+    "pdf"
+  ],
+  "size_mm": {
+    "width": 80.0,
+    "height": 68.0
+  }
+}

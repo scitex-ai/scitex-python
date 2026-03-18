@@ -1,0 +1,32 @@
+INFO: Initialized RandomStateManager with seed 42
+INFO: Running main with args: {'n_samples': 100, 'verbose': False}
+INFO: ============================================================
+INFO: Session Decorator Demo Started
+INFO: ============================================================
+INFO: Session ID: 2025Y-11M-05D-20h48m03s_e2BA
+INFO: Output Directory: /home/ywatanabe/proj/scitex-code/examples/session_decorator_demo/scripts/session_decorator_demo_out/RUNNING/2025Y-11M-05D-20h48m03s_e2BA-main/
+INFO: ============================================================
+INFO: Step 1: Generating data
+INFO: Generating 100 samples
+INFO: Step 2: Saving raw data
+SUCC: Saved to: ./examples/session_decorator_demo/scripts/session_decorator_demo_out/sample_data.npy (1.7 KiB)
+SUCC: Raw data saved
+INFO: Step 3: Creating visualization
+INFO: Creating visualization
+SUCC: Saved to: ./examples/session_decorator_demo/scripts/session_decorator_demo_out/visualization.csv (7.3 KiB)
+SUCC: Saved to: ./examples/session_decorator_demo/scripts/session_decorator_demo_out/visualization.jpg (150.2 KiB)
+SUCC: Visualization saved
+INFO: Step 4: Computing statistics
+INFO: Computing statistics
+INFO: Step 5: Saving results
+SUCC: Saved to: ./examples/session_decorator_demo/scripts/session_decorator_demo_out/results.json (286.0 B)
+SUCC: Results saved
+INFO: ============================================================
+INFO: Analysis Complete - Summary:
+INFO:   Samples: 100
+INFO:   X mean: 4.702 ± 2.960
+INFO:   Y mean: 12.403 ± 5.869
+INFO:   Correlation: 0.997
+INFO:   Regression: y = 1.98x + 3.11
+INFO: ============================================================
+INFO: Matplotlib cleanup completed

@@ -1,0 +1,32 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2025Y-12M-11D-08h56m14s_eP4P
+PID: 900168
+START_DATETIME: 2025-12-11 08:56:14.694389
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/RUNNING/2025Y-12M-11D-08h56m14s_eP4P-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 08:56:29.407989
+RUN_DURATION: 00:00:14

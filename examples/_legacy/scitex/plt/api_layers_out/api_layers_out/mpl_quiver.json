@@ -1,0 +1,61 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:33.522497"
+    },
+    "figure": {
+        "size_px": [
+            564,
+            474
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -1.2857142857142856,
+                5.785714285714286
+            ],
+            "ylim": [
+                -0.225,
+                4.725
+            ]
+        }
+    },
+    "elements": {},
+    "statistics": {},
+    "data": {
+        "csv_path": "mpl_quiver.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-quiver-0_variable-quiver-x",
+            "ax-row-0-col-0_trace-id-quiver-0_variable-quiver-y",
+            "ax-row-0-col-0_trace-id-quiver-0_variable-quiver-u",
+            "ax-row-0-col-0_trace-id-quiver-0_variable-quiver-v"
+        ],
+        "csv_hash": "b3589fde37d8de93"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

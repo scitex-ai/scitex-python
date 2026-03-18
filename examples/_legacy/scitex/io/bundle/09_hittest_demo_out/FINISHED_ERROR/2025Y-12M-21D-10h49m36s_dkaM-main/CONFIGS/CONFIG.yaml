@@ -1,0 +1,33 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2025Y-12M-21D-10h49m36s_dkaM
+PID: 2234525
+START_DATETIME: 2025-12-21 10:49:36.713143
+FILE: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/09_hittest_demo.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/scitex/fts/09_hittest_demo_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/scitex/fts/09_hittest_demo_out/RUNNING/2025Y-12M-21D-10h49m36s_dkaM-main
+ARGS: {}
+EXIT_STATUS: 1
+END_DATETIME: 2025-12-21 10:49:50.644621
+RUN_DURATION: 00:00:13

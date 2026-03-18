@@ -1,0 +1,60 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:55:57.923669"
+    },
+    "figure": {
+        "size_px": [
+            581,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -3.0,
+                3.0
+            ],
+            "ylim": [
+                -3.0,
+                3.0
+            ]
+        }
+    },
+    "elements": {},
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_contour.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-contour-0_variable-x",
+            "ax-row-0-col-0_trace-id-stx-contour-0_variable-y",
+            "ax-row-0-col-0_trace-id-stx-contour-0_variable-z"
+        ],
+        "csv_hash": "4dd9420984a1645c"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

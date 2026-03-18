@@ -1,0 +1,34 @@
+[94m
+========================================
+SciTeX v2.2.2
+2025Y-11M-19D-17h36m19s_RQhi (PID: 207203)
+
+/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+
+Arguments:
+    verbose: True
+========================================
+[0m
+
+======================================================================
+ PUBLICATION-READY FIGURE DEMONSTRATION
+ Using Unified Style System
+======================================================================
+
+This demo showcases scitex.plt.subplots() with mm-control
+integration for creating publication-ready figures.
+
+
+======================================================================
+Demo: Publication Line Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/01_plot.png, .jpg, .pdf
+
+======================================================================
+Demo: Publication Scatter Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/02_scatter.png, .jpg, .pdf
+
+======================================================================
+Demo: Publication Bar Plot (SciTeX Style)
+======================================================================

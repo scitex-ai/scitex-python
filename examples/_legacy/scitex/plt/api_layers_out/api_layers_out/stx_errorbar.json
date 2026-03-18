@@ -1,0 +1,139 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:55:52.438259"
+    },
+    "figure": {
+        "size_px": [
+            588,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                0.8,
+                5.2
+            ],
+            "ylim": [
+                1.1109862790909217,
+                8.207524058305074
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_line_00": {
+            "id": "ax_00_line_00",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 72,
+                    "x1": 451,
+                    "y1": 272
+                },
+                "path_simplified": [
+                    [
+                        21.5,
+                        132.6
+                    ],
+                    [
+                        128.7,
+                        140.6
+                    ],
+                    [
+                        236.0,
+                        80.4
+                    ],
+                    [
+                        343.3,
+                        271.5
+                    ],
+                    [
+                        450.5,
+                        71.5
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.9
+                ],
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2.1,
+            "visible": true
+        },
+        "ax_00_linecoll_00": {
+            "id": "ax_00_linecoll_00",
+            "axes_id": "ax_00",
+            "element_type": "line_collection",
+            "label": "linecoll_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": null
+            },
+            "style": {},
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "alpha"
+            ],
+            "zorder": 2,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_errorbar.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-errorbar-0_variable-x",
+            "ax-row-0-col-0_trace-id-stx-errorbar-0_variable-y",
+            "ax-row-0-col-0_trace-id-stx-errorbar-0_variable-yerr"
+        ],
+        "csv_hash": "247d8e6f027c884c"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

@@ -1,0 +1,34 @@
+{
+  "columns": [
+    {
+      "name": "ax-row-0-col-0_trace-id-plot-0_variable-x",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-plot-0_variable-y",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-fill-between-0_variable-x",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-fill-between-0_variable-y1",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-fill-between-0_variable-y2",
+      "dtype": "unknown"
+    }
+  ],
+  "format": {
+    "type": "csv",
+    "encoding": "utf-8",
+    "delimiter": ",",
+    "header_row": 0
+  },
+  "shape": [
+    100,
+    5
+  ]
+}

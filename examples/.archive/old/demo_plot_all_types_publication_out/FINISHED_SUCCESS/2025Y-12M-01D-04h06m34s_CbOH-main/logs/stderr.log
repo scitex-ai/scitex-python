@@ -1,0 +1,111 @@
+[90mINFO: ============================================================[0m
+[90mINFO: Injected Global Variables (available in your function):[0m
+[90mINFO:   • CONFIG - Session configuration dict[0m
+[90mINFO:       - CONFIG['ID']: 2025Y-12M-01D-04h06m34s_CbOH[0m
+[90mINFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-12M-01D-04h06m34s_CbOH-main[0m
+[90mINFO:       - CONFIG['PID']: 2424364[0m
+[90mINFO:   • plt - matplotlib.pyplot (configured for session)[0m
+[90mINFO:   • COLORS - CustomColors (for consistent plotting)[0m
+[90mINFO:   • rng_manager - RandomStateManager (for reproducibility)[0m
+[90mINFO:   • logger - SciTeX logger (configured for your script)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Running main with injected parameters:[0m
+[90mINFO:     {'verbose': 'bool'}[0m
+[90mINFO:   • Auto-collected metadata from figure[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Embedded metadata: {'metadata_version': '1.1.0', 'scitex': {'version': '2.3.0', 'created_at': '2025-12-01T04:06:39.108227', 'created_with': 'scitex.plt.subplots (mm-control)', 'mode': 'publication', 'axes_size_mm': (40, 28), 'position_in_grid': (0, 0), 'style_mm': {'axis_thickness_mm': 0.2, 'tick_length_mm': 0.8, 'tick_thickness_mm': 0.2, 'trace_thickness_mm': 0.2, 'axis_font_size_pt': 7, 'tick_font_size_pt': 7, 'title_font_size_pt': 8, 'legend_font_size_pt': 6, 'label_pad_pt': 0.5, 'tick_pad_pt': 2.0, 'title_pad_pt': 1.0, 'font_family': 'Arial', 'n_ticks': 4, 'font_family_requested': 'Arial', 'font_family_actual': 'Arial'}}, 'matplotlib': {'version': '3.10.3'}, 'id': '01_plot', 'dimensions': {'figure_size_mm': (np.float64(80.0), np.float64(68.0)), 'figure_size_inch': (np.float64(3.1496062992125986), np.float64(2.677165354330709)), 'figure_size_px': (944, 803), 'axes_size_mm': (np.float64(40.0), np.float64(27.999999999999993)), 'axes_size_inch': (np.float64(1.5748031496062993), np.float64(1.1023622047244093)), 'axes_size_px': (472, 330), 'axes_position': (np.float64(0.25), np.float64(0.29411764705882354), np.float64(0.5), np.float64(0.41176470588235287)), 'dpi': 300}, 'margins_mm': {'left': np.float64(20.0), 'bottom': np.float64(20.0), 'right': np.float64(20.0), 'top': np.float64(20.000000000000007)}, 'axes_bbox_px': {'x0': 236, 'y0': 236, 'x1': 708, 'y1': 566, 'width': 472, 'height': 330}, 'axes_bbox_mm': {'x0': np.float64(20.0), 'y0': np.float64(20.0), 'x1': np.float64(60.0), 'y1': np.float64(47.99999999999999), 'width': np.float64(40.0), 'height': np.float64(27.999999999999993)}, 'axes': {'x': {'label': 'Time', 'unit': 's', 'scale': 'linear', 'n_ticks': 4}, 'y': {'label': 'Amplitude', 'unit': 'a.u.', 'scale': 'linear', 'n_ticks': 4}}, 'plot_type': 'line', 'method': 'plot', 'style': {'name': 'SCITEX_STYLE', 'overrides': {}}, 'url': 'https://scitex.ai'}[0m
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Matplotlib method 'plot()' does not support full data tracking for CSV export. Consider using 'ax.plot()' instead for better data export support.
+  df = _export_as_csv(self.history)
+[32mSUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.json (2.5 KiB)[0m
+[32mSUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.png (1.1 MiB)[0m
+[90mINFO:   • Auto-collected metadata from figure[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.pdf[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/io/_save_modules/_image.py:174: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+[90mINFO:   • Embedded metadata: {'metadata_version': '1.1.0', 'scitex': {'version': '2.3.0', 'created_at': '2025-12-01T04:06:38.108312', 'created_with': 'scitex.plt.subplots (mm-control)', 'mode': 'publication', 'axes_size_mm': (40, 28), 'position_in_grid': (0, 0), 'style_mm': {'axis_thickness_mm': 0.2, 'tick_length_mm': 0.8, 'tick_thickness_mm': 0.2, 'trace_thickness_mm': 0.2, 'axis_font_size_pt': 7, 'tick_font_size_pt': 7, 'title_font_size_pt': 8, 'legend_font_size_pt': 6, 'label_pad_pt': 0.5, 'tick_pad_pt': 2.0, 'title_pad_pt': 1.0, 'font_family': 'Arial', 'n_ticks': 4, 'font_family_requested': 'Arial', 'font_family_actual': 'Arial'}}, 'matplotlib': {'version': '3.10.3'}, 'id': '01_plot', 'dimensions': {'figure_size_mm': (np.float64(80.0), np.float64(68.0)), 'figure_size_inch': (np.float64(3.1496062992125986), np.float64(2.677165354330709)), 'figure_size_px': (944, 803), 'axes_size_mm': (np.float64(40.0), np.float64(27.999999999999993)), 'axes_size_inch': (np.float64(1.5748031496062993), np.float64(1.1023622047244093)), 'axes_size_px': (472, 330), 'axes_position': (np.float64(0.25), np.float64(0.29411764705882354), np.float64(0.5), np.float64(0.41176470588235287)), 'dpi': 300}, 'margins_mm': {'left': np.float64(20.0), 'bottom': np.float64(20.0), 'right': np.float64(20.0), 'top': np.float64(20.000000000000007)}, 'axes_bbox_px': {'x0': 236, 'y0': 236, 'x1': 708, 'y1': 566, 'width': 472, 'height': 330}, 'axes_bbox_mm': {'x0': np.float64(20.0), 'y0': np.float64(20.0), 'x1': np.float64(60.0), 'y1': np.float64(47.99999999999999), 'width': np.float64(40.0), 'height': np.float64(27.999999999999993)}, 'axes': {'x': {'label': 'Time', 'unit': 's', 'scale': 'linear', 'n_ticks': 4}, 'y': {'label': 'Amplitude', 'unit': 'a.u.', 'scale': 'linear', 'n_ticks': 4}}, 'plot_type': 'line', 'method': 'plot', 'style': {'name': 'SCITEX_STYLE', 'overrides': {}}, 'url': 'https://scitex.ai'}[0m
+[32mSUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.json (2.5 KiB)[0m
+[32mSUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.pdf (18.7 KiB)[0m
+[90mINFO:   • Auto-collected metadata from figure[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.jpg[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/io/_save_modules/_image.py:103: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.figure.savefig(buf, **save_kwargs)
+[90mINFO:   • Embedded metadata: {'metadata_version': '1.1.0', 'scitex': {'version': '2.3.0', 'created_at': '2025-12-01T04:06:38.431684', 'created_with': 'scitex.plt.subplots (mm-control)', 'mode': 'publication', 'axes_size_mm': (40, 28), 'position_in_grid': (0, 0), 'style_mm': {'axis_thickness_mm': 0.2, 'tick_length_mm': 0.8, 'tick_thickness_mm': 0.2, 'trace_thickness_mm': 0.2, 'axis_font_size_pt': 7, 'tick_font_size_pt': 7, 'title_font_size_pt': 8, 'legend_font_size_pt': 6, 'label_pad_pt': 0.5, 'tick_pad_pt': 2.0, 'title_pad_pt': 1.0, 'font_family': 'Arial', 'n_ticks': 4, 'font_family_requested': 'Arial', 'font_family_actual': 'Arial'}}, 'matplotlib': {'version': '3.10.3'}, 'id': '01_plot', 'dimensions': {'figure_size_mm': (np.float64(80.0), np.float64(68.0)), 'figure_size_inch': (np.float64(3.1496062992125986), np.float64(2.677165354330709)), 'figure_size_px': (944, 803), 'axes_size_mm': (np.float64(40.0), np.float64(27.999999999999993)), 'axes_size_inch': (np.float64(1.5748031496062993), np.float64(1.1023622047244093)), 'axes_size_px': (472, 330), 'axes_position': (np.float64(0.25), np.float64(0.29411764705882354), np.float64(0.5), np.float64(0.41176470588235287)), 'dpi': 300}, 'margins_mm': {'left': np.float64(20.0), 'bottom': np.float64(20.0), 'right': np.float64(20.0), 'top': np.float64(20.000000000000007)}, 'axes_bbox_px': {'x0': 236, 'y0': 236, 'x1': 708, 'y1': 566, 'width': 472, 'height': 330}, 'axes_bbox_mm': {'x0': np.float64(20.0), 'y0': np.float64(20.0), 'x1': np.float64(60.0), 'y1': np.float64(47.99999999999999), 'width': np.float64(40.0), 'height': np.float64(27.999999999999993)}, 'axes': {'x': {'label': 'Time', 'unit': 's', 'scale': 'linear', 'n_ticks': 4}, 'y': {'label': 'Amplitude', 'unit': 'a.u.', 'scale': 'linear', 'n_ticks': 4}}, 'plot_type': 'line', 'method': 'plot', 'style': {'name': 'SCITEX_STYLE', 'overrides': {}}, 'url': 'https://scitex.ai'}[0m
+[90mINFO:   • Auto-cropped with 1.0mm margin (23px at 600 DPI)[0m
+[32mSUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.json (2.5 KiB)[0m
+[32mSUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_matplotlib_basic/01_plot.jpg (317.1 KiB)[0m
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 282, in demo_publication_bar
+    ax.set_xlabel(
+TypeError: UnitAwareMixin.set_xlabel() got an unexpected keyword argument 'fontweight'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 433, in demo_publication_errorbar
+    stx.plt.ax.style_scatter(line, size_mm=0.08)
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/ax/_style/_style_scatter.py", line 59, in style_scatter
+    path_collection.set_sizes([marker_area])
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Line2D' object has no attribute 'set_sizes'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 487, in demo_publication_barh
+    ax.set_xlabel(stx.plt.ax.format_label("Score", ""), fontweight="normal")
+TypeError: UnitAwareMixin.set_xlabel() got an unexpected keyword argument 'fontweight'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 846, in demo_publication_plot_box
+    stx.plt.ax.style_boxplot(bp, linewidth_mm=0.2)
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/ax/_style/_style_boxplot.py", line 56, in style_boxplot
+    if element_name in boxplot_dict:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'Axes' is not iterable
+/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_AdjustmentMixin.py:215: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  legend_obj = self._axis_mpl.legend(*args, loc=loc, **kwargs)
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1269, in demo_publication_sns_kdeplot
+    ax.sns_kdeplot(
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_SeabornMixin.py", line 25, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_SeabornMixin.py", line 290, in sns_kdeplot
+    self.plot_kde(_data, xlim=lim, label=hue, id=hue, **kwargs)
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin.py", line 113, in plot_kde
+    self._axis_mpl.plot(xx, density, **kwargs)
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_axes.py", line 1779, in plot
+    lines = [*self._get_lines(self, *args, data=data, **kwargs)]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 296, in __call__
+    yield from self._plot_args(
+               ^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 545, in _plot_args
+    return [l[0] for l in result]
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 545, in <listcomp>
+    return [l[0] for l in result]
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 538, in <genexpr>
+    result = (make_artist(axes, x[:, j % ncx], y[:, j % ncy], kw,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 337, in _make_line
+    seg = mlines.Line2D(x, y, **kw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/lines.py", line 428, in __init__
+    self._internal_update(kwargs)
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/artist.py", line 1241, in _internal_update
+    return self._update_props(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/artist.py", line 1214, in _update_props
+    raise AttributeError(
+AttributeError: Line2D.set() got an unexpected keyword argument 'xlim'

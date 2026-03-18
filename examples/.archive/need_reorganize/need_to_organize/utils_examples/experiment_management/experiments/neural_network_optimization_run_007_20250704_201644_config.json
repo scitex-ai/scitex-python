@@ -1,0 +1,14 @@
+{
+  "id": "neural_network_optimization_run_007_20250704_201644",
+  "name": "neural_network_optimization_run_007",
+  "parameters": {
+    "learning_rate": 0.01,
+    "batch_size": 32,
+    "optimizer": "adam"
+  },
+  "created": "20250704_201644",
+  "status": "created",
+  "results": null,
+  "log_file": "utils_examples/experiment_management/logs/neural_network_optimization_run_007_20250704_201644.log",
+  "results_file": "utils_examples/experiment_management/results/neural_network_optimization_run_007_20250704_201644_results.json"
+}

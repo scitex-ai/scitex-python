@@ -1,0 +1,17 @@
+INFO: Example 04: FTS Node Types
+INFO: Creating text node...
+INFO: Text node saved: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes_out/title_text.zip
+INFO:   BBox: x0=0.10, y0=0.02, x1=0.90, y1=0.07
+INFO: Creating shape node...
+WARN: Plotting records not found. Cannot export empty data.
+WARN: Plotting records not found. Cannot export empty data.
+INFO: Shape node saved: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes_out/arrow_shape.zip
+INFO: Creating figure container...
+INFO: Figure saved: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes_out/annotated_figure.zip
+INFO: Children: ['title_text', 'arrow_shape']
+
+INFO: Reloading bundles...
+INFO:   title_text.zip: kind=text, name=Main Title
+INFO:   arrow_shape.zip: kind=shape, name=Arrow Annotation
+INFO:   annotated_figure.zip: kind=figure, name=Annotated Figure
+SUCC: Example 04 completed!

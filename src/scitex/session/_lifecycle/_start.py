@@ -144,7 +144,8 @@ def start(
 
     # Logging
     if sys is not None:
-        from scitex.io._flush import flush
+        from scitex_io._flush import flush
+
         from scitex.logging._Tee import tee
 
         flush(sys)

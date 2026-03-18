@@ -1,0 +1,112 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-03-04T19:54:30.602094"
+    },
+    "figure": {
+        "size_px": [
+            827,
+            646
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            2.7559055118110236,
+            2.1653543307086616
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 103,
+                "y0": 77,
+                "x1": 744,
+                "y1": 578
+            },
+            "position": [
+                0.125,
+                0.10999999999999999,
+                0.775,
+                0.77
+            ],
+            "xlim": [
+                -0.49,
+                1.49
+            ],
+            "ylim": [
+                -0.0690315886891748,
+                0.017397080685439905
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_bars": {
+            "id": "ax_00_bars",
+            "axes_id": "ax_00",
+            "element_type": "bar",
+            "label": "bars",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 29,
+                    "y0": 22,
+                    "x1": 611,
+                    "y1": 478
+                },
+                "rectangles": [
+                    {
+                        "x": 29.1,
+                        "y": 22.8,
+                        "width": 259.0,
+                        "height": 78.1
+                    },
+                    {
+                        "x": 352.9,
+                        "y": 100.8,
+                        "width": 259.0,
+                        "height": 377.4
+                    }
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.0,
+                    0.5019607843137255,
+                    0.7529411764705882,
+                    1.0
+                ],
+                "edgecolor": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "linewidth": 1.0,
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha",
+                "linewidth"
+            ],
+            "zorder": 1,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "figure2.csv",
+        "columns_actual": [
+            "ax_0_0_bar_000_height"
+        ],
+        "csv_hash": "a5589ac38322b2b2"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 826,
+        "height_px": 649
+    }
+}
