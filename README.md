@@ -215,6 +215,10 @@ stx.io.save(fig, "figure.png")       # Also exports figure data as CSV
 stx.io.save(config, "config.yaml")
 stx.io.save(model, "model.pkl")
 
+# Aggregate ./config/*.yaml into a single DotDict
+CONF = stx.io.load_configs("./config/*.yaml")
+print(CONF.MODEL.hidden_size)        # Dot-notation access
+
 # Register custom formats
 @stx.io.register_saver(".custom")
 def save_custom(obj, path, **kw):
