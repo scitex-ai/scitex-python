@@ -155,18 +155,36 @@ function renderSession(path, sid) {
     const roleCls = isUser ? 'chat-role-user' : 'chat-role-assistant';
     const label = isUser ? 'USER' : 'ASSISTANT' + (e.model ? ' ('+esc(e.model)+')' : '');
     h += '<div class="chat-entry '+cls+'"><div class="chat-role '+roleCls+'">'+label+'</div>';
-    if (e.text) h += '<div class="chat-text">' + esc(e.text) + '</div>';
+    if (e.text) {
+      const txt = e.text.length > 800 ? e.text.slice(0,800) + '\n... (truncated)' : e.text;
+      h += '<div class="chat-text">' + esc(txt) + '</div>';
+    }
     if (e.tool_calls) {
       e.tool_calls.forEach(tc => {
-        const inp = Object.entries(tc.input||{}).map(([k,v])=>esc(k)+': '+esc(String(v).slice(0,500))).join('\n');
-        h += '<div class="tool-card"><div class="tool-header" onclick="this.nextElementSibling.classList.toggle(\'open\')"><span class="tool-name">' + esc(tc.name) + '</span><span>&#9654;</span></div>';
+        const desc = tc.input?.description || tc.input?.file_path || tc.input?.command?.slice(0,60) || tc.input?.pattern || '';
+        const inp = Object.entries(tc.input||{}).map(([k,v])=>esc(k)+': '+esc(String(v).slice(0,300))).join('\n');
+        h += '<div class="tool-card"><div class="tool-header" onclick="this.nextElementSibling.classList.toggle(\'open\')">';
+        h += '<span class="tool-name">' + esc(tc.name) + '</span>';
+        if (desc) h += '<span style="color:#8b949e;font-size:0.8em;margin-left:8px">' + esc(String(desc).slice(0,60)) + '</span>';
+        h += '<span>&#9654;</span></div>';
         h += '<div class="tool-body"><pre>' + inp + '</pre></div></div>';
       });
     }
     if (e.tool_result) {
       const tr = e.tool_result;
-      if (tr.stdout) { h += '<div class="tool-result-card"><div class="tool-result-label">Result</div><pre>' + esc(tr.stdout.slice(0,3000)) + '</pre></div>'; }
-      if (tr.stderr) { h += '<div style="background:#2d1117;border:1px solid #da3633;border-radius:6px;margin:4px 0;padding:6px 8px;font-size:0.8em"><pre style="color:#f85149">' + esc(tr.stderr.slice(0,1000)) + '</pre></div>'; }
+      const out = (tr.stdout||'').slice(0,500);
+      if (out) {
+        h += '<div class="tool-card"><div class="tool-header" onclick="this.nextElementSibling.classList.toggle(\'open\')">';
+        h += '<span class="tool-result-label" style="margin:0">Result</span>';
+        h += '<span style="color:#8b949e;font-size:0.75em;margin-left:8px">' + out.split('\n')[0].slice(0,60) + '</span>';
+        h += '<span>&#9654;</span></div>';
+        h += '<div class="tool-body"><pre>' + esc(out) + '</pre></div></div>';
+      }
+      if (tr.stderr) {
+        h += '<div class="tool-card"><div class="tool-header" onclick="this.nextElementSibling.classList.toggle(\'open\')" style="border-left:3px solid #da3633">';
+        h += '<span style="color:#f85149;font-weight:600;font-size:0.75em">Stderr</span><span>&#9654;</span></div>';
+        h += '<div class="tool-body"><pre style="color:#f85149">' + esc(tr.stderr.slice(0,500)) + '</pre></div></div>';
+      }
     }
     h += '</div>';
   });
@@ -203,10 +221,9 @@ function renderActions(path, sid) {
     h += '<span class="action-desc">'+esc(desc)+'</span></div>';
     h += '<button class="btn btn-sm" onclick="event.stopPropagation();copyText('+JSON.stringify(JSON.stringify(a.script||''))+')">Copy</button>';
     h += '</div><div class="action-body">';
-    if (a.command) h += '<div class="card-meta">Command:</div><pre>'+esc(a.command)+'</pre>';
-    if (a.stdout) h += '<div class="output-block"><pre>'+esc(a.stdout.slice(0,3000))+'</pre></div>';
-    if (a.stderr) h += '<div class="error-block"><pre>'+esc(a.stderr.slice(0,1000))+'</pre></div>';
-    if (a.script) h += '<div class="card-meta" style="margin-top:8px">Script:</div><pre>'+esc(a.script)+'</pre>';
+    if (a.command) h += '<div class="card-meta">Command:</div><pre>'+esc(a.command.slice(0,500))+'</pre>';
+    if (a.stdout) h += '<div class="output-block"><pre>'+esc(a.stdout.slice(0,800))+(a.stdout.length>800?'\n...':'')+'</pre></div>';
+    if (a.stderr) h += '<div class="error-block"><pre>'+esc(a.stderr.slice(0,500))+'</pre></div>';
     h += '</div></div>';
   });
   h += '</div>';
