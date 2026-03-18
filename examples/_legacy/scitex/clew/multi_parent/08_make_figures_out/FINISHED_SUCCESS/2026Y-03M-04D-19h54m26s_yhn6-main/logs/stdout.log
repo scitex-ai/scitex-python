@@ -1,0 +1,14 @@
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h54m26s_yhn6 (PID: 805414)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures.py
+
+Arguments:
+    input_file: None
+========================================
+[0m
+  Hitmap: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1_hitmap.png
+Saved: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1.png + /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1.yaml (Reproducible Validation: PASSED)
+  Hitmap: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2_hitmap.png
+Saved: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2.png + /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2.yaml (Reproducible Validation: PASSED)

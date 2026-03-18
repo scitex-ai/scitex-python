@@ -1,0 +1,32 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2025Y-12M-11D-09h28m22s_Alx3
+PID: 969305
+START_DATETIME: 2025-12-11 09:28:22.288344
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/RUNNING/2025Y-12M-11D-09h28m22s_Alx3-main
+ARGS: {}
+EXIT_STATUS: 1
+END_DATETIME: 2025-12-11 09:28:33.501179
+RUN_DURATION: 00:00:11

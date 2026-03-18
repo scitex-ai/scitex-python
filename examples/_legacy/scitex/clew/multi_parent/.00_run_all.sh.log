@@ -1,0 +1,265 @@
+
+
+============================================================
+SciTeX Clew - Multi-Parent DAG Demo
+============================================================
+[0;90mINFO: Log file: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/.00_run_all.sh.log[0m
+
+[0;90mINFO: Cleaning output directories...[0m
+[0;32mSUCC: Done.[0m
+
+[0;94m[1/8] Generate subjects[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h53m10s_9J2N (PID: 804168)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/01_generate_subjects.py
+
+Arguments:
+    n_subjects: 30
+========================================
+[0m
+INFO: Generating subject demographics
+SUCC: Saved to: ./01_generate_subjects_out/subjects.csv (529.0 B)
+INFO: Generated 30 subjects
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/01_generate_subjects_out/FINISHED_SUCCESS/2026Y-03M-04D-19h53m10s_9J2N-main
+
+[0;94m[2/8] Generate stimuli[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h53m23s_jAwk (PID: 804402)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/02_generate_stimuli.py
+
+Arguments:
+    n_stimuli: 40
+========================================
+[0m
+INFO: Generating stimuli
+SUCC: Saved to: ./02_generate_stimuli_out/stimuli.csv (1.1 KiB)
+INFO: Generated 40 stimuli
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/02_generate_stimuli_out/FINISHED_SUCCESS/2026Y-03M-04D-19h53m23s_jAwk-main
+
+[0;94m[3/8] Load covariates[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h53m33s_wv0D (PID: 804611)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/04_load_covariates.py
+
+Arguments:
+    n_entries: 30
+========================================
+[0m
+INFO: Generating covariates
+SUCC: Saved to: ./04_load_covariates_out/covariates.csv (388.0 B)
+INFO: Generated 30 covariate entries
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/04_load_covariates_out/FINISHED_SUCCESS/2026Y-03M-04D-19h53m33s_wv0D-main
+
+[0;94m[4/8] Run experiment (3-parent merge)[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h53m44s_uJj9 (PID: 804741)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/03_run_experiment.py
+
+Arguments:
+    subjects_file: None
+    stimuli_file: None
+    covariates_file: None
+========================================
+[0m
+INFO: Running experiment
+SUCC: Saved to: ./03_run_experiment_out/raw_data.csv (11.6 KiB)
+INFO: Generated 150 trials from 3 sources
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/03_run_experiment_out/FINISHED_SUCCESS/2026Y-03M-04D-19h53m44s_uJj9-main
+
+[0;94m[5/8] Analyze behavior[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h53m55s_gT6N (PID: 804862)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/05_analyze_behavior.py
+
+Arguments:
+    input_file: None
+========================================
+[0m
+INFO: Analyzing behavior
+SUCC: Saved to: ./05_analyze_behavior_out/behavior.csv (161.0 B)
+INFO: Behavioral stats for 2 groups
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/05_analyze_behavior_out/FINISHED_SUCCESS/2026Y-03M-04D-19h53m55s_gT6N-main
+
+[0;94m[6/8] Analyze neural (2-parent: raw_data + covariates)[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h54m05s_Bajz (PID: 805060)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/06_analyze_neural.py
+
+Arguments:
+    raw_file: None
+    covariates_file: None
+========================================
+[0m
+INFO: Analyzing neural responses
+SUCC: Saved to: ./06_analyze_neural_out/neural.csv (187.0 B)
+INFO: Neural stats for 2 groups
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/06_analyze_neural_out/FINISHED_SUCCESS/2026Y-03M-04D-19h54m05s_Bajz-main
+
+[0;94m[7/8] Merge results (2-parent merge)[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h54m16s_7vOW (PID: 805247)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/07_merge_results.py
+
+Arguments:
+    behavior_file: None
+    neural_file: None
+========================================
+[0m
+INFO: Merging analysis results
+SUCC: Saved to: ./07_merge_results_out/combined.csv (383.0 B)
+INFO: Merged results: 2 groups
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/07_merge_results_out/FINISHED_SUCCESS/2026Y-03M-04D-19h54m16s_7vOW-main
+
+[0;94m[8/8] Make figures[0m
+------------------------------------------------------------
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h54m26s_yhn6 (PID: 805414)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures.py
+
+Arguments:
+    input_file: None
+========================================
+[0m
+INFO: Making figures
+INFO:   • Auto-collected metadata (editable v0.3 schema)
+INFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1.png
+INFO:   • Auto-added URL: https://scitex.ai
+  Hitmap: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1_hitmap.png
+Saved: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1.png + /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1.yaml (Reproducible Validation: PASSED)
+INFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)
+SUCC: Saved to: ./08_make_figures_out/figure1.png (28.2 KiB) [W: 69.9mm, H: 54.7mm]
+INFO:   • Auto-collected metadata (editable v0.3 schema)
+INFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2.png
+INFO:   • Auto-added URL: https://scitex.ai
+  Hitmap: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2_hitmap.png
+Saved: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2.png + /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2.yaml (Reproducible Validation: PASSED)
+INFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)
+SUCC: Saved to: ./08_make_figures_out/figure2.png (31.1 KiB) [W: 70.0mm, H: 54.7mm]
+INFO: Generated 2 figures
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/FINISHED_SUCCESS/2026Y-03M-04D-19h54m26s_yhn6-main
+
+============================================================
+[0;32mSUCC: Pipeline complete! Now demonstrating DAG verification...[0m
+============================================================
+
+[0;94m[Demo] Multi-parent DAG verification + claims + rendering[0m
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/numba/core/errors.py:193: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+[94m
+========================================
+SciTeX v2.21.0 | 2026Y-03M-04D-19h54m39s_HnuV (PID: 805654)
+
+/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py
+
+Arguments:
+    action: all
+========================================
+[0m
+INFO: Running DAG verification demo...
+
+--- Multi-Target DAG Verification ---
+  Targets:           2 files
+  Runs in DAG:       8
+  Edges:             9
+  Status:            verified
+  Verified:          True
+  Topological order: 8 sessions
+
+  ✓ 04_load_covariates.py (2026Y-03M-04D-19h53m...)
+  ✓ 01_generate_subjects.py (2026Y-03M-04D-19h53m...)
+  ✓ 02_generate_stimuli.py (2026Y-03M-04D-19h53m...)
+  ✓ 03_run_experiment.py (2026Y-03M-04D-19h53m...)
+  ✓ 05_analyze_behavior.py (2026Y-03M-04D-19h53m...)
+  ✓ 06_analyze_neural.py (2026Y-03M-04D-19h54m...)
+  ✓ 07_merge_results.py (2026Y-03M-04D-19h54m...)
+  ✓ 08_make_figures.py (2026Y-03M-04D-19h54m...)
+INFO: Running claims demo...
+
+--- Claims Registration ---
+ERRO: Error in main: add_claim() got an unexpected keyword argument 'description'
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-python/src/scitex/session/_decorator.py", line 252, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py", line 108, in main
+ERRO:     _demo_claims()
+ERRO:   File "/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py", line 41, in _demo_claims
+ERRO:     stx.clew.add_claim(
+ERRO: TypeError: add_claim() got an unexpected keyword argument 'description'
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag_out/FINISHED_ERROR/2026Y-03M-04D-19h54m39s_HnuV-main
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py", line 118, in <module>
+    main()
+  File "/home/ywatanabe/proj/scitex-python/src/scitex/session/_decorator.py", line 117, in wrapper
+    return _run_with_session(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-python/src/scitex/session/_decorator.py", line 252, in _run_with_session
+    result = func(**filtered_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py", line 108, in main
+    _demo_claims()
+  File "/home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py", line 41, in _demo_claims
+    stx.clew.add_claim(
+TypeError: add_claim() got an unexpected keyword argument 'description'
+
+============================================================
+[0;32mSUCC: Multi-parent DAG demo complete![0m
+============================================================
+
+View DAG visualization:
+  file:///home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag_out/dag.html
+
+CLI commands:
+  scitex clew status
+  scitex clew dag 08_make_figures_out/figure1.png 08_make_figures_out/figure2.png
+  scitex clew render dag.html -f 08_make_figures_out/figure1.png -f 08_make_figures_out/figure2.png
+
+[0;32mSUCC: Log saved to: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/.00_run_all.sh.log[0m

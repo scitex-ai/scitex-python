@@ -1,0 +1,54 @@
+[94m
+========================================
+SciTeX v2.2.2
+2025Y-11M-19D-15h06m38s_9r73 (PID: 109058)
+
+/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+
+Arguments:
+    verbose: True
+========================================
+[0m
+
+======================================================================
+ PUBLICATION-READY FIGURE DEMONSTRATION
+ Using Unified Style System
+======================================================================
+
+This demo showcases scitex.plt.subplots() with mm-control
+integration for creating publication-ready figures.
+
+
+======================================================================
+Demo: Publication Line Plot (NATURE_STYLE)
+======================================================================
+
+[ERROR] in demo_publication_line_plot: module 'scitex' has no attribute 'ax'
+
+======================================================================
+Demo: Publication Scatter Plot (SCIENCE_STYLE)
+======================================================================
+
+[ERROR] in demo_publication_scatter: module 'scitex' has no attribute 'ax'
+
+======================================================================
+Demo: Publication Bar Plot (CELL_STYLE)
+======================================================================
+
+[ERROR] in demo_publication_bar: module 'scitex' has no attribute 'ax'
+
+======================================================================
+Demo: Publication Heatmap (Custom dimensions)
+======================================================================
+
+[ERROR] in demo_publication_heatmap: module 'scitex' has no attribute 'ax'
+
+======================================================================
+Demo: Publication Histogram (NATURE_STYLE)
+======================================================================
+
+[ERROR] in demo_publication_histogram: module 'scitex' has no attribute 'ax'
+
+======================================================================
+Demo: Publication Error Bar Plot (SCIENCE_STYLE)
+======================================================================

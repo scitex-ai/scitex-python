@@ -1,0 +1,58 @@
+[90mINFO: ============================================================[0m
+[90mINFO: Injected Global Variables (available in your function):[0m
+[90mINFO:   • CONFIG - Session configuration dict[0m
+[90mINFO:       - CONFIG['ID']: 2025Y-11M-19D-15h37m11s_AfVi[0m
+[90mINFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-15h37m11s_AfVi-main[0m
+[90mINFO:       - CONFIG['PID']: 158140[0m
+[90mINFO:   • plt - matplotlib.pyplot (configured for session)[0m
+[90mINFO:   • COLORS - CustomColors (for consistent plotting)[0m
+[90mINFO:   • rng_manager - RandomStateManager (for reproducibility)[0m
+[90mINFO:   • logger - SciTeX logger (configured for your script)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Running main with injected parameters:[0m
+[90mINFO:     {'verbose': 'bool'}[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Matplotlib method 'plot()' does not support full data tracking for CSV export. Consider using 'ax.plot()' instead for better data export support.
+  df = _export_as_csv(self.history)
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/01_line_plot_scitex.png (40.0 KiB)[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/02_scatter_scitex.csv (3.9 KiB)[0m
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/02_scatter_scitex.png (45.8 KiB)[0m
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 585, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 172, in demo_publication_bar
+    stx.plt.ax.style_barplot(bars, edgewidth_mm=0.8, edgecolor='black')
+TypeError: style_barplot() got an unexpected keyword argument 'edgewidth_mm'
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Matplotlib method 'imshow()' does not support full data tracking for CSV export. Consider using 'ax.plot_imshow()' instead for better data export support.
+  df = _export_as_csv(self.history)
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/04_heatmap_custom.png (41.2 KiB)[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/05_histogram_scitex.csv (31.4 KiB)[0m
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/05_histogram_scitex.png (34.3 KiB)[0m
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 585, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 353, in demo_publication_errorbar
+    stx.plt.ax.style_errorbar(eb, linewidth_mm=0.8, capsize_mm=0.2)
+TypeError: style_errorbar() got an unexpected keyword argument 'linewidth_mm'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 585, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 428, in demo_publication_multi_panel_2x2
+    stx.plt.ax.style_barplot(bars, edgewidth_mm=0.8, edgecolor='black')
+TypeError: style_barplot() got an unexpected keyword argument 'edgewidth_mm'
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:120: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/multi_panel/02_1x3_varied_widths.csv (7.7 KiB)[0m
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/multi_panel/02_1x3_varied_widths.png (36.7 KiB)[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+[32mSUCC: Saved to: ./../scitex-code/examples/demo_plot_all_types_publication_out/publication/09_style_override.png (37.4 KiB)[0m

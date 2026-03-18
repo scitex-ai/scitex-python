@@ -1,0 +1,33 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-08h58m10s_2O2M
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/RUNNING/2025Y-12M-11D-08h58m10s_2O2M-main
+INFO:       - CONFIG['PID']: 905990
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Example: Save Word Documents
+INFO: ============================================================
+INFO: 
+1. Profile Switching: RESNA -> IEEE
+INFO:    Loaded 33 blocks
+INFO:    RESNA columns: 2
+INFO:    IEEE columns: 2
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/converted_to_ieee.docx
+INFO: 
+2. Create Document from Scratch
+INFO:    generic: manuscript_generic.docx (36,947 bytes)
+INFO:    mdpi-ijerph: manuscript_mdpi-ijerph.docx (36,947 bytes)
+INFO:    ieee: manuscript_ieee.docx (36,947 bytes)
+INFO:    springer: manuscript_springer.docx (36,947 bytes)
+INFO: 
+3. Create Document with Formatted Text
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/formatted_doc.docx
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out

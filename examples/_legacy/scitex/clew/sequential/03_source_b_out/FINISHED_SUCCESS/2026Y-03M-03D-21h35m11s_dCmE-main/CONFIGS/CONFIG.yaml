@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h35m11s_dCmE
+PID: 8338
+START_DATETIME: 2026-03-03 21:35:11.621931
+FILE: /scitex-python/examples/scitex/clew/03_source_b.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/03_source_b_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/03_source_b_out/RUNNING/2026Y-03M-03D-21h35m11s_dCmE-main
+ARGS:
+    n_samples: 300
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:35:51.255697
+RUN_DURATION: 00:00:39

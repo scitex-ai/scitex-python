@@ -1,0 +1,251 @@
+{
+  "total": 61,
+  "success_with_csv": [],
+  "success_no_csv": [],
+  "failed": [
+    [
+      "stx_line",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_mean_std",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_mean_ci",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_median_iqr",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_shaded_line",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_box",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_violin",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_scatter",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_bar",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_barh",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_errorbar",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_fill_between",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_kde",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_ecdf",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_heatmap",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_image",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_imshow",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_contour",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_raster",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_conf_mat",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_joyplot",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_rectangle",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_fillv",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_boxplot",
+      "No columns to parse from file"
+    ],
+    [
+      "stx_violinplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_boxplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_violinplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_barplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_histplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_kdeplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_scatterplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_lineplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_swarmplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_stripplot",
+      "No columns to parse from file"
+    ],
+    [
+      "sns_heatmap",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_plot",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_scatter",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_bar",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_barh",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_hist",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_hist2d",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_hexbin",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_boxplot",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_violinplot",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_errorbar",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_step",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_stem",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_fill",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_fill_between",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_stackplot",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_contour",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_contourf",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_imshow",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_pcolormesh",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_pie",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_eventplot",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_quiver",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_axhline",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_axvline",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_axhspan",
+      "No columns to parse from file"
+    ],
+    [
+      "mpl_axvspan",
+      "No columns to parse from file"
+    ]
+  ]
+}

@@ -1,0 +1,33 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2026Y-01M-07D-03h55m33s_zFfY
+PID: 3257977
+START_DATETIME: 2026-01-07 03:55:33.526888
+FILE: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/RUNNING/2026Y-01M-07D-03h55m33s_zFfY-main
+ARGS:
+    extension: png
+EXIT_STATUS: 0
+END_DATETIME: 2026-01-07 03:56:36.575388
+RUN_DURATION: 00:01:03

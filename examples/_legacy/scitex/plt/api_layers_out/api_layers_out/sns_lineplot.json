@@ -1,0 +1,806 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:15.606955"
+    },
+    "figure": {
+        "size_px": [
+            581,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -0.9500000000000001,
+                19.95
+            ],
+            "ylim": [
+                -1.3564209261338547,
+                1.3200926347428144
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_line_00": {
+            "id": "ax_00_line_00",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 32,
+                    "x1": 451,
+                    "y1": 288
+                },
+                "path_simplified": [
+                    [
+                        21.5,
+                        152.1
+                    ],
+                    [
+                        44.0,
+                        141.7
+                    ],
+                    [
+                        66.6,
+                        102.9
+                    ],
+                    [
+                        89.2,
+                        69.3
+                    ],
+                    [
+                        111.8,
+                        51.0
+                    ],
+                    [
+                        134.4,
+                        39.2
+                    ],
+                    [
+                        157.0,
+                        31.8
+                    ],
+                    [
+                        179.5,
+                        65.7
+                    ],
+                    [
+                        202.1,
+                        80.6
+                    ],
+                    [
+                        224.7,
+                        114.9
+                    ],
+                    [
+                        247.3,
+                        142.9
+                    ],
+                    [
+                        269.9,
+                        198.1
+                    ],
+                    [
+                        292.5,
+                        215.3
+                    ],
+                    [
+                        315.0,
+                        241.6
+                    ],
+                    [
+                        337.6,
+                        266.4
+                    ],
+                    [
+                        360.2,
+                        285.0
+                    ],
+                    [
+                        382.8,
+                        288.4
+                    ],
+                    [
+                        405.4,
+                        271.0
+                    ],
+                    [
+                        428.0,
+                        243.0
+                    ],
+                    [
+                        450.5,
+                        220.4
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.0,
+                    0.5,
+                    0.75
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_01": {
+            "id": "ax_00_line_01",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_1",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 44,
+                    "x1": 451,
+                    "y1": 290
+                },
+                "path_simplified": [
+                    [
+                        21.5,
+                        46.9
+                    ],
+                    [
+                        44.0,
+                        60.1
+                    ],
+                    [
+                        66.6,
+                        44.4
+                    ],
+                    [
+                        89.2,
+                        95.3
+                    ],
+                    [
+                        111.8,
+                        125.5
+                    ],
+                    [
+                        134.4,
+                        176.2
+                    ],
+                    [
+                        157.0,
+                        186.0
+                    ],
+                    [
+                        179.5,
+                        213.0
+                    ],
+                    [
+                        202.1,
+                        250.5
+                    ],
+                    [
+                        224.7,
+                        284.0
+                    ],
+                    [
+                        247.3,
+                        278.2
+                    ],
+                    [
+                        292.5,
+                        289.9
+                    ],
+                    [
+                        315.0,
+                        255.1
+                    ],
+                    [
+                        360.2,
+                        190.8
+                    ],
+                    [
+                        382.8,
+                        148.8
+                    ],
+                    [
+                        450.5,
+                        58.2
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    1.0,
+                    0.27,
+                    0.2
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_02": {
+            "id": "ax_00_line_02",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "A",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": null,
+                "path_simplified": []
+            },
+            "style": {
+                "color": [
+                    0.0,
+                    0.5,
+                    0.75
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_03": {
+            "id": "ax_00_line_03",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "B",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": null,
+                "path_simplified": []
+            },
+            "style": {
+                "color": [
+                    1.0,
+                    0.27,
+                    0.2
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_fill_00": {
+            "id": "ax_00_fill_00",
+            "axes_id": "ax_00",
+            "element_type": "fill",
+            "label": "fill_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 15,
+                    "x1": 451,
+                    "y1": 303
+                },
+                "polygon": [
+                    [
+                        21.5,
+                        130.7
+                    ],
+                    [
+                        21.5,
+                        174.5
+                    ],
+                    [
+                        44.0,
+                        161.0
+                    ],
+                    [
+                        66.6,
+                        125.9
+                    ],
+                    [
+                        89.2,
+                        83.7
+                    ],
+                    [
+                        111.8,
+                        65.0
+                    ],
+                    [
+                        134.4,
+                        54.6
+                    ],
+                    [
+                        157.0,
+                        47.8
+                    ],
+                    [
+                        179.5,
+                        87.0
+                    ],
+                    [
+                        202.1,
+                        94.7
+                    ],
+                    [
+                        224.7,
+                        129.4
+                    ],
+                    [
+                        247.3,
+                        165.1
+                    ],
+                    [
+                        269.9,
+                        218.4
+                    ],
+                    [
+                        292.5,
+                        235.9
+                    ],
+                    [
+                        315.0,
+                        255.4
+                    ],
+                    [
+                        337.6,
+                        284.4
+                    ],
+                    [
+                        360.2,
+                        303.2
+                    ],
+                    [
+                        382.8,
+                        302.7
+                    ],
+                    [
+                        405.4,
+                        285.4
+                    ],
+                    [
+                        428.0,
+                        255.5
+                    ],
+                    [
+                        450.5,
+                        239.2
+                    ],
+                    [
+                        450.5,
+                        199.2
+                    ],
+                    [
+                        450.5,
+                        199.2
+                    ],
+                    [
+                        428.0,
+                        231.8
+                    ],
+                    [
+                        405.4,
+                        257.8
+                    ],
+                    [
+                        382.8,
+                        276.5
+                    ],
+                    [
+                        360.2,
+                        265.2
+                    ],
+                    [
+                        337.6,
+                        245.5
+                    ],
+                    [
+                        315.0,
+                        224.3
+                    ],
+                    [
+                        292.5,
+                        196.0
+                    ],
+                    [
+                        269.9,
+                        177.8
+                    ],
+                    [
+                        247.3,
+                        118.8
+                    ],
+                    [
+                        224.7,
+                        99.8
+                    ],
+                    [
+                        202.1,
+                        66.2
+                    ],
+                    [
+                        179.5,
+                        47.0
+                    ],
+                    [
+                        157.0,
+                        15.0
+                    ],
+                    [
+                        134.4,
+                        23.5
+                    ],
+                    [
+                        111.8,
+                        36.6
+                    ],
+                    [
+                        89.2,
+                        54.0
+                    ],
+                    [
+                        66.6,
+                        79.1
+                    ],
+                    [
+                        44.0,
+                        120.4
+                    ],
+                    [
+                        21.5,
+                        130.7
+                    ],
+                    [
+                        21.5,
+                        130.7
+                    ]
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.2
+                ],
+                "edgecolor": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.2
+                ],
+                "alpha": 0.2
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha"
+            ],
+            "zorder": 1,
+            "visible": true
+        },
+        "ax_00_fill_01": {
+            "id": "ax_00_fill_01",
+            "axes_id": "ax_00",
+            "element_type": "fill",
+            "label": "fill_1",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 25,
+                    "x1": 451,
+                    "y1": 315
+                },
+                "polygon": [
+                    [
+                        21.5,
+                        27.9
+                    ],
+                    [
+                        21.5,
+                        64.8
+                    ],
+                    [
+                        44.0,
+                        78.0
+                    ],
+                    [
+                        66.6,
+                        60.7
+                    ],
+                    [
+                        89.2,
+                        111.1
+                    ],
+                    [
+                        111.8,
+                        139.4
+                    ],
+                    [
+                        134.4,
+                        192.2
+                    ],
+                    [
+                        157.0,
+                        197.1
+                    ],
+                    [
+                        179.5,
+                        228.8
+                    ],
+                    [
+                        202.1,
+                        268.7
+                    ],
+                    [
+                        224.7,
+                        304.5
+                    ],
+                    [
+                        247.3,
+                        300.5
+                    ],
+                    [
+                        269.9,
+                        305.0
+                    ],
+                    [
+                        292.5,
+                        315.0
+                    ],
+                    [
+                        315.0,
+                        269.2
+                    ],
+                    [
+                        337.6,
+                        244.9
+                    ],
+                    [
+                        360.2,
+                        204.0
+                    ],
+                    [
+                        382.8,
+                        167.2
+                    ],
+                    [
+                        405.4,
+                        128.8
+                    ],
+                    [
+                        428.0,
+                        100.6
+                    ],
+                    [
+                        450.5,
+                        74.6
+                    ],
+                    [
+                        450.5,
+                        43.6
+                    ],
+                    [
+                        450.5,
+                        43.6
+                    ],
+                    [
+                        428.0,
+                        78.0
+                    ],
+                    [
+                        405.4,
+                        105.8
+                    ],
+                    [
+                        382.8,
+                        130.1
+                    ],
+                    [
+                        360.2,
+                        177.3
+                    ],
+                    [
+                        337.6,
+                        197.7
+                    ],
+                    [
+                        315.0,
+                        242.1
+                    ],
+                    [
+                        292.5,
+                        265.2
+                    ],
+                    [
+                        269.9,
+                        262.9
+                    ],
+                    [
+                        247.3,
+                        255.8
+                    ],
+                    [
+                        224.7,
+                        261.2
+                    ],
+                    [
+                        202.1,
+                        232.6
+                    ],
+                    [
+                        179.5,
+                        196.8
+                    ],
+                    [
+                        157.0,
+                        174.5
+                    ],
+                    [
+                        134.4,
+                        160.7
+                    ],
+                    [
+                        111.8,
+                        112.2
+                    ],
+                    [
+                        89.2,
+                        79.8
+                    ],
+                    [
+                        66.6,
+                        25.3
+                    ],
+                    [
+                        44.0,
+                        45.8
+                    ],
+                    [
+                        21.5,
+                        27.9
+                    ],
+                    [
+                        21.5,
+                        27.9
+                    ]
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    1.0,
+                    0.27,
+                    0.2,
+                    0.2
+                ],
+                "edgecolor": [
+                    1.0,
+                    0.27,
+                    0.2,
+                    0.2
+                ],
+                "alpha": 0.2
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha"
+            ],
+            "zorder": 1,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "sns_lineplot.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-0-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-0-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-1-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-1-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-2-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-2-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-3-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-3-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-4-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-4-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-5-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-5-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-6-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-6-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-7-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-7-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-8-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-8-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-9-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-9-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-10-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-10-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-11-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-11-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-12-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-12-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-13-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-13-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-14-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-14-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-15-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-15-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-16-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-16-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-17-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-17-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-18-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-18-b",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-19-a",
+            "ax-row-0-col-0_trace-id-sns-lineplot-0_variable-19-b"
+        ],
+        "csv_hash": "9f8a61e6946cc952"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

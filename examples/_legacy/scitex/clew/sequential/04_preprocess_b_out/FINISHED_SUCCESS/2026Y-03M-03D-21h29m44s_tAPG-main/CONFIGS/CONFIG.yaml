@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h29m44s_tAPG
+PID: 5156
+START_DATETIME: 2026-03-03 21:29:44.331735
+FILE: /scitex-python/examples/scitex/clew/04_preprocess_b.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/04_preprocess_b_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/04_preprocess_b_out/RUNNING/2026Y-03M-03D-21h29m44s_tAPG-main
+ARGS:
+    input_file:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:30:16.412135
+RUN_DURATION: 00:00:32

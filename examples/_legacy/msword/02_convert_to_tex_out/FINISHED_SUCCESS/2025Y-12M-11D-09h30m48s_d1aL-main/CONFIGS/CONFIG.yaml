@@ -1,0 +1,11 @@
+ID: 2025Y-12M-11D-09h30m48s_d1aL
+PID: 977025
+START_DATETIME: 2025-12-11 09:30:48.082048
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/RUNNING/2025Y-12M-11D-09h30m48s_d1aL-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 09:31:01.421575
+RUN_DURATION: 00:00:13

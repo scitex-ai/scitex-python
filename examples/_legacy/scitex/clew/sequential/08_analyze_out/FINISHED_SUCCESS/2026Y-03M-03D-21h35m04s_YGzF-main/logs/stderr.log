@@ -1,0 +1,8 @@
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+INFO: Analyzing final merged data
+SUCC: Saved to: ./08_analyze_out/stats_by_source.csv (171.0 B)
+SUCC: Saved to: ./08_analyze_out/report.json (279.0 B)
+INFO: Analysis complete

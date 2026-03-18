@@ -1,0 +1,14 @@
+ID: 2025Y-11M-19D-16h12m12s_3daw
+PID: 222425
+START_DATETIME: 2025-11-19 16:12:12.117059
+FILE: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-16h12m12s_3daw-main
+ARGS:
+    verbose: true
+EXIT_STATUS: 0
+END_DATETIME: 2025-11-19 16:12:20.167099
+RUN_DURATION: 00:00:08

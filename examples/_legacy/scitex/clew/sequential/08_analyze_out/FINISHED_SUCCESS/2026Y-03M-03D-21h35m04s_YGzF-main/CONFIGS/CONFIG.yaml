@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h35m04s_YGzF
+PID: 8222
+START_DATETIME: 2026-03-03 21:35:04.555845
+FILE: /scitex-python/examples/scitex/clew/08_analyze.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/08_analyze_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/08_analyze_out/RUNNING/2026Y-03M-03D-21h35m04s_YGzF-main
+ARGS:
+    input_file:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:35:42.138097
+RUN_DURATION: 00:00:37

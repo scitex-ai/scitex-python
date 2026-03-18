@@ -1,0 +1,44 @@
+{
+  "mode": "light",
+  "colors": {
+    "palette": [
+      "#1f77b4",
+      "#ff7f0e",
+      "#2ca02c"
+    ],
+    "background": "#ffffff",
+    "text": "#333333",
+    "axis": "#666666",
+    "grid": "#e0e0e0",
+    "primary": "#1f77b4",
+    "secondary": "#ff7f0e"
+  },
+  "typography": {
+    "family": "sans-serif",
+    "size_pt": 8.0,
+    "title_size_pt": 14,
+    "label_size_pt": 12,
+    "tick_size_pt": 10
+  },
+  "lines": {
+    "width_pt": 1.0,
+    "style": "solid"
+  },
+  "markers": {
+    "size_pt": 4.0,
+    "symbol": "circle"
+  },
+  "grid": {
+    "show": true,
+    "major_width_pt": 0.5,
+    "minor_width_pt": 0.25,
+    "major_alpha": 0.3,
+    "minor_alpha": 0.1
+  },
+  "figure_title": {
+    "text": "Light Theme Demo",
+    "prefix": "Figure",
+    "fontweight": "bold",
+    "number": 1
+  }
+}

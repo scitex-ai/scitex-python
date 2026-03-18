@@ -1,0 +1,7 @@
+Experiment: neural_network_optimization_run_010_20250704_201631
+Parameters: {'learning_rate': 0.01, 'batch_size': 64, 'optimizer': 'sgd'}
+Status: running
+Started: 2025-07-04 20:16:31
+Completed: 2025-07-04 20:16:31
+Results: {'accuracy': 0.7938641518314566, 'precision': 0.8728596058283555, 'recall': 0.7953766684413696, 'training_time': 38.18184709564145, 'memory_usage': 570.6745631371018, 'converged': True}
+Final status: completed

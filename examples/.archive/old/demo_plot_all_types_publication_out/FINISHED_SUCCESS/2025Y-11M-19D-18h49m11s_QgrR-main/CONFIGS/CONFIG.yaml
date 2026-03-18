@@ -1,0 +1,14 @@
+ID: 2025Y-11M-19D-18h49m11s_QgrR
+PID: 333460
+START_DATETIME: 2025-11-19 18:49:11.592152
+FILE: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-18h49m11s_QgrR-main
+ARGS:
+    verbose: true
+EXIT_STATUS: 0
+END_DATETIME: 2025-11-19 18:49:50.113849
+RUN_DURATION: 00:00:38

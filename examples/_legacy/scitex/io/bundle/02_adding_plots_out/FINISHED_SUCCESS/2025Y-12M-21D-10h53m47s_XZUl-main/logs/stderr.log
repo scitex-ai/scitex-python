@@ -1,0 +1,14 @@
+INFO: Example 02: Creating Multi-Panel Figure
+SUCC: Saved to: ./examples/scitex/fts/02_adding_plots_out/plot_A.zip (81.4 KiB)
+INFO: Saved plot_A (line)
+SUCC: Saved to: ./examples/scitex/fts/02_adding_plots_out/plot_B.zip (47.6 KiB)
+INFO: Saved plot_B (scatter)
+SUCC: Saved to: ./examples/scitex/fts/02_adding_plots_out/plot_C.zip (40.1 KiB)
+INFO: Saved plot_C (bar)
+SUCC: Saved to: ./examples/scitex/fts/02_adding_plots_out/plot_D.zip (46.2 KiB)
+INFO: Saved plot_D (box)
+INFO: Saved container: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/02_adding_plots_out/multi_panel.zip
+INFO: Children: ['d6079668.zip', '1de35d01.zip', 'ab6e1e55.zip', '0d5e0cbb.zip']
+INFO: Layout: {'rows': 2, 'cols': 2, 'panels': [{'child': 'd6079668.zip', 'child_id': 'd6079668-3ff0-4988-91e5-8ab11e4d728c', 'row': 0, 'col': 0, 'row_span': 1, 'col_span': 1, 'label': 'A'}, {'child': '1de35d01.zip', 'child_id': '1de35d01-6cd8-4aef-8a1f-83380f95d560', 'row': 0, 'col': 1, 'row_span': 1, 'col_span': 1, 'label': 'B'}, {'child': 'ab6e1e55.zip', 'child_id': 'ab6e1e55-6469-409e-bc2b-64333df911a7', 'row': 1, 'col': 0, 'row_span': 1, 'col_span': 1, 'label': 'C'}, {'child': '0d5e0cbb.zip', 'child_id': '0d5e0cbb-5238-40ba-a1ec-1e29222bd067', 'row': 1, 'col': 1, 'row_span': 1, 'col_span': 1, 'label': 'D'}]}
+INFO: Reloaded 8 embedded children
+SUCC: Example 02 completed!

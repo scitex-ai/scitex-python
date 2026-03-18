@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Parent DAG Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --verified-bg: #d4edda;
+            --verified-border: #28a745;
+            --verified-text: #155724;
+            --failed-bg: #f8d7da;
+            --failed-border: #dc3545;
+            --failed-text: #721c24;
+            --file-bg: #fff3cd;
+            --file-border: #ffc107;
+            --script-bg: #cce5ff;
+            --script-border: #4a6baf;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--script-border);
+        }
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--script-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        h1 {
+            color: #333;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .legend-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .legend-icon.verified {
+            background: var(--verified-bg);
+            color: var(--verified-text);
+            border: 2px solid var(--verified-border);
+        }
+        .legend-icon.from-scratch {
+            background: var(--verified-bg);
+            color: var(--verified-text);
+            border: 3px solid var(--verified-border);
+            box-shadow: 0 0 0 2px var(--verified-bg);
+        }
+        .legend-icon.failed {
+            background: var(--failed-bg);
+            color: var(--failed-text);
+            border: 2px solid var(--failed-border);
+        }
+        .legend-icon.file {
+            background: var(--file-bg);
+            color: #856404;
+            border: 2px solid var(--file-border);
+        }
+        .legend-icon.script {
+            background: var(--script-bg);
+            color: #004085;
+            border: 2px solid var(--script-border);
+        }
+        .legend-text {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+        .mermaid {
+            margin: 25px 0;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            overflow-x: auto;
+        }
+        .footer {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-brand i {
+            color: var(--script-border);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <i class="fas fa-project-diagram"></i>
+            </div>
+            <h1>Multi-Parent DAG Demo</h1>
+        </div>
+        <div class="legend">
+            <div class="legend-item">
+                <span style="font-size:1.2em">🐍</span>
+                <span class="legend-text">Python</span>
+            </div>
+            <div class="legend-item">
+                <span style="font-size:1.2em">📊</span>
+                <span class="legend-text">CSV</span>
+            </div>
+            <div class="legend-item">
+                <span style="font-size:1.2em">📋</span>
+                <span class="legend-text">JSON</span>
+            </div>
+            <div class="legend-item">
+                <span style="font-size:1.2em">⚙️</span>
+                <span class="legend-text">Config</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon verified"><i class="fas fa-check"></i></div>
+                <span class="legend-text">Verified</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon from-scratch"><i class="fas fa-check-double"></i></div>
+                <span class="legend-text">From-scratch</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon failed"><i class="fas fa-times"></i></div>
+                <span class="legend-text">Failed</span>
+            </div>
+        </div>
+        <div class="mermaid">
+graph TD
+    script_0["✓ 🐍 08_make_figures.py<br/>(yhn6)<br/>02f64d47..."]:::verified
+    file_combined_csv_8e30c61a[("✓ 📊 combined.csv<br/>9ba8d395...")]:::file_ok
+    file_combined_csv_8e30c61a --> script_0
+    file_figure1_png_edf8a729[("✓ 🖼️ figure1.png<br/>6ba098e6...")]:::file_ok
+    script_0 --> file_figure1_png_edf8a729
+    file_figure2_png_09f7d9a2[("✓ 🖼️ figure2.png<br/>b6d37c69...")]:::file_ok
+    script_0 --> file_figure2_png_09f7d9a2
+    script_1["✓ 🐍 07_merge_results.py<br/>(7vOW)<br/>182d60de..."]:::verified
+    file_behavior_csv_17effe06[("✓ 📊 behavior.csv<br/>77318881...")]:::file_ok
+    file_behavior_csv_17effe06 --> script_1
+    file_neural_csv_a25d82ed[("✓ 📊 neural.csv<br/>5f8a3005...")]:::file_ok
+    file_neural_csv_a25d82ed --> script_1
+    script_1 --> file_combined_csv_8e30c61a
+    script_2["✓ 🐍 06_analyze_neural.py<br/>(Bajz)<br/>35970f8b..."]:::verified
+    file_raw_data_csv_93f72ee9[("✓ 📊 raw_data.csv<br/>efbc92a9...")]:::file_ok
+    file_raw_data_csv_93f72ee9 --> script_2
+    file_covariates_csv_42e9e4fd[("✓ 📊 covariates.csv<br/>f1fe3767...")]:::file_ok
+    file_covariates_csv_42e9e4fd --> script_2
+    script_2 --> file_neural_csv_a25d82ed
+    script_3["✓ 🐍 05_analyze_behavior.py<br/>(gT6N)<br/>75e9581e..."]:::verified
+    file_raw_data_csv_93f72ee9 --> script_3
+    script_3 --> file_behavior_csv_17effe06
+    script_4["✓ 🐍 03_run_experiment.py<br/>(uJj9)<br/>4315fd94..."]:::verified
+    file_subjects_csv_eba4827e[("✓ 📊 subjects.csv<br/>ae9c8232...")]:::file_ok
+    file_subjects_csv_eba4827e --> script_4
+    file_stimuli_csv_db989818[("✓ 📊 stimuli.csv<br/>1316103c...")]:::file_ok
+    file_stimuli_csv_db989818 --> script_4
+    file_covariates_csv_42e9e4fd --> script_4
+    script_4 --> file_raw_data_csv_93f72ee9
+    script_5["✓ 🐍 01_generate_subjects.py<br/>(9J2N)<br/>dd9ebf44..."]:::verified
+    script_5 --> file_subjects_csv_eba4827e
+    script_6["✓ 🐍 02_generate_stimuli.py<br/>(jAwk)<br/>a6e77050..."]:::verified
+    script_6 --> file_stimuli_csv_db989818
+    script_7["✓ 🐍 04_load_covariates.py<br/>(wv0D)<br/>80e0aaf0..."]:::verified
+    script_7 --> file_covariates_csv_42e9e4fd
+
+    classDef script fill:#87CEEB,stroke:#4169E1,stroke-width:2px
+    classDef verified fill:#90EE90,stroke:#228B22
+    classDef verified_scratch fill:#90EE90,stroke:#228B22,stroke-width:4px
+    classDef failed fill:#FFB6C1,stroke:#DC143C
+    classDef file fill:#FFF8DC,stroke:#DAA520
+    classDef file_ok fill:#90EE90,stroke:#228B22
+    classDef file_rerun fill:#90EE90,stroke:#228B22,stroke-width:4px
+    classDef file_bad fill:#FFB6C1,stroke:#DC143C
+        </div>
+        <div class="footer">
+            <div class="footer-brand">
+                <i class="fas fa-flask"></i>
+                <span>Generated by SciTeX Verify</span>
+            </div>
+            <div>
+                <i class="far fa-clock"></i> Generated at: 2026-03-04 19:58:27
+            </div>
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                curve: 'basis',
+                padding: 20,
+                nodeSpacing: 50,
+                rankSpacing: 60
+            }
+        });
+    </script>
+</body>
+</html>

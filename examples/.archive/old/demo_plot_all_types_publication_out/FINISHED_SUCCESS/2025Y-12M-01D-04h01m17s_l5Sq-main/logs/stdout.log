@@ -1,0 +1,190 @@
+[94m
+========================================
+SciTeX v2.3.0
+2025Y-12M-01D-04h01m17s_l5Sq (PID: 2417766)
+
+/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+
+Arguments:
+    verbose: True
+========================================
+[0m
+
+======================================================================
+ PUBLICATION-READY FIGURE DEMONSTRATION
+ Using Unified Style System
+======================================================================
+
+This demo showcases scitex.plt.subplots() with mm-control
+integration for creating publication-ready figures.
+
+
+======================================================================
+Demo: Publication Line Plot (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Scatter Plot (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Bar Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_bar: UnitAwareMixin.set_xlabel() got an unexpected keyword argument 'fontweight'
+
+======================================================================
+Demo: Publication Histogram (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Boxplot (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Error Bar Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_errorbar: 'Line2D' object has no attribute 'set_sizes'
+
+======================================================================
+Demo: Publication Horizontal Bar Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_barh: UnitAwareMixin.set_xlabel() got an unexpected keyword argument 'fontweight'
+
+======================================================================
+Demo: Publication Fill Between (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Imshow (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Contour (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Violinplot (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Heatmap (Custom Scitex)
+======================================================================
+
+======================================================================
+Demo: Publication Line (Custom Scitex)
+======================================================================
+
+======================================================================
+Demo: Publication Shaded Line (Custom Scitex)
+======================================================================
+
+======================================================================
+Demo: Publication Violin (Custom Scitex)
+======================================================================
+
+======================================================================
+Demo: Publication ECDF (Custom Scitex)
+======================================================================
+
+======================================================================
+Demo: Publication Box (Custom Scitex)
+======================================================================
+
+[ERROR] in demo_publication_plot_box: argument of type 'Axes' is not iterable
+
+======================================================================
+Demo: Publication Mean±Std (Custom Scitex)
+======================================================================
+
+======================================================================
+Demo: Publication KDE (Functional)
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn Boxplot
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn Violinplot
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn Scatterplot
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn Lineplot
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn Histplot
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn Barplot
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn Stripplot
+======================================================================
+
+======================================================================
+Demo: Publication Seaborn KDE Plot
+======================================================================
+
+[ERROR] in demo_publication_sns_kdeplot: Line2D.set() got an unexpected keyword argument 'xlim'
+
+======================================================================
+Demo: Multi-Panel Figure 2x2 (SciTeX Style)
+======================================================================
+  Layout: 2x2 grid
+  Each panel: 40 x 28 mm
+  Spacing: 8 x 10 mm
+
+======================================================================
+Demo: Multi-Panel Figure 1x3 with Individual Widths
+======================================================================
+  Layout: 1x3 grid
+  Panel widths: 25, 35, 25 mm
+
+======================================================================
+Demo: Style Override Pattern
+======================================================================
+
+======================================================================
+ DEMONSTRATION COMPLETE
+======================================================================
+
+Output locations:
+  Session output: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/
+  Matplotlib basic: publication/01_matplotlib_basic/
+  Custom scitex: publication/02_custom_scitex/
+  Functional: publication/03_functional/
+  Seaborn: publication/04_seaborn/
+  Multi-panels: publication/05_multi_panel/
+  Root (style override): publication/
+
+Coverage:
+  - Matplotlib basic plots (11): plot, scatter, bar, barh, hist, boxplot,
+    errorbar, fill_between, imshow, contour, violinplot
+  - Custom scitex plots (7): plot_heatmap, plot_line, plot_shaded_line,
+    plot_violin, plot_ecdf, plot_box, plot_mean_std
+  - Functional plots (1): plot_kde
+  - Seaborn integration (8): sns_boxplot, sns_violinplot, sns_scatterplot,
+    sns_lineplot, sns_histplot, sns_barplot, sns_stripplot, sns_kdeplot
+  - Multi-panel (2): 2x2 grid, 1x3 with varied widths
+  - Total: 30 publication-ready plot demonstrations
+
+All figures are publication-ready:
+  - Formats: PNG (lossless raster) + PDF (vector)
+  - 300 DPI resolution (PNG)
+  - Infinite zoom (PDF)
+  - Precise mm-based dimensions
+  - Automatic cropping with 1mm margin
+  - Consistent SCITEX_STYLE preset
+  - Embedded metadata for reproducibility
+
+Note: JPEG is NOT used - it's lossy and creates artifacts

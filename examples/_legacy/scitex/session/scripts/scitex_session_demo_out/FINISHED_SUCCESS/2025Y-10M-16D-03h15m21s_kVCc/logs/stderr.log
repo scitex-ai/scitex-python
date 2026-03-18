@@ -1,0 +1,9 @@
+INFO:2025-10-16 03:15:22,240:jax._src.xla_bridge:37: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN:2025-10-16 03:15:22,241:jax._src.xla_bridge:37: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+INFO: Initialized RandomStateManager with seed 42
+SUCC: Saved to: ./scitex_session_demo/scripts/scitex_session_demo_out/sample_data.npy (1.7 KiB)
+SUCC: Saved to: ./scitex_session_demo/scripts/scitex_session_demo_out/visualization.csv (7.3 KiB)
+SUCC: Saved to: ./scitex_session_demo/scripts/scitex_session_demo_out/visualization.jpg (147.3 KiB)
+SUCC: Saved to: ./scitex_session_demo/scripts/scitex_session_demo_out/results.json (286.0 B)

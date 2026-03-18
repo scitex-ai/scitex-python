@@ -1,0 +1,99 @@
+[94m
+========================================
+SciTeX v2.2.2
+2025Y-11M-19D-16h04m38s_dJp4 (PID: 203062)
+
+/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+
+Arguments:
+    verbose: True
+========================================
+[0m
+
+======================================================================
+ PUBLICATION-READY FIGURE DEMONSTRATION
+ Using Unified Style System
+======================================================================
+
+This demo showcases scitex.plt.subplots() with mm-control
+integration for creating publication-ready figures.
+
+
+======================================================================
+Demo: Publication Line Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_line_plot_scitex.png
+  Style: SCITEX_STYLE
+  Axes size: 40 x 28 mm
+  DPI: 300
+
+======================================================================
+Demo: Publication Scatter Plot (SciTeX Style)
+======================================================================
+- Saved: publication/02_scatter_scitex.png
+  Style: SCITEX_STYLE
+  Axes size: 40 x 28 mm
+
+======================================================================
+Demo: Publication Bar Plot (SciTeX Style)
+======================================================================
+- Saved: publication/03_bar_scitex.png
+  Style: SCITEX_STYLE
+  Axes size: 40 x 28 mm
+
+======================================================================
+Demo: Publication Heatmap (Custom dimensions)
+======================================================================
+- Saved: publication/04_heatmap_custom.png
+  Custom dimensions: 50 x 30 mm
+  Based on: SCITEX_STYLE
+
+======================================================================
+Demo: Publication Histogram (SciTeX Style)
+======================================================================
+- Saved: publication/05_histogram_scitex.png
+
+======================================================================
+Demo: Publication Error Bar Plot (SciTeX Style)
+======================================================================
+- Saved: publication/06_errorbar_scitex.png
+
+======================================================================
+Demo: Multi-Panel Figure 2x2 (SciTeX Style)
+======================================================================
+- Saved: publication/multi_panel/01_2x2_scitex.png
+  Layout: 2x2 grid
+  Each panel: 40 x 28 mm
+  Spacing: 8 x 10 mm
+
+======================================================================
+Demo: Multi-Panel Figure 1x3 with Individual Widths
+======================================================================
+- Saved: publication/multi_panel/02_1x3_varied_widths.png
+  Layout: 1x3 grid
+  Panel widths: 25, 35, 25 mm
+
+======================================================================
+Demo: Style Override Pattern
+======================================================================
+- Saved: publication/09_style_override.png
+  Base: SCITEX_STYLE
+  Overrides:
+    - ax_width_mm: 30 → 40
+    - ax_thickness_mm: 0.2 → 0.3
+    - tick_length_mm: 0.8 → 1.0
+
+======================================================================
+ DEMONSTRATION COMPLETE
+======================================================================
+
+Output locations:
+  Session output: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/
+  Single panels: publication/
+  Multi-panels: publication/multi_panel/
+
+All figures are publication-ready:
+  - 300 DPI resolution (publication mode)
+  - Precise mm-based dimensions
+  - Consistent styling from presets
+  - Embedded metadata for reproducibility (via SciTeX)

@@ -1,0 +1,12 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-hist-0_variable-raw-data"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-hist-0_variable-raw-data": "float64"
+  },
+  "shape": [
+    1000,
+    1
+  ]
+}

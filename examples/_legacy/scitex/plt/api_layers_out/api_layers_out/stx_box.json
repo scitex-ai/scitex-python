@@ -1,0 +1,1056 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:55:47.267233"
+    },
+    "figure": {
+        "size_px": [
+            564,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                0.5,
+                4.5
+            ],
+            "ylim": [
+                -2.5697597405372865,
+                6.030667990703455
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_line_00": {
+            "id": "ax_00_line_00",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 59,
+                    "y0": 256,
+                    "x1": 59,
+                    "y1": 315
+                },
+                "path_simplified": [
+                    [
+                        59.0,
+                        256.3
+                    ],
+                    [
+                        59.0,
+                        315.0
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_01": {
+            "id": "ax_00_line_01",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_1",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 59,
+                    "y0": 155,
+                    "x1": 59,
+                    "y1": 205
+                },
+                "path_simplified": [
+                    [
+                        59.0,
+                        205.1
+                    ],
+                    [
+                        59.0,
+                        154.8
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_02": {
+            "id": "ax_00_line_02",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_2",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 46,
+                    "y0": 315,
+                    "x1": 72,
+                    "y1": 315
+                },
+                "path_simplified": [
+                    [
+                        45.7,
+                        315.0
+                    ],
+                    [
+                        72.3,
+                        315.0
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_03": {
+            "id": "ax_00_line_03",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_3",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 46,
+                    "y0": 155,
+                    "x1": 72,
+                    "y1": 155
+                },
+                "path_simplified": [
+                    [
+                        45.7,
+                        154.8
+                    ],
+                    [
+                        72.3,
+                        154.8
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_04": {
+            "id": "ax_00_line_04",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_4",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 32,
+                    "y0": 230,
+                    "x1": 86,
+                    "y1": 230
+                },
+                "path_simplified": [
+                    [
+                        32.4,
+                        230.1
+                    ],
+                    [
+                        85.6,
+                        230.1
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2.1,
+            "visible": true
+        },
+        "ax_00_line_05": {
+            "id": "ax_00_line_05",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_5",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": null,
+                "path_simplified": []
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 1.0,
+                "linestyle": "None",
+                "alpha": null,
+                "marker": "o",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_06": {
+            "id": "ax_00_line_06",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_6",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 177,
+                    "y0": 214,
+                    "x1": 177,
+                    "y1": 285
+                },
+                "path_simplified": [
+                    [
+                        177.0,
+                        214.4
+                    ],
+                    [
+                        177.0,
+                        284.7
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_07": {
+            "id": "ax_00_line_07",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_7",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 177,
+                    "y0": 97,
+                    "x1": 177,
+                    "y1": 163
+                },
+                "path_simplified": [
+                    [
+                        177.0,
+                        163.4
+                    ],
+                    [
+                        177.0,
+                        97.5
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_08": {
+            "id": "ax_00_line_08",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_8",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 164,
+                    "y0": 285,
+                    "x1": 190,
+                    "y1": 285
+                },
+                "path_simplified": [
+                    [
+                        163.7,
+                        284.7
+                    ],
+                    [
+                        190.3,
+                        284.7
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_09": {
+            "id": "ax_00_line_09",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_9",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 164,
+                    "y0": 97,
+                    "x1": 190,
+                    "y1": 97
+                },
+                "path_simplified": [
+                    [
+                        163.7,
+                        97.5
+                    ],
+                    [
+                        190.3,
+                        97.5
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_10": {
+            "id": "ax_00_line_10",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_10",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 150,
+                    "y0": 193,
+                    "x1": 204,
+                    "y1": 193
+                },
+                "path_simplified": [
+                    [
+                        150.4,
+                        192.5
+                    ],
+                    [
+                        203.6,
+                        192.5
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2.1,
+            "visible": true
+        },
+        "ax_00_line_11": {
+            "id": "ax_00_line_11",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_11",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 177,
+                    "y0": 86,
+                    "x1": 177,
+                    "y1": 86
+                },
+                "path_simplified": [
+                    [
+                        177.0,
+                        86.3
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 1.0,
+                "linestyle": "None",
+                "alpha": null,
+                "marker": "o",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_12": {
+            "id": "ax_00_line_12",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_12",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 295,
+                    "y0": 180,
+                    "x1": 295,
+                    "y1": 223
+                },
+                "path_simplified": [
+                    [
+                        295.0,
+                        180.3
+                    ],
+                    [
+                        295.0,
+                        223.3
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_13": {
+            "id": "ax_00_line_13",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_13",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 295,
+                    "y0": 56,
+                    "x1": 295,
+                    "y1": 129
+                },
+                "path_simplified": [
+                    [
+                        295.0,
+                        129.0
+                    ],
+                    [
+                        295.0,
+                        55.9
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_14": {
+            "id": "ax_00_line_14",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_14",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 282,
+                    "y0": 223,
+                    "x1": 308,
+                    "y1": 223
+                },
+                "path_simplified": [
+                    [
+                        281.7,
+                        223.3
+                    ],
+                    [
+                        308.3,
+                        223.3
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_15": {
+            "id": "ax_00_line_15",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_15",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 282,
+                    "y0": 56,
+                    "x1": 308,
+                    "y1": 56
+                },
+                "path_simplified": [
+                    [
+                        281.7,
+                        55.9
+                    ],
+                    [
+                        308.3,
+                        55.9
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_16": {
+            "id": "ax_00_line_16",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_16",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 268,
+                    "y0": 158,
+                    "x1": 322,
+                    "y1": 158
+                },
+                "path_simplified": [
+                    [
+                        268.4,
+                        158.3
+                    ],
+                    [
+                        321.6,
+                        158.3
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2.1,
+            "visible": true
+        },
+        "ax_00_line_17": {
+            "id": "ax_00_line_17",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_17",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 295,
+                    "y0": 259,
+                    "x1": 295,
+                    "y1": 259
+                },
+                "path_simplified": [
+                    [
+                        295.0,
+                        258.8
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 1.0,
+                "linestyle": "None",
+                "alpha": null,
+                "marker": "o",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_18": {
+            "id": "ax_00_line_18",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_18",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 413,
+                    "y0": 143,
+                    "x1": 413,
+                    "y1": 219
+                },
+                "path_simplified": [
+                    [
+                        413.0,
+                        143.4
+                    ],
+                    [
+                        413.0,
+                        219.4
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_19": {
+            "id": "ax_00_line_19",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_19",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 413,
+                    "y0": 15,
+                    "x1": 413,
+                    "y1": 88
+                },
+                "path_simplified": [
+                    [
+                        413.0,
+                        88.1
+                    ],
+                    [
+                        413.0,
+                        15.0
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_20": {
+            "id": "ax_00_line_20",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_20",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 400,
+                    "y0": 219,
+                    "x1": 426,
+                    "y1": 219
+                },
+                "path_simplified": [
+                    [
+                        399.7,
+                        219.4
+                    ],
+                    [
+                        426.3,
+                        219.4
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_21": {
+            "id": "ax_00_line_21",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_21",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 400,
+                    "y0": 15,
+                    "x1": 426,
+                    "y1": 15
+                },
+                "path_simplified": [
+                    [
+                        399.7,
+                        15.0
+                    ],
+                    [
+                        426.3,
+                        15.0
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        },
+        "ax_00_line_22": {
+            "id": "ax_00_line_22",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_22",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 386,
+                    "y0": 112,
+                    "x1": 440,
+                    "y1": 112
+                },
+                "path_simplified": [
+                    [
+                        386.4,
+                        112.1
+                    ],
+                    [
+                        439.6,
+                        112.1
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 0.5669291338582677,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2.1,
+            "visible": true
+        },
+        "ax_00_line_23": {
+            "id": "ax_00_line_23",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "line_23",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": null,
+                "path_simplified": []
+            },
+            "style": {
+                "color": "black",
+                "linewidth": 1.0,
+                "linestyle": "None",
+                "alpha": null,
+                "marker": "o",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_box.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-box-0_variable-data-0",
+            "ax-row-0-col-0_trace-id-stx-box-0_variable-data-1",
+            "ax-row-0-col-0_trace-id-stx-box-0_variable-data-2",
+            "ax-row-0-col-0_trace-id-stx-box-0_variable-data-3"
+        ],
+        "csv_hash": "4c6d9fc9b74b5c0d"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "model": {
+    "type": "neural_network",
+    "architecture": "resnet50",
+    "input_size": [224, 224, 3],
+    "num_classes": 1000
+  },
+  "training": {
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "epochs": 100,
+    "optimizer": "adam",
+    "loss_function": "categorical_crossentropy"
+  },
+  "data": {
+    "train_path": "/data/train",
+    "val_path": "/data/validation",
+    "test_path": "/data/test",
+    "augmentation": true
+  }
+}

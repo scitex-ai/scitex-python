@@ -1,0 +1,52 @@
+[90mINFO: ============================================================[0m
+[90mINFO: Injected Global Variables (available in your function):[0m
+[90mINFO:   • CONFIG - Session configuration dict[0m
+[90mINFO:       - CONFIG['ID']: 2025Y-12M-09D-09h06m58s_LCfh[0m
+[90mINFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/bridge/04_stats_to_vis_direct_out/RUNNING/2025Y-12M-09D-09h06m58s_LCfh-main[0m
+[90mINFO:       - CONFIG['PID']: 1519184[0m
+[90mINFO:   • plt - matplotlib.pyplot (configured for session)[0m
+[90mINFO:   • COLORS - CustomColors (for consistent plotting)[0m
+[90mINFO:   • rng_manager - RandomStateManager (for reproducibility)[0m
+[90mINFO:   • logger - SciTeX logger (configured for your script)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Running main with injected parameters:[0m
+[90mINFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Created StatResults[0m
+[90mINFO: ============================================================[0m
+[90mINFO:   t-test: t = 3.45, p = 0.0010, stars = '***'[0m
+[90mINFO:   pearson: r = 0.85, p = 0.0001, stars = '***'[0m
+[90mINFO:   anova: F = 12.30, p = 0.0020, stars = '**'[0m
+[90mINFO: ------------------------------------------------------------[0m
+[90mINFO: Converted to AnnotationModels[0m
+[90mINFO: ------------------------------------------------------------[0m
+[90mINFO:   Type: text[0m
+[90mINFO:   Text: 't = 3.450***'[0m
+[90mINFO:   Position: (0.5, 0.95)[0m
+[90mINFO:   Type: text[0m
+[90mINFO:   Text: 'r = 0.850***'[0m
+[90mINFO:   Position: (0.5, 0.95)[0m
+[90mINFO:   Type: text[0m
+[90mINFO:   Text: 'F = 12.300**'[0m
+[90mINFO:   Position: (0.5, 0.95)[0m
+[90mINFO: ------------------------------------------------------------[0m
+[90mINFO: FigureModel with Stats[0m
+[90mINFO: ------------------------------------------------------------[0m
+[90mINFO: Dimensions: 170 x 120 mm[0m
+[90mINFO: Axes 0 (Comparison):[0m
+[90mINFO:   Annotations: 2[0m
+[90mINFO:     [0] text='***', pos=(0.5, 0.95)[0m
+[90mINFO:     [1] text='***', pos=(0.5, 0.8999999999999999)[0m
+[90mINFO: Axes 1 (Correlation):[0m
+[90mINFO:   Annotations: 1[0m
+[90mINFO:     [0] text='F = 12.300**', pos=(0.5, 0.95)[0m
+[90mINFO: ------------------------------------------------------------[0m
+[90mINFO: Custom Positioning[0m
+[90mINFO: ------------------------------------------------------------[0m
+[90mINFO:   top-right      : x=  95.0, y=  950.0 (data)[0m
+[90mINFO:   top-left       : x=   5.0, y=  950.0 (data)[0m
+[90mINFO:   bottom-right   : x=  95.0, y=   50.0 (data)[0m
+[90mINFO:   bottom-left    : x=   5.0, y=   50.0 (data)[0m
+[32mSUCC: Saved to: ./examples/bridge/04_stats_to_vis_direct_out/stats_to_vis_direct.json (2.1 KiB)[0m
+[90mINFO: JSON exported to: /home/ywatanabe/proj/scitex-code/examples/bridge/04_stats_to_vis_direct_out/stats_to_vis_direct.json[0m
+[90mINFO: Done![0m

@@ -1,0 +1,20 @@
+{
+  "id": "9d70425a-e14c-43aa-af6e-d40373827011",
+  "kind": "text",
+  "scitex_schema": "scitex.fts.spec",
+  "scitex_schema_version": "1.0.0",
+  "bbox_norm": {
+    "x0": 0.1,
+    "y0": 0.02,
+    "x1": 0.9,
+    "y1": 0.07
+  },
+  "name": "Main Title",
+  "refs": {
+    "encoding": "encoding.json",
+    "theme": "theme.json",
+    "stats": "stats/stats.json"
+  },
+  "created_at": "2025-12-20T23:49:48.721747Z",
+  "modified_at": "2025-12-20T23:49:48.723064Z"
+}

@@ -1,0 +1,15 @@
+Experiment Log - Neural Network Training
+Date: 2024-01-15
+Model: ResNet-50
+Dataset: ImageNet subset
+Hyperparameters:
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  optimizer: Adam
+Results:
+  Training accuracy: 0.945
+  Validation accuracy: 0.892
+  Test accuracy: 0.885
+  Training time: 2.5 hours
+Notes: Model converged successfully

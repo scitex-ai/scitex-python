@@ -1,0 +1,18 @@
+[None] In-text citations must be numbered using square brackets as indicated here. [1] Multiple sources are cited in the following manner. [2,3,4-7] References may be presented in either APA or Vancouver style format, but must be listed in order of citation and preceded by the citation number in square brackets. Each reference is followed by a 6-point space. Some examples of reference formats are provided below:
+
+[None] Journal articles:
+
+[1] Jutai JW, Rigby P, Ryan S, Stickel S. Pyschosocial impact of electronic aids to daily living. Assist Technol. 2000 12(2):123–131.
+
+[None] Book:
+
+[2] Portney LG, Watkins MP. Foundations of clinical research: applications to practice. 3rd ed. Philadelphia: F.A. Davis Company; 2015.
+
+[None] Chapter in a Book:
+
+[3] Pagel JF, Pegram GV. The role for the primary care physician in sleep medicine. In: Pagel JF, Pandi-Perumal SR, editors. Primary care sleep medicine. 2nd ed. New York: Springer; 2014.
+
+[None] Conference Proceeding
+
+[4] Smith RO. Assistive technology outcome assessment prototypes: measuring INGO variables of outcomes. In R. Simpson (Ed.), Proceedings of the RESNA 25th Annual Conference (239–341). Minneapolis: RESNA Press; 2002.
+

@@ -1,0 +1,246 @@
+[90mINFO: Example 03: FTS Bundle Creation for All Plot Types[0m
+
+[90mINFO: ============================================================[0m
+[90mINFO: Testing STX API (25 plotters)[0m
+[90mINFO: ============================================================[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_line.zip (57.9 KiB)[0m
+[31mERRO: [1/61] stx_line: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_mean_std.zip (77.3 KiB)[0m
+[31mERRO: [2/61] stx_mean_std: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_mean_ci.zip (79.5 KiB)[0m
+[31mERRO: [3/61] stx_mean_ci: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_median_iqr.zip (79.3 KiB)[0m
+[31mERRO: [4/61] stx_median_iqr: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_shaded_line.zip (80.3 KiB)[0m
+[31mERRO: [5/61] stx_shaded_line: FAILED - No columns to parse from file[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin/_statistical.py:190: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+  result = self._axis_mpl.boxplot(data, **kwargs)
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_box.zip (43.3 KiB)[0m
+[31mERRO: [6/61] stx_box: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_violin.zip (98.7 KiB)[0m
+[31mERRO: [7/61] stx_violin: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_scatter.zip (50.9 KiB)[0m
+[31mERRO: [8/61] stx_scatter: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_bar.zip (45.5 KiB)[0m
+[31mERRO: [9/61] stx_bar: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_barh.zip (44.8 KiB)[0m
+[31mERRO: [10/61] stx_barh: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_errorbar.zip (57.7 KiB)[0m
+[31mERRO: [11/61] stx_errorbar: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_fill_between.zip (97.3 KiB)[0m
+[31mERRO: [12/61] stx_fill_between: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_kde.zip (70.4 KiB)[0m
+[31mERRO: [13/61] stx_kde: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_ecdf.zip (54.9 KiB)[0m
+[31mERRO: [14/61] stx_ecdf: FAILED - No columns to parse from file[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/ax/_plot/_stx_heatmap.py:129: MatplotlibDeprecationWarning: The get_cmap function was deprecated in Matplotlib 3.7 and will be removed in 3.11. Use ``matplotlib.colormaps[name]`` or ``matplotlib.colormaps.get_cmap()`` or ``pyplot.get_cmap()`` instead.
+  cmap_obj = plt.cm.get_cmap(cmap)
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_heatmap.zip (116.6 KiB)[0m
+[31mERRO: [15/61] stx_heatmap: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_image.zip (51.4 KiB)[0m
+[31mERRO: [16/61] stx_image: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_imshow.zip (35.8 KiB)[0m
+[31mERRO: [17/61] stx_imshow: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_contour.zip (97.0 KiB)[0m
+[31mERRO: [18/61] stx_contour: FAILED - No columns to parse from file[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/ax/_style/_set_n_ticks.py:32: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  ax.figure.canvas.draw()
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_raster.zip (43.8 KiB)[0m
+[31mERRO: [19/61] stx_raster: FAILED - No columns to parse from file[0m
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/utils.py:60: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_conf_mat.zip (82.6 KiB)[0m
+[31mERRO: [20/61] stx_conf_mat: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_joyplot.zip (122.3 KiB)[0m
+[31mERRO: [21/61] stx_joyplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_rectangle.zip (46.0 KiB)[0m
+[31mERRO: [22/61] stx_rectangle: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_fillv.zip (69.6 KiB)[0m
+[31mERRO: [23/61] stx_fillv: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_boxplot.zip (47.6 KiB)[0m
+[31mERRO: [24/61] stx_boxplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/stx_violinplot.zip (99.8 KiB)[0m
+[31mERRO: [25/61] stx_violinplot: FAILED - No columns to parse from file[0m
+
+[90mINFO: ============================================================[0m
+[90mINFO: Testing SNS API (10 plotters)[0m
+[90mINFO: ============================================================[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_boxplot.zip (37.4 KiB)[0m
+[31mERRO: [26/61] sns_boxplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_violinplot.zip (92.9 KiB)[0m
+[31mERRO: [27/61] sns_violinplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_barplot.zip (36.3 KiB)[0m
+[31mERRO: [28/61] sns_barplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_histplot.zip (51.0 KiB)[0m
+[31mERRO: [29/61] sns_histplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_kdeplot.zip (69.3 KiB)[0m
+[31mERRO: [30/61] sns_kdeplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_scatterplot.zip (94.1 KiB)[0m
+[31mERRO: [31/61] sns_scatterplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_lineplot.zip (136.4 KiB)[0m
+[31mERRO: [32/61] sns_lineplot: FAILED - No columns to parse from file[0m
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 7.1% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 7.1% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 7.1% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 16.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 7.1% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 20.8% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 7.1% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 20.8% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 7.1% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 20.8% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3396: UserWarning: 7.1% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_swarmplot.zip (56.2 KiB)[0m
+[31mERRO: [33/61] sns_swarmplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_stripplot.zip (48.8 KiB)[0m
+[31mERRO: [34/61] sns_stripplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/sns_heatmap.zip (142.7 KiB)[0m
+[31mERRO: [35/61] sns_heatmap: FAILED - No columns to parse from file[0m
+
+[90mINFO: ============================================================[0m
+[90mINFO: Testing MPL API (26 plotters)[0m
+[90mINFO: ============================================================[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_plot.zip (74.4 KiB)[0m
+[31mERRO: [36/61] mpl_plot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_scatter.zip (52.2 KiB)[0m
+[31mERRO: [37/61] mpl_scatter: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_bar.zip (36.1 KiB)[0m
+[31mERRO: [38/61] mpl_bar: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_barh.zip (36.2 KiB)[0m
+[31mERRO: [39/61] mpl_barh: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_hist.zip (40.1 KiB)[0m
+[31mERRO: [40/61] mpl_hist: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_hist2d.zip (54.1 KiB)[0m
+[31mERRO: [41/61] mpl_hist2d: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_hexbin.zip (84.6 KiB)[0m
+[31mERRO: [42/61] mpl_hexbin: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_boxplot.zip (46.8 KiB)[0m
+[31mERRO: [43/61] mpl_boxplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_violinplot.zip (96.7 KiB)[0m
+[31mERRO: [44/61] mpl_violinplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_errorbar.zip (54.7 KiB)[0m
+[31mERRO: [45/61] mpl_errorbar: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_step.zip (36.8 KiB)[0m
+[31mERRO: [46/61] mpl_step: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_stem.zip (48.8 KiB)[0m
+[31mERRO: [47/61] mpl_stem: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_fill.zip (23.2 KiB)[0m
+[31mERRO: [48/61] mpl_fill: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_fill_between.zip (91.1 KiB)[0m
+[31mERRO: [49/61] mpl_fill_between: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_stackplot.zip (76.7 KiB)[0m
+[31mERRO: [50/61] mpl_stackplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_contour.zip (96.5 KiB)[0m
+[31mERRO: [51/61] mpl_contour: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_contourf.zip (55.4 KiB)[0m
+[31mERRO: [52/61] mpl_contourf: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_imshow.zip (49.6 KiB)[0m
+[31mERRO: [53/61] mpl_imshow: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_pcolormesh.zip (58.5 KiB)[0m
+[31mERRO: [54/61] mpl_pcolormesh: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_pie.zip (67.3 KiB)[0m
+[31mERRO: [55/61] mpl_pie: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_eventplot.zip (40.1 KiB)[0m
+[31mERRO: [56/61] mpl_eventplot: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_quiver.zip (98.4 KiB)[0m
+[31mERRO: [57/61] mpl_quiver: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_axhline.zip (68.0 KiB)[0m
+[31mERRO: [58/61] mpl_axhline: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_axvline.zip (71.3 KiB)[0m
+[31mERRO: [59/61] mpl_axvline: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_axhspan.zip (96.9 KiB)[0m
+[31mERRO: [60/61] mpl_axhspan: FAILED - No columns to parse from file[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/03_all_plot_types_out/mpl_axvspan.zip (81.8 KiB)[0m
+[31mERRO: [61/61] mpl_axvspan: FAILED - No columns to parse from file[0m
+
+[90mINFO: ============================================================[0m
+[90mINFO: SUMMARY REPORT[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Total: 61[0m
+[90mINFO: Success (with CSV): 0[0m
+[90mINFO: Success (no CSV): 0[0m
+[90mINFO: Failed: 61[0m
+
+[33mWARN: Failed plotters:[0m
+[33mWARN:   - stx_line: No columns to parse from file[0m
+[33mWARN:   - stx_mean_std: No columns to parse from file[0m
+[33mWARN:   - stx_mean_ci: No columns to parse from file[0m
+[33mWARN:   - stx_median_iqr: No columns to parse from file[0m
+[33mWARN:   - stx_shaded_line: No columns to parse from file[0m
+[33mWARN:   - stx_box: No columns to parse from file[0m
+[33mWARN:   - stx_violin: No columns to parse from file[0m
+[33mWARN:   - stx_scatter: No columns to parse from file[0m
+[33mWARN:   - stx_bar: No columns to parse from file[0m
+[33mWARN:   - stx_barh: No columns to parse from file[0m
+[33mWARN:   - stx_errorbar: No columns to parse from file[0m
+[33mWARN:   - stx_fill_between: No columns to parse from file[0m
+[33mWARN:   - stx_kde: No columns to parse from file[0m
+[33mWARN:   - stx_ecdf: No columns to parse from file[0m
+[33mWARN:   - stx_heatmap: No columns to parse from file[0m
+[33mWARN:   - stx_image: No columns to parse from file[0m
+[33mWARN:   - stx_imshow: No columns to parse from file[0m
+[33mWARN:   - stx_contour: No columns to parse from file[0m
+[33mWARN:   - stx_raster: No columns to parse from file[0m
+[33mWARN:   - stx_conf_mat: No columns to parse from file[0m
+[33mWARN:   - stx_joyplot: No columns to parse from file[0m
+[33mWARN:   - stx_rectangle: No columns to parse from file[0m
+[33mWARN:   - stx_fillv: No columns to parse from file[0m
+[33mWARN:   - stx_boxplot: No columns to parse from file[0m
+[33mWARN:   - stx_violinplot: No columns to parse from file[0m
+[33mWARN:   - sns_boxplot: No columns to parse from file[0m
+[33mWARN:   - sns_violinplot: No columns to parse from file[0m
+[33mWARN:   - sns_barplot: No columns to parse from file[0m
+[33mWARN:   - sns_histplot: No columns to parse from file[0m
+[33mWARN:   - sns_kdeplot: No columns to parse from file[0m
+[33mWARN:   - sns_scatterplot: No columns to parse from file[0m
+[33mWARN:   - sns_lineplot: No columns to parse from file[0m
+[33mWARN:   - sns_swarmplot: No columns to parse from file[0m
+[33mWARN:   - sns_stripplot: No columns to parse from file[0m
+[33mWARN:   - sns_heatmap: No columns to parse from file[0m
+[33mWARN:   - mpl_plot: No columns to parse from file[0m
+[33mWARN:   - mpl_scatter: No columns to parse from file[0m
+[33mWARN:   - mpl_bar: No columns to parse from file[0m
+[33mWARN:   - mpl_barh: No columns to parse from file[0m
+[33mWARN:   - mpl_hist: No columns to parse from file[0m
+[33mWARN:   - mpl_hist2d: No columns to parse from file[0m
+[33mWARN:   - mpl_hexbin: No columns to parse from file[0m
+[33mWARN:   - mpl_boxplot: No columns to parse from file[0m
+[33mWARN:   - mpl_violinplot: No columns to parse from file[0m
+[33mWARN:   - mpl_errorbar: No columns to parse from file[0m
+[33mWARN:   - mpl_step: No columns to parse from file[0m
+[33mWARN:   - mpl_stem: No columns to parse from file[0m
+[33mWARN:   - mpl_fill: No columns to parse from file[0m
+[33mWARN:   - mpl_fill_between: No columns to parse from file[0m
+[33mWARN:   - mpl_stackplot: No columns to parse from file[0m
+[33mWARN:   - mpl_contour: No columns to parse from file[0m
+[33mWARN:   - mpl_contourf: No columns to parse from file[0m
+[33mWARN:   - mpl_imshow: No columns to parse from file[0m
+[33mWARN:   - mpl_pcolormesh: No columns to parse from file[0m
+[33mWARN:   - mpl_pie: No columns to parse from file[0m
+[33mWARN:   - mpl_eventplot: No columns to parse from file[0m
+[33mWARN:   - mpl_quiver: No columns to parse from file[0m
+[33mWARN:   - mpl_axhline: No columns to parse from file[0m
+[33mWARN:   - mpl_axvline: No columns to parse from file[0m
+[33mWARN:   - mpl_axhspan: No columns to parse from file[0m
+[33mWARN:   - mpl_axvspan: No columns to parse from file[0m
+
+[90mINFO: Report saved to: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/03_all_plot_types_out/test_report.json[0m
+[33mWARN: 61/61 plotters failed[0m
+[32mSUCC: Example 03 completed![0m

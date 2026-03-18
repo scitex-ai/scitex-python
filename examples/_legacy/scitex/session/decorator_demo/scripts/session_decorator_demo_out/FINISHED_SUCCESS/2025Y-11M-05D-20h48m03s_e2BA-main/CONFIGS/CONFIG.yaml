@@ -1,0 +1,40 @@
+demo:
+    xxx: 111
+    yyy: 222
+capture:
+    screenshot:
+        quality: 85
+        monitor_id: 0
+        output_dir:
+    monitoring:
+        interval: 1.0
+        quality: 60
+        verbose: true
+        capture_all: false
+    gif:
+        duration: 0.5
+        optimize: true
+        max_frames:
+    cache:
+        max_size_gb: 1.0
+ID: 2025Y-11M-05D-20h48m03s_e2BA
+PID: 400161
+START_TIME: 2025-11-05 20:48:03.841667
+FILE: 
+    /home/ywatanabe/proj/scitex-code/./examples/session_decorator_demo/scripts/session_decorator_demo.py
+SDIR: 
+    /home/ywatanabe/proj/scitex-code/examples/session_decorator_demo/scripts/session_decorator_demo_out/RUNNING/2025Y-11M-05D-20h48m03s_e2BA-main/
+REL_SDIR: 
+    examples/session_decorator_demo/./scripts/session_decorator_demo_out/2025Y-11M-05D-20h48m03s_e2BA-main
+SDIR_PATH: 
+    /home/ywatanabe/proj/scitex-code/examples/session_decorator_demo/scripts/session_decorator_demo_out/RUNNING/2025Y-11M-05D-20h48m03s_e2BA-main
+REL_SDIR_PATH: 
+    examples/session_decorator_demo/scripts/session_decorator_demo_out/2025Y-11M-05D-20h48m03s_e2BA-main
+FILE_PATH: 
+    /home/ywatanabe/proj/scitex-code/examples/session_decorator_demo/scripts/session_decorator_demo.py
+ARGS:
+    n_samples: 100
+    verbose: false
+EXIT_STATUS: 0
+END_TIME: 2025-11-05 20:48:10.583441
+RUN_TIME: 00:00:06

@@ -1,0 +1,34 @@
+[90mINFO: Example 01: Basic FTS Bundle Creation[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+[33mWARN: Plotting records not found. Cannot export empty data.[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_FigWrapper.py:192: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  self._fig_mpl.savefig(fname, *args, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+[33mWARN: Plotting records not found. Cannot export empty data.[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:204: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+[90mINFO: Saved as ZIP: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/01_basic_figure_out/my_figure.zip[0m
+[90mINFO:   Bundle ID: c10fe57c-92b9-44b5-b711-82d32b0aef28[0m
+[90mINFO:   Name: My First Figure[0m
+[90mINFO:   Size: SizeMM(width=170, height=120)[0m
+[90mINFO:   Type: figure[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+[33mWARN: Plotting records not found. Cannot export empty data.[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_FigWrapper.py:192: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  self._fig_mpl.savefig(fname, *args, **kwargs)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+[33mWARN: Plotting records not found. Cannot export empty data.[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:204: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **save_kwargs)
+[90mINFO: Saved as directory: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/01_basic_figure_out/my_figure[0m
+[90mINFO: Reloaded ID: c10fe57c-92b9-44b5-b711-82d32b0aef28[0m
+[90mINFO: Children: [][0m
+[32mSUCC: Example 01 completed![0m

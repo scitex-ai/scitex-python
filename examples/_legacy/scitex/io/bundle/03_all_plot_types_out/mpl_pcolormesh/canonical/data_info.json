@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-pcolormesh-0_variable-x",
+    "ax-row-0-col-0_trace-id-pcolormesh-0_variable-y",
+    "ax-row-0-col-0_trace-id-pcolormesh-0_variable-value"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-pcolormesh-0_variable-x": "float64",
+    "ax-row-0-col-0_trace-id-pcolormesh-0_variable-y": "float64",
+    "ax-row-0-col-0_trace-id-pcolormesh-0_variable-value": "float64"
+  },
+  "shape": [
+    400,
+    3
+  ]
+}

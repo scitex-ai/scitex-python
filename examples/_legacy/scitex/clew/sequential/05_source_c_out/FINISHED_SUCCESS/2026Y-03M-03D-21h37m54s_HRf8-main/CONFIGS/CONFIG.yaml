@@ -1,0 +1,12 @@
+ID: 2026Y-03M-03D-21h37m54s_HRf8
+PID: 10011
+START_DATETIME: 2026-03-03 21:37:54.321113
+FILE: /scitex-python/examples/scitex/clew/05_source_c.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/05_source_c_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/05_source_c_out/RUNNING/2026Y-03M-03D-21h37m54s_HRf8-main
+ARGS:
+    n_samples: 250
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:38:38.012732
+RUN_DURATION: 00:00:43

@@ -1,0 +1,38 @@
+[94m
+========================================
+SciTeX v2.17.14 | 2026Y-02M-19D-10h27m34s_J3sq (PID: 400133)
+
+/home/ywatanabe/proj/scitex-python/examples/plt/migration_demo.py
+
+Arguments:
+========================================
+[0m
+scitex.plt -> figrecipe migration demo
+==================================================
+
+[1] Basic line plot
+  fig type : RecordingFigure  (module: figrecipe._wrappers._figure)
+  ax  type : RecordingAxes  (module: figrecipe._wrappers._axes)
+  has _recorder : True
+
+[2] Scientific methods (2x3 grid)
+  stx_mean_std / stx_mean_ci / stx_median_iqr : OK
+  stx_ecdf / stx_conf_mat / stx_raster         : OK
+
+[3] Additional methods (violin / heatmap / fillv)
+  stx_violin / stx_heatmap / stx_fillv : OK
+
+[4] Recording capability
+  axes recorded   : 1
+  calls recorded  : 1
+
+[5] stx.io.save integration
+  Hitmap: /home/ywatanabe/.cache/tmp/tmps_vxkp6s/sine_hitmap.png
+Saved: /home/ywatanabe/.cache/tmp/tmps_vxkp6s/sine.png + /home/ywatanabe/.cache/tmp/tmps_vxkp6s/sine.yaml (Reproducible Validation: PASSED)
+  io.save created PNG : True
+
+[6] Color submodule
+  HEX sample : [('blue', '#0080C0'), ('red', '#FF4632'), ('pink', '#FF96C8')]
+
+==================================================
+Migration demo complete - all features working.

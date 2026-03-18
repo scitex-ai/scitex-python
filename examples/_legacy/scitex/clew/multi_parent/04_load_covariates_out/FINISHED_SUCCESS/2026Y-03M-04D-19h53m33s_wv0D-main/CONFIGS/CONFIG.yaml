@@ -1,0 +1,14 @@
+ID: 2026Y-03M-04D-19h53m33s_wv0D
+PID: 804611
+START_DATETIME: 2026-03-04 19:53:33.740618
+FILE: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/04_load_covariates.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/04_load_covariates_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/04_load_covariates_out/RUNNING/2026Y-03M-04D-19h53m33s_wv0D-main
+ARGS:
+    n_entries: 30
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-04 19:53:36.280976
+RUN_DURATION: 00:00:02

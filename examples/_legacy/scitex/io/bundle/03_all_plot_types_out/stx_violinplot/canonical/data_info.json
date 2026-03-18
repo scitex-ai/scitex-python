@@ -1,0 +1,14 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-stx-violin-0_variable-group",
+    "ax-row-0-col-0_trace-id-stx-violin-0_variable-value"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-stx-violin-0_variable-group": "object",
+    "ax-row-0-col-0_trace-id-stx-violin-0_variable-value": "float64"
+  },
+  "shape": [
+    400,
+    2
+  ]
+}

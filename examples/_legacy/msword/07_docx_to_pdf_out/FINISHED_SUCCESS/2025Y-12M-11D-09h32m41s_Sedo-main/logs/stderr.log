@@ -1,0 +1,57 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h32m41s_Sedo
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/RUNNING/2025Y-12M-11D-09h32m41s_Sedo-main
+INFO:       - CONFIG['PID']: 979071
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Full Pipeline: Word -> Structured Data -> PDF
+INFO: ============================================================
+INFO: 
+1. Loading Word document to structured data...
+INFO:    Loaded document with 33 blocks
+INFO: 
+2. Inspecting structured data...
+INFO:    Document keys: ['blocks', 'metadata', 'images', 'references', 'warnings']
+INFO:    Block types:
+INFO:      caption: 3
+INFO:      heading: 9
+INFO:      image: 2
+INFO:      paragraph: 9
+INFO:      reference-paragraph: 9
+INFO:      table: 1
+INFO:    Title: TITLE/TITRE
+INFO:    Author: Adrian Chan
+INFO:    Images extracted: 2
+INFO: 
+3. Manipulating structured data...
+INFO:    Total words in paragraphs: 419
+INFO: 
+4. Exporting to LaTeX...
+INFO:    LaTeX file: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/resna_pipeline.tex
+INFO:    Size: 6,125 bytes
+INFO:    Figures directory: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/resna_pipeline_figures (1 files)
+INFO: 
+5. Compiling LaTeX to PDF...
+INFO:    SUCCESS: PDF created at /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/resna_pipeline.pdf
+INFO:    PDF size: 94,900 bytes
+INFO: 
+============================================================
+INFO: Pipeline Summary
+INFO: ============================================================
+INFO: Input:  RESNA 2025 Scientific Paper Template.docx
+INFO: Output: resna_pipeline.tex
+INFO: PDF:    resna_pipeline.pdf
+INFO: 
+Structured data format enables:
+INFO:   - Content inspection and manipulation
+INFO:   - Format conversion (Word <-> LaTeX)
+INFO:   - Programmatic document generation
+INFO:   - Multi-format export from single source

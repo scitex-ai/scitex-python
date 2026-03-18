@@ -1,0 +1,16 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-sns-scatterplot-0_variable-x",
+    "ax-row-0-col-0_trace-id-sns-scatterplot-0_variable-y",
+    "ax-row-0-col-0_trace-id-sns-scatterplot-0_variable-hue"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-sns-scatterplot-0_variable-x": "float64",
+    "ax-row-0-col-0_trace-id-sns-scatterplot-0_variable-y": "float64",
+    "ax-row-0-col-0_trace-id-sns-scatterplot-0_variable-hue": "object"
+  },
+  "shape": [
+    100,
+    3
+  ]
+}

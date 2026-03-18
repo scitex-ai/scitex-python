@@ -1,0 +1,11 @@
+ID: 2025Y-12M-11D-08h30m16s_JjxM
+PID: 829815
+START_DATETIME: 2025-12-11 08:30:17.019556
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/RUNNING/2025Y-12M-11D-08h30m16s_JjxM-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 08:30:42.037398
+RUN_DURATION: 00:00:25

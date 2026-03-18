@@ -1,0 +1,83 @@
+[90mINFO: ============================================================[0m
+[90mINFO: Injected Global Variables (available in your function):[0m
+[90mINFO:   • CONFIG - Session configuration dict[0m
+[90mINFO:       - CONFIG['ID']: 2025Y-12M-01D-04h07m16s_UKp7[0m
+[90mINFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-12M-01D-04h07m16s_UKp7-main[0m
+[90mINFO:       - CONFIG['PID']: 2425359[0m
+[90mINFO:   • plt - matplotlib.pyplot (configured for session)[0m
+[90mINFO:   • COLORS - CustomColors (for consistent plotting)[0m
+[90mINFO:   • rng_manager - RandomStateManager (for reproducibility)[0m
+[90mINFO:   • logger - SciTeX logger (configured for your script)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Running main with injected parameters:[0m
+[90mINFO:     {'verbose': 'bool'}[0m
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 282, in demo_publication_bar
+    ax.set_xlabel(
+TypeError: UnitAwareMixin.set_xlabel() got an unexpected keyword argument 'fontweight'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 433, in demo_publication_errorbar
+    stx.plt.ax.style_scatter(line, size_mm=0.08)
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/ax/_style/_style_scatter.py", line 59, in style_scatter
+    path_collection.set_sizes([marker_area])
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Line2D' object has no attribute 'set_sizes'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 487, in demo_publication_barh
+    ax.set_xlabel(stx.plt.ax.format_label("Score", ""), fontweight="normal")
+TypeError: UnitAwareMixin.set_xlabel() got an unexpected keyword argument 'fontweight'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 846, in demo_publication_plot_box
+    stx.plt.ax.style_boxplot(bp, linewidth_mm=0.2)
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/ax/_style/_style_boxplot.py", line 56, in style_boxplot
+    if element_name in boxplot_dict:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'Axes' is not iterable
+/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_AdjustmentMixin.py:215: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  legend_obj = self._axis_mpl.legend(*args, loc=loc, **kwargs)
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1533, in main
+    demo()
+  File "/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py", line 1269, in demo_publication_sns_kdeplot
+    ax.sns_kdeplot(
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_SeabornMixin.py", line 25, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_SeabornMixin.py", line 290, in sns_kdeplot
+    self.plot_kde(_data, xlim=lim, label=hue, id=hue, **kwargs)
+  File "/home/ywatanabe/proj/.claude-worktree/scitex-code-plt/src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin.py", line 113, in plot_kde
+    self._axis_mpl.plot(xx, density, **kwargs)
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_axes.py", line 1779, in plot
+    lines = [*self._get_lines(self, *args, data=data, **kwargs)]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 296, in __call__
+    yield from self._plot_args(
+               ^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 545, in _plot_args
+    return [l[0] for l in result]
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 545, in <listcomp>
+    return [l[0] for l in result]
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 538, in <genexpr>
+    result = (make_artist(axes, x[:, j % ncx], y[:, j % ncy], kw,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/axes/_base.py", line 337, in _make_line
+    seg = mlines.Line2D(x, y, **kw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/lines.py", line 428, in __init__
+    self._internal_update(kwargs)
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/artist.py", line 1241, in _internal_update
+    return self._update_props(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/matplotlib/artist.py", line 1214, in _update_props
+    raise AttributeError(
+AttributeError: Line2D.set() got an unexpected keyword argument 'xlim'

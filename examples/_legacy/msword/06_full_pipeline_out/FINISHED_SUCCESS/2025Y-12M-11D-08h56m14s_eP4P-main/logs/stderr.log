@@ -1,0 +1,47 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-08h56m14s_eP4P
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/RUNNING/2025Y-12M-11D-08h56m14s_eP4P-main
+INFO:       - CONFIG['PID']: 900168
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Full Pipeline: Word -> LaTeX (One-Liner)
+INFO: ============================================================
+INFO: 
+1. Converting: RESNA 2025 Scientific Paper Template.docx
+INFO:    Using convert_docx_to_tex() with all options enabled:
+INFO:    - link_images=True (auto-link captions to figures)
+INFO:    - normalize_headings=True (standardize section names)
+INFO:    - validate=True (check document structure)
+INFO: 
+2. Output files:
+INFO:    resna_full_pipeline.tex (6,107 bytes)
+INFO:    resna_figures/fig_1.png (16,066 bytes)
+INFO: 
+============================================================
+INFO: Batch Conversion (Minimal API)
+INFO: ============================================================
+INFO: 
+ Processing: IOP-SCIENCE-Word-template-Double-anonymous.docx
+INFO:    Output: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/IOP-SCIENCE-Word-template-Double-anonymous.tex
+INFO:    Size: 6,833 bytes
+INFO: 
+ Processing: RESNA 2025 Scientific Paper Template.docx
+INFO:    Output: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/RESNA_2025_Scientific_Paper_Template.tex
+INFO:    Size: 6,169 bytes
+INFO: 
+============================================================
+INFO: Custom Options
+INFO: ============================================================
+INFO: 
+ Converting with validation disabled:
+INFO:    Output: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/resna_no_validation.tex
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out

@@ -1,0 +1,12 @@
+ID: 2026Y-03M-11D-07h20m07s_OhbV
+PID: 52190
+START_DATETIME: 2026-03-11 07:20:07.193318
+FILE: /home/ywatanabe/proj/scitex-python/examples/demo_figures/01_scitex_plt.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-python/examples/demo_figures/01_scitex_plt_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/demo_figures/01_scitex_plt_out/RUNNING/2026Y-03M-11D-07h20m07s_OhbV-demo_scatter_plot
+ARGS: {}
+EXIT_STATUS: 1
+END_DATETIME: 2026-03-11 07:20:09.652653
+RUN_DURATION: 00:00:02

@@ -1,0 +1,33 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2025Y-12M-21D-10h54m19s_K18a
+PID: 2255150
+START_DATETIME: 2025-12-21 10:54:19.380930
+FILE: /home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/scitex/fts/04_text_and_shapes_out/RUNNING/2025Y-12M-21D-10h54m19s_K18a-main
+ARGS: {}
+EXIT_STATUS: 1
+END_DATETIME: 2025-12-21 10:54:25.912323
+RUN_DURATION: 00:00:06

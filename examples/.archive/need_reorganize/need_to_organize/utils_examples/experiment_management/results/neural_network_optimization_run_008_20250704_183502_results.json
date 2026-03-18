@@ -1,0 +1,8 @@
+{
+  "accuracy": 0.7421965687172652,
+  "precision": 0.8079417827634696,
+  "recall": 0.7980643209061205,
+  "training_time": 58.32100927186301,
+  "memory_usage": 1483.15799794232,
+  "converged": true
+}

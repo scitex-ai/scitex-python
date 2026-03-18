@@ -1,0 +1,33 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-20D-12h55m56s_NmXn
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/scitex/stats/statsz_out/RUNNING/2025Y-12M-20D-12h55m56s_NmXn-main
+INFO:       - CONFIG['PID']: 1307844
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     { 'COLORS': 'DotDict',
+          'CONFIG': 'DotDict',
+          'logger': 'SciTeXLogger',
+          'plt': 'module',
+          'rng_manager': 'RandomStateManager'}
+INFO: Starting FTS stats bundle demo
+INFO: Creating basic comparison bundle
+ERRO: Error in main: 'str' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 244, in _run_with_session
+    result = func(**filtered_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/examples/scitex/stats/statsz.py", line 119, in main
+    sstats.save_statsz(comparisons, sdir / "basic.stx")
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/stats/__init__.py", line 189, in save_statsz
+    analysis_stats = test_result_to_stats(comp)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ywatanabe/proj/scitex-code/src/scitex/stats/__init__.py", line 106, in test_result_to_stats
+    name=method_data.get("name", "unknown"),
+         ^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'

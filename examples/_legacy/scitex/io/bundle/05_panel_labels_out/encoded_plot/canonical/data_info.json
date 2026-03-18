@@ -1,0 +1,30 @@
+{
+  "columns": [
+    {
+      "name": "time",
+      "dtype": "unknown"
+    },
+    {
+      "name": "signal_A",
+      "dtype": "unknown"
+    },
+    {
+      "name": "signal_B",
+      "dtype": "unknown"
+    },
+    {
+      "name": "category",
+      "dtype": "unknown"
+    }
+  ],
+  "format": {
+    "type": "csv",
+    "encoding": "utf-8",
+    "delimiter": ",",
+    "header_row": 0
+  },
+  "shape": [
+    100,
+    4
+  ]
+}

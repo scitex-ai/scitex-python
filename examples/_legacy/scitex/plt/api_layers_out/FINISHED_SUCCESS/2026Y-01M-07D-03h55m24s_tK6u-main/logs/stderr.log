@@ -1,0 +1,639 @@
+[90mINFO: ============================================================[0m
+[90mINFO: SciTeX API Layers Demo[0m
+[90mINFO: ============================================================[0m
+
+[90mINFO: [PLOTTERS_STX] 25 stx_* methods (ArrayLike)[0m
+[90mINFO:   [01] stx_line[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_line.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_line.png (1.1 MiB)[0m
+[90mINFO:   [02] stx_mean_std[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_mean_std.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_mean_std.png (1.1 MiB)[0m
+[90mINFO:   [03] stx_mean_ci[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_mean_ci.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_mean_ci.png (1.1 MiB)[0m
+[90mINFO:   [04] stx_median_iqr[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_median_iqr.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_median_iqr.png (1.0 MiB)[0m
+[90mINFO:   [05] stx_shaded_line[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_shaded_line.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_shaded_line.png (1.1 MiB)[0m
+[90mINFO:   [06] stx_box[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_MatplotlibPlotMixin/_statistical.py:190: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+  result = self._axis_mpl.boxplot(data, **kwargs)
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_box.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_box.png (1.0 MiB)[0m
+[90mINFO:   [07] stx_violin[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_violin.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_violin.png (1.0 MiB)[0m
+[90mINFO:   [08] stx_scatter[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_scatter.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_scatter.png (1.1 MiB)[0m
+[90mINFO:   [09] stx_bar[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_bar.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_bar.png (1.1 MiB)[0m
+[90mINFO:   [10] stx_barh[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_barh.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_barh.png (1.1 MiB)[0m
+[90mINFO:   [11] stx_errorbar[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_errorbar.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_errorbar.png (1.1 MiB)[0m
+[90mINFO:   [12] stx_fill_between[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_fill_between.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_fill_between.png (1.1 MiB)[0m
+[90mINFO:   [13] stx_kde[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_kde.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_kde.png (1.2 MiB)[0m
+[90mINFO:   [14] stx_ecdf[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_ecdf.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_ecdf.png (1.1 MiB)[0m
+[90mINFO:   [15] stx_heatmap[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/ax/_plot/_stx_heatmap.py:129: MatplotlibDeprecationWarning: The get_cmap function was deprecated in Matplotlib 3.7 and will be removed in 3.11. Use ``matplotlib.colormaps[name]`` or ``matplotlib.colormaps.get_cmap()`` or ``pyplot.get_cmap()`` instead.
+  cmap_obj = plt.cm.get_cmap(cmap)
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_heatmap.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_heatmap.png (1.1 MiB)[0m
+[90mINFO:   [16] stx_image[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_image.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_image.png (1.1 MiB)[0m
+[90mINFO:   [17] stx_imshow[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_imshow.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_imshow.png (785.2 KiB)[0m
+[90mINFO:   [18] stx_contour[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_contour.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_contour.png (1.1 MiB)[0m
+[90mINFO:   [19] stx_raster[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/ax/_style/_set_n_ticks.py:32: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  ax.figure.canvas.draw()
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_raster.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_raster.png (1.0 MiB)[0m
+[90mINFO:   [20] stx_conf_mat[0m
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/utils.py:61: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_conf_mat.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_conf_mat.png (821.3 KiB)[0m
+[90mINFO:   [21] stx_joyplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_joyplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_joyplot.png (1009.7 KiB)[0m
+[90mINFO:   [22] stx_rectangle[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_rectangle.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_rectangle.png (1.1 MiB)[0m
+[90mINFO:   [23] stx_fillv[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_fillv.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_fillv.png (1.1 MiB)[0m
+[90mINFO:   [24] stx_boxplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_boxplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_boxplot.png (1.1 MiB)[0m
+[90mINFO:   [25] stx_violinplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/stx_violinplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/stx_violinplot.png (1.0 MiB)[0m
+
+[90mINFO: [PLOTTERS_SNS] 10 sns_* methods (DataFrame)[0m
+[90mINFO:   [26] sns_boxplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_boxplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_boxplot.png (1.1 MiB)[0m
+[90mINFO:   [27] sns_violinplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_violinplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_violinplot.png (1.1 MiB)[0m
+[90mINFO:   [28] sns_barplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_barplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_barplot.png (1.0 MiB)[0m
+[90mINFO:   [29] sns_histplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_histplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_histplot.png (1.0 MiB)[0m
+[90mINFO:   [30] sns_kdeplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_kdeplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_kdeplot.png (1.2 MiB)[0m
+[90mINFO:   [31] sns_scatterplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_scatterplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_scatterplot.png (1.1 MiB)[0m
+[90mINFO:   [32] sns_lineplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_lineplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_lineplot.png (1.1 MiB)[0m
+[90mINFO:   [33] sns_swarmplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_swarmplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning: 6.2% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning: 18.4% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning: 6.2% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/seaborn/categorical.py:3399: UserWarning: 18.4% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_swarmplot.png (1.0 MiB)[0m
+[90mINFO:   [34] sns_stripplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_stripplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_stripplot.png (1.1 MiB)[0m
+[90mINFO:   [35] sns_heatmap[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/sns_heatmap.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/sns_heatmap.png (1.1 MiB)[0m
+
+[90mINFO: [PLOTTERS_MPL] 26 mpl_* methods (matplotlib-style)[0m
+[90mINFO:   [36] mpl_plot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_plot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_plot.png (1.1 MiB)[0m
+[90mINFO:   [37] mpl_scatter[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_scatter.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_scatter.png (1.0 MiB)[0m
+[90mINFO:   [38] mpl_bar[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_bar.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_bar.png (1.1 MiB)[0m
+[90mINFO:   [39] mpl_barh[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_barh.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_barh.png (1.1 MiB)[0m
+[90mINFO:   [40] mpl_hist[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_hist.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_hist.png (1.1 MiB)[0m
+[90mINFO:   [41] mpl_hist2d[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_hist2d.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_hist2d.png (1.1 MiB)[0m
+[90mINFO:   [42] mpl_hexbin[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_hexbin.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_hexbin.png (1.1 MiB)[0m
+[90mINFO:   [43] mpl_boxplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_boxplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_boxplot.png (1.1 MiB)[0m
+[90mINFO:   [44] mpl_violinplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_violinplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_violinplot.png (1.0 MiB)[0m
+[90mINFO:   [45] mpl_errorbar[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_errorbar.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_errorbar.png (1.1 MiB)[0m
+[90mINFO:   [46] mpl_step[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_step.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_step.png (1.0 MiB)[0m
+[90mINFO:   [47] mpl_stem[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_stem.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_stem.png (1.1 MiB)[0m
+[90mINFO:   [48] mpl_fill[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_fill.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_fill.png (1.1 MiB)[0m
+[90mINFO:   [49] mpl_fill_between[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_fill_between.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_fill_between.png (1.1 MiB)[0m
+[90mINFO:   [50] mpl_stackplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_stackplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_stackplot.png (1.0 MiB)[0m
+[90mINFO:   [51] mpl_contour[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_contour.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_contour.png (1.1 MiB)[0m
+[90mINFO:   [52] mpl_contourf[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_contourf.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_contourf.png (1.1 MiB)[0m
+[90mINFO:   [53] mpl_imshow[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_imshow.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_imshow.png (1.0 MiB)[0m
+[90mINFO:   [54] mpl_pcolormesh[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_pcolormesh.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_pcolormesh.png (1.0 MiB)[0m
+[90mINFO:   [55] mpl_pie[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_pie.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_pie.png (622.9 KiB)[0m
+[90mINFO:   [56] mpl_eventplot[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_eventplot.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_eventplot.png (1.1 MiB)[0m
+[90mINFO:   [57] mpl_quiver[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_quiver.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_quiver.png (1.0 MiB)[0m
+[90mINFO:   [58] mpl_axhline[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_axhline.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_axhline.png (1.0 MiB)[0m
+[90mINFO:   [59] mpl_axvline[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_axvline.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_axvline.png (1.0 MiB)[0m
+[90mINFO:   [60] mpl_axhspan[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_axhspan.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_axhspan.png (1.0 MiB)[0m
+[90mINFO:   [61] mpl_axvspan[0m
+[90mINFO:   • Auto-collected metadata (editable v0.3 schema)[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/scitex/plt/api_layers_out/api_layers_out/mpl_axvspan.png[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_figure_from_axes_mm.py:221: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.canvas.draw()
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:83: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath, **kwargs)
+[90mINFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)[0m
+[32mSUCC: Saved to: ./examples/scitex/plt/api_layers_out/api_layers_out/mpl_axvspan.png (1.0 MiB)[0m
+
+[90mINFO: ============================================================[0m
+[90mINFO: Completed 61 plotters[0m
+[90mINFO: ============================================================[0m

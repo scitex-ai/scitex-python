@@ -1,0 +1,48 @@
+INFO: Example 09: FTS Validation Demo
+SUCC: Saved to: ./examples/scitex/fts/09_hittest_demo_out/validation_demo.zip (60.9 KiB)
+WARN: No data provided for trace 'sin', skipping
+WARN: Plotting records not found. Cannot export empty data.
+WARN: Plotting records not found. Cannot export empty data.
+
+INFO: ============================================================
+INFO: LEVEL 1: Schema Validation
+INFO: ============================================================
+INFO: Checks JSON structure matches expected schema
+
+INFO: Validation passed: True
+INFO:   No schema errors
+
+INFO: ============================================================
+INFO: LEVEL 2: Semantic Validation
+INFO: ============================================================
+INFO: Checks logical consistency (e.g., encoding refs valid columns)
+
+INFO: Validation passed: True
+INFO:   No semantic errors
+
+INFO: ============================================================
+INFO: LEVEL 3: Strict Validation
+INFO: ============================================================
+INFO: Full validation including data presence and integrity
+
+INFO: Validation passed: True
+INFO:   No strict validation errors
+
+INFO: ============================================================
+INFO: DEMONSTRATION: Invalid Bundle
+INFO: ============================================================
+
+INFO: Invalid bundle validation: True
+WARN: No data provided for trace 'test', skipping
+WARN: Plotting records not found. Cannot export empty data.
+WARN: Plotting records not found. Cannot export empty data.
+
+INFO: Bundle saved with schema-level validation
+
+INFO: ============================================================
+INFO: Validation Levels Summary:
+INFO:   schema: JSON structure only (fastest)
+INFO:   semantic: Logical consistency (medium)
+INFO:   strict: Full integrity check (slowest)
+INFO: ============================================================
+SUCC: Example 09 completed!

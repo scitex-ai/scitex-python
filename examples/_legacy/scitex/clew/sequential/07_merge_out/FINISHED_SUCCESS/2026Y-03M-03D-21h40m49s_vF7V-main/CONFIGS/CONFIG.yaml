@@ -1,0 +1,14 @@
+ID: 2026Y-03M-03D-21h40m49s_vF7V
+PID: 11542
+START_DATETIME: 2026-03-03 21:40:49.696389
+FILE: /scitex-python/examples/scitex/clew/07_merge.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/07_merge_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/07_merge_out/RUNNING/2026Y-03M-03D-21h40m49s_vF7V-main
+ARGS:
+    input_a:
+    input_b:
+    input_c:
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:41:29.928050
+RUN_DURATION: 00:00:40

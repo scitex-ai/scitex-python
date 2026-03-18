@@ -1,0 +1,127 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:25.753394"
+    },
+    "figure": {
+        "size_px": [
+            605,
+            474
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -3.197091382836626,
+                3.9453709680415194
+            ],
+            "ylim": [
+                -3.684040468970355,
+                3.4561846868477377
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_fill_00": {
+            "id": "ax_00_fill_00",
+            "axes_id": "ax_00",
+            "element_type": "fill",
+            "label": "fill_0",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 197,
+                    "y0": 147,
+                    "x1": 226,
+                    "y1": 172
+                },
+                "polygon": [
+                    [
+                        225.6,
+                        166.0
+                    ],
+                    [
+                        225.6,
+                        153.5
+                    ],
+                    [
+                        211.3,
+                        147.2
+                    ],
+                    [
+                        197.0,
+                        153.5
+                    ],
+                    [
+                        197.0,
+                        166.0
+                    ],
+                    [
+                        211.3,
+                        172.2
+                    ],
+                    [
+                        225.6,
+                        166.0
+                    ]
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.9
+                ],
+                "edgecolor": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.9
+                ],
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha"
+            ],
+            "zorder": 1,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "mpl_hexbin.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-hexbin-0_variable-x",
+            "ax-row-0-col-0_trace-id-hexbin-0_variable-y"
+        ],
+        "csv_hash": "0ad81b26669e3b25"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

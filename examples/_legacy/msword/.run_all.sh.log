@@ -1,0 +1,412 @@
+
+============================================================
+Available Journal Profiles:
+============================================================
+  - elsevier
+  - generic
+  - ieee
+  - iop
+  - iop-double-anonymous
+  - mdpi
+  - mdpi-ijerph
+  - resna
+  - resna-2025
+  - springer
+
+============================================================
+Loading IOP Document (Double-Anonymous Template)
+============================================================
+
+Metadata:
+  profile: iop-double-anonymous
+  source_file: /home/ywatanabe/proj/scitex-code/docs/MSWORD_MANUSCTIPS/IOP-SCIENCE-Word-template-Double-anonymous.docx
+  import_timestamp: 2025-12-11T09:30:35.533739
+  author: ioppublishing@ioppublishing.org
+  created: 2021-05-06T06:05:00+00:00
+  modified: 2023-02-03T11:37:00+00:00
+
+Document Statistics:
+  Total blocks: 40
+  Images extracted: 0
+  References found: 5
+
+Block Types:
+  heading: 6
+  paragraph: 29
+  reference-paragraph: 5
+
+First 5 blocks:
+  [0] paragraph: Article title...
+  [1] paragraph: The guidance in red text in this template will hel...
+  [2] paragraph: 1.Author Names:...
+  [3] paragraph: 1 Department One, Institution One, City One, Count...
+  [4] paragraph: 2 Department Two, Institution Two, City Two, Count...
+
+============================================================
+Loading RESNA 2025 Document
+============================================================
+
+Metadata:
+  profile: resna-2025
+  source_file: /home/ywatanabe/proj/scitex-code/docs/MSWORD_MANUSCTIPS/RESNA 2025 Scientific Paper Template.docx
+  import_timestamp: 2025-12-11T09:30:35.802116
+  title: TITLE/TITRE
+  author: Adrian Chan
+  created: 2024-10-21T13:01:00+00:00
+  modified: 2024-10-21T13:01:00+00:00
+
+Document Statistics:
+  Total blocks: 33
+  Images extracted: 2
+  References found: 9
+
+Block Types:
+  caption: 3
+  heading: 9
+  image: 2
+  paragraph: 9
+  reference-paragraph: 9
+  table: 1
+
+Section Headings:
+  [H1] Title of paper in bold sentence case
+  [H1] INTRODUCTION
+  [H1] SUBMISSION INSTRUCTIONS
+  [H1] LAYOUT
+  [H1] HEADINGS
+  [H2] Example of a first level sub-heading
+  [H2] Example of a second level sub-heading
+  [H1] FIGURES AND TABLES
+  [H1] REFERENCES
+[94m
+========================================
+SciTeX v2.7.0
+2025Y-12M-11D-09h30m48s_d1aL (PID: 977025)
+
+/home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex.py
+
+Arguments:
+========================================
+[0m
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h30m48s_d1aL
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/RUNNING/2025Y-12M-11D-09h30m48s_d1aL-main
+INFO:       - CONFIG['PID']: 977025
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Example: Word to LaTeX Conversion
+INFO: ============================================================
+INFO: 
+1. Two-Step Conversion: RESNA 2025 Scientific Paper Template.docx
+INFO:    Loaded 33 blocks
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/resna_two_step.tex
+INFO: 
+2. Direct Conversion: IOP-SCIENCE-Word-template-Double-anonymous.docx
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/iop_direct.tex
+INFO: 
+3. Custom LaTeX Export Options
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/resna_custom.tex
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-code/examples/msword/02_convert_to_tex_out/FINISHED_SUCCESS/2025Y-12M-11D-09h30m48s_d1aL-main
+[94m
+========================================
+SciTeX v2.7.0
+2025Y-12M-11D-09h31m21s_9gCg (PID: 977548)
+
+/home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx.py
+
+Arguments:
+========================================
+[0m
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h31m21s_9gCg
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/RUNNING/2025Y-12M-11D-09h31m21s_9gCg-main
+INFO:       - CONFIG['PID']: 977548
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Example: Save Word Documents
+INFO: ============================================================
+INFO: 
+1. Profile Switching: RESNA -> IEEE
+INFO:    Loaded 33 blocks
+INFO:    RESNA columns: 2
+INFO:    IEEE columns: 2
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/converted_to_ieee.docx
+INFO: 
+2. Create Document from Scratch
+INFO:    generic: manuscript_generic.docx (36,947 bytes)
+INFO:    mdpi-ijerph: manuscript_mdpi-ijerph.docx (36,947 bytes)
+INFO:    ieee: manuscript_ieee.docx (36,947 bytes)
+INFO:    springer: manuscript_springer.docx (36,947 bytes)
+INFO: 
+3. Create Document with Formatted Text
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/formatted_doc.docx
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-code/examples/msword/03_save_docx_out/FINISHED_SUCCESS/2025Y-12M-11D-09h31m21s_9gCg-main
+============================================================
+Create Custom Journal Profile
+============================================================
+
+1. Created profile: my-custom-journal
+   Description: Custom profile for My Journal (2025)
+   Columns: 1
+   Double-anonymous: False
+
+2. Registered profile
+   Available profiles: ['elsevier', 'generic', 'ieee', 'iop', 'iop-double-anonymous', 'mdpi', 'mdpi-ijerph', 'my-custom-journal', 'resna', 'resna-2025', 'springer']
+
+3. Using custom profile to load document...
+   Loaded 33 blocks
+   Profile used: my-custom-journal
+
+============================================================
+Specialized Profiles
+============================================================
+
+Registered: blind-review
+  Description: Double-blind review submission
+  Columns: 1
+  Double-anonymous: True
+
+Registered: conference-2col
+  Description: Two-column conference paper
+  Columns: 2
+  Double-anonymous: False
+
+Registered: thesis
+  Description: Thesis/dissertation format
+  Columns: 1
+  Double-anonymous: False
+
+All available profiles: ['blind-review', 'conference-2col', 'elsevier', 'generic', 'ieee', 'iop', 'iop-double-anonymous', 'mdpi', 'mdpi-ijerph', 'my-custom-journal', 'resna', 'resna-2025', 'springer', 'thesis']
+
+============================================================
+Profile with Processing Hooks
+============================================================
+
+1. Created profile with hooks: uppercase-headings
+
+2. After post-import hook:
+   Warnings: ['Document contains 7 images. Consider reducing for faster compilation.']
+
+3. After pre-export hook:
+   Heading: INTRODUCTION
+   Heading: METHODS
+
+============================================================
+Compare Built-in Profiles
+============================================================
+
+Profile                   Columns    Anonymous    Ref Titles
+----------------------------------------------------------------------
+generic                   1          False        References, REFERENCES
+mdpi-ijerph               1          False        References
+resna-2025                2          False        References, REFERENCES
+iop-double-anonymous      1          True         References
+ieee                      2          False        References, REFERENCES
+[94m
+========================================
+SciTeX v2.7.0
+2025Y-12M-11D-09h31m57s_2JZs (PID: 978279)
+
+/home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content.py
+
+Arguments:
+========================================
+[0m
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h31m57s_2JZs
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/RUNNING/2025Y-12M-11D-09h31m57s_2JZs-main
+INFO:       - CONFIG['PID']: 978279
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Example: Extract Content from Word Documents
+INFO: ============================================================
+INFO: 
+1. Extract Images
+INFO:    Found 2 images
+INFO:    Saved: image_1.png (16,066 bytes)
+INFO:    Saved: image_2.png (16,066 bytes)
+INFO: 
+2. Extract References
+INFO:    Found 9 references
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/references.txt
+INFO: 
+3. Extract Captions
+INFO:    Figure captions: 0
+INFO:    Table captions: 1
+INFO: 
+4. Document Structure
+INFO:    Sections: 9
+INFO:    [H1] Title of paper in bold sentence case
+INFO:    [H1] INTRODUCTION
+INFO:    [H1] SUBMISSION INSTRUCTIONS
+INFO:    [H1] LAYOUT
+INFO:    [H1] HEADINGS
+INFO:      [H2] Example of a first level sub-heading
+INFO:      [H2] Example of a second level sub-heading
+INFO:    [H1] FIGURES AND TABLES
+INFO:    [H1] REFERENCES
+INFO: 
+5. Export to JSON
+INFO:    Saved: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/document_structure.json
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-code/examples/msword/05_extract_content_out/FINISHED_SUCCESS/2025Y-12M-11D-09h31m57s_2JZs-main
+[94m
+========================================
+SciTeX v2.7.0
+2025Y-12M-11D-09h32m19s_YFZY (PID: 978695)
+
+/home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline.py
+
+Arguments:
+========================================
+[0m
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h32m19s_YFZY
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/RUNNING/2025Y-12M-11D-09h32m19s_YFZY-main
+INFO:       - CONFIG['PID']: 978695
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Full Pipeline: Word -> LaTeX (One-Liner)
+INFO: ============================================================
+INFO: 
+1. Converting: RESNA 2025 Scientific Paper Template.docx
+INFO:    Using convert_docx_to_tex() with all options enabled:
+INFO:    - link_images=True (auto-link captions to figures)
+INFO:    - normalize_headings=True (standardize section names)
+INFO:    - validate=True (check document structure)
+INFO: 
+2. Output files:
+INFO:    resna_full_pipeline.tex (6,107 bytes)
+INFO:    resna_figures/fig_1.png (16,066 bytes)
+INFO: 
+============================================================
+INFO: Batch Conversion (Minimal API)
+INFO: ============================================================
+INFO: 
+ Processing: IOP-SCIENCE-Word-template-Double-anonymous.docx
+INFO:    Output: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/IOP-SCIENCE-Word-template-Double-anonymous.tex
+INFO:    Size: 6,968 bytes
+INFO: 
+ Processing: RESNA 2025 Scientific Paper Template.docx
+INFO:    Output: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/RESNA_2025_Scientific_Paper_Template.tex
+INFO:    Size: 6,169 bytes
+INFO: 
+============================================================
+INFO: Custom Options
+INFO: ============================================================
+INFO: 
+ Converting with validation disabled:
+INFO:    Output: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/resna_no_validation.tex
+INFO: 
+All outputs saved to: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/FINISHED_SUCCESS/2025Y-12M-11D-09h32m19s_YFZY-main
+[94m
+========================================
+SciTeX v2.7.0
+2025Y-12M-11D-09h32m41s_Sedo (PID: 979071)
+
+/home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf.py
+
+Arguments:
+========================================
+[0m
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-11D-09h32m41s_Sedo
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/RUNNING/2025Y-12M-11D-09h32m41s_Sedo-main
+INFO:       - CONFIG['PID']: 979071
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger'}
+INFO: ============================================================
+INFO: Full Pipeline: Word -> Structured Data -> PDF
+INFO: ============================================================
+INFO: 
+1. Loading Word document to structured data...
+INFO:    Loaded document with 33 blocks
+INFO: 
+2. Inspecting structured data...
+INFO:    Document keys: ['blocks', 'metadata', 'images', 'references', 'warnings']
+INFO:    Block types:
+INFO:      caption: 3
+INFO:      heading: 9
+INFO:      image: 2
+INFO:      paragraph: 9
+INFO:      reference-paragraph: 9
+INFO:      table: 1
+INFO:    Title: TITLE/TITRE
+INFO:    Author: Adrian Chan
+INFO:    Images extracted: 2
+INFO: 
+3. Manipulating structured data...
+INFO:    Total words in paragraphs: 419
+INFO: 
+4. Exporting to LaTeX...
+INFO:    LaTeX file: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/resna_pipeline.tex
+INFO:    Size: 6,125 bytes
+INFO:    Figures directory: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/resna_pipeline_figures (1 files)
+INFO: 
+5. Compiling LaTeX to PDF...
+INFO:    SUCCESS: PDF created at /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/resna_pipeline.pdf
+INFO:    PDF size: 94,900 bytes
+INFO: 
+============================================================
+INFO: Pipeline Summary
+INFO: ============================================================
+INFO: Input:  RESNA 2025 Scientific Paper Template.docx
+INFO: Output: resna_pipeline.tex
+INFO: PDF:    resna_pipeline.pdf
+INFO: 
+Structured data format enables:
+INFO:   - Content inspection and manipulation
+INFO:   - Format conversion (Word <-> LaTeX)
+INFO:   - Programmatic document generation
+INFO:   - Multi-format export from single source
+
+SUCC: Congratulations! The script completed: /home/ywatanabe/proj/scitex-code/examples/msword/07_docx_to_pdf_out/FINISHED_SUCCESS/2025Y-12M-11D-09h32m41s_Sedo-main

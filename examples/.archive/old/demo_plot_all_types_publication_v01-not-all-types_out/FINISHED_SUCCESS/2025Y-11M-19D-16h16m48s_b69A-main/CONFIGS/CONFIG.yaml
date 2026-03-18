@@ -1,0 +1,14 @@
+ID: 2025Y-11M-19D-16h16m48s_b69A
+PID: 235066
+START_DATETIME: 2025-11-19 16:16:48.607505
+FILE: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-16h16m48s_b69A-main
+ARGS:
+    verbose: true
+EXIT_STATUS: 0
+END_DATETIME: 2025-11-19 16:16:57.247383
+RUN_DURATION: 00:00:08

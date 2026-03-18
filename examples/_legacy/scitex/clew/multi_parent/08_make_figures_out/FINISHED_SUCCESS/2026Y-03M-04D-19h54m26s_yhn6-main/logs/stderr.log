@@ -1,0 +1,12 @@
+INFO: Making figures
+INFO:   • Auto-collected metadata (editable v0.3 schema)
+INFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure1.png
+INFO:   • Auto-added URL: https://scitex.ai
+INFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)
+SUCC: Saved to: ./08_make_figures_out/figure1.png (28.2 KiB) [W: 69.9mm, H: 54.7mm]
+INFO:   • Auto-collected metadata (editable v0.3 schema)
+INFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/08_make_figures_out/figure2.png
+INFO:   • Auto-added URL: https://scitex.ai
+INFO:   • Auto-cropped with 1.0mm margin (11px at 300 DPI)
+SUCC: Saved to: ./08_make_figures_out/figure2.png (31.1 KiB) [W: 70.0mm, H: 54.7mm]
+INFO: Generated 2 figures

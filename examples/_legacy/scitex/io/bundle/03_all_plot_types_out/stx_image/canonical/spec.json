@@ -1,0 +1,25 @@
+{
+  "id": "3e5a3ffd-2ef2-4a94-b91d-1e869e02c1ea",
+  "kind": "plot",
+  "scitex_schema": "scitex.fts.spec",
+  "scitex_schema_version": "1.0.0",
+  "bbox_norm": {
+    "x0": 0.0,
+    "y0": 0.0,
+    "x1": 1.0,
+    "y1": 1.0
+  },
+  "name": "stx_image",
+  "size_mm": {
+    "width": 80.0,
+    "height": 68.0
+  },
+  "payload_schema": "scitex.fts.payload.plot@1",
+  "refs": {
+    "encoding": "encoding.json",
+    "theme": "theme.json",
+    "stats": "stats/stats.json"
+  },
+  "created_at": "2025-12-20T23:50:11.957806Z",
+  "modified_at": "2025-12-20T23:50:11.957806Z"
+}

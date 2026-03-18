@@ -1,0 +1,70 @@
+[94m
+========================================
+SciTeX v2.3.0
+2025Y-11M-29D-09h02m56s_Bb8k (PID: 297145)
+
+/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+
+Arguments:
+    verbose: True
+========================================
+[0m
+
+======================================================================
+ PUBLICATION-READY FIGURE DEMONSTRATION
+ Using Unified Style System
+======================================================================
+
+This demo showcases scitex.plt.subplots() with mm-control
+integration for creating publication-ready figures.
+
+
+======================================================================
+Demo: Publication Line Plot (SciTeX Style)
+======================================================================
+
+======================================================================
+Demo: Publication Scatter Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/02_scatter.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Bar Plot (SciTeX Style)
+======================================================================
+
+[ERROR] in demo_publication_bar: UnitAwareMixin.set_xlabel() got an unexpected keyword argument 'fontweight'
+
+======================================================================
+ DEMONSTRATION COMPLETE
+======================================================================
+
+Output locations:
+  Session output: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/
+  Matplotlib basic: publication/01_matplotlib_basic/
+  Custom scitex: publication/02_custom_scitex/
+  Functional: publication/03_functional/
+  Seaborn: publication/04_seaborn/
+  Multi-panels: publication/05_multi_panel/
+  Root (style override): publication/
+
+Coverage:
+  - Matplotlib basic plots (11): plot, scatter, bar, barh, hist, boxplot,
+    errorbar, fill_between, imshow, contour, violinplot
+  - Custom scitex plots (7): plot_heatmap, plot_line, plot_shaded_line,
+    plot_violin, plot_ecdf, plot_box, plot_mean_std
+  - Functional plots (1): plot_kde
+  - Seaborn integration (8): sns_boxplot, sns_violinplot, sns_scatterplot,
+    sns_lineplot, sns_histplot, sns_barplot, sns_stripplot, sns_kdeplot
+  - Multi-panel (2): 2x2 grid, 1x3 with varied widths
+  - Total: 30 publication-ready plot demonstrations
+
+All figures are publication-ready:
+  - Formats: PNG (lossless raster) + PDF (vector)
+  - 300 DPI resolution (PNG)
+  - Infinite zoom (PDF)
+  - Precise mm-based dimensions
+  - Automatic cropping with 1mm margin
+  - Consistent SCITEX_STYLE preset
+  - Embedded metadata for reproducibility
+
+Note: JPEG is NOT used - it's lossy and creates artifacts

@@ -1,0 +1,20 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-12M-09D-09h06m15s_LAc7
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/bridge/01_plt_to_vis_model_out/RUNNING/2025Y-12M-09D-09h06m15s_LAc7-main
+INFO:       - CONFIG['PID']: 1516794
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'CONFIG': 'DotDict', 'logger': 'SciTeXLogger', 'plt': 'module'}
+INFO: ============================================================
+INFO: FigureModel Summary
+INFO: ============================================================
+INFO: Dimensions: 128.0 x 68.0 mm
+INFO: Layout: 1 x 2
+INFO: DPI: 300
+INFO: Suptitle: Example Figure

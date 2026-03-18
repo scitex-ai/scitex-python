@@ -1,0 +1,46 @@
+{
+  "columns": [
+    {
+      "name": "ax-row-0-col-0_trace-id-bar-0_variable-x",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-bar-0_variable-y",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-bar-0_variable-yerr",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-plot-0_variable-x",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-plot-0_variable-y",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-text-0_variable-x",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-text-0_variable-y",
+      "dtype": "unknown"
+    },
+    {
+      "name": "ax-row-0-col-0_trace-id-text-0_variable-content",
+      "dtype": "unknown"
+    }
+  ],
+  "format": {
+    "type": "csv",
+    "encoding": "utf-8",
+    "delimiter": ",",
+    "header_row": 0
+  },
+  "shape": [
+    4,
+    8
+  ]
+}

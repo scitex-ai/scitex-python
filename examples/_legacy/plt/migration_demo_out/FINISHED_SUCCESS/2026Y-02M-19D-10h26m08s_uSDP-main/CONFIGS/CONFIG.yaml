@@ -1,0 +1,32 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2026Y-02M-19D-10h26m08s_uSDP
+PID: 388549
+START_DATETIME: 2026-02-19 10:26:08.818880
+FILE: /home/ywatanabe/proj/scitex-python/examples/plt/migration_demo.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-python/examples/plt/migration_demo_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/plt/migration_demo_out/RUNNING/2026Y-02M-19D-10h26m08s_uSDP-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2026-02-19 10:26:19.488681
+RUN_DURATION: 00:00:10

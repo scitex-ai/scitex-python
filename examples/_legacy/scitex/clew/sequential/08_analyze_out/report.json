@@ -1,0 +1,16 @@
+{
+    "total_records": 550,
+    "sources": [
+        "A",
+        "B",
+        "C"
+    ],
+    "categories": [
+        "Y",
+        "X",
+        "Z"
+    ],
+    "overall_mean": 70.22453624062574,
+    "overall_std": 21.356569662049218,
+    "max_combined_score": 144.51288661460976
+}

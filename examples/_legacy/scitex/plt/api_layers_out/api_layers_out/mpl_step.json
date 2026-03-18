@@ -1,0 +1,172 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:56:28.312937"
+    },
+    "figure": {
+        "size_px": [
+            564,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                -0.9500000000000001,
+                19.95
+            ],
+            "ylim": [
+                -0.45,
+                9.45
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_line_00": {
+            "id": "ax_00_line_00",
+            "axes_id": "ax_00",
+            "element_type": "line",
+            "label": "step",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 15,
+                    "x1": 451,
+                    "y1": 315
+                },
+                "path_simplified": [
+                    [
+                        21.5,
+                        48.3
+                    ],
+                    [
+                        44.0,
+                        181.7
+                    ],
+                    [
+                        89.2,
+                        181.7
+                    ],
+                    [
+                        111.8,
+                        248.3
+                    ],
+                    [
+                        134.4,
+                        215.0
+                    ],
+                    [
+                        157.0,
+                        81.7
+                    ],
+                    [
+                        179.5,
+                        215.0
+                    ],
+                    [
+                        202.1,
+                        48.3
+                    ],
+                    [
+                        224.7,
+                        115.0
+                    ],
+                    [
+                        247.3,
+                        148.3
+                    ],
+                    [
+                        269.9,
+                        81.7
+                    ],
+                    [
+                        292.5,
+                        148.3
+                    ],
+                    [
+                        315.0,
+                        15.0
+                    ],
+                    [
+                        360.2,
+                        215.0
+                    ],
+                    [
+                        382.8,
+                        81.7
+                    ],
+                    [
+                        405.4,
+                        81.7
+                    ],
+                    [
+                        428.0,
+                        315.0
+                    ],
+                    [
+                        450.5,
+                        15.0
+                    ]
+                ],
+                "path": null
+            },
+            "style": {
+                "color": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.9
+                ],
+                "linewidth": 1.0,
+                "linestyle": "-",
+                "alpha": null,
+                "marker": "None",
+                "markersize": 2.267716535433071
+            },
+            "editable_styles": [
+                "color",
+                "linewidth",
+                "linestyle",
+                "alpha",
+                "marker"
+            ],
+            "zorder": 2,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "mpl_step.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-step-0_variable-x",
+            "ax-row-0-col-0_trace-id-step-0_variable-y"
+        ],
+        "csv_hash": "c96f0a2aacd61484"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

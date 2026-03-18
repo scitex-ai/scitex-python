@@ -1,0 +1,44 @@
+[90mINFO: Example 13: Journal Theme Profiles[0m
+
+[90mINFO: --- Creating Nature styled bundle ---[0m
+[33mWARN: UnitWarning: X axis label 'Time (s)' uses parentheses. SI convention prefers: 'Time [s]'[0m
+[33mWARN: UnitWarning: Y axis label 'Amplitude (mV)' uses parentheses. SI convention prefers: 'Amplitude [mV]'[0m
+[32mSUCC: Saved to: ./examples/scitex/fts/13_export_profiles_out/journal_nature.zip (121.2 KiB)[0m
+[31mERRO: Error in main: No columns to parse from file
+ERRO: Traceback (most recent call last):
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/session/_decorator.py", line 246, in _run_with_session
+ERRO:     result = func(**filtered_kwargs)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/examples/scitex/fts/13_export_profiles.py", line 145, in main
+ERRO:     create_journal_bundle(plt, out_dir, profile_id, profile, x, y, logger)
+ERRO:   File "/home/ywatanabe/proj/scitex-code/examples/scitex/fts/13_export_profiles.py", line 90, in create_journal_bundle
+ERRO:     bundle.save()
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 476, in save
+ERRO:     fig = self.render()
+ERRO:           ^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 296, in render
+ERRO:     return self._render_from_encoding()
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 349, in _render_from_encoding
+ERRO:     data = self._load_payload_data()
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/proj/scitex-code/src/scitex/fts/_bundle/_FTS.py", line 378, in _load_payload_data
+ERRO:     return pd.read_csv(StringIO(csv_bytes.decode("utf-8")))
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+ERRO:     return _read(filepath_or_buffer, kwds)
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+ERRO:     parser = TextFileReader(filepath_or_buffer, **kwds)
+ERRO:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+ERRO:     self._engine = self._make_engine(f, self.engine)
+ERRO:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/readers.py", line 1898, in _make_engine
+ERRO:     return mapping[engine](f, **self.options)
+ERRO:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "/home/ywatanabe/.env-3.11/lib/python3.11/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 93, in __init__
+ERRO:     self._reader = parsers.TextReader(src, **kwds)
+ERRO:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ERRO:   File "pandas/_libs/parsers.pyx", line 581, in pandas._libs.parsers.TextReader.__cinit__
+ERRO: pandas.errors.EmptyDataError: No columns to parse from file[0m

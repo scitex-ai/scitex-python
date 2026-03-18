@@ -1,0 +1,11 @@
+ID: 2026Y-03M-03D-21h42m01s_O2BS
+PID: 12044
+START_DATETIME: 2026-03-03 21:42:01.069372
+FILE: /scitex-python/examples/scitex/clew/10_programmatic_verification.py
+SDIR_OUT: /scitex-python/examples/scitex/clew/10_programmatic_verification_out
+SDIR_RUN: 
+    /scitex-python/examples/scitex/clew/10_programmatic_verification_out/RUNNING/2026Y-03M-03D-21h42m01s_O2BS-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-03 21:42:37.415367
+RUN_DURATION: 00:00:36

@@ -1,0 +1,96 @@
+{
+    "metadata_version": "1.1.0",
+    "scitex": {
+        "version": "2.3.0",
+        "created_at": "2025-12-01T04:18:28.170818",
+        "created_with": "scitex.plt.subplots (mm-control)",
+        "mode": "publication",
+        "axes_size_mm": [
+            25,
+            21
+        ],
+        "position_in_grid": [
+            0,
+            0
+        ],
+        "style_mm": {
+            "axis_thickness_mm": 0.2,
+            "tick_length_mm": 0.8,
+            "font_family_requested": "Arial",
+            "font_family_actual": "Arial"
+        }
+    },
+    "matplotlib": {
+        "version": "3.10.3"
+    },
+    "id": "02_1x3_varied_widths",
+    "dimensions": {
+        "figure_size_mm": [
+            98.0,
+            28.0
+        ],
+        "figure_size_inch": [
+            3.8582677165354333,
+            1.1023622047244095
+        ],
+        "figure_size_px": [
+            1157,
+            330
+        ],
+        "axes_size_mm": [
+            25.000000000000004,
+            21.0
+        ],
+        "axes_size_inch": [
+            0.9842519685039371,
+            0.8267716535433072
+        ],
+        "axes_size_px": [
+            295,
+            248
+        ],
+        "axes_position": [
+            0.05102040816326531,
+            0.17857142857142858,
+            0.25510204081632654,
+            0.75
+        ],
+        "dpi": 300
+    },
+    "margins_mm": {
+        "left": 5.0,
+        "bottom": 5.0,
+        "right": 68.0,
+        "top": 2.0
+    },
+    "axes_bbox_px": {
+        "x0": 59,
+        "y0": 23,
+        "x1": 354,
+        "y1": 271,
+        "width": 295,
+        "height": 248
+    },
+    "axes_bbox_mm": {
+        "x0": 5.0,
+        "y0": 1.9999999999999991,
+        "x1": 30.000000000000004,
+        "y1": 23.0,
+        "width": 25.000000000000004,
+        "height": 21.0
+    },
+    "axes": {
+        "x": {
+            "label": "Time",
+            "unit": "s",
+            "scale": "linear"
+        },
+        "y": {
+            "label": "Signal",
+            "unit": "a.u.",
+            "scale": "linear"
+        }
+    },
+    "plot_type": "line",
+    "method": "plot"
+}

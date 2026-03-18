@@ -21,8 +21,8 @@ import scitex as stx
 @stx.session
 def main(
     data_path: str = "./data.csv",  # python 01_session.py --data-path data.csv
-    n_samples: int = 100,           # --n-samples 200
-    learning_rate: float = 0.001,   # --learning-rate 0.01
+    n_samples: int = 100,  # --n-samples 200
+    learning_rate: float = 0.001,  # --learning-rate 0.01
     CONFIG=stx.session.INJECTED,  # ./config/*.yaml aggregated
     COLORS=stx.session.INJECTED,  # Color palette
     plt=stx.session.INJECTED,  # Pre-configured matplotlib
@@ -42,7 +42,7 @@ def main(
 
     # Plot with figrecipe (injected plt)
     fig, ax = stx.plt.subplots()
-    ax.stx_line(x, y)
+    ax.plot(x, y)
     ax.set_xyt("Time", "Amplitude", f"Sine Wave (n={n_samples})")
 
     # Save figure (auto-exports sine.png + sine.csv)

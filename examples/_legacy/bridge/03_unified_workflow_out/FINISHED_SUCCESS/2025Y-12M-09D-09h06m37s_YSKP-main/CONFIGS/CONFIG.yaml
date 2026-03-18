@@ -1,0 +1,33 @@
+DEMO:
+    demo:
+        xxx: 111
+        yyy: 222
+capture:
+    capture:
+        screenshot:
+            quality: 85
+            monitor_id: 0
+            output_dir:
+        monitoring:
+            interval: 1.0
+            quality: 60
+            verbose: true
+            capture_all: false
+        gif:
+            duration: 0.5
+            optimize: true
+            max_frames:
+        cache:
+            max_size_gb: 1.0
+ID: 2025Y-12M-09D-09h06m37s_YSKP
+PID: 1517561
+START_DATETIME: 2025-12-09 09:06:37.478309
+FILE: /home/ywatanabe/proj/scitex-code/examples/bridge/03_unified_workflow.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-code/examples/bridge/03_unified_workflow_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/bridge/03_unified_workflow_out/RUNNING/2025Y-12M-09D-09h06m37s_YSKP-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-09 09:06:46.322305
+RUN_DURATION: 00:00:08

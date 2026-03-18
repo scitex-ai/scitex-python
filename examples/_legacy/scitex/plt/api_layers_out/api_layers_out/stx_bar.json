@@ -1,0 +1,131 @@
+{
+    "scitex_schema": "scitex.plt.figure.editable",
+    "scitex_schema_version": "0.3.0",
+    "meta": {
+        "title": "",
+        "description": "",
+        "exported_at": "2026-01-07T03:55:50.635379"
+    },
+    "figure": {
+        "size_px": [
+            588,
+            475
+        ],
+        "dpi": 300,
+        "figsize_inches": [
+            3.1496062992125986,
+            2.677165354330709
+        ]
+    },
+    "axes": {
+        "ax_00": {
+            "bbox_px": {
+                "x0": 236,
+                "y0": 236,
+                "x1": 708,
+                "y1": 566
+            },
+            "position": [
+                0.25,
+                0.29411764705882354,
+                0.5,
+                0.41176470588235287
+            ],
+            "xlim": [
+                0.36,
+                5.64
+            ],
+            "ylim": [
+                0.0,
+                6.914553923714861
+            ]
+        }
+    },
+    "elements": {
+        "ax_00_bars": {
+            "id": "ax_00_bars",
+            "axes_id": "ax_00",
+            "element_type": "bar",
+            "label": "bars",
+            "geometry_px": {
+                "coord_space": "axes",
+                "bbox": {
+                    "x0": 21,
+                    "y0": 15,
+                    "x1": 450,
+                    "y1": 330
+                },
+                "rectangles": [
+                    {
+                        "x": 21.5,
+                        "y": 15.7,
+                        "width": 71.5,
+                        "height": 314.3
+                    },
+                    {
+                        "x": 110.8,
+                        "y": 83.3,
+                        "width": 71.5,
+                        "height": 246.7
+                    },
+                    {
+                        "x": 200.2,
+                        "y": 35.7,
+                        "width": 71.5,
+                        "height": 294.3
+                    },
+                    {
+                        "x": 289.6,
+                        "y": 68.8,
+                        "width": 71.5,
+                        "height": 261.2
+                    },
+                    {
+                        "x": 379.0,
+                        "y": 31.6,
+                        "width": 71.5,
+                        "height": 298.4
+                    }
+                ]
+            },
+            "style": {
+                "facecolor": [
+                    0.0,
+                    0.5,
+                    0.75,
+                    0.9
+                ],
+                "edgecolor": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "linewidth": 0.5669291338582677,
+                "alpha": null
+            },
+            "editable_styles": [
+                "facecolor",
+                "edgecolor",
+                "alpha",
+                "linewidth"
+            ],
+            "zorder": 0.5,
+            "visible": true
+        }
+    },
+    "statistics": {},
+    "data": {
+        "csv_path": "stx_bar.csv",
+        "columns_actual": [
+            "ax-row-0-col-0_trace-id-stx-bar-0_variable-x",
+            "ax-row-0-col-0_trace-id-stx-bar-0_variable-y"
+        ],
+        "csv_hash": "360a8299368afeca"
+    },
+    "output": {
+        "format": "png",
+        "width_px": 944,
+        "height_px": 803
+    }
+}

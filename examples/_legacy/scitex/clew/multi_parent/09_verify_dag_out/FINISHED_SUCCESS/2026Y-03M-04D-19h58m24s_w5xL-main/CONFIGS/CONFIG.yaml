@@ -1,0 +1,14 @@
+ID: 2026Y-03M-04D-19h58m24s_w5xL
+PID: 825201
+START_DATETIME: 2026-03-04 19:58:24.709572
+FILE: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag.py
+SDIR_OUT: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-python/examples/scitex/clew/multi_parent/09_verify_dag_out/RUNNING/2026Y-03M-04D-19h58m24s_w5xL-main
+ARGS:
+    action: all
+EXIT_STATUS: 0
+END_DATETIME: 2026-03-04 19:58:27.380891
+RUN_DURATION: 00:00:02

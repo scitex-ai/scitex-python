@@ -1,0 +1,13 @@
+{
+  "traces": [
+    {
+      "trace_id": "sin",
+      "x": {
+        "column": "x"
+      },
+      "y": {
+        "column": "y"
+      }
+    }
+  ]
+}

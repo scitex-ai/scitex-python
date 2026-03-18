@@ -1,0 +1,54 @@
+INFO: ============================================================
+INFO: Injected Global Variables (available in your function):
+INFO:   • CONFIG - Session configuration dict
+INFO:       - CONFIG['ID']: 2025Y-11M-19D-15h53m24s_B2f8
+INFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/RUNNING/2025Y-11M-19D-15h53m24s_B2f8-main
+INFO:       - CONFIG['PID']: 181093
+INFO:   • plt - matplotlib.pyplot (configured for session)
+INFO:   • COLORS - CustomColors (for consistent plotting)
+INFO:   • rng_manager - RandomStateManager (for reproducibility)
+INFO:   • logger - SciTeX logger (configured for your script)
+INFO: ============================================================
+INFO: Running main with injected parameters:
+INFO:     {'verbose': 'bool'}
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Matplotlib method 'plot()' does not support full data tracking for CSV export. Consider using 'ax.plot()' instead for better data export support.
+  df = _export_as_csv(self.history)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/01_line_plot_scitex.png (40.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_scatter_scitex.csv (3.9 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/02_scatter_scitex.png (37.6 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_bar_scitex.csv (142.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/03_bar_scitex.png (33.9 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/_subplots/_AxisWrapperMixins/_TrackingMixin.py:113: UserWarning: Matplotlib method 'imshow()' does not support full data tracking for CSV export. Consider using 'ax.plot_imshow()' instead for better data export support.
+  df = _export_as_csv(self.history)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/04_heatmap_custom.png (41.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_histogram_scitex.csv (31.4 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/05_histogram_scitex.png (34.4 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/06_errorbar_scitex.csv (885.0 B)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/06_errorbar_scitex.png (41.3 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:120: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/multi_panel/01_2x2_scitex.csv (17.5 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/multi_panel/01_2x2_scitex.png (68.0 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_collect_figure_metadata.py:120: UserWarning: Could not extract dimension info for metadata: 'function' object has no attribute 'get_position'
+  warnings.warn(
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/multi_panel/02_1x3_varied_widths.csv (7.7 KiB)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/multi_panel/02_1x3_varied_widths.png (37.1 KiB)
+/home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_image.py:57: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  obj.savefig(spath)
+SUCC: Saved to: ./examples/demo_plot_all_types_publication_out/publication/09_style_override.png (37.5 KiB)

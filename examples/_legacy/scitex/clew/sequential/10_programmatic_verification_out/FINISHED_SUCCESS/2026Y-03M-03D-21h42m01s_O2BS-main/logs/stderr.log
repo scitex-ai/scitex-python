@@ -1,0 +1,34 @@
+/usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (6.0.0.post1)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+INFO: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+WARN: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+INFO: === Database Statistics ===
+INFO: Total runs: 39
+INFO: Success runs: 38
+INFO: Failed runs: 0
+
+INFO: === Recent Runs ===
+INFO:   2026Y-03M-03D-21h42m01s_O2BS: 10_programmatic_verification.py [running]
+INFO:   2026Y-03M-03D-21h41m56s_CkIE: 08_analyze.py [success]
+INFO:   2026Y-03M-03D-21h41m01s_algt: 09_demo_verification.py [success]
+INFO:   2026Y-03M-03D-21h40m49s_vF7V: 07_merge.py [success]
+INFO:   2026Y-03M-03D-21h40m39s_Fmqm: 09_demo_verification.py [success]
+
+INFO: === Chain Verification ===
+INFO: Target: report.json
+INFO: Chain length: 4
+INFO: Overall status: verified
+INFO: Is verified: True
+INFO: Failed runs: 0
+
+INFO: Runs in chain:
+INFO:   ✓ 2026Y-03M-03D-21h35m04s_YGzF: 08_analyze.py
+INFO:   ✓ 2026Y-03M-03D-21h33m36s_BxQe: 07_merge.py
+INFO:   ✓ 2026Y-03M-03D-21h27m26s_dlK5: 02_preprocess_a.py
+INFO:   ✓ 2026Y-03M-03D-21h25m53s_epXY: 01_source_a.py
+
+INFO: === Verification Summary ===
+INFO: Use these commands for more details:
+INFO:   scitex clew status     # Show changed items
+INFO:   scitex clew list       # List all tracked runs
+INFO:   scitex clew chain FILE # Trace file dependencies

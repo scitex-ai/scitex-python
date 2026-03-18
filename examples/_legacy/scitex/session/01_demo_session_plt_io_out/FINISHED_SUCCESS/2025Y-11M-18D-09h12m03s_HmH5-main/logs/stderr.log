@@ -1,0 +1,25 @@
+[90mINFO: ============================================================[0m
+[90mINFO: Injected Global Variables (available in your function):[0m
+[90mINFO:   • CONFIG - Session configuration dict[0m
+[90mINFO:       - CONFIG['ID']: 2025Y-11M-18D-09h12m03s_HmH5[0m
+[90mINFO:       - CONFIG['SDIR_RUN']: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_out/RUNNING/2025Y-11M-18D-09h12m03s_HmH5-main[0m
+[90mINFO:       - CONFIG['PID']: 466633[0m
+[90mINFO:   • plt - matplotlib.pyplot (configured for session)[0m
+[90mINFO:   • COLORS - CustomColors (for consistent plotting)[0m
+[90mINFO:   • rng_manager - RandomStateManager (for reproducibility)[0m
+[90mINFO:   • logger - SciTeX logger (configured for your script)[0m
+[90mINFO: ============================================================[0m
+[90mINFO: Running main with injected parameters:[0m
+[90mINFO:     {'filename': 'str', 'verbose': 'bool'}[0m
+[90mINFO: 📝 Saving figure with metadata to: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_out/demo.jpg[0m
+[90mINFO:   • Auto-added URL: https://scitex.ai[0m
+[90mINFO:   • Embedded metadata: {'exp': 's01', 'subj': 'S001', 'url': 'https://scitex.ai'}[0m
+[32mSUCC: Saved to: ./examples/demo_session_plt_io_out/demo.csv (38.0 KiB)[0m
+[32mSUCC: Symlinked: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_out/demo.csv -> /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_out/demo.csv/demo.csv[0m
+[32mSUCC: Saved to: ./examples/demo_session_plt_io_out/demo.jpg (241.6 KiB)[0m
+[32mSUCC: Symlinked: /home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_out/demo.jpg -> /home/ywatanabe/proj/scitex-code/data/demo.jpg[0m
+[90mINFO: ✅ Loading image with metadata from: /home/ywatanabe/proj/scitex-code/./examples/demo_session_plt_io_out/demo.jpg[0m
+[90mINFO:   • Embedded metadata found:[0m
+[90mINFO:     - exp: s01[0m
+[90mINFO:     - subj: S001[0m
+[90mINFO:     - url: https://scitex.ai[0m

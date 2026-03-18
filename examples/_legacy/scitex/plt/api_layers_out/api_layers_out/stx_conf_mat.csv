@@ -1,0 +1,5 @@
+ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-true_class,ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_0,ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_1,ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_2,ax-row-0-col-0_trace-id-stx-conf-mat-0_variable-conf-mat-predicted_3
+True_0,74,19,14,13
+True_1,28,52,77,19
+True_2,0,97,47,28
+True_3,52,37,4,23

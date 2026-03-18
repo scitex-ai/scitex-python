@@ -1,0 +1,20 @@
+demo:
+    xxx: 111
+    yyy: 222
+ID: 2025Y-10M-16D-03h15m21s_kVCc
+PID: 1128011
+START_TIME: 2025-10-16 03:15:21.698488
+FILE: ./scitex_session_demo/scripts/scitex_session_demo.py
+SDIR: 
+    /home/ywatanabe/proj/scitex_repo/scitex_session_demo/scripts/scitex_session_demo_out/RUNNING/2025Y-10M-16D-03h15m21s_kVCc/
+REL_SDIR: scitex_session_demo/./scripts/scitex_session_demo_out/
+SDIR_PATH: 
+    /home/ywatanabe/proj/scitex_repo/scitex_session_demo/scripts/scitex_session_demo_out/RUNNING/2025Y-10M-16D-03h15m21s_kVCc
+REL_SDIR_PATH: scitex_session_demo/scripts/scitex_session_demo_out
+FILE_PATH: scitex_session_demo/scripts/scitex_session_demo.py
+ARGS:
+    n_samples: 100
+    verbose: true
+EXIT_STATUS: 0
+END_TIME: 2025-10-16 03:15:25.307560
+RUN_TIME: 00:00:03

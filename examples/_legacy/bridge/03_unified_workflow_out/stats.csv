@@ -1,0 +1,2 @@
+test_type,statistic_name,statistic_value,p_value,stars,ci_95_lower,ci_95_upper
+pearson,r,0.08878803812257773,0.37969730558644543,,,

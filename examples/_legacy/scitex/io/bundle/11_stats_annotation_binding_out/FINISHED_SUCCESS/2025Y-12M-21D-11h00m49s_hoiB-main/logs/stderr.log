@@ -1,0 +1,34 @@
+INFO: Example 12: FTS Stats Integration
+INFO: Statistical test: t=-7.798, p=0.000000
+INFO: Effect size (Cohen's d): 2.309
+INFO: Significance: ***
+WARN: UnitWarning: Y axis label 'Value' has no units. Consider: 'Value [unit]' or 'Value [-]' for dimensionless
+SUCC: Saved to: ./examples/scitex/fts/12_stats_annotation_binding_out/stats_binding.zip (47.6 KiB)
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-bar-0', skipping
+WARN: No data provided for trace 'ax-row-0-col-0_trace-id-plot-0', skipping
+WARN: Plotting records not found. Cannot export empty data.
+WARN: Plotting records not found. Cannot export empty data.
+
+INFO: Stats added to bundle:
+INFO:   Analyses: 1
+INFO:   Method: independent_t_test
+INFO:   p-value: 1.3340105766833465e-10
+
+INFO: ============================================================
+INFO: STATS VERIFICATION
+INFO: ============================================================
+
+INFO: Analysis: c787019a-509...
+INFO:   Method: independent_t_test
+INFO:   Statistic: -7.798
+INFO:   p-value: 0.000000
+INFO:   Significant: True
+INFO:   Effect size: 2.309
+
+INFO: ============================================================
+INFO: Key takeaway:
+INFO:   - FTS bundles can store statistical results
+INFO:   - Stats are linked to the figure data
+INFO:   - Enables reproducible statistical reporting
+INFO: ============================================================
+SUCC: Example 12 completed!

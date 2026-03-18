@@ -1,0 +1,11 @@
+{
+  "ID": "2025-11-18_09-31-00_NNLL",
+  "FILE": "/home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python.py",
+  "SDIR_OUT": "/home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out",
+  "SDIR_RUN": "/home/ywatanabe/proj/scitex-code/examples/demo_session_plt_io_pure_python_out/RUNNING/2025-11-18_09-31-00_NNLL",
+  "PID": 494069,
+  "ARGS": {
+    "filename": "demo.jpg",
+    "verbose": true
+  }
+}

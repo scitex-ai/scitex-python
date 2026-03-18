@@ -1,0 +1,25 @@
+{
+  "analyses": [
+    {
+      "result_id": "3f45683a-3dac-411a-ae8b-a8399c319d3b",
+      "method": {
+        "name": "bootstrap"
+      },
+      "results": {
+        "statistic": 0.0,
+        "statistic_name": "",
+        "p_value": 0.017,
+        "effect_size": {
+          "name": "d",
+          "value": 0.89,
+          "ci_lower": 0.42,
+          "ci_upper": 1.36
+        },
+        "significant": true
+      },
+      "inputs": {
+        "comparison_name": "Group A vs Group B"
+      }
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+[94m
+========================================
+SciTeX v2.2.2
+2025Y-11M-21D-15h55m08s_sRsS (PID: 1347415)
+
+/home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication.py
+
+Arguments:
+    verbose: True
+========================================
+[0m
+
+======================================================================
+ PUBLICATION-READY FIGURE DEMONSTRATION
+ Using Unified Style System
+======================================================================
+
+This demo showcases scitex.plt.subplots() with mm-control
+integration for creating publication-ready figures.
+
+
+======================================================================
+Demo: Publication Line Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/01_plot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Scatter Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/02_scatter.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Bar Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/03_bar.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Histogram (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/04_hist.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Boxplot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/05_boxplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Error Bar Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/06_errorbar.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Horizontal Bar Plot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/07_barh.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Fill Between (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/08_fill_between.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Imshow (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/09_imshow.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Contour (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/10_contour.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Violinplot (SciTeX Style)
+======================================================================
+- Saved: publication/01_matplotlib_basic/11_violinplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Heatmap (Custom Scitex)
+======================================================================
+- Saved: publication/02_custom_scitex/01_plot_heatmap.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Line (Custom Scitex)
+======================================================================
+- Saved: publication/02_custom_scitex/02_plot_line.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Shaded Line (Custom Scitex)
+======================================================================
+- Saved: publication/02_custom_scitex/03_plot_shaded_line.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Violin (Custom Scitex)
+======================================================================
+- Saved: publication/02_custom_scitex/04_plot_violin.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication ECDF (Custom Scitex)
+======================================================================
+- Saved: publication/02_custom_scitex/05_plot_ecdf.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Box (Custom Scitex)
+======================================================================
+- Saved: publication/02_custom_scitex/06_plot_box.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Mean±Std (Custom Scitex)
+======================================================================
+- Saved: publication/02_custom_scitex/07_plot_mean_std.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication KDE (Functional)
+======================================================================
+- Saved: publication/03_functional/01_plot_kde.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn Boxplot
+======================================================================
+- Saved: publication/04_seaborn/01_sns_boxplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn Violinplot
+======================================================================
+- Saved: publication/04_seaborn/02_sns_violinplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn Scatterplot
+======================================================================
+- Saved: publication/04_seaborn/03_sns_scatterplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn Lineplot
+======================================================================
+- Saved: publication/04_seaborn/04_sns_lineplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn Histplot
+======================================================================
+- Saved: publication/04_seaborn/05_sns_histplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn Barplot
+======================================================================
+- Saved: publication/04_seaborn/06_sns_barplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn Stripplot
+======================================================================
+- Saved: publication/04_seaborn/07_sns_stripplot.png, .pdf, .jpg
+
+======================================================================
+Demo: Publication Seaborn KDE Plot
+======================================================================
+
+[ERROR] in demo_publication_sns_kdeplot: Line2D.set() got an unexpected keyword argument 'xlim'
+
+======================================================================
+Demo: Multi-Panel Figure 2x2 (SciTeX Style)
+======================================================================
+- Saved: publication/05_multi_panel/01_2x2_scitex.png, .pdf, .jpg
+  Layout: 2x2 grid
+  Each panel: 40 x 28 mm
+  Spacing: 8 x 10 mm
+
+======================================================================
+Demo: Multi-Panel Figure 1x3 with Individual Widths
+======================================================================
+- Saved: publication/05_multi_panel/02_1x3_varied_widths.png, .pdf, .jpg
+  Layout: 1x3 grid
+  Panel widths: 25, 35, 25 mm
+
+======================================================================
+Demo: Style Override Pattern
+======================================================================
+- Saved: publication/style_override.png, .pdf, .jpg
+
+======================================================================
+ DEMONSTRATION COMPLETE
+======================================================================
+
+Output locations:
+  Session output: /home/ywatanabe/proj/scitex-code/examples/demo_plot_all_types_publication_out/
+  Matplotlib basic: publication/01_matplotlib_basic/
+  Custom scitex: publication/02_custom_scitex/
+  Functional: publication/03_functional/
+  Seaborn: publication/04_seaborn/
+  Multi-panels: publication/05_multi_panel/
+  Root (style override): publication/
+
+Coverage:
+  - Matplotlib basic plots (11): plot, scatter, bar, barh, hist, boxplot,
+    errorbar, fill_between, imshow, contour, violinplot
+  - Custom scitex plots (7): plot_heatmap, plot_line, plot_shaded_line,
+    plot_violin, plot_ecdf, plot_box, plot_mean_std
+  - Functional plots (1): plot_kde
+  - Seaborn integration (8): sns_boxplot, sns_violinplot, sns_scatterplot,
+    sns_lineplot, sns_histplot, sns_barplot, sns_stripplot, sns_kdeplot
+  - Multi-panel (2): 2x2 grid, 1x3 with varied widths
+  - Total: 30 publication-ready plot demonstrations
+
+All figures are publication-ready:
+  - Formats: PNG (lossless raster) + PDF (vector)
+  - 300 DPI resolution (PNG)
+  - Infinite zoom (PDF)
+  - Precise mm-based dimensions
+  - Automatic cropping with 1mm margin
+  - Consistent SCITEX_STYLE preset
+  - Embedded metadata for reproducibility
+
+Note: JPEG is NOT used - it's lossy and creates artifacts

@@ -1,0 +1,14 @@
+{
+  "columns": [
+    "ax-row-0-col-0_trace-id-pie-0_variable-values",
+    "ax-row-0-col-0_trace-id-pie-0_variable-labels"
+  ],
+  "dtypes": {
+    "ax-row-0-col-0_trace-id-pie-0_variable-values": "float64",
+    "ax-row-0-col-0_trace-id-pie-0_variable-labels": "object"
+  },
+  "shape": [
+    5,
+    2
+  ]
+}

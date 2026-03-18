@@ -1,0 +1,21 @@
+{
+  "traces": [
+    {
+      "trace_id": "main",
+      "x": {
+        "column": "x"
+      },
+      "y": {
+        "column": "y"
+      }
+    }
+  ],
+  "axes": {
+    "x": {
+      "title": "X Axis"
+    },
+    "y": {
+      "title": "Y Axis"
+    }
+  }
+}

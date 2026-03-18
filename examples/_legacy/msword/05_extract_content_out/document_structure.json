@@ -1,0 +1,2052 @@
+{
+  "metadata": {
+    "profile": "resna-2025",
+    "source_file": "/home/ywatanabe/proj/scitex-code/docs/MSWORD_MANUSCTIPS/RESNA 2025 Scientific Paper Template.docx",
+    "import_timestamp": "2025-12-11T09:32:08.212617",
+    "title": "TITLE/TITRE",
+    "author": "Adrian Chan",
+    "created": "2024-10-21T13:01:00+00:00",
+    "modified": "2024-10-21T13:01:00+00:00"
+  },
+  "blocks": [
+    {
+      "index": 0,
+      "text": "Title of paper in bold sentence case",
+      "style": "Heading 1",
+      "runs": [
+        {
+          "text": "T",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "itle of paper ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "in bold sentence case",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 1,
+      "detection_method": "style"
+    },
+    {
+      "index": 1,
+      "text": "First I. LastName1,2, First I. LastName2",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "First I. LastName",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "1,2",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ", First I. LastName",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "2",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 2,
+      "text": "1University of Illinois, 2Shirley Ryan AbilityLab (Chicago)",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "1",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "University of Illinois, ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "2",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Shirley Ryan ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "AbilityLab",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " (Chicago)",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 3,
+      "text": "INTRODUCTION",
+      "style": "Heading 1",
+      "runs": [
+        {
+          "text": "INTRODUCTION",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 1,
+      "detection_method": "style"
+    },
+    {
+      "index": 4,
+      "text": "This template was created in Microsoft Word. It provides authors with the formatting specifications needed to prepare their paper. Margins, column widths, line spacing, font and type styles are built-in: you can replace the existing text with your own (e.g. copy and paste). Ensure that the final version follows the guidelines provided in this document. Do not change the formatting in this template.",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "This template was created in ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Microsoft",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " Word",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". It provides authors with the formatting specifications needed to prepare their paper. Margins, column widths, line spacing, ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "font ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "and type styles are built-in: you can replace the existing text with your own",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " (e.g. copy and paste)",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Ensure that the final version follows the guidelines provided in this document",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ".",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " Do not change the formatting in this template.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 5,
+      "text": "All submitted papers should include an \u201cIntroduction\u201d section, as shown here, providing background and rationale for the topic addressed. The introduction section should conclude with a concrete and specific purpose statement. The remaining sections of the paper should be appropriate to the content and methodology used, depending upon the type of paper being submitted. For many research-based papers, this would include Methods, Results, Discussion and Conclusions; an Acknowledgements section may also be included. References should be included as the final section.",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "All submitted papers should include an \u201cIntroduction\u201d section",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ",",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " as shown ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "here, providing background and rationale for the topic addressed. The introduction ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "section ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "should conclude with a concrete and specific purpose statement. The remaining sections of the paper should be appropriate to the content and methodology used",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ", depending upon the type of paper being submitted",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". For ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "many",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " research",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "-based",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " papers, this ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "would",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " include",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " Methods, Results, Discussion and Conclusions; an Acknowledgements section",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "may also be included. References should",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " be",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " included as ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "the",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " final section.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 6,
+      "text": "SUBMISSION INSTRUCTIONS",
+      "style": "Heading 1",
+      "runs": [
+        {
+          "text": "SUBMISSION INSTRUCTIONS",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 1,
+      "detection_method": "style"
+    },
+    {
+      "index": 7,
+      "text": "Submissions must be a minimum of 2 pages and a maximum of 4 pages in total (i.e. including References). Submissions must be in English.",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "S",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "ubmission",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "s",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " must be a minimum of 2 pages and a maximum of 4 pages",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " in total (i.e. including References)",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". Submissions must be in English. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 8,
+      "text": "LAYOUT",
+      "style": "Heading 1",
+      "runs": [
+        {
+          "text": "LAYOUT",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 1,
+      "detection_method": "style"
+    },
+    {
+      "index": 9,
+      "text": "All margins are set at 3/4\" (1.9 cm). Use an 11-point sans serif font (Aptos, Calibri, or Arial) for all text. All text (except the title) should be single-spaced and aligned left (not justified). A 6-point space should follow each paragraph and heading; do not indent paragraphs. The title should be centered, bold font and sentence case (i.e. only the first word capitalized).",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "All",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " margins ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "are set at ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "3/4\" (1.9 cm). ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Use ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "an 11-point sans serif font (Aptos, Calibri, or Arial)",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " for all text. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "All text",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " (except",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " the",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " title)",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " should ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "be",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " single-spaced",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " and aligned left (not justified). ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "A 6-point space should follow each paragraph ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "and",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " heading; do not indent paragraphs. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "The title",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " should be ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "centered",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ", bold font and sentence case (i.e. onl",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "y the first word capitalized). ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 10,
+      "text": "Two versions of the paper are required: a complete version and a blinded version. The complete version should be named according to the title of the paper (e.g \u201cMeasuring_heart_rate_in_manual_wheelchair_users.doc\u201d).",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "Two versions of the paper are required: a complete version and a ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "blinded",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " version",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "The complete version should be named according to the title of the paper (",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "e.g",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "\u201c",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Measuring_heart_rate_in_manual_wheelchair_users.doc\u201d). ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 11,
+      "text": "You can shorten this name if your title is very long, but do not include the author\u2019s name. In the blinded version, delete the author(s) names and affiliations, as well as any identifying information. Ensure that the paper has no review comments visible that might reveal who the author is (i.e. accept or delete all track changes/comments). The blinded version should also be named according to the title of the paper, but preceded by the word \u201cBlinded\u201d (e.g. \u201cBlinded_Measuring_heart_rate_in_manual_wheelchair_users.doc\u201d).",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "You can shorten this name if your title is very long, but do not include the author\u2019s name.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " In the blinded version, delete the author(s) names and affiliations, as well as any identifying information. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Ensure that the ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "paper has no review comments ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "visible that might reveal ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "who the author is (i.e. accept or delete all track changes/comments).",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "The blinded version should also be named according to the title of the ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "paper, but",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " preceded by the word \u201cBlinded\u201d (e.g. \u201cBlinded_",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Measuring_heart_rate_in_manual_wheelchair_users.doc\u201d).",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 12,
+      "text": "HEADINGS",
+      "style": "Heading 1",
+      "runs": [
+        {
+          "text": "HEADINGS",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 1,
+      "detection_method": "style"
+    },
+    {
+      "index": 13,
+      "text": "Main headings (e.g. Introduction, Methods, Results etc.) should be written in bold font and all capital letters. Sub-headings may be used, but only if there are at least two sections within that level of content. First level sub-headings are written in bold font and sentence case. Second level sub-headings, if required, are underlined and written in sentence case, as illustrated below. Do not indent headings or sub-headings.",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "Main headings (e.g. Introduction, Methods, Results etc.) ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "should be written in",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " bold font and all capital letters. Sub-headings may be used",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ", but only",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " if there are at least two sections within that level of content. First level sub-headings ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "are",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " written in",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " bold font ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "and",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " sentence case",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ".",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "S",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "econd level sub-headings",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ", if required,",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " are underlined ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "and written in",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " sentence case, as illustrated below. Do not indent headings or sub-headings.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "paragraph"
+    },
+    {
+      "index": 14,
+      "text": "Example of a first level sub-heading",
+      "style": "Heading 2",
+      "runs": [
+        {
+          "text": "Example of a first level sub-heading",
+          "bold": true,
+          "italic": null,
+          "underline": true,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 2,
+      "detection_method": "style"
+    },
+    {
+      "index": 15,
+      "text": "Example of a second level sub-heading",
+      "style": "Heading 2",
+      "runs": [
+        {
+          "text": "Example of a second level sub-heading",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 2,
+      "detection_method": "style"
+    },
+    {
+      "index": 16,
+      "text": "FIGURES AND TABLES",
+      "style": "Heading 1",
+      "runs": [
+        {
+          "text": "FIGURES AND TABLES",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 1,
+      "detection_method": "style"
+    },
+    {
+      "index": 17,
+      "type": "image",
+      "image_hash": "5c52061441db",
+      "rel_id": "rId7"
+    },
+    {
+      "index": 18,
+      "type": "image",
+      "image_hash": "5c52061441db",
+      "rel_id": "rId8"
+    },
+    {
+      "index": 19,
+      "text": "Figures should be labeled with the figure number and title/description in bold font, directly below the figure. Font within a figure should not be smaller than 8-point. The figure should be edited so that the main text wraps around the image (i.e. Format < Shape < Layout < Square). A text box frame is a simple way to insert images: use Insert > Text Box; size the text box and then drag images into the box. To remove the visible box, select the frame and select Format > Text Box > Colors and Lines > No Fill and > No Line.",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "Figures should be labeled with the figure number and title/description in bold font, directly below the figure. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Font within a figure should not be smaller than 8-point. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "The figure should be edited so that the main text wraps around the image (i.e. Format < Shape < Layout < Square). A text box frame is a simple way to insert images: use Insert > Text Box; size the text box and then drag images into the box. To remove the visible box, select the frame and select Format > Text Box > Colors and Lines > No Fill and > No Line.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "caption",
+      "caption_type": "unknown",
+      "caption_text": "Figures should be labeled with the figure number and title/description in bold font, directly below the figure. Font within a figure should not be smaller than 8-point. The figure should be edited so that the main text wraps around the image (i.e. Format < Shape < Layout < Square). A text box frame is a simple way to insert images: use Insert > Text Box; size the text box and then drag images into the box. To remove the visible box, select the frame and select Format > Text Box > Colors and Lines > No Fill and > No Line."
+    },
+    {
+      "index": 20,
+      "text": "Table headings should appear immediately above the table in bold font, aligned left, and include the table number. Table headings and sub-headings should be bold font and centered relative to the row and column. Table content/text should be regular font and aligned left. Font within the table should be no smaller than 8-point.",
+      "style": "Body Text",
+      "runs": [
+        {
+          "text": "T",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "able headings should appear immediately above the table",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " in bold font,",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " aligned left",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ", and include the table number",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Table headings and sub-headings should be bold ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "font ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "and centered relative to the row and column. Table content/text should be regular font and aligned left. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Font",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " within the table should be no smaller than 8-point. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "caption",
+      "caption_type": "unknown",
+      "caption_text": "Table headings should appear immediately above the table in bold font, aligned left, and include the table number. Table headings and sub-headings should be bold font and centered relative to the row and column. Table content/text should be regular font and aligned left. Font within the table should be no smaller than 8-point."
+    },
+    {
+      "index": 21,
+      "text": "Table 1.  Example of a table heading",
+      "style": "Table Heading",
+      "runs": [
+        {
+          "text": "Table 1.  Example of a table heading ",
+          "bold": true,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "caption",
+      "caption_type": "table",
+      "number": 1,
+      "caption_text": "Example of a table heading"
+    },
+    {
+      "index": 22,
+      "type": "table",
+      "rows": [
+        [
+          "Table Column Heading",
+          "Table Column Heading",
+          "Table Column Heading"
+        ],
+        [
+          "Table Column Heading",
+          "Table Subheading",
+          "Table Subheading"
+        ],
+        [
+          "Table text",
+          "Table text",
+          "Table text"
+        ],
+        [
+          "Table text",
+          "85.5%",
+          "14.5%"
+        ]
+      ],
+      "num_rows": 4,
+      "num_cols": 3
+    },
+    {
+      "index": 23,
+      "text": "REFERENCES",
+      "style": "Heading 1",
+      "runs": [
+        {
+          "text": "REFERENCES",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "heading",
+      "level": 1,
+      "detection_method": "style",
+      "is_reference_header": true
+    },
+    {
+      "index": 24,
+      "text": "In-text citations must be numbered using square brackets as indicated here. [1] Multiple sources are cited in the following manner. [2,3,4-7] References may be presented in either APA or Vancouver style format, but must be listed in order of citation and preceded by the citation number in square brackets. Each reference is followed by a 6-point space. Some examples of reference formats are provided below:",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "In-text citations must be numbered using square brackets as indicated here. [1] Multiple sources are cited in the following manner. [2,3,4-7] ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "References ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "may",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " be ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "presented",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " in ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "either APA",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "or",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Vancouver style ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "format, ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "but",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " must be ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "listed in order of citation and preceded by the citation number in square brackets",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ".",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Each reference is",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " followed by a 6-point space",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". Some examples of reference formats are provided below:",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_text": "In-text citations must be numbered using square brackets as indicated here. [1] Multiple sources are cited in the following manner. [2,3,4-7] References may be presented in either APA or Vancouver style format, but must be listed in order of citation and preceded by the citation number in square brackets. Each reference is followed by a 6-point space. Some examples of reference formats are provided below:"
+    },
+    {
+      "index": 25,
+      "text": "Journal articles:",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "Journal article",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "s",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ":",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_text": "Journal articles:"
+    },
+    {
+      "index": 26,
+      "text": "[1] Jutai JW, Rigby P, Ryan S, Stickel S. Pyschosocial impact of electronic aids to daily living. Assist Technol. 2000 12(2):123\u2013131.",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "[1] ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Jutai",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " JW",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ",",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " Rigby P, Ryan S, Stickel",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " S. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Pyschosocial",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " impact of electronic aids to daily living. ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Assist Technol",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ".",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "2000 ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "12",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "(2):",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "123\u2013131.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_number": 1,
+      "ref_text": "Jutai JW, Rigby P, Ryan S, Stickel S. Pyschosocial impact of electronic aids to daily living. Assist Technol. 2000 12(2):123\u2013131."
+    },
+    {
+      "index": 27,
+      "text": "Book:",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "Book:",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_text": "Book:"
+    },
+    {
+      "index": 28,
+      "text": "[2] Portney LG, Watkins MP. Foundations of clinical research: applications to practice. 3rd ed. Philadelphia: F.A. Davis Company; 2015.",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "[2] Portney LG, Watkins ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "M",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "P",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Foundations of clinical research",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ": applications",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " to practice",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ". ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "3",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "rd",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ed. Philadelphia",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ": ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "F.A. Davis Company; 2015",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": ".",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_number": 2,
+      "ref_text": "Portney LG, Watkins MP. Foundations of clinical research: applications to practice. 3rd ed. Philadelphia: F.A. Davis Company; 2015."
+    },
+    {
+      "index": 29,
+      "text": "Chapter in a Book:",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "Chapter in a Book:",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_text": "Chapter in a Book:"
+    },
+    {
+      "index": 30,
+      "text": "[3] Pagel JF, Pegram GV. The role for the primary care physician in sleep medicine. In: Pagel JF, Pandi-Perumal SR, editors. Primary care sleep medicine. 2nd ed. New York: Springer; 2014.",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "[3] ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Pagel JF, Pegram GV. The role ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "for",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " the primary care physician in sleep medicine. In: Pagel JF, Pandi-Perumal SR, editors. Primary care sleep medicine. 2nd ed. New York: Springer; 2014.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_number": 3,
+      "ref_text": "Pagel JF, Pegram GV. The role for the primary care physician in sleep medicine. In: Pagel JF, Pandi-Perumal SR, editors. Primary care sleep medicine. 2nd ed. New York: Springer; 2014."
+    },
+    {
+      "index": 31,
+      "text": "Conference Proceeding",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "Conference Proceeding",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_text": "Conference Proceeding"
+    },
+    {
+      "index": 32,
+      "text": "[4] Smith RO. Assistive technology outcome assessment prototypes: measuring INGO variables of outcomes. In R. Simpson (Ed.), Proceedings of the RESNA 25th Annual Conference (239\u2013341). Minneapolis: RESNA Press; 2002.",
+      "style": "Normal (Web)",
+      "runs": [
+        {
+          "text": "[4]",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Smith R",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "O. Assistive technology ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "outcome assessment prototypes: m",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "easuring INGO variables of outcomes.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " In R. Simpson (Ed.), ",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "Proceedings of the RESNA 25th Annual Conference",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": " (239\u2013341",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        },
+        {
+          "text": "). Minneapolis: RESNA Press; 2002.",
+          "bold": null,
+          "italic": null,
+          "underline": false,
+          "font_size": 11.0,
+          "font_name": "Aptos"
+        }
+      ],
+      "type": "reference-paragraph",
+      "ref_number": 4,
+      "ref_text": "Smith RO. Assistive technology outcome assessment prototypes: measuring INGO variables of outcomes. In R. Simpson (Ed.), Proceedings of the RESNA 25th Annual Conference (239\u2013341). Minneapolis: RESNA Press; 2002."
+    }
+  ],
+  "references": [
+    {
+      "number": null,
+      "text": "In-text citations must be numbered using square brackets as indicated here. [1] Multiple sources are cited in the following manner. [2,3,4-7] References may be presented in either APA or Vancouver style format, but must be listed in order of citation and preceded by the citation number in square brackets. Each reference is followed by a 6-point space. Some examples of reference formats are provided below:",
+      "raw": "In-text citations must be numbered using square brackets as indicated here. [1] Multiple sources are cited in the following manner. [2,3,4-7] References may be presented in either APA or Vancouver style format, but must be listed in order of citation and preceded by the citation number in square brackets. Each reference is followed by a 6-point space. Some examples of reference formats are provided below:"
+    },
+    {
+      "number": null,
+      "text": "Journal articles:",
+      "raw": "Journal articles:"
+    },
+    {
+      "number": 1,
+      "text": "Jutai JW, Rigby P, Ryan S, Stickel S. Pyschosocial impact of electronic aids to daily living. Assist Technol. 2000 12(2):123\u2013131.",
+      "raw": "[1] Jutai JW, Rigby P, Ryan S, Stickel S. Pyschosocial impact of electronic aids to daily living. Assist Technol. 2000 12(2):123\u2013131."
+    },
+    {
+      "number": null,
+      "text": "Book:",
+      "raw": "Book:"
+    },
+    {
+      "number": 2,
+      "text": "Portney LG, Watkins MP. Foundations of clinical research: applications to practice. 3rd ed. Philadelphia: F.A. Davis Company; 2015.",
+      "raw": "[2] Portney LG, Watkins MP. Foundations of clinical research: applications to practice. 3rd ed. Philadelphia: F.A. Davis Company; 2015."
+    },
+    {
+      "number": null,
+      "text": "Chapter in a Book:",
+      "raw": "Chapter in a Book:"
+    },
+    {
+      "number": 3,
+      "text": "Pagel JF, Pegram GV. The role for the primary care physician in sleep medicine. In: Pagel JF, Pandi-Perumal SR, editors. Primary care sleep medicine. 2nd ed. New York: Springer; 2014.",
+      "raw": "[3] Pagel JF, Pegram GV. The role for the primary care physician in sleep medicine. In: Pagel JF, Pandi-Perumal SR, editors. Primary care sleep medicine. 2nd ed. New York: Springer; 2014."
+    },
+    {
+      "number": null,
+      "text": "Conference Proceeding",
+      "raw": "Conference Proceeding"
+    },
+    {
+      "number": 4,
+      "text": "Smith RO. Assistive technology outcome assessment prototypes: measuring INGO variables of outcomes. In R. Simpson (Ed.), Proceedings of the RESNA 25th Annual Conference (239\u2013341). Minneapolis: RESNA Press; 2002.",
+      "raw": "[4] Smith RO. Assistive technology outcome assessment prototypes: measuring INGO variables of outcomes. In R. Simpson (Ed.), Proceedings of the RESNA 25th Annual Conference (239\u2013341). Minneapolis: RESNA Press; 2002."
+    }
+  ],
+  "warnings": [],
+  "statistics": {
+    "total_blocks": 33,
+    "headings": 9,
+    "paragraphs": 9,
+    "tables": 1,
+    "captions": 3,
+    "references": 9
+  }
+}

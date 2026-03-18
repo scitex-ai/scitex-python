@@ -1,0 +1,11 @@
+ID: 2025Y-12M-11D-09h32m19s_YFZY
+PID: 978695
+START_DATETIME: 2025-12-11 09:32:19.853877
+FILE: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline.py
+SDIR_OUT: /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out
+SDIR_RUN: 
+    /home/ywatanabe/proj/scitex-code/examples/msword/06_full_pipeline_out/RUNNING/2025Y-12M-11D-09h32m19s_YFZY-main
+ARGS: {}
+EXIT_STATUS: 0
+END_DATETIME: 2025-12-11 09:32:30.572797
+RUN_DURATION: 00:00:10
