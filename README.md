@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-18 15:31:55
+!-- Timestamp: 2026-03-18 15:34:42
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -30,21 +30,13 @@
 
 ---
 
-## Demo
-
-**40 min, minimal human intervention** -- AI agent conducts: literature search -> data analysis -> statistics -> figures -> 21-page manuscript -> peer review simulation
-
-<p align="center">
-  <a href="https://scitex.ai/demos/watch/scitex-automated-research/">
-    <img src="docs/assets/images/scitex-demo.gif" alt="SciTeX Demo" width="800">
-  </a>
-</p>
-
 ## Why SciTeX?
 
 Researchers face a fragmented toolchain -- literature search, statistical analysis, figure creation, and manuscript writing each require separate tools. AI agents can automate these steps, but lack a unified interface. And as AI-accelerated research compounds both volume and opacity, the gap between what is published and what can be verified continues to widen.
 
 SciTeX unifies the research workflow from raw data to manuscript -- with **cryptographic verification** built into every step. Each module works standalone or together, accessible through **Python API**, **CLI**, and **MCP** for AI agents. SciTeX also serves as the computational engine behind [SciTeX Cloud](https://github.com/ywatanabe1989/scitex-cloud) ([scitex.ai](https://scitex.ai)) -- a self-hostable web platform for collaborative research.
+
+## SciTeX Ecosystem
 
 ```
                                 SciTeX Ecosystem
@@ -66,6 +58,16 @@ SciTeX unifies the research workflow from raw data to manuscript -- with **crypt
     <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="400">
 </p>
 <p align="center"><sub><b>Figure 1.</b> SciTeX research pipeline -- from literature search to manuscript compilation, with every step cryptographically linked.</sub></p>
+
+## Demo
+
+**40 min, minimal human intervention** -- AI agent conducts: literature search -> data analysis -> statistics -> figures -> 21-page manuscript -> peer review simulation
+
+<p align="center">
+  <a href="https://scitex.ai/demos/watch/scitex-automated-research/">
+    <img src="docs/assets/images/scitex-demo.gif" alt="SciTeX Demo" width="800">
+  </a>
+</p>
 
 ## Installation
 
