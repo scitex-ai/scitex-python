@@ -144,8 +144,16 @@ function renderSession(path, sid) {
   h += '<button onclick="copyText(location.href)" class="btn btn-sm">Share</button>';
   h += '<button onclick="exportHTML()" class="btn btn-sm">Export</button>';
   h += '</div></div>';
+  // Build tool result lookup: tool_use_id -> {stdout, stderr}
+  const resultMap = {};
+  (s.entries||[]).forEach(e => {
+    if (e.tool_result && e.tool_result.tool_use_id) {
+      resultMap[e.tool_result.tool_use_id] = e.tool_result;
+    }
+  });
   (s.entries || []).forEach(e => {
-    if (e.type === 'user' && !e.text && !e.tool_result) return;
+    // Skip user entries that are pure tool results (shown inline with tool call)
+    if (e.type === 'user' && !e.text && e.tool_result) return;
     if (e.type === 'system') {
       if (e.text) { h += '<div class="chat-entry chat-system"><div class="chat-role chat-role-system">SYSTEM</div><div class="chat-text">' + esc(e.text).slice(0,500) + '</div></div>'; }
       return;
@@ -167,24 +175,16 @@ function renderSession(path, sid) {
         h += '<span class="tool-name">' + esc(tc.name) + '</span>';
         if (desc) h += '<span style="color:#8b949e;font-size:0.8em;margin-left:8px">' + esc(String(desc).slice(0,60)) + '</span>';
         h += '<span>&#9654;</span></div>';
-        h += '<div class="tool-body"><pre>' + inp + '</pre></div></div>';
+        h += '<div class="tool-body"><pre>' + inp + '</pre>';
+        // Inline the tool result stdout/stderr
+        const tr = resultMap[tc.id];
+        if (tr) {
+          const out = (tr.stdout||'').slice(0,800);
+          if (out) { h += '<div class="output-block" style="margin-top:6px"><div style="color:#3fb950;font-size:0.75em;font-weight:600">stdout</div><pre>' + esc(out) + (tr.stdout.length>800?'\n...':'') + '</pre></div>'; }
+          if (tr.stderr) { h += '<div class="error-block" style="margin-top:4px"><div style="color:#f85149;font-size:0.75em;font-weight:600">stderr</div><pre>' + esc(tr.stderr.slice(0,500)) + '</pre></div>'; }
+        }
+        h += '</div></div>';
       });
-    }
-    if (e.tool_result) {
-      const tr = e.tool_result;
-      const out = (tr.stdout||'').slice(0,500);
-      if (out) {
-        h += '<div class="tool-card"><div class="tool-header" onclick="this.nextElementSibling.classList.toggle(\'open\')">';
-        h += '<span class="tool-result-label" style="margin:0">Result</span>';
-        h += '<span style="color:#8b949e;font-size:0.75em;margin-left:8px">' + out.split('\n')[0].slice(0,60) + '</span>';
-        h += '<span>&#9654;</span></div>';
-        h += '<div class="tool-body"><pre>' + esc(out) + '</pre></div></div>';
-      }
-      if (tr.stderr) {
-        h += '<div class="tool-card"><div class="tool-header" onclick="this.nextElementSibling.classList.toggle(\'open\')" style="border-left:3px solid #da3633">';
-        h += '<span style="color:#f85149;font-weight:600;font-size:0.75em">Stderr</span><span>&#9654;</span></div>';
-        h += '<div class="tool-body"><pre style="color:#f85149">' + esc(tr.stderr.slice(0,500)) + '</pre></div></div>';
-      }
     }
     h += '</div>';
   });
