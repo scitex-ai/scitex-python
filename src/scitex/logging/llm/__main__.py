@@ -40,7 +40,62 @@ def main() -> int:
     p_dag = sub.add_parser("dag", help="Print tool call DAG as mermaid")
     p_dag.add_argument("session", help="Path to .jsonl session file")
 
+    # actions
+    p_actions = sub.add_parser(
+        "actions", help="Extract agent actions (tool calls + results)"
+    )
+    p_actions.add_argument("session", help="Path to .jsonl session file")
+    p_actions.add_argument(
+        "-f",
+        "--format",
+        choices=["log", "jsonl", "json"],
+        default="log",
+        help="Output format (default: log)",
+    )
+    p_actions.add_argument(
+        "-o", "--output", default=None, help="Output file (default: stdout)"
+    )
+
+    # dashboard
+    p_dash = sub.add_parser("dashboard", help="Render multi-session dashboard")
+    p_dash.add_argument(
+        "-o", "--output", default="/tmp/claude_dashboard.html", help="Output HTML"
+    )
+    p_dash.add_argument("--claude-dir", default="~/.claude", help="Claude config dir")
+    p_dash.add_argument("--open", action="store_true", help="Open in browser")
+
     args = parser.parse_args()
+
+    if args.command == "dashboard":
+        from ._dashboard import render_dashboard
+
+        path = render_dashboard(args.output, args.claude_dir)
+        print(f"Dashboard: {path}")
+        if args.open:
+            import subprocess
+
+            subprocess.Popen(["xdg-open", str(path)])
+        return 0
+
+    if args.command == "actions":
+        from ._actions import actions_to_jsonl, actions_to_log, extract_actions
+
+        actions = extract_actions(args.session)
+        if args.format == "log":
+            text = actions_to_log(actions)
+        elif args.format == "jsonl":
+            text = actions_to_jsonl(actions)
+        else:
+            text = json.dumps([a.to_dict() for a in actions], indent=2)
+
+        if args.output:
+            from pathlib import Path
+
+            Path(args.output).write_text(text, encoding="utf-8")
+            print(f"Written: {args.output} ({len(actions)} actions)")
+        else:
+            print(text)
+        return 0
 
     from . import load, to_mermaid
 

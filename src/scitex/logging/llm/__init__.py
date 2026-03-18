@@ -17,7 +17,9 @@ Usage
 
 from __future__ import annotations
 
+from ._actions import Action, actions_to_jsonl, actions_to_log, extract_actions
 from ._dag import build_dag, to_mermaid
+from ._dashboard import discover_sessions, render_dashboard
 from ._parser import ClaudeCodeSession, Entry, ToolCall, ToolResult, load
 
 __all__ = [
@@ -26,8 +28,14 @@ __all__ = [
     "Entry",
     "ToolCall",
     "ToolResult",
+    "Action",
+    "extract_actions",
+    "actions_to_log",
+    "actions_to_jsonl",
     "build_dag",
     "to_mermaid",
+    "discover_sessions",
+    "render_dashboard",
 ]
 
 # EOF
