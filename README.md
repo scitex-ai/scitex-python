@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-18 15:34:42
+!-- Timestamp: 2026-03-18 15:40:59
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -39,35 +39,37 @@ SciTeX unifies the research workflow from raw data to manuscript -- with **crypt
 ## SciTeX Ecosystem
 
 ```
-                                SciTeX Ecosystem
-      ┌─────────────────────────────────────────────────────────────┐
-      │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
-      │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
-      ├─────────────────────────────────────────────────────────────┤
-      │  scitex (this package) -- Python engine & orchestrator      │
-      │    @session | io | stats | plt | scholar | writer | clew    │
-      ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-      │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
-      │ io       │ stats    │ recipe   │ writer   │  (verification) │
-      │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
-      └──────────┴──────────┴──────────┴──────────┴─────────────────┘
+                                       SciTeX Ecosystem
+             ┌─────────────────────────────────────────────────────────────┐
+             │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
+             │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
+             ├─────────────────────────────────────────────────────────────┤
+             │  scitex (this package) -- Python engine & orchestrator      │
+             │    @session | io | stats | plt | scholar | writer | clew    │
+             ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
+             │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
+             │ io       │ stats    │ recipe   │ writer   │  (verification) │
+             │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
+             └──────────┴──────────┴──────────┴──────────┴─────────────────┘
        Each package: standalone (pip install scitex-io) or unified (scitex.io)
 ```
 
+## SciTeX and Research Workflow
+
 <p align="center">
-    <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="400">
+    <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="600">
 </p>
 <p align="center"><sub><b>Figure 1.</b> SciTeX research pipeline -- from literature search to manuscript compilation, with every step cryptographically linked.</sub></p>
 
 ## Demo
-
-**40 min, minimal human intervention** -- AI agent conducts: literature search -> data analysis -> statistics -> figures -> 21-page manuscript -> peer review simulation
 
 <p align="center">
   <a href="https://scitex.ai/demos/watch/scitex-automated-research/">
     <img src="docs/assets/images/scitex-demo.gif" alt="SciTeX Demo" width="800">
   </a>
 </p>
+
+<p align="center"><sub><b>Video 1.</b> 40 min, minimal human intervention -- AI agent conducts: literature search -> data analysis -> statistics -> figures -> 21-page manuscript -> peer review simulation</sub></p>
 
 ## Installation
 
