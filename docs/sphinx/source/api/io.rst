@@ -71,21 +71,25 @@ Key Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Save any supported object to a file. The format is determined by the
-file extension.
+file extension. Built-in features beyond simple save:
+
+- **Auto directory creation** -- no ``os.makedirs()`` needed
+- **Path resolution** -- relative paths resolve to ``<script_name>_out/<path>``
+- **Symlinks** -- ``symlink_from_cwd=True`` for short access paths
+- **Save logging** -- prints file path and size on success
+- **Clew hash tracking** -- file hashes recorded automatically for verification
+- **Figure CSV export** -- saves plot data alongside image files
 
 .. code-block:: python
 
-   # Figures: also exports CSV data alongside the image
-   stx.io.save(fig, "figure.pdf")
+   # Format detected from extension
+   stx.io.save(fig, "figure.pdf")       # Also exports CSV + YAML recipe
+   stx.io.save(df, "output.parquet")    # DataFrame
+   stx.io.save({"lr": 0.001}, "config.yaml")  # Dict
+   stx.io.save(arr, "weights.npy")      # NumPy array
 
-   # DataFrames: infers CSV, Excel, Parquet, etc.
-   stx.io.save(df, "output.parquet")
-
-   # Dictionaries: saves as JSON, YAML, or TOML
-   stx.io.save({"lr": 0.001}, "config.yaml")
-
-   # NumPy arrays
-   stx.io.save(arr, "weights.npy")
+   # Symlink for convenient access
+   stx.io.save(df, "results/data.csv", symlink_from_cwd=True)
 
 ``load(path)``
 ^^^^^^^^^^^^^^
