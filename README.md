@@ -68,6 +68,8 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 
 ## Demo
 
+**40 min, minimal human intervention** — an AI agent using SciTeX completed a full research cycle: literature search, statistical analysis, publication-ready figures, a 21-page manuscript, and peer review simulation.
+
 <p align="center">
   <a href="https://scitex.ai/demos/watch/scitex-automated-research/">
     <img src="docs/assets/images/scitex-demo.gif" alt="SciTeX Demo" width="800">
