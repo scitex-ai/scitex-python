@@ -64,7 +64,42 @@ def main() -> int:
     p_dash.add_argument("--claude-dir", default="~/.claude", help="Claude config dir")
     p_dash.add_argument("--open", action="store_true", help="Open in browser")
 
+    # scripts
+    p_scripts = sub.add_parser(
+        "scripts", help="Export actions as runnable shell scripts"
+    )
+    p_scripts.add_argument("session", help="Path to .jsonl session file")
+    p_scripts.add_argument(
+        "-o",
+        "--output",
+        default=None,
+        help="Output directory (default: <session>_scripts/)",
+    )
+    p_scripts.add_argument(
+        "--tools",
+        default="Bash,Write,Edit",
+        help="Tool names to export (comma-separated, default: Bash,Write,Edit)",
+    )
+    p_scripts.add_argument(
+        "--open", action="store_true", help="Open HTML index in browser"
+    )
+
     args = parser.parse_args()
+
+    if args.command == "scripts":
+        from ._replay import export_scripts
+
+        output = args.output
+        if output is None:
+            output = str(Path(args.session).with_suffix("")) + "_scripts"
+        tools = tuple(t.strip() for t in args.tools.split(","))
+        path = export_scripts(args.session, output, tools=tools)
+        print(f"Scripts: {path}")
+        if args.open:
+            import subprocess
+
+            subprocess.Popen(["xdg-open", str(path / "index.html")])
+        return 0
 
     if args.command == "dashboard":
         from ._dashboard import render_dashboard

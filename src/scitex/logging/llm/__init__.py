@@ -21,6 +21,7 @@ from ._actions import Action, actions_to_jsonl, actions_to_log, extract_actions
 from ._dag import build_dag, to_mermaid
 from ._dashboard import discover_sessions, render_dashboard
 from ._parser import ClaudeCodeSession, Entry, ToolCall, ToolResult, load
+from ._replay import export_scripts
 
 __all__ = [
     "load",
@@ -36,6 +37,7 @@ __all__ = [
     "to_mermaid",
     "discover_sessions",
     "render_dashboard",
+    "export_scripts",
 ]
 
 # EOF
