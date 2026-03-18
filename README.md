@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-18
+!-- Timestamp: 2026-03-18 15:22:11
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -50,20 +50,20 @@ SciTeX unifies the research workflow from raw data to manuscript -- with **crypt
                             SciTeX Ecosystem
   ┌─────────────────────────────────────────────────────────────┐
   │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
-  │    Writer | Scholar | Apps | Hub | Clew Verification         │
+  │    Writer | Scholar | Apps | Hub | Clew Verification        │
   ├─────────────────────────────────────────────────────────────┤
-  │  scitex (this package) -- Python engine & orchestrator       │
-  │    @session | io | stats | plt | scholar | writer | clew     │
+  │  scitex (this package) -- Python engine & orchestrator      │
+  │    @session | io | stats | plt | scholar | writer | clew    │
   ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
   │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
   │ io       │ stats    │ recipe   │ writer   │  (verification) │
   │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
   └──────────┴──────────┴──────────┴──────────┴─────────────────┘
-    Each package: standalone (pip install scitex-io) or unified (stx.io)
+    Each package: standalone (pip install scitex-io) or unified (scitex.io)
 ```
 
 <p align="center">
-    <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="800">
+    <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="400">
 </p>
 <p align="center"><sub><b>Figure 1.</b> SciTeX research pipeline -- from literature search to manuscript compilation, with every step cryptographically linked.</sub></p>
 
@@ -163,6 +163,12 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 | **Claim** | `clew.verify_claim("Fig 1")` | Is this manuscript assertion valid? |
 
 **L1** hash comparison (ms) / **L2** sandbox re-execution (min) / **L3** registered timestamp proof (optional).
+
+<p align="center">
+  <img src="docs/assets/images/clew-dag.png" alt="Clew DAG" width="300">
+</p>
+<p align="center"><sub><b>Figure 2.</b> Clew verification DAG -- green nodes are verified (hash match), red nodes have mismatches. Each node shows its SHA-256 hash prefix.</sub></p>
+
 </details>
 
 <details>
@@ -171,10 +177,10 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 ```python
 import scitex as stx
 stx.io.save(df, "results.csv");      df = stx.io.load("results.csv")
-stx.io.save(arr, "data.npy");       arr = stx.io.load("data.npy")
-stx.io.save(fig, "figure.png")      # Also exports figure data as CSV
-stx.io.save(config, "config.yaml"); config = stx.io.load("config.yaml")
-stx.io.save(model, "model.pkl");    model = stx.io.load("model.pkl")
+stx.io.save(arr, "data.npy");        arr = stx.io.load("data.npy")
+stx.io.save(fig, "figure.png")       # Also exports figure data as CSV
+stx.io.save(config, "config.yaml");  config = stx.io.load("config.yaml")
+stx.io.save(model, "model.pkl");     model = stx.io.load("model.pkl")
 ```
 
 Supports: CSV, JSON, YAML, TOML, HDF5, NPY, NPZ, PKL, PNG, JPG, SVG, PDF, Excel, Parquet, Zarr, INI, TXT, MAT, WAV, MP3, BibTeX, and more.
