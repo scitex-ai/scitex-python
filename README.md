@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-18 15:42:46
+!-- Timestamp: 2026-03-18 18:15:24
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -44,19 +44,19 @@ SciTeX serves as the computational engine behind [SciTeX Cloud](https://github.c
 ## SciTeX Ecosystem
 
 ```
-                                            SciTeX Ecosystem
-                  ┌─────────────────────────────────────────────────────────────┐
-                  │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
-                  │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
-                  ├─────────────────────────────────────────────────────────────┤
-                  │  scitex (this package) -- Python engine & orchestrator      │
-                  │    @session | io | stats | plt | scholar | writer | clew    │
-                  ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-                  │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
-                  │ io       │ stats    │ recipe   │ writer   │  (verification) │
-                  │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
-                  └──────────┴──────────┴──────────┴──────────┴─────────────────┘
-              Each package: standalone (pip install scitex-io) or unified (scitex.io)
+                                               SciTeX Ecosystem
+                     ┌─────────────────────────────────────────────────────────────┐
+                     │  SciTeX Cloud (scitex.ai) -- self-hosted research platform  │
+                     │    Writer | Scholar | FigRecipe | Clew | Hub | Apps         |
+                     ├─────────────────────────────────────────────────────────────┤
+                     │  scitex (this package) -- Python engine & orchestrator      │
+                     │    @session | io | stats | plt | scholar | writer | clew    │
+                     ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
+                     │ scitex-  │ scitex-  │ fig-     │ scitex-  │  scitex-clew    │
+                     │ io       │ stats    │ recipe   │ writer   │  (verification) │
+                     │ 30+ fmt  │ 23 tests │ figures  │ LaTeX    │  SHA-256 DAG    │
+                     └──────────┴──────────┴──────────┴──────────┴─────────────────┘
+                 Each package: standalone (pip install scitex-io) or unified (scitex.io)
 ```
 
 ## SciTeX and Research Workflow
