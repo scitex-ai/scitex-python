@@ -181,6 +181,15 @@ stx.io.save(arr, "data.npy");        arr = stx.io.load("data.npy")
 stx.io.save(fig, "figure.png")       # Also exports figure data as CSV
 stx.io.save(config, "config.yaml");  config = stx.io.load("config.yaml")
 stx.io.save(model, "model.pkl");     model = stx.io.load("model.pkl")
+
+# Register custom formats
+@stx.io.register_saver(".custom")
+def save_custom(obj, path, **kw):
+    with open(path, "w") as f: f.write(str(obj))
+
+@stx.io.register_loader(".custom")
+def load_custom(path, **kw):
+    with open(path) as f: return f.read()
 ```
 
 Supports: CSV, JSON, YAML, TOML, HDF5, NPY, NPZ, PKL, PNG, JPG, SVG, PDF, Excel, Parquet, Zarr, INI, TXT, MAT, WAV, MP3, BibTeX, and more.
