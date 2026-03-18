@@ -197,7 +197,7 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 </details>
 
 <details>
-<summary><strong><code>scitex.io</code> -- Unified File I/O (30+ Formats)</strong></summary>
+<summary><strong><code>scitex.io</code> -- Unified File I/O (50+ Formats)</strong></summary>
 
 ```python
 import scitex as stx
@@ -214,8 +214,8 @@ stx.io.save(config, "config.yaml")
 stx.io.save(model, "model.pkl")
 
 # Aggregate ./config/*.yaml into a single DotDict
-CONF = stx.io.load_configs("./config/*.yaml")
-print(CONF.MODEL.hidden_size)        # Dot-notation access
+CONFIG = stx.io.load_configs("./config/*.yaml")
+print(CONFIG.MODEL.hidden_size)      # Dot-notation access
 
 # Register custom formats
 @stx.io.register_saver(".custom")
