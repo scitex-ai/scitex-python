@@ -71,6 +71,7 @@ class LazyGroup(click.Group):
 
 
 _LAZY_SUBCOMMANDS = {
+    "app": ("scitex_app._cli._app", "app", "Create and manage SciTeX apps."),
     "audio": ("scitex.cli.audio", "audio", "Audio tools and text-to-speech."),
     "audit": ("scitex.cli.audit", "audit", "Security auditing tools."),
     "browser": ("scitex.cli.browser", "browser", "Browser automation tools."),
