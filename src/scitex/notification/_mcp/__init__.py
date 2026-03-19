@@ -2,7 +2,7 @@
 # Timestamp: "2026-01-13 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/ui/_mcp/__init__.py
 
-"""MCP handlers and schemas for scitex.notify notification server."""
+"""MCP handlers and schemas for scitex.notification server."""
 
 from .handlers import (
     available_backends_handler,

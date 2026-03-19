@@ -17,7 +17,7 @@ from __future__ import annotations
 import warnings
 
 warnings.warn(
-    "scitex.notify.mcp_server is deprecated. Use 'scitex serve' or "
+    "scitex.notification.mcp_server is deprecated. Use 'scitex serve' or "
     "'from scitex.mcp_server import run_server' for the unified MCP server.",
     DeprecationWarning,
     stacklevel=2,

@@ -92,7 +92,16 @@ _LAZY_SUBCOMMANDS = {
     "introspect": ("scitex.cli.introspect", "introspect", "Code introspection tools."),
     "linter": ("scitex.cli.linter", "linter", "SciTeX linter."),
     "mcp": ("scitex.cli.mcp", "mcp", "MCP server management."),
-    "notify": ("scitex.cli.notify", "notify", "Notification and alerting tools."),
+    "notification": (
+        "scitex.cli.notification",
+        "notification",
+        "Notification and alerting tools.",
+    ),
+    "notify": (
+        "scitex.cli.notification",
+        "notification",
+        "Notification and alerting tools.",
+    ),  # backward compat alias
     "notebook": ("scitex.cli.notebook", "notebook", "Jupyter notebook tools."),
     "plt": ("scitex.cli.plt", "plt", "Plotting tools."),
     "repro": ("scitex.cli.repro", "repro", "Reproducibility tools."),

@@ -22,7 +22,7 @@ import click
     help="Output as structured JSON (Result envelope).",
 )
 @click.pass_context
-def notify(ctx, help_recursive, as_json):
+def notification(ctx, help_recursive, as_json):
     """
     Notification and alerting tools
 
@@ -37,26 +37,26 @@ def notify(ctx, help_recursive, as_json):
 
     \b
     Examples:
-      scitex notify send "Task complete!"
-      scitex notify call "Wake up!"
-      scitex notify call "Wake up!" --repeat 2
-      scitex notify backends
+      scitex notification send "Task complete!"
+      scitex notification call "Wake up!"
+      scitex notification call "Wake up!" --repeat 2
+      scitex notification backends
     """
     if help_recursive:
         from . import print_help_recursive
 
-        print_help_recursive(ctx, notify)
+        print_help_recursive(ctx, notification)
         ctx.exit(0)
     elif ctx.invoked_subcommand is None:
         if as_json:
             from . import group_to_json
 
-            group_to_json(ctx, notify)
+            group_to_json(ctx, notification)
         else:
             click.echo(ctx.get_help())
 
 
-@notify.command()
+@notification.command()
 @click.argument("message")
 @click.option("--title", "-t", help="Notification title")
 @click.option(
@@ -104,7 +104,7 @@ def send(message, title, backend, level, no_fallback, as_json):
     if as_json:
         from scitex_dev import wrap_as_cli
 
-        from scitex.notify import alert
+        from scitex.notification import alert
 
         wrap_as_cli(
             alert,
@@ -118,7 +118,7 @@ def send(message, title, backend, level, no_fallback, as_json):
         return
 
     try:
-        from scitex.notify import alert
+        from scitex.notification import alert
 
         success = alert(
             message,
@@ -139,7 +139,7 @@ def send(message, title, backend, level, no_fallback, as_json):
         sys.exit(1)
 
 
-@notify.command()
+@notification.command()
 @click.argument("message")
 @click.option("--title", "-t", help="Call title/context")
 @click.option(
@@ -193,7 +193,7 @@ def call(message, title, level, to_number, repeat, flow_sid, as_json):
     if as_json:
         from scitex_dev import wrap_as_cli
 
-        from scitex.notify import call as notify_call
+        from scitex.notification import call as notify_call
 
         wrap_as_cli(
             notify_call,
@@ -206,7 +206,7 @@ def call(message, title, level, to_number, repeat, flow_sid, as_json):
         return
 
     try:
-        from scitex.notify import call as notify_call
+        from scitex.notification import call as notify_call
 
         click.echo(f"Calling via Twilio (repeat={repeat})...")
         success = notify_call(
@@ -228,7 +228,7 @@ def call(message, title, level, to_number, repeat, flow_sid, as_json):
         sys.exit(1)
 
 
-@notify.command()
+@notification.command()
 @click.argument("message")
 @click.option("--title", "-t", help="SMS title/subject (prepended to message)")
 @click.option("--to", "to_number", help="Destination phone number (overrides default)")
@@ -262,7 +262,7 @@ def sms(message, title, to_number, as_json):
     if as_json:
         from scitex_dev import wrap_as_cli
 
-        from scitex.notify import sms as notify_sms
+        from scitex.notification import sms as notify_sms
 
         wrap_as_cli(
             notify_sms,
@@ -274,7 +274,7 @@ def sms(message, title, to_number, as_json):
         return
 
     try:
-        from scitex.notify import sms as notify_sms
+        from scitex.notification import sms as notify_sms
 
         click.echo("Sending SMS via Twilio...")
         success = notify_sms(
@@ -295,7 +295,7 @@ def sms(message, title, to_number, as_json):
         sys.exit(1)
 
 
-@notify.command(name="backends")
+@notification.command(name="backends")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def list_backends(as_json):
     """
@@ -309,7 +309,7 @@ def list_backends(as_json):
     try:
         from scitex_notification._backends import BACKENDS  # noqa: E402
 
-        from scitex.notify import (  # noqa: E402
+        from scitex.notification import (  # noqa: E402
             DEFAULT_FALLBACK_ORDER,
             available_backends,
         )
@@ -355,7 +355,7 @@ def list_backends(as_json):
         sys.exit(1)
 
 
-@notify.command()
+@notification.command()
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def config(as_json):
     """
@@ -399,7 +399,7 @@ def config(as_json):
         sys.exit(1)
 
 
-@notify.group(invoke_without_command=True)
+@notification.group(invoke_without_command=True)
 @click.option(
     "--json",
     "as_json",
@@ -408,7 +408,7 @@ def config(as_json):
 )
 @click.pass_context
 def mcp(ctx, as_json):
-    """MCP (Model Context Protocol) server operations for notify."""
+    """MCP (Model Context Protocol) server operations for notification."""
     if ctx.invoked_subcommand is None:
         if as_json:
             from . import group_to_json
@@ -426,30 +426,30 @@ def mcp(ctx, as_json):
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.pass_context
 def list_tools(ctx, verbose, compact, as_json):
-    """List available notify MCP tools (delegates to main MCP with -m notify)."""
+    """List available notification MCP tools (delegates to main MCP with -m notification)."""
     from scitex.cli.mcp import list_tools as main_list_tools
 
     ctx.invoke(
         main_list_tools,
         verbose=verbose,
         compact=compact,
-        module="notify",
+        module="notification",
         as_json=as_json,
     )
 
 
-@notify.command("list-python-apis")
+@notification.command("list-python-apis")
 @click.option("-v", "--verbose", count=True, help="Verbosity: -v +doc, -vv full doc")
 @click.option("-d", "--max-depth", type=int, default=5, help="Max recursion depth")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.pass_context
 def list_python_apis(ctx, verbose, max_depth, as_json):
-    """List Python APIs (alias for: scitex introspect api scitex.notify)."""
+    """List Python APIs (alias for: scitex introspect api scitex.notification)."""
     from scitex.cli.introspect import api
 
     ctx.invoke(
         api,
-        dotted_path="scitex.notify",
+        dotted_path="scitex.notification",
         verbose=verbose,
         max_depth=max_depth,
         as_json=as_json,
@@ -457,4 +457,4 @@ def list_python_apis(ctx, verbose, max_depth, as_json):
 
 
 if __name__ == "__main__":
-    notify()
+    notification()
