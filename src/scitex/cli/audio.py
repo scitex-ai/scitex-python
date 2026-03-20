@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-SciTeX CLI - Audio Commands (Text-to-Speech)
-
-Provides text-to-speech with multiple backend support.
-"""
+"""SciTeX CLI - Audio Commands (Text-to-Speech)."""
 
 import sys
 
@@ -502,6 +498,14 @@ def list_python_apis(ctx, verbose, max_depth, as_json):
         as_json=as_json,
     )
 
+
+try:
+    from scitex_dev.cli import docs_click_group, skills_click_group
+
+    audio.add_command(docs_click_group(package="scitex-audio"))
+    audio.add_command(skills_click_group(package="scitex-audio"))
+except ImportError:
+    pass
 
 if __name__ == "__main__":
     audio()
