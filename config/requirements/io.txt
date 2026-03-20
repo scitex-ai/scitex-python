@@ -4,7 +4,6 @@
 GitPython
 Pillow
 PyMuPDF
-PyPDF2
 PyYAML
 catboost
 h5py

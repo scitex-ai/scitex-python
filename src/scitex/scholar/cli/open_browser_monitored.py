@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Open browser with download monitoring and auto-linking.
 
 This CLI tool opens a visible browser and monitors downloads, automatically
@@ -18,7 +17,6 @@ import json
 import shutil
 import sys
 import time
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -105,7 +103,7 @@ class DownloadMonitor(FileSystemEventHandler):
 
         # Strategy 3: Extract and match metadata from PDF
         try:
-            from PyPDF2 import PdfReader
+            from pypdf import PdfReader
 
             reader = PdfReader(pdf_path)
 
@@ -180,7 +178,6 @@ class DownloadMonitor(FileSystemEventHandler):
             logger.info(f"Location: {dest_path}")
 
             # Update symlinks to reflect PDF_s status
-            from scitex.scholar.storage._LibraryManager import LibraryManager
 
             # Trigger symlink update by touching metadata
             if metadata_file.exists():

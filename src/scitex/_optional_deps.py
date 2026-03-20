@@ -62,7 +62,7 @@ PACKAGE_TO_EXTRA: Dict[str, tuple] = {
     "piexif": ("piexif", "io"),
     "pypdf": ("pypdf", "io"),
     "qrcode": ("qrcode[pil]", "io"),
-    "PyPDF2": ("PyPDF2", "io"),
+    # PyPDF2 removed — use "pypdf" (line above) instead
     "fitz": ("PyMuPDF", "io"),
     "pdfplumber": ("pdfplumber", "io"),
     "docx": ("python-docx", "io"),
@@ -161,10 +161,12 @@ def optional_import(
         package_name: Name of the package to install if different from module
         raise_error: If True, raise ImportError. If False, return None.
 
-    Returns:
+    Returns
+    -------
         The imported module, or None if raise_error=False and import fails
 
-    Examples:
+    Examples
+    --------
         >>> torch = optional_import('torch')
         >>> torch = optional_import('torch', raise_error=False)  # Returns None if not installed
     """
@@ -200,7 +202,8 @@ def check_optional_deps(*module_names: str) -> Dict[str, bool]:
     Args:
         *module_names: Names of modules to check
 
-    Returns:
+    Returns
+    -------
         Dictionary mapping module names to availability (True/False)
 
     Example:
@@ -225,7 +228,8 @@ def get_install_command(module_name: str) -> str:
     Args:
         module_name: Name of the module
 
-    Returns:
+    Returns
+    -------
         pip install command string
 
     Example:
@@ -242,7 +246,8 @@ def list_available_extras() -> List[str]:
     """
     List all available installation extras.
 
-    Returns:
+    Returns
+    -------
         List of extra names (e.g., ['audio', 'scholar', 'stats', ...])
     """
     extras = set(info[1] for info in PACKAGE_TO_EXTRA.values())

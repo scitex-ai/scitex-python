@@ -73,7 +73,6 @@ KNOWN_PYPI = {
     "piexif",
     "pypdf",
     "qrcode",
-    "PyPDF2",
     "pdfplumber",
     "html2text",
     "markdown",

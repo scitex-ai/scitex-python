@@ -277,7 +277,6 @@ KNOWN_PACKAGES = {
     "cv2": "opencv-python",
     "piexif": "piexif",
     "pypdf": "pypdf",
-    "PyPDF2": "PyPDF2",
     "fitz": "PyMuPDF",
     "pdfplumber": "pdfplumber",
     "pytesseract": "pytesseract",
