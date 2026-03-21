@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.25.4"
+version = "2.25.5"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -463,6 +463,12 @@ nn = [
 # Use: pip install scitex[notebook]
 notebook = []
 
+# Notification Module - Phone call, SMS, and other notifications
+# Use: pip install scitex[notification]
+notification = [
+    "scitex-notification>=0.1.0",
+]
+
 # OS Module - OS utilities
 # Use: pip install scitex[os]
 os = []
@@ -881,6 +887,7 @@ all = [
     "scitex[msword]",
     "scitex[nn]",
     "scitex[notebook]",
+    "scitex[notification]",
     "scitex[os]",
     "scitex[parallel]",
     "scitex[path]",
