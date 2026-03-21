@@ -108,6 +108,7 @@ _LAZY_SUBCOMMANDS = {
     "resource": ("scitex.cli.resource", "resource", "Resource management."),
     "scholar": ("scitex.cli.scholar", "scholar", "Scholar CLI commands."),
     "security": ("scitex.cli.security", "security", "Security scanning tools."),
+    "skills": ("scitex.cli.skills", "skills", "Browse skills across the ecosystem."),
     "social": ("scitex.cli.social", "social", "Social media tools."),
     "stats": ("scitex.cli.stats", "stats", "Statistical analysis tools."),
     "template": ("scitex.cli.template", "template", "Project templates."),
