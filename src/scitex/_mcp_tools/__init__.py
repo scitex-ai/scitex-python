@@ -19,6 +19,7 @@ from .notification import register_notification_tools
 from .plt import register_plt_tools
 from .project import register_project_tools
 from .scholar import register_scholar_tools
+from .skills import register_skills_tools
 from .social import register_social_tools
 from .stats import register_stats_tools
 from .template import register_template_tools
@@ -46,6 +47,7 @@ _TOOL_GROUPS = {
     "PLT": register_plt_tools,
     "PROJECT": register_project_tools,
     "SCHOLAR": register_scholar_tools,
+    "SKILLS": register_skills_tools,
     "SOCIAL": register_social_tools,
     "STATS": register_stats_tools,
     "TEMPLATE": register_template_tools,
