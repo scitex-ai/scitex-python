@@ -96,6 +96,9 @@ scitex-mcp-server = "scitex.mcp_server:main"
 [project.entry-points."scitex_dev.docs"]
 scitex = "scitex"
 
+[project.entry-points."scitex_dev.skills"]
+scitex = "scitex"
+
 # ============================================
 # Optional Dependencies - Module-Oriented
 # ============================================
@@ -928,6 +931,9 @@ exclude = [
     "src/scitex/scholar/docs/to_claude",
     "src/scitex/scholar/data/impact_factor/impact_factor.db",
 ]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/scitex/skills" = "scitex/skills"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
