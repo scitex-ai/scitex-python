@@ -19,6 +19,7 @@ SKIP_DIRS = {
     "_dev",
     "_mcp_resources",
     "_mcp_tools",
+    "skills",
 }
 
 # Module dirs whose extras key uses a different name
