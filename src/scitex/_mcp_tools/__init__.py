@@ -15,7 +15,7 @@ from .fr import register_fr_tools
 from .introspect import register_introspect_tools
 from .io import register_io_tools
 from .linter import register_linter_tools
-from .notify import register_notify_tools
+from .notification import register_notification_tools
 from .plt import register_plt_tools
 from .project import register_project_tools
 from .scholar import register_scholar_tools
@@ -50,7 +50,7 @@ _TOOL_GROUPS = {
     "STATS": register_stats_tools,
     "TEMPLATE": register_template_tools,
     "TUNNEL": register_tunnel_tools,
-    "NOTIFY": register_notify_tools,
+    "NOTIFICATION": register_notification_tools,
     "UI": register_ui_tools,
     "USAGE": register_usage_tools,
     "WRITER": register_writer_tools,

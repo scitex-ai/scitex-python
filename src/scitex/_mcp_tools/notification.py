@@ -4,11 +4,11 @@
 from typing import Optional
 
 
-def register_notify_tools(mcp) -> None:
+def register_notification_tools(mcp) -> None:
     """Register notification tools with FastMCP server."""
 
     @mcp.tool()
-    async def notify_send(
+    async def notification_send(
         message: str,
         title: Optional[str] = None,
         level: str = "info",
@@ -32,7 +32,7 @@ def register_notify_tools(mcp) -> None:
         )
 
     @mcp.tool()
-    async def notify_call(
+    async def notification_call(
         message: str,
         title: Optional[str] = None,
         level: str = "info",
@@ -65,7 +65,7 @@ def register_notify_tools(mcp) -> None:
         )
 
     @mcp.tool()
-    async def notify_sms(
+    async def notification_sms(
         message: str,
         title: Optional[str] = None,
         to_number: Optional[str] = None,
@@ -87,7 +87,7 @@ def register_notify_tools(mcp) -> None:
         )
 
     @mcp.tool()
-    async def notify_backends() -> str:
+    async def notification_backends() -> str:
         """List all notification backends and their availability."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
         from scitex_notification._mcp.handlers import list_backends_handler
@@ -98,7 +98,7 @@ def register_notify_tools(mcp) -> None:
         )
 
     @mcp.tool()
-    async def notify_config() -> str:
+    async def notification_config() -> str:
         """Get current notification configuration."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
         from scitex_notification._mcp.handlers import get_config_handler

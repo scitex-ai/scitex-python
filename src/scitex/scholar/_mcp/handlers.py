@@ -679,7 +679,7 @@ async def validate_pdfs_handler(
 ) -> dict:
     """Validate PDF files."""
     try:
-        from PyPDF2 import PdfReader
+        from pypdf import PdfReader
 
         if pdf_paths:
             paths = [Path(p) for p in pdf_paths]
@@ -732,7 +732,7 @@ async def validate_pdfs_handler(
         }
 
     except ImportError:
-        return {"success": False, "error": "PyPDF2 not installed"}
+        return {"success": False, "error": "pypdf not installed"}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -1439,8 +1439,8 @@ async def parse_pdf_content_handler(
                 return parsed
 
             except ImportError:
-                # Fallback to PyPDF2 if scitex.io not available
-                from PyPDF2 import PdfReader
+                # Fallback to pypdf if scitex.io not available
+                from pypdf import PdfReader
 
                 reader = PdfReader(str(target_path))
                 page_count = len(reader.pages)
@@ -1461,7 +1461,7 @@ async def parse_pdf_content_handler(
                         full_text[:5000] + "..." if len(full_text) > 5000 else full_text
                     ),
                     "text_length": len(full_text),
-                    "fallback": "PyPDF2",
+                    "fallback": "pypdf",
                 }
 
         result = await loop.run_in_executor(None, do_parse)

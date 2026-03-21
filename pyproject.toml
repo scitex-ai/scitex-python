@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.25.4"
+version = "2.25.6"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -94,6 +94,9 @@ scitex-ui = "scitex.ui.mcp_server:main"
 scitex-mcp-server = "scitex.mcp_server:main"
 
 [project.entry-points."scitex_dev.docs"]
+scitex = "scitex"
+
+[project.entry-points."scitex_dev.skills"]
 scitex = "scitex"
 
 # ============================================
@@ -368,7 +371,6 @@ io = [
     "piexif",
     "pypdf",
     "qrcode[pil]",
-    "PyPDF2",
     "PyMuPDF",
     "pdfplumber",
     "python-docx",
@@ -460,6 +462,12 @@ nn = [
 # Notebook Module - Jupyter notebook utilities
 # Use: pip install scitex[notebook]
 notebook = []
+
+# Notification Module - Phone call, SMS, and other notifications
+# Use: pip install scitex[notification]
+notification = [
+    "scitex-notification>=0.1.0",
+]
 
 # OS Module - OS utilities
 # Use: pip install scitex[os]
@@ -561,7 +569,7 @@ scholar = [
     "scholarly",
     "pymed",
     "python-docx",
-    "PyPDF2",
+    "pypdf",
     "pdfplumber",
     "PyMuPDF",
     "pytesseract",
@@ -879,6 +887,7 @@ all = [
     "scitex[msword]",
     "scitex[nn]",
     "scitex[notebook]",
+    "scitex[notification]",
     "scitex[os]",
     "scitex[parallel]",
     "scitex[path]",
@@ -929,6 +938,9 @@ exclude = [
     "src/scitex/scholar/docs/to_claude",
     "src/scitex/scholar/data/impact_factor/impact_factor.db",
 ]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/scitex/skills" = "scitex/skills"
 
 [tool.hatch.build.targets.sdist]
 exclude = [

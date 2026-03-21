@@ -99,7 +99,6 @@ KNOWN_PYPI = {
     "pymatreader",
     "pynput",
     "pypdf",
-    "PyPDF2",
     "PyQt5",
     "PyQt6",
     "qrcode",

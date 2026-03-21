@@ -20,8 +20,7 @@ def register_ui_tools(mcp) -> None:
     ) -> str:
         """Send a notification via configured backends."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.notify._mcp.handlers import notify_handler
+        from scitex_notification._mcp.handlers import notify_handler
 
         return await async_wrap_as_mcp(
             notify_handler,
@@ -38,8 +37,7 @@ def register_ui_tools(mcp) -> None:
     async def ui_get_notification_config() -> str:
         """Get current notification configuration."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
-
-        from scitex.notify._mcp.handlers import get_config_handler
+        from scitex_notification._mcp.handlers import get_config_handler
 
         return await async_wrap_as_mcp(
             get_config_handler,

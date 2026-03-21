@@ -182,7 +182,7 @@ io = [
     "GitPython",
     "Pillow",
     "PyMuPDF",
-    "PyPDF2",
+    "pypdf",
     "PyYAML",
     "catboost",
     "h5py",
@@ -292,7 +292,7 @@ schema = [
 # scitex.scholar
 scholar = [
     "Pillow",
-    "PyPDF2",
+    "pypdf",
     "PyYAML",
     "aiohttp",
     "beautifulsoup4",
@@ -404,7 +404,7 @@ all = [
     "GitPython",
     "Pillow",
     "PyMuPDF",
-    "PyPDF2",
+    "pypdf",
     "PyQt5",
     "PyQt6",
     "PyYAML",
