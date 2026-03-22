@@ -4,6 +4,7 @@
 """FastMCP tool registration for unified server."""
 
 from .audio import register_audio_tools
+from .browser import register_browser_tools
 from .capture import register_capture_tools
 from .clew import register_clew_tools
 from .cloud import register_cloud_tools
@@ -33,6 +34,7 @@ __all__ = ["register_all_tools"]
 # Map: env var suffix → registration function
 _TOOL_GROUPS = {
     "AUDIO": register_audio_tools,
+    "BROWSER": register_browser_tools,
     "CAPTURE": register_capture_tools,
     "CLEW": register_clew_tools,
     "CLOUD": register_cloud_tools,

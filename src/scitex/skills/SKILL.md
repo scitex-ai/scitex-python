@@ -132,6 +132,7 @@ scitex io info data.csv
 scitex stats recommend group1.csv group2.csv
 scitex scholar search "neural oscillations"
 scitex template clone research-project ./my-project
+scitex browser save-as-pdf https://example.com ./output.pdf
 
 # MCP server (all modules unified)
 scitex-mcp-server
@@ -160,7 +161,7 @@ scitex-mcp-server
 | `stx.cloud` | Cloud service integration |
 | `stx.template` | Project templates |
 | `stx.capture` | Screenshot capture |
-| `stx.browser` | Web automation |
+| `stx.browser` | Web automation & page-to-PDF |
 | `stx.audio` | Text-to-speech |
 | `stx.ui` | User interface utilities |
 
