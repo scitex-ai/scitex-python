@@ -92,7 +92,17 @@ except ImportError:
     close_popups_async = None
     ensure_no_popups_async = None
 
+
+def is_playwright_cli_available() -> bool:
+    """Check if playwright-cli (npm) is installed."""
+    import shutil
+
+    return shutil.which("playwright-cli") is not None
+
+
 __all__ = [
+    # Utilities
+    "is_playwright_cli_available",
     # Debugging
     "browser_logger",
     "show_grid_async",
