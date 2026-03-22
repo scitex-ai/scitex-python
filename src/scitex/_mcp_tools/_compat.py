@@ -51,4 +51,32 @@ def get_tools_sync(mcp_server, include_mounted: bool = True) -> dict:
     return asyncio.run(_gather())
 
 
+def safe_mount(mcp, sub_server, namespace=None, prefix=None):
+    """Mount a sub-server with namespace/prefix compatibility.
+
+    FastMCP 2.x uses `prefix` parameter.
+    FastMCP 3.x renamed it to `namespace`.
+    This function tries both, handling the API difference.
+
+    Args:
+        mcp: Parent FastMCP server.
+        sub_server: FastMCP sub-server to mount.
+        namespace: Namespace/prefix string (e.g., "stats").
+        prefix: Alias for namespace (legacy).
+    """
+    name = namespace or prefix
+    import inspect
+
+    sig = inspect.signature(mcp.mount)
+    params = sig.parameters
+
+    if "namespace" in params:
+        mcp.mount(sub_server, namespace=name)
+    elif "prefix" in params:
+        mcp.mount(sub_server, prefix=name)
+    else:
+        # Fallback: try positional
+        mcp.mount(sub_server, name)
+
+
 # EOF

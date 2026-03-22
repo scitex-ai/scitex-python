@@ -442,7 +442,9 @@ def _import_local_db_servers(mcp) -> None:
     try:
         from crossref_local.mcp_server import mcp as crossref_mcp
 
-        mcp.mount(crossref_mcp, namespace="crossref")
+        from ._compat import safe_mount
+
+        safe_mount(mcp, crossref_mcp, namespace="crossref")
     except ImportError:
         pass  # crossref-local not installed
 
@@ -450,7 +452,9 @@ def _import_local_db_servers(mcp) -> None:
     try:
         from openalex_local._cli.mcp_server import mcp as openalex_mcp
 
-        mcp.mount(openalex_mcp, namespace="openalex")
+        from ._compat import safe_mount
+
+        safe_mount(mcp, openalex_mcp, namespace="openalex")
     except ImportError:
         pass  # openalex-local not installed
 
