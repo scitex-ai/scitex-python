@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.25.9"
+version = "2.25.10"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -939,8 +939,6 @@ exclude = [
     "src/scitex/scholar/data/impact_factor/impact_factor.db",
 ]
 
-[tool.hatch.build.targets.wheel.force-include]
-"src/scitex/skills" = "scitex/skills"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
