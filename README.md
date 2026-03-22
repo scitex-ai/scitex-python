@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-19 01:39:46
+!-- Timestamp: 2026-03-23 01:04:03
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -12,7 +12,7 @@
   </a>
 </p>
 
-<p align="center"><b>Modular Python Toolkit for Scientific Research Automation</b></p>
+<p align="center"><b>Python Library for Science for AI and Human Researcher</b></p>
 
 <p align="center">
   <a href="https://badge.fury.io/py/scitex"><img src="https://badge.fury.io/py/scitex.svg" alt="PyPI version"></a>
@@ -41,16 +41,16 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 | 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **293 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
 | 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-app](https://github.com/ywatanabe1989/scitex-app) SDK and share via [SciTeX Cloud](https://scitex.ai) |
 
-## Research Workflow
+## SciTeX and Research Workflow
 
 <p align="center">
     <img src="scripts/assets/workflow_out/workflow.png" alt="SciTeX Research Workflow" width="600">
 </p>
 <p align="center"><sub><b>Figure 1.</b> SciTeX research pipeline -- from literature search to manuscript compilation, with every step cryptographically linked.</sub></p>
 
-## Demo
+## Demo — Automated Research from Data to Manuscript
 
-**40 min, minimal human intervention** — an AI agent using SciTeX completed a full research cycle: literature search, statistical analysis, publication-ready figures, a 21-page manuscript, and peer review simulation.
+**40 min, minimal human intervention** — an AI agent using SciTeX completed a full research cycle: literature search, statistical analysis, publication-ready figures, a 21-page manuscript, and peer review simulation. More demos are available at [https://scitex.ai/demos/](https://scitex.ai/demos/).
 
 <p align="center">
   <a href="https://scitex.ai/demos/watch/scitex-automated-research/">
@@ -158,43 +158,6 @@ script_out/FINISHED_SUCCESS/2026-03-18_14-30-00_Z5MR/
 ```
 </details>
 
-<details>
-<summary><strong><code>scitex.clew</code> -- Cryptographic Verification for AI-Driven Science</strong></summary>
-
-As AI agents produce research at scale, the question shifts from *"could this be reproduced?"* to *"has this been verified?"*. Clew builds a **SHA-256 hash-chain DAG** linking every manuscript claim back to source data.
-
-```python
-import scitex as stx
-
-# Every stx.io.load/save automatically records file hashes -- zero config
-stx.clew.status()                          # {'verified': 12, 'mismatched': 0, 'missing': 0}
-stx.clew.chain("results/figure1.png")      # Trace one file back to source data
-stx.clew.dag(claims=True)                  # Verify all manuscript claims
-
-# Register traceable assertions
-stx.clew.add_claim(
-    file_path="paper/main.tex", claim_type="statistic", line_number=142,
-    claim_value="t(58) = 2.34, p = .021",
-    source_session="2026-03-18_14-30-00_Z5MR", source_file="results/stats.csv",
-)
-
-stx.clew.mermaid(claims=True)              # Visualize provenance DAG
-```
-
-| Mode | Function | Answers |
-|------|----------|---------|
-| **Project** | `clew.dag()` | Is the whole project intact? |
-| **File** | `clew.chain("output.csv")` | Can I trust this specific file? |
-| **Claim** | `clew.verify_claim("Fig 1")` | Is this manuscript assertion valid? |
-
-**L1** hash comparison (ms) / **L2** sandbox re-execution (min) / **L3** registered timestamp proof (optional).
-
-<p align="center">
-  <img src="docs/clew-dag.png" alt="Clew DAG" width="300">
-</p>
-<p align="center"><sub><b>Figure 2.</b> Clew verification DAG -- green nodes are verified (hash match), red nodes have mismatches. Each node shows its SHA-256 hash prefix.</sub></p>
-
-</details>
 
 <details>
 <summary><strong><code>scitex.io</code> -- Unified File I/O (50+ Formats)</strong></summary>
@@ -312,6 +275,44 @@ stx.notification.sms("GPU job finished on node-42")
 @stx.session(notify=True)   # Notifies on completion or failure
 def main(CONFIG=stx.session.INJECTED): ...
 ```
+</details>
+
+<details>
+<summary><strong><code>scitex.clew</code> -- Cryptographic Verification for AI-Driven Science</strong></summary>
+
+As AI agents produce research at scale, the question shifts from *"could this be reproduced?"* to *"has this been verified?"*. Clew builds a **SHA-256 hash-chain DAG** linking every manuscript claim back to source data.
+
+```python
+import scitex as stx
+
+# Every stx.io.load/save automatically records file hashes -- zero config
+stx.clew.status()                          # {'verified': 12, 'mismatched': 0, 'missing': 0}
+stx.clew.chain("results/figure1.png")      # Trace one file back to source data
+stx.clew.dag(claims=True)                  # Verify all manuscript claims
+
+# Register traceable assertions
+stx.clew.add_claim(
+    file_path="paper/main.tex", claim_type="statistic", line_number=142,
+    claim_value="t(58) = 2.34, p = .021",
+    source_session="2026-03-18_14-30-00_Z5MR", source_file="results/stats.csv",
+)
+
+stx.clew.mermaid(claims=True)              # Visualize provenance DAG
+```
+
+| Mode | Function | Answers |
+|------|----------|---------|
+| **Project** | `clew.dag()` | Is the whole project intact? |
+| **File** | `clew.chain("output.csv")` | Can I trust this specific file? |
+| **Claim** | `clew.verify_claim("Fig 1")` | Is this manuscript assertion valid? |
+
+**L1** hash comparison (ms) / **L2** sandbox re-execution (min) / **L3** registered timestamp proof (optional).
+
+<p align="center">
+  <img src="docs/clew-dag.png" alt="Clew DAG" width="300">
+</p>
+<p align="center"><sub><b>Figure 2.</b> Clew verification DAG -- green nodes are verified (hash match), red nodes have mismatches. Each node shows its SHA-256 hash prefix.</sub></p>
+
 </details>
 
 > **[Full API reference](https://scitex-python.readthedocs.io/en/latest/api/index.html)** &middot; **[Examples](./examples/)** &middot; **[Module status](./docs/04_MODULE_STATUS.md)**
