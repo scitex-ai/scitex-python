@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-03-23 01:04:03
+!-- Timestamp: 2026-03-23 01:22:48
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/README.md
 !-- --- -->
@@ -12,7 +12,7 @@
   </a>
 </p>
 
-<p align="center"><b>Python Library for Science for AI and Human Researcher</b></p>
+<p align="center"><b>Python Library for Science. For AI and Human Researchers</b></p>
 
 <p align="center">
   <a href="https://badge.fury.io/py/scitex"><img src="https://badge.fury.io/py/scitex.svg" alt="PyPI version"></a>
