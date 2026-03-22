@@ -82,3 +82,45 @@ def skills_get(target, name):
                 click.echo(f"  {entry.get('name', 'SKILL')}")
         else:
             click.echo(f"\nAvailable packages: {', '.join(sorted(available.keys()))}")
+
+
+@skills.command("export")
+@click.option(
+    "--dest",
+    type=click.Path(),
+    default=None,
+    help="Destination directory (default: .claude/skills/)",
+)
+@click.option("--package", default=None, help="Export only this package.")
+@click.option("--clean", is_flag=True, help="Remove destination before exporting.")
+def skills_export(dest, package, clean):
+    """Export skills to .claude/skills/ for Claude Code discovery.
+
+    \b
+    Examples:
+      scitex skills export                     # Export all to .claude/skills/
+      scitex skills export --package scitex-stats
+      scitex skills export --dest /tmp/skills  # Custom destination
+      scitex skills export --clean             # Clean export
+    """
+    from pathlib import Path
+
+    from scitex_dev.skills import export_skills
+
+    dest_path = Path(dest) if dest else None
+    exported = export_skills(dest=dest_path, package=package, clean=clean)
+
+    if not exported:
+        click.secho("No skills found to export.", fg="yellow")
+        return
+
+    total = 0
+    for pkg_name, files in sorted(exported.items()):
+        click.secho(f"  {pkg_name}/", fg="cyan")
+        for f in files:
+            click.echo(f"    {f}")
+            total += 1
+
+    target = dest_path or Path(".claude/skills/")
+    click.echo()
+    click.secho(f"Exported {total} files to {target}", fg="green")
