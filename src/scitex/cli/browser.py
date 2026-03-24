@@ -308,6 +308,48 @@ def show(browser_id):
     click.echo("For running browser, type 's' + Enter in browser terminal.")
 
 
+@browser.command("save-as-pdf")
+@click.argument("url")
+@click.argument("output_path")
+@click.option(
+    "--wait-seconds", type=float, default=3, help="Extra wait time for JS rendering"
+)
+@click.option("--no-background", is_flag=True, help="Do not print background graphics")
+@click.option(
+    "--format", "paper_format", default="A4", help="Paper format (A4, Letter, etc.)"
+)
+@click.option("--margin", default="10mm", help="Page margins (e.g., 10mm, 1in)")
+def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, margin):
+    """
+    Save a web page as PDF (print-style)
+
+    \b
+    Examples:
+        scitex browser save-as-pdf https://example.com ./output.pdf
+        scitex browser save-as-pdf https://nature.com/guidelines ./guidelines.pdf --wait-seconds 5
+        scitex browser save-as-pdf https://example.com ./out.pdf --format Letter --margin 20mm
+    """
+    from scitex.browser.pdf import save_as_pdf as _save_as_pdf
+
+    try:
+        result = _save_as_pdf(
+            url,
+            output_path,
+            wait_seconds=wait_seconds,
+            print_background=not no_background,
+            format=paper_format,
+            margin_top=margin,
+            margin_bottom=margin,
+            margin_left=margin,
+            margin_right=margin,
+        )
+        size_kb = Path(result).stat().st_size / 1024
+        click.echo(f"Saved: {result} ({size_kb:.1f} KB)")
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
 @browser.command()
 @click.argument("browser_id", required=False)
 def hide(browser_id):

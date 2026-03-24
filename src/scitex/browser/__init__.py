@@ -65,10 +65,14 @@ try:
     from .pdf import (
         click_download_for_chrome_pdf_viewer_async,
         detect_chrome_pdf_viewer_async,
+        save_as_pdf,
+        save_as_pdf_async,
     )
 except ImportError:
     detect_chrome_pdf_viewer_async = None
     click_download_for_chrome_pdf_viewer_async = None
+    save_as_pdf = None
+    save_as_pdf_async = None
 
 # Interaction utilities
 try:
@@ -88,7 +92,17 @@ except ImportError:
     close_popups_async = None
     ensure_no_popups_async = None
 
+
+def is_playwright_cli_available() -> bool:
+    """Check if playwright-cli (npm) is installed."""
+    import shutil
+
+    return shutil.which("playwright-cli") is not None
+
+
 __all__ = [
+    # Utilities
+    "is_playwright_cli_available",
     # Debugging
     "browser_logger",
     "show_grid_async",
@@ -121,6 +135,8 @@ __all__ = [
     "sync_browser_session",
     "create_browser_session_fixture",
     # PDF
+    "save_as_pdf",
+    "save_as_pdf_async",
     "detect_chrome_pdf_viewer_async",
     "click_download_for_chrome_pdf_viewer_async",
     # Interaction

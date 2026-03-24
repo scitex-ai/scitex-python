@@ -26,7 +26,7 @@ MODULE_TEMPLATE = """{title}
 # Modules to skip (internal, private, or aliases)
 SKIP_MODULES = {
     "_dev",
-    "_docs",
+    "_sphinx_html",
     "_mcp_resources",
     "_mcp_tools",
     "__pycache__",
