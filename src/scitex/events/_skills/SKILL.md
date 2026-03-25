@@ -3,43 +3,40 @@ name: stx.events
 description: Async event bus for emitting and querying events across CLI, HPC, and cloud processes.
 ---
 
-# stx.events
+# stx.events — Skills Index
 
-The `stx.events` module provides a general-purpose async event system for scientific workflows. Events are stored locally as state files and optionally forwarded to the cloud API via webhook, enabling cross-process communication between CLI, HPC jobs, and web services.
+The `stx.events` module provides a general-purpose async event system for scientific workflows. Events are stored locally as state files in `~/.scitex/events/` and optionally forwarded to the cloud API via webhook.
 
-## Python API
+## Sub-skills
+
+| File | Description |
+|------|-------------|
+| [emit-and-query.md](emit-and-query.md) | Emit events, query latest state, read history, cloud forwarding |
+| [event-schema-and-types.md](event-schema-and-types.md) | Event dataclass fields, predefined event type registry |
+
+## Quick Reference
 
 ```python
-import scitex as stx
+from scitex.events import emit, latest, history, list_types, get_type_info, Event
 
-# Emit an event
-stx.events.emit(
-    "test_complete",
-    project="figrecipe",
-    status="success",
-    payload={"exit_code": 0, "module": "stats"}
-)
+# Emit
+emit("test_complete", project="myproject", status="success",
+     payload={"exit_code": 0})
 
-# Get the latest event of a type
-event = stx.events.latest("test_complete")
-print(event["project"], event["status"])
+# Query
+ev = latest("test_complete")   # dict or None
+recent = history(limit=10)     # list of dicts
 
-# Get event history
-history = stx.events.history("test_complete", limit=10)
-
-# List available event types
-types = stx.events.list_types()
-info = stx.events.get_type_info("test_complete")
-
-# Event schema
-event: stx.events.Event = stx.events.latest("job_finished")
+# Discover types
+list_types()                   # sorted list of known types
+get_type_info("job_done")      # {"description": ..., "payload_keys": [...]}
 ```
 
-## Key Features
+## Exports
 
-- `emit(event_type, **payload)` — emit a named event with arbitrary payload
-- `latest(event_type)` — retrieve the most recent event of a type
-- `history(event_type, limit)` — retrieve event history
-- `list_types()` / `get_type_info(type)` — discover available event types
-- `Event` — typed event schema dataclass
-- Local state files + optional cloud API forwarding
+- `emit(event_type, project, status, payload, source)` → `Event`
+- `latest(event_type=None)` → `dict | None`
+- `history(limit=20)` → `list[dict]`
+- `list_types()` → `list[str]`
+- `get_type_info(event_type)` → `dict`
+- `Event` — dataclass with `to_dict()` / `from_dict()`

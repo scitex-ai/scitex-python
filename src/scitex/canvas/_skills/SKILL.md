@@ -1,20 +1,23 @@
 ---
 name: stx.canvas
-description: DEPRECATED - Multi-panel figure composition. Use figrecipe instead.
+description: DEPRECATED as of 2.16.0 — Multi-panel figure composition. Use figrecipe instead.
 ---
 
 # stx.canvas
 
-The `stx.canvas` module is deprecated as of SciTeX 2.16.0. All functionality has moved to the `figrecipe` package which provides superior multi-panel composition via `figrecipe.compose()` and an interactive GUI editor via `figrecipe.edit()`.
+The `stx.canvas` module is **deprecated as of SciTeX 2.16.0**. Importing it raises `DeprecationWarning` immediately. All functionality has moved to the `figrecipe` package.
 
-## Python API
+## Sub-skills
+
+- [migration-to-figrecipe.md](migration-to-figrecipe.md) — Migration table, interactive editor, multi-panel composition with figrecipe
+
+## Quick Migration
 
 ```python
-# OLD (deprecated - triggers DeprecationWarning on import)
-from scitex.canvas import edit
-edit(fig)
+# OLD (deprecated — raises DeprecationWarning on import)
+from scitex.canvas import edit, compose
 
-# NEW - use figrecipe instead
+# NEW — use figrecipe directly
 import figrecipe as fr
 
 # Interactive GUI editor (browser at port 5050)
@@ -31,8 +34,4 @@ fig, axes = fr.compose(
 )
 ```
 
-## Key Features
-
-- Module is a deprecation shim only — importing raises `DeprecationWarning`
-- Migration path: `figrecipe.edit()` for interactive GUI, `figrecipe.compose()` for multi-panel layouts
-- Install figrecipe: `pip install figrecipe`
+Install: `pip install figrecipe`

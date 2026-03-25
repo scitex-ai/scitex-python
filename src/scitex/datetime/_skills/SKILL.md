@@ -5,44 +5,44 @@ description: Datetime utilities for linearly spaced arrays, timestamp normalizat
 
 # stx.datetime
 
-The `stx.datetime` module provides utilities for datetime operations commonly needed in scientific data analysis: creating linearly spaced datetime sequences, normalizing timestamps to a consistent format, and converting between various datetime representations.
+The `stx.datetime` module provides utilities for datetime operations commonly needed in scientific data analysis. Also accessible as `stx.dt` (exact alias).
 
-## Python API
+## Sub-skills
+
+- [linspace.md](linspace.md) — `linspace()` for evenly spaced datetime arrays by count or sampling rate
+- [timestamp-normalization.md](timestamp-normalization.md) — `normalize_timestamp`, `to_datetime`, `format_for_filename`, `format_for_display`, `get_time_delta_seconds`, `validate_timestamp_format`
+
+## Quick Reference
 
 ```python
 import scitex as stx
+import datetime
 
-# Create linearly spaced datetime array
-times = stx.datetime.linspace(start="2024-01-01", end="2024-12-31", n=365)
+# Evenly spaced datetime array
+start = datetime.datetime(2024, 1, 1)
+end   = datetime.datetime(2024, 1, 2)
+times = stx.datetime.linspace(start, end, sampling_rate=1000.0)  # 1 kHz
 
-# Normalize timestamps to standard format
-normalized = stx.datetime.normalize_timestamp("2024-01-15T10:30:00")
-
-# Convert various formats to datetime
-dt = stx.datetime.to_datetime("20240115_103000")
+# Parse any timestamp format
+dt = stx.datetime.to_datetime("2024-01-15T10:30:00")
 dt = stx.datetime.to_datetime(1705312200)  # Unix timestamp
 
-# Format for filenames (no colons/spaces)
-fname_ts = stx.datetime.format_for_filename(dt)  # "20240115_103000"
+# Normalize to STANDARD_FORMAT = "%Y-%m-%d %H:%M:%S"
+s = stx.datetime.normalize_timestamp(dt, return_as="str", normalize_utc=False)
 
-# Format for display
-disp_ts = stx.datetime.format_for_display(dt)  # "2024-01-15 10:30:00"
+# Filename-safe format
+fname = stx.datetime.format_for_filename(dt)  # "20240115_103000"
 
-# Calculate time delta
-delta_sec = stx.datetime.get_time_delta_seconds("10:00:00", "10:05:30")  # 330.0
+# Time difference
+delta = stx.datetime.get_time_delta_seconds(start, end)  # seconds
 
-# Validate format
-is_valid = stx.datetime.validate_timestamp_format("2024-01-15 10:30:00")
-
-# Constants
-print(stx.datetime.STANDARD_FORMAT)  # "%Y-%m-%d %H:%M:%S"
+# Same API via stx.dt (alias)
+stx.dt.linspace(start, end, n_samples=100)
 ```
 
-## Key Features
+## Constants
 
-- `linspace(start, end, n)` — create N evenly-spaced datetime points
-- `normalize_timestamp` — standardize timestamps to `STANDARD_FORMAT`
-- `to_datetime` — convert strings, Unix timestamps, and other formats to datetime
-- `format_for_filename` / `format_for_display` — format datetimes for different contexts
-- `get_time_delta_seconds` — compute difference between two timestamps in seconds
-- Also accessible as `stx.dt` (alias module)
+| Constant | Value |
+|----------|-------|
+| `STANDARD_FORMAT` | `"%Y-%m-%d %H:%M:%S"` (configurable via CONFIG) |
+| `ALTERNATIVE_FORMATS` | 16 common timestamp formats tried when parsing |

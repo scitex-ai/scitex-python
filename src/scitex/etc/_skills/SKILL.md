@@ -3,24 +3,28 @@ name: stx.etc
 description: Miscellaneous utilities for keyboard input handling in interactive programs.
 ---
 
-# stx.etc
+# stx.etc — Skills Index
 
 The `stx.etc` module provides miscellaneous utility functions that don't fit into other categories, primarily focused on keyboard input handling for interactive scientific programs.
 
-## Python API
+## Sub-skills
+
+| File | Description |
+|------|-------------|
+| [wait-key.md](wait-key.md) | Block execution or count keypresses using `wait_key` and `count` |
+
+## Quick Reference
 
 ```python
-import scitex as stx
+import multiprocessing
+from scitex.etc import wait_key, count
 
-# Wait for a keypress (blocks until key pressed)
-key = stx.etc.wait_key()
-
-# Count keypresses over a duration
-n_presses = stx.etc.count(duration=5.0)
+p = multiprocessing.Process(target=count)
+p.start()
+wait_key(p)   # blocks until 'q' is pressed, then terminates p
 ```
 
-## Key Features
+## Exports
 
-- `wait_key()` — block execution until a keyboard key is pressed, returns the key
-- `count(duration)` — count keypresses over a specified time window
-- Useful for interactive experiment control loops
+- `wait_key(p)` — block until 'q' pressed, terminate process `p`
+- `count()` — infinite counter printing 0, 1, 2 … once per second

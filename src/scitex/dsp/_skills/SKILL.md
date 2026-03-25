@@ -1,57 +1,56 @@
 ---
 name: stx.dsp
-description: Digital signal processing for neuroscience: filtering, PSD, PAC, ripple detection, wavelets, and resampling.
+description: Digital signal processing for neuroscience — filtering, spectral analysis, phase-amplitude coupling, ripple detection, wavelets, and resampling.
 ---
 
-# stx.dsp
+# stx.dsp — Skill Index
 
-The `stx.dsp` module provides digital signal processing (DSP) utilities tailored for neuroscience and time-series analysis. It covers spectral analysis, filtering, phase-amplitude coupling, hippocampal ripple detection, and signal segmentation.
+Digital signal processing (DSP) utilities for neuroscience and time-series analysis. All major functions accept NumPy arrays, PyTorch tensors, or pandas DataFrames via the `@signal_fn` decorator and return the same type as input.
 
-## Python API
+## Sub-skills
+
+| File | Feature Area |
+|------|-------------|
+| [filtering.md](filtering.md) | Bandpass, bandstop, lowpass, highpass, Gaussian filters |
+| [spectral.md](spectral.md) | Power spectral density and band power extraction |
+| [hilbert.md](hilbert.md) | Analytic signal: amplitude envelope and instantaneous phase |
+| [pac.md](pac.md) | Phase-amplitude coupling (`pac`, `modulation_index`) |
+| [ripple-detection.md](ripple-detection.md) | Hippocampal sharp-wave ripple detection |
+| [wavelet.md](wavelet.md) | Continuous wavelet transform |
+| [resampling.md](resampling.md) | Anti-aliased up/down resampling |
+| [segmentation.md](segmentation.md) | Sliding-window segmentation and sktime conversion |
+| [noise.md](noise.md) | Add Gaussian, white, pink, or brown noise |
+| [normalization.md](normalization.md) | Z-score and min-max normalization |
+| [referencing.md](referencing.md) | Common-average, random, and target re-referencing |
+| [demo-signal.md](demo-signal.md) | Synthetic signal generation for testing |
+| [params.md](params.md) | Built-in EEG frequency bands and electrode montages |
+| [utils.md](utils.md) | Helpers: zero-padding, FIR filter design, differentiable bandpass filters |
+
+## Quick Start
 
 ```python
 import scitex as stx
+import numpy as np
 
-# Generate demo signal (shape: channels x time)
-sig, t = stx.dsp.demo_sig(fs=1000, duration=2.0)
+# Generate demo signal: shape (batch=8, chs=19, time=2048)
+xx, tt, fs = stx.dsp.demo_sig(sig_type="chirp", fs=512, t_sec=4)
 
-# Bandpass filter
-filtered = stx.dsp.filt.bandpass(sig, fs=1000, low=8, high=30)
+# Bandpass filter 8-30 Hz
+xx_bp = stx.dsp.filt.bandpass(xx, fs, np.array([[8, 30]]))
 
 # Power spectral density
-freqs, psd = stx.dsp.psd(sig, fs=1000)
-band_powers = stx.dsp.band_powers(sig, fs=1000)
+psd_vals, freqs = stx.dsp.psd(xx, fs)
 
-# Hilbert transform (analytic signal)
-amplitude, phase = stx.dsp.hilbert(sig)
-
-# Phase-amplitude coupling
-mi = stx.dsp.pac(sig, fs=1000, phase_band=(4, 8), amp_band=(30, 80))
-mi = stx.dsp.modulation_index(phase_sig, amp_sig)
-
-# Ripple detection (hippocampal)
-ripples = stx.dsp.detect_ripples(sig, fs=1000)
-
-# Wavelet transform
-coeffs = stx.dsp.wavelet(sig, fs=1000, freqs=[4, 8, 16, 32])
-
-# Resampling
-resampled = stx.dsp.resample(sig, orig_fs=1000, target_fs=256)
-
-# Segment into overlapping windows
-segments = stx.dsp.to_segments(sig, window=256, step=128)
-
-# Time array
-t = stx.dsp.time(n_samples=1000, fs=1000)
+# Wavelet transform -> phase, amplitude, frequency axis
+pha, amp, freqs_w = stx.dsp.wavelet(xx, fs)
 ```
 
-## Key Features
+## Optional Dependencies
 
-- Filtering submodule: `stx.dsp.filt` — bandpass, bandstop, lowpass, highpass
-- `psd` / `band_powers` — spectral analysis with band power extraction
-- `hilbert` — analytic signal (amplitude envelope and instantaneous phase)
-- `pac` / `modulation_index` — phase-amplitude coupling metrics
-- `detect_ripples` — hippocampal sharp-wave ripple detection
-- `wavelet` — continuous wavelet transform
-- `resample` — signal resampling with anti-aliasing
-- `to_segments` / `to_sktime_df` — segmentation and format conversion
+| Feature | Requires | Install |
+|---------|----------|---------|
+| Filters, PSD, PAC, wavelet, resample | `torch`, `torchaudio` | `pip install torch torchaudio` |
+| Audio device listing | `sounddevice`, PortAudio | `pip install sounddevice` + `apt install portaudio19-dev` |
+| EEG electrode positions | `mne` | `pip install mne` |
+| Ripple demo signal | `ripple_detection` | `pip install ripple_detection` |
+| Tensorpac demo / PAC comparison | `tensorpac` | `pip install tensorpac` |

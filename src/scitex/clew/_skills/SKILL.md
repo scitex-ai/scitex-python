@@ -1,57 +1,41 @@
 ---
 name: stx.clew
-description: Hash-based verification system for reproducible science with DAG tracking and manuscript claims.
+description: Hash-based verification system for reproducible science. Tracks session runs, records file provenance via SHA256 hashes, builds dependency DAGs, links manuscript claims to computations, and stamps verification state with external timestamps. Use when you need to verify that scientific outputs are reproducible and traceable.
+user-invocable: true
 ---
 
 # stx.clew
 
-The `stx.clew` module provides hash-based verification for reproducible scientific workflows. It tracks experiment runs, verifies file provenance, builds dependency DAGs, and links manuscript claims to their backing computations.
+Hash-based verification for reproducible scientific workflows. Zero external dependencies (pure stdlib + sqlite3). When used inside `@stx.session`, tracking is fully automatic.
 
-## Python API
+## Sub-skills
 
-```python
-import scitex as stx
+### Core Verification
+- [verification.md](verification.md) — `status`, `run`, `chain`, `dag`: overview, per-session hash check, file provenance tracing, multi-target DAG verification
 
-# Git-status-like overview of verification status
-stx.clew.status()
+### Rerun Verification
+- [rerun.md](rerun.md) — `rerun`, `rerun_dag`, `rerun_claims`: sandbox re-execution to confirm outputs are byte-for-byte reproducible
 
-# Verify a single run (hash check)
-result = stx.clew.run(session_id)
+### Claims
+- [claims.md](claims.md) — `add_claim`, `list_claims`, `verify_claim`: link manuscript assertions (statistics, figures, tables) to their backing computations
 
-# Trace a file back to its source chain
-chain = stx.clew.chain("results/output.csv")
+### Stamping
+- [stamping.md](stamping.md) — `stamp`, `list_stamps`, `check_stamp`: create external temporal proofs of verification state (file, RFC 3161, scitex.ai cloud)
 
-# Verify full computation DAG
-dag_result = stx.clew.dag(["results/figure1.png", "results/table1.csv"])
+### Hashing Utilities
+- [hashing.md](hashing.md) — `hash_file`, `hash_directory`: standalone SHA256 utilities for individual files or whole directory trees
 
-# Re-execute and compare in sandbox
-stx.clew.rerun("results/output.csv")
+### Visualization
+- [visualization.md](visualization.md) — `mermaid`: generate Mermaid DAG diagrams for verification state
 
-# Register a manuscript assertion
-stx.clew.add_claim(
-    claim="Group A > Group B (p < 0.05)",
-    session_id="abc123",
-    figure="figure3.png"
-)
+### Automatic Integration
+- [integration.md](integration.md) — how `@stx.session` and `stx.io` hook into clew automatically without any user code
 
-# List and verify claims
-claims = stx.clew.list_claims()
-stx.clew.verify_claim(claim_id="claim_001")
+### Examples and Database
+- [examples-db.md](examples-db.md) — `init_examples`, `stats`, `list_runs`: scaffold example pipelines, inspect the SQLite database
 
-# Compute file hashes
-h = stx.clew.hash_file("data/raw.csv")
-h_dir = stx.clew.hash_directory("data/")
+### CLI
+- [cli.md](cli.md) — `clew status`, `clew list`, `clew verify`, `clew stats`, `clew mermaid`
 
-# Generate Mermaid DAG diagram
-mermaid_code = stx.clew.mermaid(["results/figure1.png"])
-```
-
-## Key Features
-
-- `status()` — overview of all tracked runs and their verification state
-- `run(session_id)` — verify a session's output hashes match recorded values
-- `chain(file)` / `dag(targets)` — trace provenance and verify full dependency graphs
-- `rerun(target)` / `rerun_dag(targets)` — sandbox re-execution for verification
-- `add_claim` / `list_claims` / `verify_claim` — link manuscript assertions to computations
-- `stamp` / `list_stamps` / `check_stamp` — temporal proof of computation
-- `hash_file` / `hash_directory` — SHA256 hashing utilities
+### MCP Tools
+- [mcp.md](mcp.md) — `clew_status`, `clew_list`, `clew_run`, `clew_chain`, `clew_dag`, `clew_mermaid`, `clew_rerun_dag`, `clew_rerun_claims`

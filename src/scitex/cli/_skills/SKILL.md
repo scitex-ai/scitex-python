@@ -1,48 +1,39 @@
 ---
 name: stx.cli
-description: Command-line interface for SciTeX platform operations (cloud, scholar, writer, project).
+description: Command-line interface for SciTeX platform operations — 30+ subcommands with lazy loading.
 ---
 
 # stx.cli
 
-The `stx.cli` module provides the unified `scitex` command-line interface for interacting with SciTeX platform services including cloud operations, scholar literature management, writer manuscript tools, and project workflows.
+The `stx.cli` module provides the unified `scitex` command-line interface for interacting with SciTeX platform services. It uses lazy loading so startup is instant regardless of how many subcommands exist.
 
-## Python API
+## Sub-skills
 
-```python
-import scitex as stx
+- [cli-commands.md](cli-commands.md) — Full command reference table, common usage patterns, key examples
+- [programmatic-use.md](programmatic-use.md) — Accessing the Click group, `print_help_recursive`, `group_to_json`, `format_python_signature`
 
-# Access the Click CLI group programmatically
-cli = stx.cli.cli
-```
-
-## CLI Usage
+## Quick Reference
 
 ```bash
-# Main entry point
+# Entry point
 scitex --help
+scitex --help-recursive        # all subcommands
+scitex --json                  # structured JSON output
 
-# Cloud operations (wraps Gitea)
-scitex cloud status
-scitex cloud push
-
-# Scholar operations
-scitex scholar search "deep learning EEG"
-scitex scholar enrich papers.bib
-
-# Writer operations
-scitex writer compile manuscript/
-scitex writer figures list
-
-# Project operations
-scitex project init my_experiment
+# Core workflows
+scitex config list
+scitex cloud clone user/project
+scitex scholar bibtex papers.bib
+scitex mcp start
+scitex audit run ./src
+scitex completion install      # tab-completion setup
 ```
 
-## Key Features
+```python
+# Programmatic access
+from scitex.cli import cli, print_help_recursive, group_to_json
+import click
 
-- Unified `scitex` CLI built with Click
-- Cloud operations: project management, file sync, Git integration
-- Scholar operations: paper search, BibTeX enrichment, PDF download
-- Writer operations: LaTeX compilation, figure/table management
-- Project operations: integrated research workflow automation
-- `print_help_recursive` utility for displaying all subcommand help
+ctx = click.Context(cli)
+group_to_json(ctx, cli)   # JSON summary of all subcommands
+```

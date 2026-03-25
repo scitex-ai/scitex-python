@@ -1,29 +1,34 @@
 ---
 name: stx.compat
-description: Backward compatibility shim providing deprecated API aliases with migration warnings.
+description: Backward compatibility shim — deprecated API aliases with migration warnings.
 ---
 
 # stx.compat
 
-The `stx.compat` module provides backward compatibility aliases for deprecated SciTeX APIs. It wraps old function names to delegate to their new implementations while emitting `DeprecationWarning` messages to guide migration.
+The `stx.compat` module provides backward compatibility aliases for deprecated SciTeX APIs and the `deprecated()` decorator for marking functions in your own code.
 
-## Python API
+## Sub-skills
+
+- [deprecated-decorator.md](deprecated-decorator.md) — `deprecated()` decorator, provided wrappers (`notify`, `notify_async`), deprecation timeline
+
+## Quick Reference
 
 ```python
-import scitex as stx
+from scitex.compat import deprecated, notify
 
-# Use the deprecated() decorator to mark your own functions
-@stx.compat.deprecated("new_function_name", removal_version="3.0")
-def old_function():
-    return new_function()
+# Mark your own function as deprecated
+@deprecated("new_function_name", removal_version="3.0")
+def old_function(*args, **kwargs):
+    return new_function(*args, **kwargs)
 
-# Deprecated notify (use stx.notification.alert instead)
-stx.compat.notify("message")  # DeprecationWarning emitted
+# Provided compat wrapper (delegates to stx.notify.alert)
+notify("message")  # emits DeprecationWarning
 ```
 
-## Key Features
+## Exports
 
-- `deprecated(new_name, removal_version)` — decorator to mark functions as deprecated with migration guidance
-- Provides backward-compatible wrappers for UI/notification functions
-- All wrappers emit `DeprecationWarning` pointing to the new API
-- Deprecation timeline: v1.x has warnings, v2.x removes old APIs
+| Name | Type | Description |
+|------|------|-------------|
+| `deprecated` | decorator | Mark functions as deprecated with migration guidance |
+| `notify` | function | Deprecated alias for `stx.notify.alert()` |
+| `notify_async` | coroutine | Deprecated alias for `stx.notify.alert_async()` |
