@@ -1,5 +1,4 @@
 ---
-name: stx.notebook — Parse and Convert Notebooks
 description: Extract cells from .ipynb files and convert notebooks to script format.
 ---
 

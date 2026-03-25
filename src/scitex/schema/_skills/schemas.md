@@ -1,5 +1,4 @@
 ---
-name: schema-reference
 description: Quick reference of schema dataclasses in scitex.schema — PlotSpec, PlotStyle, PlotTheme, StatResult, Encoding, and validation functions.
 ---
 

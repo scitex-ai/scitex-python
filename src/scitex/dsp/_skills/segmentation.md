@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.to_segments / stx.dsp.crop / stx.dsp.to_sktime_df
 description: Sliding-window segmentation, signal cropping, and sktime DataFrame conversion.
 ---
 

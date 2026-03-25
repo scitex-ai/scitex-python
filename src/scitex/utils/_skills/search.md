@@ -1,5 +1,4 @@
 ---
-name: stx.utils.search
 description: Regex-based multi-pattern search over a list of strings, returning matched indices and values.
 ---
 

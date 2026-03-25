@@ -1,5 +1,4 @@
 ---
-name: pd-conversion
 description: Convert arbitrary Python objects to DataFrames (force_df) and coerce columns to numeric types (to_numeric).
 ---
 

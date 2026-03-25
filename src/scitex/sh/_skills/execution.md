@@ -1,5 +1,4 @@
 ---
-name: sh-execution
 description: Core shell command execution — sh() and sh_run() — including buffered and streaming modes, timeout, and return format control.
 ---
 

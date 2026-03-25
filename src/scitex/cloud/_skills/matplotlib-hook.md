@@ -1,5 +1,4 @@
 ---
-name: cloud-matplotlib-hook
 description: Automatic matplotlib integration for cloud environments — inline figure display via install_matplotlib_hook() and uninstall_matplotlib_hook().
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: repro-id-timestamp
 description: Generate unique experiment IDs with gen_ID(), create ISO-format timestamps with gen_timestamp(), and use their short aliases gen_id() and timestamp().
 ---
 

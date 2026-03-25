@@ -1,5 +1,4 @@
 ---
-name: git-init
 description: Repository initialization — init_git_repo, find_parent_git, create_child_git, remove_child_git. Controls whether a project directory uses its own isolated git repo, merges into a parent repo, or preserves cloned history.
 ---
 

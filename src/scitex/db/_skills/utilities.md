@@ -1,5 +1,4 @@
 ---
-name: db-utilities
 description: Inspect database structure with inspect(), remove duplicate rows with delete_duplicates(), and run health checks with check_health() and batch_health_check().
 ---
 

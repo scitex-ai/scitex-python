@@ -1,5 +1,4 @@
 ---
-name: tex-export
 description: Export a SciTeX writer document dict to a .tex file. Handles document class, journal presets, package injection, image extraction, and BibTeX generation.
 ---
 

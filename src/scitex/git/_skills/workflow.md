@@ -1,5 +1,4 @@
 ---
-name: git-workflow
 description: High-level branch workflow — setup_branches sequences git_add_all, git_commit, git_branch_rename("main"), and git_checkout_new_branch("develop") with rollback on partial failure.
 ---
 

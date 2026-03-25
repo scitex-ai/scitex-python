@@ -1,5 +1,4 @@
 ---
-name: clew-mcp
 description: MCP tool interface for stx.clew — all clew_ tools available to AI agents via the SciTeX MCP server.
 ---
 

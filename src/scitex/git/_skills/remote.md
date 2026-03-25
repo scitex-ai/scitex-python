@@ -1,5 +1,4 @@
 ---
-name: git-remote
 description: Remote inspection — get_remote_url, is_cloned_from (HTTPS/SSH-normalizing URL comparison), ls_remote (remote commit hash lookup), get_head_hash (local HEAD hash).
 ---
 

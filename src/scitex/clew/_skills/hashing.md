@@ -1,5 +1,4 @@
 ---
-name: clew-hashing
 description: SHA256 file and directory hashing utilities for stx.clew — hash_file and hash_directory. Standalone functions usable independently of the tracking system.
 ---
 

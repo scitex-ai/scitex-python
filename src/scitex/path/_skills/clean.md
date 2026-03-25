@@ -1,5 +1,4 @@
 ---
-name: path-clean
 description: Normalize a path string — resolve ./ and ../ references, collapse double slashes, and replace spaces with underscores. clean().
 ---
 

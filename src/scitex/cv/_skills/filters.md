@@ -1,5 +1,4 @@
 ---
-name: stx.cv.filters
 description: Image filtering — blur, sharpen, edge_detect, threshold, denoise.
 ---
 

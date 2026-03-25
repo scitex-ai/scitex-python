@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.detect_ripples
 description: Detect hippocampal sharp-wave ripples from wide-band LFP or EEG signals.
 ---
 

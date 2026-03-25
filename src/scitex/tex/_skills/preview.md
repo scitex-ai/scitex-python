@@ -1,5 +1,4 @@
 ---
-name: tex-preview
 description: Render a list of LaTeX strings as a matplotlib figure. Each string is shown twice — raw and math-formatted. Automatically falls back to mathtext or unicode when a full LaTeX engine is unavailable.
 ---
 

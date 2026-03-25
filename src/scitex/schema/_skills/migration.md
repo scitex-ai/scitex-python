@@ -1,5 +1,4 @@
 ---
-name: schema-migration
 description: Migrate from deprecated scitex.schema imports to scitex.io.bundle.
 ---
 

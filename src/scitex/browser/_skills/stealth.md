@@ -1,5 +1,4 @@
 ---
-name: browser-stealth
 description: StealthManager provides randomised user-agents, viewports, and HTTP headers to reduce bot-detection fingerprinting; HumanBehavior simulates human timing delays, natural multi-step mouse movement, hover-before-click, and reading pauses.
 ---
 

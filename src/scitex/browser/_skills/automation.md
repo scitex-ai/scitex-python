@@ -1,5 +1,4 @@
 ---
-name: browser-automation
 description: CookieAutoAcceptor injects a self-contained JavaScript polling loop into browser contexts to automatically dismiss cookie consent banners; also provides programmatic async acceptance and banner-presence checking.
 ---
 

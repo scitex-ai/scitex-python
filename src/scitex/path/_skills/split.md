@@ -1,5 +1,4 @@
 ---
-name: path-split
 description: Decompose a file path into its directory, stem, and extension components with split().
 ---
 

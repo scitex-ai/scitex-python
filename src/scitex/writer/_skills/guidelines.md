@@ -1,5 +1,4 @@
 ---
-name: guidelines
 description: IMRAD writing guidelines — get section-specific tips, list available sections, build AI editing prompts from guideline + draft.
 ---
 

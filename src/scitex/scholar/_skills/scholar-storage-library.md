@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — Storage, Library, and Project Management
----
 
 # stx.scholar — Storage, Library, and Project Management
 

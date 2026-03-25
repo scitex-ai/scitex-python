@@ -1,5 +1,4 @@
 ---
-name: os-check-host
 description: Hostname-based guards — check_host / is_host return a boolean, verify_host exits the process when the current machine does not match.
 ---
 

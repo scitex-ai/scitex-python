@@ -1,5 +1,4 @@
 ---
-name: stx.msword — Journal Profiles
 description: Built-in journal/conference Word profiles that control style mapping for headings, captions, columns, and double-anonymous formatting.
 ---
 

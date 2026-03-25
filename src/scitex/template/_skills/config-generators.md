@@ -1,5 +1,4 @@
 ---
-name: stx.template.config-generators
 description: Generate project.yaml, paths.json, .env.template, requirements.txt, README.md, and standard directory trees for newly created SciTeX projects.
 ---
 

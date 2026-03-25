@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.wavelet
 description: Continuous wavelet transform returning time-frequency phase and amplitude.
 ---
 

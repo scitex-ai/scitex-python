@@ -1,5 +1,4 @@
 ---
-name: browser-pdf
 description: Save any URL as a print-style PDF (save_as_pdf / save_as_pdf_async) with cookie-banner dismissal; detect Chrome's built-in PDF viewer (detect_chrome_pdf_viewer_async); click the viewer's download button (click_download_for_chrome_pdf_viewer_async).
 ---
 

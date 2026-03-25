@@ -1,5 +1,4 @@
 ---
-name: diagram-mcp
 description: MCP tool interface for stx.diagram — plt_diagram_create, compile_mermaid, compile_graphviz, render, split, list_presets, get_preset, get_backends, get_paper_modes.
 ---
 

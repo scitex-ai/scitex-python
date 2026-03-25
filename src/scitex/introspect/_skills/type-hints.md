@@ -1,5 +1,4 @@
 ---
-name: introspect-type-hints
 description: Detailed type annotation analysis — per-parameter hint breakdown (origin, args, Optional/Union flags) and full class-level annotation inventory. Use when you need to understand or validate type signatures programmatically.
 ---
 

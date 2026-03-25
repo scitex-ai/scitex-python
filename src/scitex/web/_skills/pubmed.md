@@ -1,5 +1,4 @@
 ---
-name: web-pubmed
 description: Search PubMed for papers matching a query with search_pubmed() and retrieve Crossref citation counts with get_crossref_metrics().
 ---
 

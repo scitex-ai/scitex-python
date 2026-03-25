@@ -1,5 +1,4 @@
 ---
-name: browser-remote
 description: ZenRowsAPIBrowser for cloud-based page rendering, screenshot capture, and anti-bot bypass via ZenRows API; ZenRowsBrowserManager wraps the Scraping Browser WebSocket service; CaptchaHandler solves Cloudflare/reCAPTCHA/hCaptcha challenges via 2Captcha.
 ---
 

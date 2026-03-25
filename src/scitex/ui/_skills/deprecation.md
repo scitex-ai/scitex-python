@@ -1,5 +1,4 @@
 ---
-name: ui-deprecation
 description: scitex.ui is a backward-compatibility shim. alert(), alert_async(), and available_backends() all emit DeprecationWarning and delegate to scitex.notify equivalents.
 ---
 

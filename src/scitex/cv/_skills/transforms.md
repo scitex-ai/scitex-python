@@ -1,5 +1,4 @@
 ---
-name: stx.cv.transforms
 description: Geometric image transformations — resize, rotate, flip, crop, pad.
 ---
 

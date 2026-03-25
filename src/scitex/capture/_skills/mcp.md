@@ -1,5 +1,4 @@
 ---
-name: stx.capture.mcp
 description: MCP tools for screen capture — take screenshots, monitor, create GIFs, inspect windows. Exposed via the unified scitex MCP server.
 ---
 

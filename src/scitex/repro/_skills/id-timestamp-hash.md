@@ -1,5 +1,4 @@
 ---
-name: stx.repro — ID, Timestamp, and Hash Utilities
 description: Generate unique experiment IDs with timestamps, filename-safe timestamp strings, and SHA256 hashes of arrays.
 ---
 

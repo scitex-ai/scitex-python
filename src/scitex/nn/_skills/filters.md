@@ -1,5 +1,4 @@
 ---
-name: stx.nn - Filters
 description: Fixed and differentiable FIR filter layers for 1D biosignal processing. Input shape is always (batch_size, n_chs, seq_len); output adds a filter dimension.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: parallel-run
 description: Run a function in parallel across a list of argument tuples using ThreadPoolExecutor, with automatic CPU detection, ordered results, and a tqdm progress bar.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: browser-interaction
 description: Robust element clicking and form filling with three-level fallback strategies; popup/cookie banner detection and dismissal via PopupHandler, close_popups_async, ensure_no_popups_async; viewport-center clicking via click_center_async.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: gen-xml-matlab
 description: XML parsing and MATLAB .mat file loading utilities in stx.gen — xml2dict converts XML files to nested dicts, while mat2dict/mat2npa/dir2npy load .mat files into Python/NumPy structures.
 ---
 

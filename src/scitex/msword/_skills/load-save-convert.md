@@ -1,5 +1,4 @@
 ---
-name: stx.msword — Load, Save, and Convert DOCX
 description: Import Word documents into SciTeX intermediate format, export back to DOCX, or convert directly to LaTeX.
 ---
 

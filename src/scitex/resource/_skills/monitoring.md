@@ -1,5 +1,4 @@
 ---
-name: resource-monitoring
 description: Sample instantaneous CPU/GPU/memory usage with get_processor_usages() and log usage over time to a CSV file with log_processor_usages().
 ---
 

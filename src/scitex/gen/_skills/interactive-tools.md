@@ -1,5 +1,4 @@
 ---
-name: gen-interactive-tools
 description: Interactive and filesystem utilities in stx.gen — less (pager), src (source viewer), paste (clipboard exec), embed (IPython shell), symlink, and title2path (string-to-path conversion).
 ---
 

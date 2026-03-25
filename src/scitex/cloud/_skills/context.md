@@ -1,5 +1,4 @@
 ---
-name: cloud-context
 description: Retrieve the current web app context (username, page state, available actions) with get_context().
 ---
 

@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — PDF Download and Authentication
----
 
 # stx.scholar — PDF Download and Authentication
 

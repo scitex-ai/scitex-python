@@ -1,5 +1,4 @@
 ---
-name: stx.session — CLI generation
 description: How @stx.session auto-generates an ArgumentParser from function signatures, including type inference, short forms, boolean flags, and Literal choices.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: stx.cv.drawing
 description: Drawing primitives on images — rectangle, circle, line, text, polylines, arrow.
 ---
 

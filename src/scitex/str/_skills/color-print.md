@@ -1,5 +1,4 @@
 ---
-name: str-color-print
 description: ANSI color text and colored block printing utilities — color_text (alias ct), printc, print_debug.
 ---
 

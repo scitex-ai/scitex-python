@@ -1,5 +1,4 @@
 ---
-name: rng-migration
 description: Migrate from deprecated scitex.rng to scitex.repro. RandomStateManager, get, and reset are now in stx.repro.
 ---
 

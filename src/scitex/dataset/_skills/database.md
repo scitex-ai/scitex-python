@@ -1,5 +1,4 @@
 ---
-name: dataset-database
 description: Build a local SQLite dataset cache with db.build(), run fast offline keyword search with db.search(), and inspect the cache with db.stats().
 ---
 

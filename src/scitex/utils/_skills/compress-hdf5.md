@@ -1,5 +1,4 @@
 ---
-name: stx.utils.compress_hdf5
 description: Compress existing HDF5 files with gzip, preserving all datasets, groups, and attributes.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: notebook-verification
 description: Verify that a notebook's cells produce reproducible outputs with verify_notebook() and run a quick structural check with check_notebook().
 ---
 

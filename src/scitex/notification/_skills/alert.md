@@ -1,5 +1,4 @@
 ---
-name: notification-alert
 description: Send notifications to all available backends with alert() and alert_async(). Supports message, title, and urgency level parameters.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: bridge-protocol
 description: Bridge protocol version management — check compatibility with check_protocol_compatibility(), attach version metadata with add_protocol_metadata(), and extract it with extract_protocol_metadata().
 ---
 

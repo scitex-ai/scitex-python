@@ -1,5 +1,4 @@
 ---
-name: export
 description: Export and migration — arXiv-ready export, Overleaf import/export, AI2 Asta prompts, project cloning.
 ---
 

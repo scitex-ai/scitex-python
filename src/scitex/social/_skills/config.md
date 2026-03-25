@@ -1,5 +1,4 @@
 ---
-name: social-config
 description: Check socialia availability, inspect PLATFORM_STRATEGIES, and configure SCITEX_SOCIAL_ environment variables.
 ---
 

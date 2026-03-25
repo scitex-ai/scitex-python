@@ -1,5 +1,4 @@
 ---
-name: linalg-distance
 description: Euclidean distance (point-to-point and pairwise) via euclidean_distance / edist and cdist. Use when computing distances between vectors or full pairwise distance matrices.
 ---
 

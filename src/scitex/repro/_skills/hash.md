@@ -1,5 +1,4 @@
 ---
-name: repro-hash
 description: Compute a deterministic fingerprint of a numpy array with hash_array() for integrity verification and deduplication.
 ---
 

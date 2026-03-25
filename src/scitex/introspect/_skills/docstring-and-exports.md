@@ -1,5 +1,4 @@
 ---
-name: introspect-docstring-exports
 description: Extract docstrings (raw, parsed sections, or summary only) and retrieve a module's __all__ exports list. Use when you need documentation text or the official public API of a module.
 ---
 

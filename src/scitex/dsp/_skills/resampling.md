@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.resample
 description: Anti-aliased signal resampling using torchaudio.
 ---
 

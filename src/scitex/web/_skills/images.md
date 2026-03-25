@@ -1,5 +1,4 @@
 ---
-name: web-images
 description: Bulk-download images from a web page with download_images() and collect all image URLs with get_image_urls().
 ---
 

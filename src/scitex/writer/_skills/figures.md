@@ -1,5 +1,4 @@
 ---
-name: figures
 description: Figure management — add, list, remove, convert formats, extract PDF pages as images.
 ---
 

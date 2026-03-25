@@ -1,5 +1,4 @@
 ---
-name: stx.session — injected globals
 description: The five globals injected by @stx.session: CONFIG, plt, COLORS, rngg, logger — what they are, how they are created, and how to use them.
 ---
 

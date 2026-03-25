@@ -1,5 +1,4 @@
 ---
-name: stx.nn - Utility Layers
 description: Lightweight nn.Module helpers — SpatialAttention, TransposeLayer, and the standalone GaussianFilter (_GaussianFilter.py). These are building blocks for larger architectures.
 ---
 

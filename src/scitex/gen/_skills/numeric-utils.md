@@ -1,5 +1,4 @@
 ---
-name: gen-numeric-utils
 description: Numeric helper functions in stx.gen — rounding to nearest even/odd integer, tensor rank conversion, symmetric log transform, named-dimension transpose, and numeric sequence helpers (connect_nums, float_linspace).
 ---
 

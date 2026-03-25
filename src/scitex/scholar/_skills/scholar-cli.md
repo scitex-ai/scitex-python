@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — CLI Interface
----
 
 # stx.scholar — CLI Interface
 

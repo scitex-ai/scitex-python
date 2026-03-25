@@ -1,5 +1,4 @@
 ---
-name: tunnel-management
 description: Create reverse SSH tunnels with setup(), remove them with remove(), and inspect their status with status(). Uses autossh for persistent connections through NAT.
 ---
 

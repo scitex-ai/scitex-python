@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — Core Classes (Scholar, Paper, Papers)
----
 
 # stx.scholar — Core Classes
 

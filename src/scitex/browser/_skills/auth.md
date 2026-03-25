@@ -1,5 +1,4 @@
 ---
-name: browser-auth
 description: GoogleAuthHelper automates Google OAuth popup flows ("Continue with Google" button) for services that delegate authentication to Google; reads credentials from constructor args or GOOGLE_EMAIL / GOOGLE_PASSWORD env vars.
 ---
 

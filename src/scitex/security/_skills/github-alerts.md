@@ -1,5 +1,4 @@
 ---
-name: stx.security — GitHub Security Alerts
 description: Fetch, format, and save GitHub secret scanning, Dependabot, and code scanning alerts using the gh CLI.
 ---
 

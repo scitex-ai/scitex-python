@@ -1,5 +1,4 @@
 ---
-name: browser-debugging
 description: Visual browser debugging utilities — browser_logger for in-page overlay messages with screenshot capture, show_grid_async, highlight_element_async, visual cursor/click effects, failure capture fixtures for pytest, TestMonitor for periodic screenshots, SyncBrowserSession for zombie-free test sessions.
 ---
 

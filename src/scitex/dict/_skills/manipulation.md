@@ -1,5 +1,4 @@
 ---
-name: dict-manipulation
 description: Safely merge dicts with safe_merge(), remove keys with pop_keys(), replace values with replace(), flatten nested dicts with flatten(), accumulate lists with listed_dict(), and serialize with to_str().
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: introspect-resolve
 description: Resolve a dotted path string to a live Python object and classify it by kind (module, class, function, method, data). Foundational utility used internally by all other introspect functions.
 ---
 

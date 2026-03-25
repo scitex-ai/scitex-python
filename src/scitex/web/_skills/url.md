@@ -1,5 +1,4 @@
 ---
-name: web-url
 description: Extract and summarize web page content with summarize_url(), crawl pages with crawl_url() and crawl_to_json(), and collect all hyperlinks with get_urls().
 ---
 

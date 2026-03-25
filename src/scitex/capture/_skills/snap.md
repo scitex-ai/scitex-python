@@ -1,5 +1,4 @@
 ---
-name: stx.capture.snap
 description: Take a single screenshot — monitor, app window, URL, or all monitors. Auto-categorizes as stdout/stderr based on content.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: gen-environment-detection
 description: Runtime environment detection in stx.gen — IPython/script detection (is_ipython, is_script), installed package listing (list_packages). Re-exports from stx.context are also available under stx.gen for backward compatibility.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: stx.template.project-templates
 description: Clone GitHub-hosted project scaffold templates for research, pip packages, Singularity containers, LaTeX manuscripts, and SciTeX modules.
 ---
 

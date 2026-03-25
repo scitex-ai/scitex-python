@@ -1,5 +1,4 @@
 ---
-name: diagram-splitting
 description: Divide large stx.diagram diagrams into multi-figure sets for publication — SplitConfig, SplitStrategy, SplitResult, and Diagram.split with by_groups and by_articulation strategies.
 ---
 

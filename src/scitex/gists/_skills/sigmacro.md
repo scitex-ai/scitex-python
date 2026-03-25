@@ -1,5 +1,4 @@
 ---
-name: gists-sigmacro
 description: SigmaPlot macro helpers — SigMacro_processFigure_S applies standard figure processing, SigMacro_toBlue converts colors to blue in SigmaPlot figures.
 ---
 

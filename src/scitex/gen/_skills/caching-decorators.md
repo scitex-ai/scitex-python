@@ -1,5 +1,4 @@
 ---
-name: gen-caching-decorators
 description: Decorator and kwarg utilities in stx.gen — cache (lru_cache alias), alternate_kwarg for accepting multiple keyword names, and wrap (functools.wraps pass-through).
 ---
 

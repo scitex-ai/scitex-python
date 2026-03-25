@@ -1,5 +1,4 @@
 ---
-name: logging-errors
 description: SciTeX exception hierarchy — structured errors with context dicts and suggestions, covering IO, configuration, data, path, plotting, scholar, stats, and NN errors.
 ---
 

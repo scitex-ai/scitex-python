@@ -1,5 +1,4 @@
 ---
-name: dev-code-analysis
 description: Analyze Python code call flows with _analyze_code_flow() and reload a module in-place with _reload() for iterative development.
 ---
 

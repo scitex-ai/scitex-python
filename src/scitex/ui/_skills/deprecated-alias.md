@@ -1,5 +1,4 @@
 ---
-name: stx.ui — Deprecated Notification Shim
 description: scitex.ui is a deprecated shim for scitex.notify. All notification functions emit DeprecationWarning.
 ---
 

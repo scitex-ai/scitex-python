@@ -1,5 +1,4 @@
 ---
-name: stx.verify — Deprecated Alias for stx.clew
 description: scitex.verify is a deprecated backward-compat shim. All verification functionality lives in scitex.clew.
 ---
 

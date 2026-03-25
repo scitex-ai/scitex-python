@@ -1,5 +1,4 @@
 ---
-name: tex-compile
 description: Compile a .tex file to PDF using pdflatex, xelatex, lualatex, or latexmk. Returns a structured CompileResult with success flag, PDF path, and parsed errors/warnings from the log.
 ---
 

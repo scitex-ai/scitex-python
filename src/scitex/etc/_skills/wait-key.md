@@ -1,5 +1,4 @@
 ---
-name: stx.etc — Interactive Keyboard Control
 description: Block execution or count keypresses interactively using wait_key and count.
 ---
 

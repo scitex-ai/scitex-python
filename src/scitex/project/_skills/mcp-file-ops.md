@@ -1,5 +1,4 @@
 ---
-name: stx.project — MCP File Operations
 description: Secure project file operations (list, read, write, search, exec) exposed as MCP tools with path traversal protection.
 ---
 

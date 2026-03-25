@@ -1,5 +1,4 @@
 ---
-name: stx.repro — RandomStateManager
 description: Cross-framework seed fixing, named generators, reproducibility verification, checkpoint/restore, and temporary seed contexts.
 ---
 

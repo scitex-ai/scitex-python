@@ -1,5 +1,4 @@
 ---
-name: diagram-backends
 description: Backend compilation for stx.diagram — compile_to_mermaid and compile_to_graphviz module-level functions, to_mermaid/to_graphviz instance methods, shape/style mappings, and rendering with mmdc/dot.
 ---
 

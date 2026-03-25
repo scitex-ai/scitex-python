@@ -1,5 +1,4 @@
 ---
-name: clew-verification
 description: Core verification functions for stx.clew — status overview, per-session hash check, file provenance chain tracing, and full multi-target DAG verification.
 ---
 

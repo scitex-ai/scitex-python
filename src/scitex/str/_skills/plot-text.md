@@ -1,5 +1,4 @@
 ---
-name: str-plot-text
 description: Format strings for scientific plot labels and titles — capitalize, handle units, replace underscores, format scientific notation, and check unit consistency.
 ---
 

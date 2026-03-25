@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.filt
 description: Bandpass, bandstop, lowpass, highpass, and Gaussian filters for multi-channel signals.
 ---
 

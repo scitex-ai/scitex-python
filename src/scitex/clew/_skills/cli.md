@@ -1,5 +1,4 @@
 ---
-name: clew-cli
 description: CLI interface for stx.clew — clew status, list, verify, stats, mermaid commands.
 ---
 

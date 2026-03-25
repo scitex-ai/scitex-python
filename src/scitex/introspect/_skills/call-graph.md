@@ -1,5 +1,4 @@
 ---
-name: introspect-call-graph
 description: Static call graph extraction via AST — which functions a function calls, which functions call it, and the call graph for an entire module. Has timeout protection for large modules.
 ---
 

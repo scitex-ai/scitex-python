@@ -1,5 +1,4 @@
 ---
-name: media-render
 description: Detect media file references in text with render.detect(), display files in terminal/markdown/chat targets with render.show(), and classify file types with render.classify().
 ---
 

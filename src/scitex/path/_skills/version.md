@@ -1,5 +1,4 @@
 ---
-name: path-version
 description: Versioned file management — increment_version generates the next version path, find_latest locates the highest existing version.
 ---
 

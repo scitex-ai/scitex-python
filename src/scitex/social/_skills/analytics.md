@@ -1,5 +1,4 @@
 ---
-name: social-analytics
 description: Retrieve YouTube channel statistics and Google Analytics traffic reports.
 ---
 

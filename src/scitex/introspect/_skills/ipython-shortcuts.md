@@ -1,5 +1,4 @@
 ---
-name: introspect-ipython-shortcuts
 description: IPython-style quick lookup — q (signature), qq (source), dir (members), list_api (recursive API tree). Use when you need to inspect a function, class, or module interactively.
 ---
 

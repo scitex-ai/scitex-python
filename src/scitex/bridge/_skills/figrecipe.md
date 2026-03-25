@@ -1,5 +1,4 @@
 ---
-name: bridge-figrecipe
 description: Save figures with figrecipe recipe metadata using save_with_recipe(), reload figures from recipe files with load_recipe(), and check figrecipe availability with has_figrecipe().
 ---
 

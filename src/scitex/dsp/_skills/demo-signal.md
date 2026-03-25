@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.demo_sig
 description: Generate synthetic signals for testing — periodic, chirp, ripple, Gaussian, PAC, MEG.
 ---
 

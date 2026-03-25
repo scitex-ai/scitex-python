@@ -1,5 +1,4 @@
 ---
-name: parallel-patterns
 description: Common usage patterns for stx.parallel.run — batch file processing, multi-value returns, wrapping keyword arguments, and combining with stx.io.
 ---
 

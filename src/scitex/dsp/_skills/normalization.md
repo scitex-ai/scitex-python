@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.norm
 description: Z-score and min-max normalization for multi-channel signals.
 ---
 

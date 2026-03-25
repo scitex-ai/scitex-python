@@ -1,5 +1,4 @@
 ---
-name: training
 description: Training helpers — EarlyStopping with direction control and LearningCurveLogger for multi-phase metric tracking and visualization.
 ---
 

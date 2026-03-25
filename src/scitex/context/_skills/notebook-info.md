@@ -1,5 +1,4 @@
 ---
-name: context-notebook-info
 description: Retrieve Jupyter notebook path, name, and directory from within a running notebook session.
 ---
 

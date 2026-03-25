@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — Citation Formatting and Export
----
 
 # stx.scholar — Citation Formatting and Export
 

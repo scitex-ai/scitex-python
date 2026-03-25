@@ -1,5 +1,4 @@
 ---
-name: notebook-compilation
 description: Compile a Jupyter notebook into a DAG-ordered Python script with compile_notebook(). The CompiledNotebook object supports to_mermaid() for visualization and to_script() for export.
 ---
 

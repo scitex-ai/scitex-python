@@ -1,5 +1,4 @@
 ---
-name: tex-to-vec
 description: Convert a string to LaTeX vector notation (\overrightarrow{\mathrm{...}}). Supports automatic fallback to mathtext or unicode when a system LaTeX engine is unavailable.
 ---
 

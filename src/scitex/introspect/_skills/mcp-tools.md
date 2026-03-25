@@ -1,5 +1,4 @@
 ---
-name: introspect-mcp-tools
 description: MCP tool interface for stx.introspect — async handlers that wrap every Python API function. Use when calling introspect capabilities through the MCP protocol.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: types-array-color
 description: ArrayLike protocol for type annotations and is_array_like() runtime check; ColorLike type alias for matplotlib-compatible color specifications.
 ---
 

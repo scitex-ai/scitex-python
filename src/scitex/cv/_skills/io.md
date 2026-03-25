@@ -1,5 +1,4 @@
 ---
-name: stx.cv.io
 description: Image I/O and color space conversion — load, save, to_rgb, to_bgr, to_gray.
 ---
 

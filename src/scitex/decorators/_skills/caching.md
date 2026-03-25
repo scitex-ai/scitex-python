@@ -1,5 +1,4 @@
 ---
-name: stx.decorators — Caching
 description: Persistent disk caching (cache_disk, cache_disk_async) and in-memory LRU caching (cache_mem) decorators for expensive computations.
 ---
 

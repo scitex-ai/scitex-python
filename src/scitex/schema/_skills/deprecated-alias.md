@@ -1,5 +1,4 @@
 ---
-name: stx.schema — Deprecated Schema Module
 description: scitex.schema is deprecated. Core schemas (FTS, Node, Encoding, Theme, Stats, BBox, SizeMM, DataInfo) are migrating to scitex.io.bundle.
 ---
 

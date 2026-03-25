@@ -1,5 +1,4 @@
 ---
-name: path-symlink
 description: Symlink creation, inspection, resolution, listing, and repair. symlink, create_relative_symlink, is_symlink, readlink, resolve_symlinks, list_symlinks, fix_broken_symlinks, unlink_symlink.
 ---
 

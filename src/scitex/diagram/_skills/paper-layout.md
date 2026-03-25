@@ -1,5 +1,4 @@
 ---
-name: diagram-paper-layout
 description: Paper-aware layout system for stx.diagram — PaperMode (draft vs publication), PaperConstraints (column, emphasize, return_edges), LayoutHints (layers, groups, spacing).
 ---
 

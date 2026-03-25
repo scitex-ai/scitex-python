@@ -1,5 +1,4 @@
 ---
-name: diagram-schema
 description: Typed specification objects that form the semantic layer of stx.diagram — DiagramSpec, NodeSpec, EdgeSpec, DiagramType, and related enums.
 ---
 

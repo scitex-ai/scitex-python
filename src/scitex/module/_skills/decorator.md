@@ -1,5 +1,4 @@
 ---
-name: module-decorator
 description: Decorate Python functions as SciTeX cloud modules with @module(), inject parameters automatically with INJECTED, and describe module metadata with ModuleManifest.
 ---
 

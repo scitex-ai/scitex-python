@@ -1,5 +1,4 @@
 ---
-name: social-posting
 description: Post content to Twitter/X, LinkedIn, and Reddit using platform client classes.
 ---
 

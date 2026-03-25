@@ -1,5 +1,4 @@
 ---
-name: pd-shape
 description: Convert between wide matrix format and long (x, y, z) row format using to_xyz, from_xyz, and to_xy.
 ---
 

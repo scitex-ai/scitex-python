@@ -1,5 +1,4 @@
 ---
-name: stx.session — SessionManager
 description: The SessionManager class for tracking concurrent sessions, with create/close/query interface and global singleton access.
 ---
 

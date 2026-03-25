@@ -1,5 +1,4 @@
 ---
-name: stx.session — lifecycle
 description: Manual session start/close API, output directory structure, CONFIG DotDict keys, and running2finished directory promotion.
 ---
 

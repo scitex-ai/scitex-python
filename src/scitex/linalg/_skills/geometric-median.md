@@ -1,5 +1,4 @@
 ---
-name: linalg-geometric-median
 description: Compute the geometric median (L1 center) of a set of points along a specified dimension — a robust alternative to the arithmetic mean. Requires the geom_median package.
 ---
 

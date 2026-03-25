@@ -1,5 +1,4 @@
 ---
-name: cloud-health-and-version
 description: Check scitex-cloud service health and retrieve version with health_check() and get_version().
 ---
 

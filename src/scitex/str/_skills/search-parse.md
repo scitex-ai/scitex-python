@@ -1,5 +1,4 @@
 ---
-name: str-search-parse
 description: Pattern search in string lists (grep, search), bidirectional f-string parsing (parse), and template-based placeholder replacement (replace).
 ---
 

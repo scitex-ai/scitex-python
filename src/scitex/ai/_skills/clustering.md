@@ -1,5 +1,4 @@
 ---
-name: clustering
 description: Dimensionality reduction and visualization — pca() and umap() with multi-dataset subplot support, optional supervised mode, and independent legend export.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: dev-demo-plotters
 description: Pre-built demo scripts for every matplotlib, seaborn, and scitex plot type. Located in scitex.dev.plt.demo_plotters. Run a demo script to generate a reference figure.
 ---
 

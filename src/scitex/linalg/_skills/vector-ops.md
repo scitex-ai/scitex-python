@@ -1,5 +1,4 @@
 ---
-name: linalg-vector-ops
 description: Vector operations — cosine similarity (NaN-safe), NaN-aware norm, vector projection/rebasing, and coordinate reconstruction from three line lengths.
 ---
 

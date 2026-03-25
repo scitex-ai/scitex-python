@@ -1,5 +1,4 @@
 ---
-name: path-misc
 description: Miscellaneous path utilities — getsize (file size in bytes), this_path / get_this_path (caller script path), get_data_path_from_a_package (package data files).
 ---
 

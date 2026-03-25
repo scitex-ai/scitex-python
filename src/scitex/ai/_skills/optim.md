@@ -1,5 +1,4 @@
 ---
-name: optim
 description: Optimizer utilities — get_optimizer by name, set_optimizer for one or multiple models, with optional Ranger deep learning optimizer.
 ---
 

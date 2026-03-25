@@ -1,5 +1,4 @@
 ---
-name: repro-random-state
 description: Seed all random number generators simultaneously with RandomStateManager. Create named generators for different data streams, verify reproducibility, and use the global get()/reset() interface.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: types-predicates
 description: Check whether a list is homogeneously typed with is_listed_X() and is_list_of_type().
 ---
 

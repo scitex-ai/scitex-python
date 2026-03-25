@@ -1,5 +1,4 @@
 ---
-name: stx.decorators — Lifecycle and Metadata
 description: Decorators for function lifecycle management: timeout protection, deprecation warnings, not-implemented stubs, docstring preservation, and basic wrapping.
 ---
 

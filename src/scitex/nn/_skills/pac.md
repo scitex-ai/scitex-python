@@ -1,5 +1,4 @@
 ---
-name: stx.nn - Phase-Amplitude Coupling
 description: GPU-accelerated differentiable Phase-Amplitude Coupling (PAC) and Modulation Index layers for EEG/LFP analysis. Supports static and learnable filter banks, surrogate-based z-scoring.
 ---
 

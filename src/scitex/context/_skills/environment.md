@@ -1,5 +1,4 @@
 ---
-name: context-environment
 description: Detect whether code is running in a script, notebook, or IPython session with detect_environment(), is_notebook(), is_script(), is_ipython(). Get the appropriate output directory with get_output_directory().
 ---
 

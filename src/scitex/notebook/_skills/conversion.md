@@ -1,5 +1,4 @@
 ---
-name: notebook-conversion
 description: Convert a Jupyter notebook to another format (.py, .html, .md) with convert_notebook().
 ---
 

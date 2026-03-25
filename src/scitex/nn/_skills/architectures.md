@@ -1,5 +1,4 @@
 ---
-name: stx.nn - Model Architectures
 description: Complete neural network architectures for biosignal classification — ResNet1D, MNet1000, BNet (v1 and Residual). Designed for multi-channel EEG/MEG/LFP data shaped (batch, n_chs, seq_len).
 ---
 

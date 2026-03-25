@@ -1,5 +1,4 @@
 ---
-name: stx.capture.grid
 description: Draw coordinate grids, monitor boundaries, and cursor-position markers on screenshots to help with UI automation and coordinate debugging.
 ---
 

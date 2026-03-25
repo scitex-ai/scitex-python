@@ -1,5 +1,4 @@
 ---
-name: tables
 description: Table management — add from CSV, list, remove, and CSV/LaTeX round-trip conversion.
 ---
 

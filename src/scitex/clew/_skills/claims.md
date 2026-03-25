@@ -1,5 +1,4 @@
 ---
-name: clew-claims
 description: Manuscript claim registration and verification for stx.clew — link paper assertions (statistics, figures, tables) to their backing computations and verify them through the provenance chain.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: bridge-plt-vis
 description: Convert matplotlib Figure objects to vis FigureModel with figure_to_vis_model(), convert axes with axes_to_vis_axes(), collect tracked data with collect_figure_data(), and convert tracking records with tracking_to_plot_configs().
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: logging-context
 description: Context managers for scoped file logging — log_to_file() and logger.to().
 ---
 

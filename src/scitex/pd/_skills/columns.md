@@ -1,5 +1,4 @@
 ---
-name: pd-columns
 description: Column reordering (mv, mv_to_first, mv_to_last), column concatenation into a label string (merge_columns / merge_cols), and column melting (melt_cols).
 ---
 

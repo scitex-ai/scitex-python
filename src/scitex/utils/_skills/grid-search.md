@@ -1,5 +1,4 @@
 ---
-name: stx.utils.yield_grids / count_grids
 description: Enumerate every combination of a parameter grid for hyperparameter or condition sweeps.
 ---
 

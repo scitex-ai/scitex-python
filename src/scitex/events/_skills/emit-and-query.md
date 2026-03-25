@@ -1,5 +1,4 @@
 ---
-name: stx.events — Emit and Query Events
 description: Emit named events with payloads and query the latest state or history.
 ---
 

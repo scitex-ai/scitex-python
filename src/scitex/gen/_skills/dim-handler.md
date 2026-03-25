@@ -1,5 +1,4 @@
 ---
-name: gen-dim-handler
 description: DimHandler class in stx.gen — flattens non-target dimensions into a single batch dimension, performs computations on selected dimensions, then restores the original shape. Works with both torch.Tensor and numpy.ndarray.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: stx.capture.gif
 description: Create animated GIFs from monitoring session frames, explicit file lists, or glob patterns.
 ---
 

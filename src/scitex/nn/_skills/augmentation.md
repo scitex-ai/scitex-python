@@ -1,5 +1,4 @@
 ---
-name: stx.nn - Data Augmentation Layers
 description: Training-only augmentation layers for multi-channel biosignals — channel dropout, channel swapping, channel gain jitter, frequency band gain jitter, and axis-wise dropout.
 ---
 

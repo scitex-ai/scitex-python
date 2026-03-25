@@ -1,5 +1,4 @@
 ---
-name: sampling
 description: Data sampling utilities — undersample() for class-balanced random undersampling of imbalanced datasets.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: notification-voice-sms
 description: Make phone calls with call() / call_async() and send SMS with sms() / sms_async() via Twilio credentials stored as environment variables.
 ---
 

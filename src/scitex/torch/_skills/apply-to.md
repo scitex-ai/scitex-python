@@ -1,5 +1,4 @@
 ---
-name: torch-apply-to
 description: apply_to — apply an arbitrary Python/PyTorch function along a specified tensor dimension by temporarily permuting and unbinding.
 ---
 

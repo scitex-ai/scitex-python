@@ -1,5 +1,4 @@
 ---
-name: bib
 description: BibTeX bibliography management — add, get, list, remove entries, merge .bib files.
 ---
 

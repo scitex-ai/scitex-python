@@ -1,5 +1,4 @@
 ---
-name: str-numeric-formatting
 description: Factor out common powers of 10 from axis tick values for cleaner scientific notation, auto-apply to matplotlib axes, and convert byte counts to human-readable strings.
 ---
 

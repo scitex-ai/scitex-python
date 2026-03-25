@@ -1,5 +1,4 @@
 ---
-name: genai
 description: GenAI unified LLM interface — factory function covering OpenAI, Anthropic, Google, Groq, DeepSeek, Perplexity, and Llama with cost tracking.
 ---
 

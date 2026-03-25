@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.psd / stx.dsp.band_powers
 description: Power spectral density and per-band average power for multi-channel signals.
 ---
 

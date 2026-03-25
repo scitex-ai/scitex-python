@@ -1,5 +1,4 @@
 ---
-name: introspect-class-hierarchy
 description: Inspect inheritance trees — MRO (parent classes in resolution order) and all known subclasses. Use when you need to understand a class's ancestry or find classes that extend it.
 ---
 

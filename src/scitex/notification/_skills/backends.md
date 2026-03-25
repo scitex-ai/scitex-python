@@ -1,5 +1,4 @@
 ---
-name: notification-backends
 description: Discover available notification backends with available_backends() and inspect the DEFAULT_FALLBACK_ORDER list that controls delivery sequence.
 ---
 

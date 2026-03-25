@@ -1,5 +1,4 @@
 ---
-name: stx.events — Event Schema and Known Types
 description: The Event dataclass and the registry of predefined event types.
 ---
 

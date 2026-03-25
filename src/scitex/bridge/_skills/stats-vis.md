@@ -1,5 +1,4 @@
 ---
-name: bridge-stats-vis
 description: Convert statistical results to vis annotation objects with stat_result_to_annotation(), add them to a FigureModel with add_stats_to_figure_model(), and position annotations with position_stat_annotation().
 ---
 

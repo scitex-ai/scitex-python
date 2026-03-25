@@ -1,5 +1,4 @@
 ---
-name: logging-configure
 description: Configure stx.logging — set log level, enable/disable file output, manage rotating log files, and control print capture.
 ---
 

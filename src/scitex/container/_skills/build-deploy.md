@@ -1,5 +1,4 @@
 ---
-name: container-build-deploy
 description: Build Apptainer container images with build(), snapshot Python environments with freeze(), and deploy containers to target directories with deploy().
 ---
 

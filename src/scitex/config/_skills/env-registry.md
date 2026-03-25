@@ -1,5 +1,4 @@
 ---
-name: config-env-registry
 description: ENV_REGISTRY — typed registry of all SCITEX_* environment variables with module grouping, defaults, and sensitive flags. Covers EnvVar dataclass, get_env_by_module, get_all_modules, generate_template, and get_env_docs.
 ---
 

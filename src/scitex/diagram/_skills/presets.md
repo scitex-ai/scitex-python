@@ -1,5 +1,4 @@
 ---
-name: diagram-presets
 description: Built-in diagram templates in stx.diagram — PIPELINE_PRESET, SCIENTIFIC_PRESET, WORKFLOW_PRESET, DECISION_PRESET, and the list_presets / get_preset API.
 ---
 

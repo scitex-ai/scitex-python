@@ -1,5 +1,4 @@
 ---
-name: gen-data-inspection
 description: Variable inspection utilities in stx.gen — var_info for type/shape introspection, the ArrayLike type alias, and describe for summary statistics on DataFrames.
 ---
 

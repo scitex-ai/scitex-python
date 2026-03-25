@@ -1,5 +1,4 @@
 ---
-name: os-mv
 description: Move a file or directory to a destination path, auto-creating the destination directory tree if it does not exist.
 ---
 

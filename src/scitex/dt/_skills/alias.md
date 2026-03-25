@@ -1,5 +1,4 @@
 ---
-name: dt-alias
 description: stx.dt is a shorter alias for stx.datetime. All exported names are identical.
 ---
 

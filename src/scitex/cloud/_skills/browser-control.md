@@ -1,5 +1,4 @@
 ---
-name: cloud-browser-control
 description: Evaluate JavaScript in the user's browser and drive UI interactions with eval_js() and ui_action().
 ---
 

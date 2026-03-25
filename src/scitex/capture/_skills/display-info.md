@@ -1,5 +1,4 @@
 ---
-name: stx.capture.display-info
 description: Enumerate monitors, virtual desktops, and visible windows; capture a specific window by handle.
 ---
 

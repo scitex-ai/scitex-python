@@ -1,5 +1,4 @@
 ---
-name: git-branch
 description: Branch management — git_branch_rename (git branch -M) and git_checkout_new_branch (git checkout -b). Both validate branch names against git naming rules before running the command.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: canvas-migration
 description: Migrate from deprecated scitex.canvas to figrecipe. Maps edit(), compose(), Canvas, and panel operations to figrecipe equivalents.
 ---
 

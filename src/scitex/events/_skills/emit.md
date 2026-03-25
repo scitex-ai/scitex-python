@@ -1,5 +1,4 @@
 ---
-name: events-emit
 description: Fire structured events with emit(), read the latest event of a given type with latest(), and browse the full event log with history().
 ---
 

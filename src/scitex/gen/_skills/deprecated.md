@@ -1,5 +1,4 @@
 ---
-name: gen-deprecated
 description: Deprecated functions and re-exports in stx.gen — start/close/running2finished (now in stx.session), host utilities (now in stx.os), shell commands (now in stx.sh), and other relocated functions. All trigger DeprecationWarning.
 ---
 

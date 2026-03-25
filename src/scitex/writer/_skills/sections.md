@@ -1,5 +1,4 @@
 ---
-name: sections
 description: Read, write, and watch manuscript sections. Project directory layout and DocumentSection API.
 ---
 

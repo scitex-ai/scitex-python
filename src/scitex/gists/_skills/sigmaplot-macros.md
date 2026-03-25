@@ -1,5 +1,4 @@
 ---
-name: stx.gists — SigmaPlot Macros
 description: Print ready-to-paste VBA macro code for SigmaPlot v12.0 figure formatting.
 ---
 

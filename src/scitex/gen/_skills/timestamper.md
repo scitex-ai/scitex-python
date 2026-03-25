@@ -1,5 +1,4 @@
 ---
-name: gen-timestamper
 description: TimeStamper class in stx.gen — records elapsed time with comments, returns formatted strings, and stores a pandas DataFrame of all checkpoint events. Useful for profiling multi-stage pipelines.
 ---
 

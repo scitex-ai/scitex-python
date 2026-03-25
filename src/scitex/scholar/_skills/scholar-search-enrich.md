@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — Search, Enrichment, and Loading
----
 
 # stx.scholar — Search, Enrichment, and Loading
 

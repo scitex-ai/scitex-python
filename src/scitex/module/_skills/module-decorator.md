@@ -1,5 +1,4 @@
 ---
-name: stx.module — @module Decorator
 description: Mark functions as SciTeX workspace modules with the @module decorator and collect structured outputs.
 ---
 

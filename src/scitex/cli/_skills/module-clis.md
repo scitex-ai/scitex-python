@@ -1,5 +1,4 @@
 ---
-name: cli-module-clis
 description: Quick reference for every module-specific scitex CLI subcommand — audio speak, audit, container build/status, dataset search, notification send, repro gen-id, tunnel setup/remove/status, web summarize.
 ---
 

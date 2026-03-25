@@ -1,5 +1,4 @@
 ---
-name: sh-types
 description: Type definitions used by stx.sh — ShellResult TypedDict, CommandInput, and ReturnFormat.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: diagram-construction
 description: Build diagrams programmatically using Diagram, add_node, add_edge, set_group, emphasize, or load existing diagrams from YAML specs or Mermaid files.
 ---
 

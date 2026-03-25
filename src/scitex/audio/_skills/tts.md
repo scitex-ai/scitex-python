@@ -1,5 +1,4 @@
 ---
-name: audio-tts
 description: Synthesize speech from text using speak(), generate audio bytes with generate_bytes(), and stop ongoing playback with stop_speech().
 ---
 

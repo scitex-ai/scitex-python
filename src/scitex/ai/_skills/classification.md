@@ -1,5 +1,4 @@
 ---
-name: classification
 description: Classification utilities — Classifier factory, ClassificationReporter for metric tracking and visualization, CrossValidationExperiment for full CV pipelines.
 ---
 

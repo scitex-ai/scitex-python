@@ -1,5 +1,4 @@
 ---
-name: compile
 description: LaTeX compilation — Writer class, compile_manuscript/supplementary/revision, CompilationResult dataclass, project creation.
 ---
 

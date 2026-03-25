@@ -1,5 +1,4 @@
 ---
-name: module-output
 description: Return typed module outputs with output(), embed HTML content with html(), and render outputs for display with render_output() and render_outputs().
 ---
 

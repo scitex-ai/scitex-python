@@ -1,5 +1,4 @@
 ---
-name: stx.decorators — Batch Processing
 description: batch_fn decorator and combined batch+type-conversion decorators for splitting large inputs into mini-batches and combining results.
 ---
 

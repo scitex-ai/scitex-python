@@ -1,5 +1,4 @@
 ---
-name: stx.decorators — Type Conversion
 description: Automatic input-type conversion decorators (numpy_fn, torch_fn, pandas_fn, xarray_fn, signal_fn) that convert function inputs to a target array type and convert outputs back to the original caller type.
 ---
 

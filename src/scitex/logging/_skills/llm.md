@@ -1,5 +1,4 @@
 ---
-name: logging-llm
 description: stx.logging.llm — parse, render, and analyze Claude Code JSONL session logs. Includes HTML rendering, DAG visualization, action extraction, script export, and multi-session dashboard.
 ---
 

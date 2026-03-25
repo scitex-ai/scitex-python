@@ -1,5 +1,4 @@
 ---
-name: stx.rng — Deprecated Alias for stx.repro
 description: scitex.rng is a deprecated backward-compat shim. All functionality lives in scitex.repro.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: bridge-stats-plt
 description: Annotate matplotlib axes with statistical test results using add_stat_to_axes(), extract existing annotations with extract_stats_from_axes(), and format stat results for display with format_stat_for_plot().
 ---
 

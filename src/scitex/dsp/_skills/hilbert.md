@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.hilbert
 description: Hilbert transform returning instantaneous phase and amplitude envelope.
 ---
 

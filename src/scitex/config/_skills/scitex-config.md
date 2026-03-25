@@ -1,5 +1,4 @@
 ---
-name: config-scitex-config
 description: ScitexConfig — YAML-based configuration manager with ${VAR:-default} environment variable substitution and priority resolution (direct > config > env > default). Covers get_config and load_yaml.
 ---
 

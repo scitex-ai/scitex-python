@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.utils
 description: Internal helpers — zero-padding, FIR filter design, differentiable bandpass filter banks.
 ---
 

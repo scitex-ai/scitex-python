@@ -1,5 +1,4 @@
 ---
-name: git-clone
 description: Repository creation — clone_repo (clone from URL with optional branch/tag) and git_init (bare git init -b main). Both return bool.
 ---
 

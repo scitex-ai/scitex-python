@@ -1,5 +1,4 @@
 ---
-name: gen-tensor-normalization
 description: Tensor and array normalization functions in stx.gen — z-score, min-max, NaN-safe variants, unbiasing, percentile clipping. All accept both torch.Tensor and numpy.ndarray (via @torch_fn decorator). Optional caching layer for repeated operations.
 ---
 

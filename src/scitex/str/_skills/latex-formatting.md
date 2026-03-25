@@ -1,5 +1,4 @@
 ---
-name: str-latex-formatting
 description: Wrap strings and numbers in LaTeX math mode ($...$) and add hat notation. Pure string formatting — no LaTeX installation required.
 ---
 

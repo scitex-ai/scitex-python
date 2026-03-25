@@ -1,5 +1,4 @@
 ---
-name: stx.notebook — DAG Compilation
 description: Reconstruct the actual execution dependency graph from clew DB timestamps and export as Mermaid diagram or topologically-ordered Python script.
 ---
 

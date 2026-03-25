@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.params
 description: Built-in EEG frequency bands and standard electrode montages.
 ---
 

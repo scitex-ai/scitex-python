@@ -1,5 +1,4 @@
 ---
-name: stx.ml — Alias for stx.ai
 description: stx.ml is a backward-compatibility re-export of scitex.ai. New code should use stx.ai.
 ---
 

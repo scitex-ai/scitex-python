@@ -1,5 +1,4 @@
 ---
-name: app-file-access
 description: Access project files through a unified storage interface with get_files(), register custom backends with register_backend(), and type-check with the FilesBackend protocol.
 ---
 

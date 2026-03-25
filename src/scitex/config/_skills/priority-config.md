@@ -1,5 +1,4 @@
 ---
-name: config-priority-config
 description: PriorityConfig — dict-based configuration resolver with precedence hierarchy (direct > config_dict > env > default). Also covers load_dotenv and get_scitex_dir helpers.
 ---
 

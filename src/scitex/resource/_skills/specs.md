@@ -1,5 +1,4 @@
 ---
-name: stx.resource — System Specifications
 description: Collect full system hardware and software specifications as a dict or YAML string.
 ---
 

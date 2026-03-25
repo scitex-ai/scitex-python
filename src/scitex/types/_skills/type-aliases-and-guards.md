@@ -1,5 +1,4 @@
 ---
-name: stx.types — Type Aliases and Runtime Guards
 description: ArrayLike and ColorLike type annotations, is_array_like() runtime check, and is_listed_X()/is_list_of_type() homogeneous list guards.
 ---
 

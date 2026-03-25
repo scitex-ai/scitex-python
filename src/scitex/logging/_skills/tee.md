@@ -1,5 +1,4 @@
 ---
-name: logging-tee
 description: Tee class and tee() function — redirect stdout/stderr to both console and log files simultaneously.
 ---
 

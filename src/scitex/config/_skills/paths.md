@@ -1,5 +1,4 @@
 ---
-name: config-paths
 description: ScitexPaths — centralized path manager for all SciTeX directories. All paths derive from $SCITEX_DIR (default ~/.scitex). Covers get_paths, resolve(), ensure_dir(), ensure_all(), and list_all().
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: stx.utils.notify
 description: Send email notifications from long-running scripts with auto-detected sender, subject, and system footer.
 ---
 

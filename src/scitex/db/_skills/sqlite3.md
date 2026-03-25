@@ -1,5 +1,4 @@
 ---
-name: db-sqlite3
 description: SQLite3 database wrapper with table management, row CRUD, query, transaction, array storage, git integration, and import/export capabilities.
 ---
 

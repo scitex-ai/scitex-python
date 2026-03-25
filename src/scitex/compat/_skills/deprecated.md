@@ -1,5 +1,4 @@
 ---
-name: compat-deprecated
 description: Mark functions as deprecated with the deprecated() decorator. The wrapped function emits DeprecationWarning with the new name and planned removal version on every call.
 ---
 

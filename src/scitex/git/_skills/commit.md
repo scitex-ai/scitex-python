@@ -1,5 +1,4 @@
 ---
-name: git-commit
 description: Staging and committing — git_add_all (git add .) and git_commit (git commit -m). Both validate the path, require an existing .git directory, and return bool.
 ---
 

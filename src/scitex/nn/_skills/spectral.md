@@ -1,5 +1,4 @@
 ---
-name: stx.nn - Spectral Analysis
 description: Differentiable spectral analysis layers — Hilbert transform, Spectrogram (STFT), PSD, and Morlet Wavelet transform. All are nn.Module subclasses usable inside training loops.
 ---
 

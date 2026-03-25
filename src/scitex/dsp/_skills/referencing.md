@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.reference
 description: Common-average, random, and target channel re-referencing for EEG/LFP signals.
 ---
 

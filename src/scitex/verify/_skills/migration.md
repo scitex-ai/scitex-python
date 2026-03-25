@@ -1,5 +1,4 @@
 ---
-name: verify-migration
 description: scitex.verify is deprecated. Migrate all imports to scitex.clew.
 ---
 

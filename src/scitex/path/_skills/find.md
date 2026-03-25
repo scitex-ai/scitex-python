@@ -1,5 +1,4 @@
 ---
-name: path-find
 description: Recursive file/directory search and git root discovery. find_file, find_dir, find_git_root.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: logging-warnings
 description: SciTeX warning system — emit, filter, and control warnings integrated with the logging infrastructure.
 ---
 

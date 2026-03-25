@@ -1,5 +1,4 @@
 ---
-name: str-latex-fallback
 description: Robust LaTeX rendering fallback for matplotlib — detect capability, convert LaTeX to mathtext or Unicode, cache state, and decorate functions to auto-recover from LaTeX errors.
 ---
 

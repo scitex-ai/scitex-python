@@ -1,5 +1,4 @@
 ---
-name: stx.reproduce — Deprecated Alias for stx.repro
 description: scitex.reproduce is a deprecated backward-compat shim. All functionality lives in scitex.repro.
 ---
 

@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — MCP Interface (AI Agent Tools)
----
 
 # stx.scholar — MCP Interface
 

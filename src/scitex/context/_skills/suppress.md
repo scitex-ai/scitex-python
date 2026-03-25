@@ -1,5 +1,4 @@
 ---
-name: context-suppress
 description: Silence stdout and stderr inside a with-block using suppress_output() and its alias quiet().
 ---
 

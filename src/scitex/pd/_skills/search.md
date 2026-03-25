@@ -1,5 +1,4 @@
 ---
-name: pd-search
 description: Locate p-value columns by name pattern (find_pval) and extract a scalar from a column that should be constant (get_unique).
 ---
 

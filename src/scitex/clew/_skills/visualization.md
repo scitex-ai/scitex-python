@@ -1,5 +1,4 @@
 ---
-name: clew-visualization
 description: Mermaid DAG diagram generation for stx.clew verification state — mermaid() function with session, file, and claims-based views.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: sh-security
 description: Shell injection prevention model — why string commands are rejected, what validate_command checks, and how quote() safely escapes arguments.
 ---
 

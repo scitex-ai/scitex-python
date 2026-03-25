@@ -1,6 +1,4 @@
 ---
-name: stx.scholar — Citation Graph
----
 
 # stx.scholar — Citation Graph
 

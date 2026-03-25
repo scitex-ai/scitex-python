@@ -1,5 +1,4 @@
 ---
-name: stx.resource — Processor Usage Monitoring
 description: Get a one-shot snapshot of CPU/RAM/GPU/VRAM usage or log it over time to a CSV file.
 ---
 

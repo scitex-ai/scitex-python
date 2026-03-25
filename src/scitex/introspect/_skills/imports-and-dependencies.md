@@ -1,5 +1,4 @@
 ---
-name: introspect-imports-dependencies
 description: Static import analysis via AST — list all import statements in a module source file, categorised as stdlib/third-party/local, and build a dependency tree. Use when auditing what a module depends on.
 ---
 

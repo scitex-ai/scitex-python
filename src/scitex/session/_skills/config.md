@@ -1,5 +1,4 @@
 ---
-name: stx.session — config
 description: How session CONFIG is built from YAML files, session keys, and CLI args; DotDict access patterns; and config persistence.
 ---
 

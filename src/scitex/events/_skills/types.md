@@ -1,5 +1,4 @@
 ---
-name: events-types
 description: List registered event type names with list_types(), get metadata for a specific type with get_type_info(), and use the Event dataclass for type-checked event construction.
 ---
 

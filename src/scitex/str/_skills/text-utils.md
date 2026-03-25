@@ -1,5 +1,4 @@
 ---
-name: str-text-utils
 description: General-purpose string utilities — path cleaning, whitespace normalization, ANSI stripping, case conversion (decapitalize, title_case), and API key masking.
 ---
 

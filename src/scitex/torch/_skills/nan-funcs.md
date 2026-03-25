@@ -1,5 +1,4 @@
 ---
-name: torch-nan-funcs
 description: NaN-safe aggregation functions for PyTorch tensors — max, min, std, var, prod, cumulative prod/sum, argmax, argmin. Workarounds for missing NaN-safe ops in PyTorch core (pytorch/pytorch#61474).
 ---
 

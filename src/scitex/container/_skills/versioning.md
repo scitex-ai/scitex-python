@@ -1,5 +1,4 @@
 ---
-name: container-versioning
 description: List, switch, rollback, and clean up container versions to maintain reproducible HPC execution environments.
 ---
 

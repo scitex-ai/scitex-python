@@ -1,5 +1,4 @@
 ---
-name: audio-backends
 description: TTS backend classes (GoogleTTS, ElevenLabsTTS, SystemTTS, LuxTTS), engine discovery, fallback ordering, and WSL audio checks.
 ---
 

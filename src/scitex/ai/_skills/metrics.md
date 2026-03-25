@@ -1,5 +1,4 @@
 ---
-name: metrics
 description: Classification metrics — balanced accuracy, MCC, confusion matrix, ROC-AUC, PR-AUC, silhouette scores, feature importance. All return dicts with metadata.
 ---
 

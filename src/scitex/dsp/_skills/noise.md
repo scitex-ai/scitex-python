@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.add_noise
 description: Add Gaussian, white, pink, or brown noise to signals.
 ---
 

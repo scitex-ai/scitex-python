@@ -1,5 +1,4 @@
 ---
-name: stx.capture.cli
 description: Command-line interface for stx.capture — take screenshots, list windows, start/stop monitoring, create GIFs, and launch the MCP server.
 ---
 

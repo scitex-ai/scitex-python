@@ -1,5 +1,4 @@
 ---
-name: etc-keyboard
 description: wait_key() blocks until 'q' is pressed and terminates a multiprocessing.Process; count() increments a counter every second to stdout — useful for interactive CLI demos.
 ---
 

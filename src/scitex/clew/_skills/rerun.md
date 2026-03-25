@@ -1,5 +1,4 @@
 ---
-name: clew-rerun
 description: Sandbox re-execution verification for stx.clew — rerun a single session, an entire DAG, or all sessions backing manuscript claims, then compare outputs byte-for-byte.
 ---
 

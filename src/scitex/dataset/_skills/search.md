@@ -1,5 +1,4 @@
 ---
-name: dataset-search
 description: Filter datasets by modality, keyword, or metadata with search_datasets() and rank results with sort_datasets().
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: pd-filtering
 description: Row selection with multi-column conditions including NaN-safe matching (find_indi) and combined row/column slicing (slice).
 ---
 

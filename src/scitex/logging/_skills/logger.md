@@ -1,5 +1,4 @@
 ---
-name: logging-logger
 description: SciTeXLogger — enhanced Python logger with success/fail levels, indent, separator, color, and pprint support.
 ---
 

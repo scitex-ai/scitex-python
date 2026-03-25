@@ -1,5 +1,4 @@
 ---
-name: path-spath
 description: Create script-relative output paths with mk_spath / get_spath. Keeps outputs co-located with the generating script under a <stem>_out/ directory.
 ---
 

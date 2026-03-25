@@ -1,5 +1,4 @@
 ---
-name: clew-integration
 description: How stx.clew integrates automatically with @stx.session and stx.io — zero user code required for tracking when using the SciTeX session system.
 ---
 

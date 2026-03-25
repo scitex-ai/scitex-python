@@ -1,5 +1,4 @@
 ---
-name: stx.notebook — Verification
 description: Verify notebook reproducibility via clew DB and check for untracked IO calls.
 ---
 

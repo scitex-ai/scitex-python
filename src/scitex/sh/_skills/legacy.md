@@ -1,5 +1,4 @@
 ---
-name: sh-legacy
 description: Legacy shell helpers (run_shellcommand, run_shellscript) carried over from the gen module for backward compatibility.
 ---
 

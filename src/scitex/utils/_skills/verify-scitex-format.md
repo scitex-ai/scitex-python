@@ -1,5 +1,4 @@
 ---
-name: stx.utils._verify_scitex_format
 description: Scan Python files and report compliance with the SciTeX script template format.
 ---
 

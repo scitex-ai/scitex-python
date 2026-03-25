@@ -1,5 +1,4 @@
 ---
-name: feature-selection
 description: Feature selection utilities — extract importance from models, univariate selection, cross-fold consistency analysis, and importance aggregation.
 ---
 

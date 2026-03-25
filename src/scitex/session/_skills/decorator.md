@@ -1,5 +1,4 @@
 ---
-name: stx.session — decorator
 description: The @stx.session decorator: automatic CLI generation, session lifecycle, global injection, and error handling for experiment entry points.
 ---
 

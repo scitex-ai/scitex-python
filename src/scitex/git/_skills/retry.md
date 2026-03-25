@@ -1,5 +1,4 @@
 ---
-name: git-retry
 description: Retry git operations with exponential backoff when git index.lock conflicts are detected. Wraps any zero-argument callable. Non-lock errors are re-raised immediately.
 ---
 

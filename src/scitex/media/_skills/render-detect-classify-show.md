@@ -1,5 +1,4 @@
 ---
-name: stx.media.render — Detect, Classify, and Show Media
 description: Detect media file paths in text output, classify by type, and display to terminal, chat, or markdown.
 ---
 

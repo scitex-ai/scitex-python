@@ -1,5 +1,4 @@
 ---
-name: loss
 description: Loss function utilities — MultiTaskLoss for automatic uncertainty-weighted multi-task learning, plus L1/L2/elastic regularization helpers.
 ---
 

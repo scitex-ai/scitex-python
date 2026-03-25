@@ -1,5 +1,4 @@
 ---
-name: msword-import-export
 description: Load a .docx file with load_docx(), save a SciTeX writer document back to Word with save_docx(), and convert directly to LaTeX with convert_docx_to_tex().
 ---
 

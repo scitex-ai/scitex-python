@@ -1,5 +1,4 @@
 ---
-name: browser-core
 description: BrowserMixin for shared async Chromium instances with interactive/stealth modes and multi-tab management; ChromeProfileManager for Chrome extension installation, status checking, and profile rsync.
 ---
 

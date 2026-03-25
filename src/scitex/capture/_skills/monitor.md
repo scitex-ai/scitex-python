@@ -1,5 +1,4 @@
 ---
-name: stx.capture.monitor
 description: Continuous screenshot monitoring at configurable intervals, with event callbacks and a context-manager Session wrapper.
 ---
 

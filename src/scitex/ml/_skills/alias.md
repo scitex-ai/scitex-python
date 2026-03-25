@@ -1,5 +1,4 @@
 ---
-name: ml-alias
 description: stx.ml is a backward-compatibility alias for stx.ai. Submodule mapping and migration guidance.
 ---
 

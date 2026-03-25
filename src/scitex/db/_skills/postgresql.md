@@ -1,5 +1,4 @@
 ---
-name: db-postgresql
 description: PostgreSQL database wrapper with schema management, batch operations, blob storage, connection pooling, backup, and maintenance.
 ---
 

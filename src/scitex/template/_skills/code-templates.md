@@ -1,5 +1,4 @@
 ---
-name: stx.template.code-templates
 description: Retrieve ready-to-use Python code snippets for @stx.session scripts, I/O, config, modules, and each major stx module (plt, stats, scholar, etc.).
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: pd-cleaning
 description: Value replacement (replace), numeric rounding preserving non-numeric columns (round), and sort with optional custom category order (sort).
 ---
 

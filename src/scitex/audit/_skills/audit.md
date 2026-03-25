@@ -1,5 +1,4 @@
 ---
-name: audit-pipeline
 description: Run security scans across Python code (bandit), shell scripts (shellcheck), dependencies (pip-audit), and GitHub alerts in a single call with audit().
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: clew-stamping
 description: External temporal proof of verification state for stx.clew — stamp, list_stamps, check_stamp. Creates an independently verifiable record that your verification state was consistent at a specific point in time.
 ---
 

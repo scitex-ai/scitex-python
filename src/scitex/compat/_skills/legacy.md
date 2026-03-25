@@ -1,5 +1,4 @@
 ---
-name: compat-legacy
 description: Legacy notify() and notify_async() wrappers in scitex.compat that emit DeprecationWarning and delegate to scitex.notify.alert().
 ---
 

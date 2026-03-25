@@ -1,5 +1,4 @@
 ---
-name: claims
 description: Traceable scientific assertions — add, list, get, remove, render to LaTeX, format for display.
 ---
 

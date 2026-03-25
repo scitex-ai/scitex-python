@@ -1,5 +1,4 @@
 ---
-name: datetime-normalize
 description: Normalize diverse timestamp formats to a standard string with normalize_timestamp(), convert to datetime with to_datetime(), format for filenames or display, calculate time deltas, and validate format strings.
 ---
 

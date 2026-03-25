@@ -1,5 +1,4 @@
 ---
-name: stx.dsp.pac / stx.dsp.modulation_index
 description: Phase-amplitude coupling (PAC) via GPU-accelerated bandpass filtering and modulation index.
 ---
 

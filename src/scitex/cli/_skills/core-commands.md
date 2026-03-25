@@ -1,5 +1,4 @@
 ---
-name: cli-core-commands
 description: The 'scitex' root CLI command — entry point, available subcommand groups, and how to get help for any command.
 ---
 

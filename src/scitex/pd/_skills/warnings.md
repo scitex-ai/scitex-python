@@ -1,5 +1,4 @@
 ---
-name: pd-warnings
 description: Context manager to suppress pandas SettingWithCopyWarning for a block of code.
 ---
 

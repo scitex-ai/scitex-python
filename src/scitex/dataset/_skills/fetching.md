@@ -1,5 +1,4 @@
 ---
-name: dataset-fetching
 description: Retrieve dataset listings from OpenNeuro and other sources using fetch_datasets(), fetch_all_datasets(), and format individual dataset entries with format_dataset().
 ---
 

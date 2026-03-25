@@ -1,5 +1,4 @@
 ---
-name: cloud-availability
 description: How stx.cloud handles optional scitex-cloud dependency — AVAILABLE flag, graceful degradation, and installation.
 ---
 

@@ -1,5 +1,4 @@
 ---
-name: container-inspect
 description: Query container runtime status, detect the container command (apptainer/singularity), and find the containers directory.
 ---
 

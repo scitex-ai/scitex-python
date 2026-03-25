@@ -1,5 +1,4 @@
 ---
-name: project-mcp-files
 description: MCP tools for project-scoped file reading, writing, listing, searching, and code execution — available to AI agents via the SciTeX MCP server.
 ---
 

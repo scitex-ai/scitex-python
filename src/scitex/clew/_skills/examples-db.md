@@ -1,5 +1,4 @@
 ---
-name: clew-examples-db
 description: Example pipeline scaffolding and database inspection for stx.clew — init_examples, stats, list_runs.
 ---
 
