@@ -58,14 +58,15 @@ def skills_get(target, name):
 
     if target is None or target == "all":
         all_skills = list_skills()
-        for pkg in sorted(all_skills.keys()):
-            content = get_skill(package=pkg, name=None)
-            if content:
-                click.secho(f"{'=' * 60}", fg="cyan")
-                click.secho(f"  {pkg}", fg="cyan", bold=True)
-                click.secho(f"{'=' * 60}", fg="cyan")
-                click.echo(content)
-                click.echo()
+        for pkg, entries in sorted(all_skills.items()):
+            for entry in entries:
+                skill_name = entry["name"] if entry["name"] != "SKILL" else None
+                content = get_skill(package=pkg, name=skill_name)
+                if content:
+                    click.secho(f"\n{'=' * 60}", fg="cyan")
+                    click.secho(f"  {pkg}/{entry['name']}", fg="cyan", bold=True)
+                    click.secho(f"{'=' * 60}", fg="cyan")
+                    click.echo(content)
         return
 
     content = get_skill(package=target, name=name)
@@ -108,7 +109,8 @@ def skills_export(dest, package, clean):
     from scitex_dev.skills import export_skills
 
     dest_path = Path(dest) if dest else None
-    exported = export_skills(dest=dest_path, package=package, clean=clean)
+    mode = "upgrade" if clean else "export"
+    exported = export_skills(dest=dest_path, package=package, mode=mode)
 
     if not exported:
         click.secho("No skills found to export.", fg="yellow")
