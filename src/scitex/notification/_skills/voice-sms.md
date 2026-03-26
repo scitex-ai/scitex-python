@@ -17,11 +17,12 @@ Requires Twilio credentials set as environment variables:
 Place a voice call that reads a message.
 
 ```python
-call(message: str, to: str | None = None) -> None
-await call_async(message: str, to: str | None = None)
+call(message: str, to: str | None = None, repeat: int | None = None) -> None
+await call_async(message: str, to: str | None = None, repeat: int | None = None)
 ```
 
-`to` defaults to `SCITEX_TWILIO_TO_NUMBER` if not provided.
+- `to` defaults to `SCITEX_TWILIO_TO_NUMBER` if not provided.
+- `repeat` defaults to `$SCITEX_NOTIFICATION_PHONE_CALL_N_REPEAT` (default: `1`). Set to `1` if iOS Emergency Bypass is configured; `2` triggers iOS "Repeated Calls" bypass.
 
 **Example**
 
@@ -30,6 +31,9 @@ import scitex as stx
 
 # Call the configured recipient
 stx.notification.call("Experiment finished. Check results.")
+
+# Call twice to bypass iOS silent mode
+stx.notification.call("Wake up!", repeat=2)
 ```
 
 ---

@@ -10,12 +10,16 @@ from scitex_audio import (
     LuxTTS,
     SystemTTS,
     available_backends,
+    available_models,
     check_local_audio_available,
     check_wsl_audio,
+    find_whisper_cli,
+    find_whisper_model,
     generate_bytes,
     get_tts,
     speak,
     stop_speech,
+    transcribe,
 )
 
 __all__ = [
