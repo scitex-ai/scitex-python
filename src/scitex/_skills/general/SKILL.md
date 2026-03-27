@@ -6,6 +6,14 @@ user-invocable: false
 
 # SciTeX General Standards
 
+## Installation
+
+```bash
+pip install scitex
+# Development:
+pip install -e /home/ywatanabe/proj/scitex-code
+```
+
 Core standards that apply to ALL SciTeX ecosystem packages.
 
 ## Sub-skills
