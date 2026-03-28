@@ -6,6 +6,14 @@ user-invocable: false
 
 # SciTeX General Standards
 
+## Installation
+
+```bash
+pip install scitex
+# Development:
+pip install -e /home/ywatanabe/proj/scitex-code
+```
+
 Core standards that apply to ALL SciTeX ecosystem packages.
 
 ## Sub-skills
@@ -20,6 +28,7 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 
 ### Guides
 - [skills.md](skills.md) — Practical guide for writing skills: lessons learned, workflow, quality checklist
+- [how-to-update-skills.md](how-to-update-skills.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
 
 ### Repository Standards
 - [readme-organization.md](readme-organization.md) — Standard README template, sections, badges, footer
@@ -31,4 +40,4 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 - [upstream-and-downstream-packages.md](upstream-and-downstream-packages.md) — 3-layer cascade architecture
 - [version-management.md](version-management.md) — Version sync across ecosystem
 - [blanding.md](blanding.md) — Brand logo and CSS rules
-- [private-ywatanabe.md](private-ywatanabe.md) — ywatanabe-specific env paths
+- [environment-variables.md](environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule for env vars

@@ -1,53 +1,32 @@
 ---
 name: stx.diagram
-description: Paper-optimized diagram generation with Mermaid and Graphviz backends via figrecipe.
+description: Paper-optimized diagram generation with Mermaid and Graphviz backends via figrecipe. Use for creating scientific workflow, pipeline, decision, and comparison diagrams in publication-ready layouts.
+user-invocable: false
 ---
 
 # stx.diagram
 
-The `stx.diagram` module provides paper-optimized diagram generation, delegating entirely to `figrecipe._diagram`. It supports pipeline, workflow, scientific, and decision diagram types with both Mermaid and Graphviz output backends.
+The `stx.diagram` module provides paper-optimized diagram generation, delegating entirely to `figrecipe._diagram`. It supports semantic diagram construction, YAML-driven specifications, dual backend compilation (Mermaid + Graphviz), paper-aware layout constraints, and automatic splitting of large diagrams.
 
-## Python API
+## Sub-skills
 
-```python
-import scitex as stx
+### Construction
+- [construction.md](construction.md) — `Diagram`, `add_node`, `add_edge`, `set_group`, `emphasize`: build diagrams programmatically or load from YAML/Mermaid files
 
-# Create a pipeline diagram
-d = stx.diagram.Diagram(type="pipeline")
-d.add_node("input", "Raw Data")
-d.add_node("process", "Transform", emphasis="primary")
-d.add_node("output", "Results")
-d.add_edge("input", "process")
-d.add_edge("process", "output")
+### Schema
+- [schema.md](schema.md) — `DiagramSpec`, `NodeSpec`, `EdgeSpec`, `DiagramType`: typed specification objects that define the semantic layer
 
-# Export to Mermaid or Graphviz
-d.to_mermaid("pipeline.mmd")
-d.to_graphviz("pipeline.dot")
+### Paper Layout
+- [paper-layout.md](paper-layout.md) — `PaperMode`, `PaperConstraints`, `LayoutHints`: single/double column, draft/publication modes, explicit layer ordering
 
-# From YAML specification
-d = stx.diagram.Diagram.from_yaml("workflow.diagram.yaml")
+### Backend Compilation
+- [backends.md](backends.md) — `compile_to_mermaid`, `compile_to_graphviz`, `to_mermaid`, `to_graphviz`: produce `.mmd` and `.dot` output, shape/style mappings
 
-# Use built-in presets
-presets = stx.diagram.list_presets()
-d = stx.diagram.get_preset("scientific")
+### Presets
+- [presets.md](presets.md) — `PIPELINE_PRESET`, `SCIENTIFIC_PRESET`, `WORKFLOW_PRESET`, `DECISION_PRESET`, `list_presets`, `get_preset`: ready-to-use diagram templates
 
-# Compile to different formats
-mermaid_code = stx.diagram.compile_to_mermaid(diagram_spec)
-graphviz_code = stx.diagram.compile_to_graphviz(diagram_spec)
+### Splitting
+- [splitting.md](splitting.md) — `SplitConfig`, `SplitStrategy`, `SplitResult`, `Diagram.split`: divide large diagrams into multi-figure sets for publication
 
-# Available presets
-stx.diagram.PIPELINE_PRESET
-stx.diagram.SCIENTIFIC_PRESET
-stx.diagram.WORKFLOW_PRESET
-stx.diagram.DECISION_PRESET
-```
-
-## Key Features
-
-- `Diagram` — main class for programmatic diagram construction
-- `DiagramSpec` — declarative specification for diagrams
-- `NodeSpec` / `EdgeSpec` — typed node and edge definitions
-- `PaperMode` / `PaperConstraints` — paper-size-aware layout constraints
-- Built-in presets: `PIPELINE_PRESET`, `SCIENTIFIC_PRESET`, `WORKFLOW_PRESET`, `DECISION_PRESET`
-- `compile_to_mermaid` / `compile_to_graphviz` — backend compilation
-- `SplitConfig` / `SplitResult` — multi-page diagram splitting
+### MCP Interface
+- [mcp.md](mcp.md) — `plt_diagram_create`, `plt_diagram_compile_mermaid`, `plt_diagram_compile_graphviz`, `plt_diagram_render`, `plt_diagram_split`, `plt_diagram_list_presets`, `plt_diagram_get_preset`, `plt_diagram_get_backends`, `plt_diagram_get_paper_modes`

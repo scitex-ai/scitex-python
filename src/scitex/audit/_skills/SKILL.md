@@ -7,24 +7,32 @@ description: Unified security scanning orchestrating bandit, shellcheck, pip-aud
 
 The `stx.audit` module provides a unified security scanning interface that orchestrates multiple security tools: bandit (Python static analysis), shellcheck (shell script linting), pip-audit (dependency vulnerabilities), and GitHub security alerts.
 
-## Python API
+## Sub-skills
+
+- [security-scanning.md](security-scanning.md) — Running security scans, checker categories, return value structure, and individual checker details
+
+## Quick Reference
 
 ```python
-import scitex as stx
+from scitex.audit import audit
 
-# Audit entire project
-results = stx.audit.audit(".")
+# Audit entire project with all available checkers
+results = audit(".")
 
 # Audit with specific checks only
-results = stx.audit.audit(".", checks=["python", "shell"])
+results = audit(".", checks=["python", "shell"])
 
-# Audit a specific subdirectory
-results = stx.audit.audit("./src", checks=["python", "deps"])
+# Write JSON report to disk
+results = audit(".", output_file="security_report.json")
+
+# Check results
+print(results["python"]["status"])   # "ok", "findings", "skipped", or "error"
+print(results["python"]["summary"])  # human-readable summary
 ```
 
-## Key Features
+## Supported Check Keys
 
-- `audit(path, checks=None)` — run all or selected security checks on a path
-- Supports check categories: `"python"` (bandit), `"shell"` (shellcheck), `"deps"` (pip-audit), `"github"` (GitHub alerts)
-- Returns structured results with findings per checker
-- Single entry point for project-wide security scanning
+- `"python"` — bandit static analysis
+- `"shell"` — shellcheck for `.sh` files
+- `"deps"` — pip-audit for CVE vulnerabilities
+- `"github"` — GitHub security alerts (requires `gh` CLI)

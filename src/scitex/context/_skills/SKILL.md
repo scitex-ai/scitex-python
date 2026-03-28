@@ -1,44 +1,44 @@
 ---
 name: stx.context
-description: Runtime environment detection for notebooks, scripts, IPython, and output suppression.
+description: Runtime environment detection (notebook/IPython/script) and output suppression utilities.
 ---
 
 # stx.context
 
-The `stx.context` module provides utilities for detecting the current Python runtime environment (Jupyter notebook, IPython, script) and managing output suppression. It also provides notebook path resolution utilities.
+The `stx.context` module provides utilities for detecting the current Python runtime environment and managing output suppression.
 
-## Python API
+## Sub-skills
+
+- [environment-detection.md](environment-detection.md) — `detect_environment`, `is_notebook`, `is_ipython`, `is_script`, `get_output_directory`, `suppress_output`/`quiet`, notebook path utilities
+
+## Quick Reference
 
 ```python
-import scitex as stx
+from scitex.context import (
+    detect_environment,
+    is_notebook, is_ipython, is_script,
+    get_output_directory,
+    suppress_output, quiet,
+    get_notebook_path, get_notebook_name, get_notebook_directory,
+)
 
-# Detect current environment
-env = stx.context.detect_environment()  # "notebook", "ipython", "script"
-is_nb = stx.context.is_notebook()
-is_ip = stx.context.is_ipython()
-is_sc = stx.context.is_script()
+env = detect_environment()   # "jupyter" | "ipython" | "script" | "interactive" | "unknown"
 
-# Get appropriate output directory
-out_dir = stx.context.get_output_directory()
+if is_notebook():
+    path = get_notebook_path()
 
-# Notebook path utilities
-nb_path = stx.context.get_notebook_path()
-nb_name = stx.context.get_notebook_name()
-nb_dir = stx.context.get_notebook_directory()
-nb_info = stx.context.get_notebook_info_simple()
+out_dir, use_temp = get_output_directory("results/data.csv")
 
-# Suppress output
-with stx.context.suppress_output():
+with suppress_output():      # quiet() is an alias
     noisy_function()
-
-with stx.context.quiet():
-    another_noisy_function()
 ```
 
-## Key Features
+## Environment Return Values
 
-- `detect_environment()` — returns `"notebook"`, `"ipython"`, or `"script"`
-- `is_notebook()` / `is_ipython()` / `is_script()` — boolean environment checks
-- `get_output_directory()` — context-aware output path selection
-- Notebook path utilities: `get_notebook_path`, `get_notebook_name`, `get_notebook_directory`
-- `suppress_output()` / `quiet()` — context managers for stdout/stderr suppression
+| Value | Condition |
+|-------|-----------|
+| `"jupyter"` | ZMQInteractiveShell (ipykernel running) |
+| `"ipython"` | TerminalInteractiveShell |
+| `"script"` | `sys.argv[0]` ends with `.py` |
+| `"interactive"` | `sys.ps1` defined |
+| `"unknown"` | None of the above |

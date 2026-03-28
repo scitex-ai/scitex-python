@@ -42,7 +42,8 @@ def register_notification_tools(mcp) -> None:
     ) -> str:
         """Make a phone call via Twilio to alert the user.
 
-        Use repeat=2 to bypass iOS silent/manner mode (calls 30s apart).
+        Default repeat from $SCITEX_NOTIFICATION_PHONE_CALL_N_REPEAT (default: 1).
+        Set to 1 if iOS Emergency Bypass is configured. Set to 2 to trigger iOS Repeated Calls bypass.
         """
         from scitex_dev.mcp_utils import async_wrap_as_mcp
         from scitex_notification._mcp.handlers import notify_handler

@@ -1,48 +1,50 @@
 ---
 name: stx.ai
-description: Machine learning and artificial intelligence utilities for classification, clustering, training, and GenAI integration.
+description: Machine learning and AI utilities — classification, clustering, GenAI, training helpers, metrics, and optimizer management.
 ---
 
 # stx.ai
 
-The `stx.ai` module provides machine learning utilities for scientific research, including classification pipelines, clustering, feature extraction, and training helpers. It also provides a lazy-loaded `GenAI` class for integrating with large language models.
+Machine learning and AI utilities for scientific research.
 
-## Python API
+## Sub-skills
+
+* [genai.md](genai.md) — GenAI unified LLM interface, providers, cost tracking
+* [classification.md](classification.md) — Classifier, ClassificationReporter, CrossValidationExperiment
+* [training.md](training.md) — EarlyStopping, LearningCurveLogger
+* [loss.md](loss.md) — MultiTaskLoss, L1/L2/Elastic regularization
+* [optim.md](optim.md) — get_optimizer, set_optimizer, Ranger support
+* [clustering.md](clustering.md) — pca(), umap() dimensionality reduction
+* [metrics.md](metrics.md) — calc_bacc, calc_conf_mat, calc_roc_auc, silhouette scores
+* [sampling.md](sampling.md) — undersample() for imbalanced data
+* [feature-selection.md](feature-selection.md) — extract_feature_importance, select_features_univariate
+
+## Quick Reference
 
 ```python
 import scitex as stx
 
-# Classification
-classifier = stx.ai.Classifier(model, num_classes=3)
-reporter = stx.ai.ClassificationReporter()
+# GenAI (lazy-loaded)
+gen = stx.ai.GenAI(model="gpt-4o")
+response = gen("Summarize this experiment...")
 
-# Training helpers
-early_stopping = stx.ai.EarlyStopping(patience=10)
+# Classification
+clf_server = stx.ai.Classifier(class_weight={0: 1.0, 1: 2.0})
+clf = clf_server("SVC")
+reporter = stx.ai.ClassificationReporter("./results")
+reporter.calculate_metrics(y_true, y_pred, y_proba)
+
+# Training
+early_stopping = stx.ai.EarlyStopping(patience=10, direction="minimize")
 logger = stx.ai.LearningCurveLogger()
 
+# Loss
+mtl = stx.ai.MultiTaskLoss(are_regression=[False, False])
+
 # Optimizer
-optimizer = stx.ai.get_optimizer(model, "adam", lr=1e-3)
+optimizer = stx.ai.set_optimizer(model, "adam", lr=1e-3)
 
-# Multi-task loss
-loss_fn = stx.ai.MultiTaskLoss(task_weights=[1.0, 0.5])
-
-# GenAI (lazy-loaded)
-gen = stx.ai.GenAI(model="claude-3-5-sonnet")
-response = gen.chat("Summarize this paper...")
-
-# Submodules
-stx.ai.activation    # Activation functions
-stx.ai.clustering    # Clustering algorithms
-stx.ai.metrics       # Classification metrics (calc_bacc, etc.)
-stx.ai.sampling      # Data sampling utilities
-stx.ai.sklearn       # Scikit-learn integrations
+# Metrics
+result = stx.ai.metrics.calc_bacc(y_true, y_pred)
+cm = stx.ai.metrics.calc_conf_mat(y_true, y_pred)
 ```
-
-## Key Features
-
-- `Classifier` and `ClassificationReporter` for end-to-end classification workflows
-- `EarlyStopping` with configurable patience for training loops
-- `LearningCurveLogger` for tracking training/validation metrics
-- `MultiTaskLoss` for multi-objective optimization
-- `GenAI` for LLM integration (lazy-loaded to avoid heavy imports)
-- Submodules: `activation`, `clustering`, `feature_extraction`, `loss`, `metrics`, `optim`, `sampling`, `sklearn`, `training`

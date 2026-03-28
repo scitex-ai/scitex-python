@@ -1,45 +1,19 @@
 ---
 name: stx.capture
-description: AI-optimized screen capture with WSL support, multi-monitor, and GIF creation.
+description: AI-optimized screen capture for WSL/Windows — single shots, multi-monitor, URL, app window, continuous monitoring, GIF creation, and grid overlays.
 ---
 
 # stx.capture
 
-The `stx.capture` module provides lightweight screen capture functionality optimized for WSL and Windows environments. It supports single screenshots, multi-monitor capture, continuous monitoring, and GIF creation from capture sessions.
+Lightweight screen capture module optimized for WSL and Windows environments.
+Captures the Windows host screen from inside WSL via PowerShell scripts.
 
-## Python API
+## Sub-skills
 
-```python
-import scitex as stx
-
-# Single screenshot with debug label
-stx.capture.capture("debug message")
-
-# Capture all monitors
-stx.capture.capture(capture_all=True)
-
-# Continuous monitoring
-stx.capture.start_monitor()
-# ... do work ...
-stx.capture.stop_monitor()
-
-# Session-based capture
-with stx.capture.session("my_session") as sess:
-    stx.capture.capture("step 1")
-
-# Create GIF from captured frames
-stx.capture.create_gif_from_latest_session("output.gif")
-stx.capture.create_gif_from_pattern("screenshots/*.png", "output.gif")
-
-# Get display info
-info = stx.capture.get_info()
-```
-
-## Key Features
-
-- `capture(msg, capture_all=False)` — single screenshot with optional label
-- `start_monitor()` / `stop_monitor()` — continuous capture at configurable intervals
-- `session(name)` — context manager for organized capture sessions
-- GIF creation: `create_gif_from_files`, `create_gif_from_pattern`, `create_gif_from_session`
-- `get_info()` — enumerate monitors, windows, virtual desktops
-- WSL-aware: captures Windows host screen from WSL
+- [snap.md](snap.md) — Single screenshot: `capture()` / `snap()`, auto-categorize, URL, app, all-monitors
+- [monitor.md](monitor.md) — Continuous monitoring: `start_monitor()` / `stop_monitor()`, `Session` context manager
+- [gif.md](gif.md) — GIF creation from session frames or arbitrary image lists
+- [display-info.md](display-info.md) — `get_info()`, `capture_window()`, window enumeration
+- [grid.md](grid.md) — Grid/cursor/monitor overlays for coordinate debugging
+- [cli.md](cli.md) — `python -m scitex.capture` command-line interface
+- [mcp.md](mcp.md) — MCP tools exposed via the unified scitex MCP server
