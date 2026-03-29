@@ -20,7 +20,7 @@ from typing import Any, Dict, Optional
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
 from scitex import logging
-from scitex.scholar.browser.local.utils._CookieAutoAcceptor import CookieAutoAcceptor
+from scitex_scholar.browser.local.utils._CookieAutoAcceptor import CookieAutoAcceptor
 
 from ._ZenRowsAPIBrowser import ZenRowsAPIBrowser
 
@@ -412,7 +412,7 @@ if __name__ == "__main__":
         # Test 1: Regular browser (baseline) - if available
         print("\nChecking if we can import local browser for comparison...")
         try:
-            from scitex.scholar.browser import ScholarBrowserManager
+            from scitex_scholar.browser import ScholarBrowserManager
 
             print("Initializing regular browser for baseline comparison...")
             regular_manager = ScholarBrowserManager(headless=False)

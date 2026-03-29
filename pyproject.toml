@@ -70,6 +70,7 @@ dependencies = [
     "scitex-stats>=0.2.0",
     "scitex-audio>=0.1.0",
     "scitex-notification>=0.1.0",
+    "scitex-scholar>=0.1.0",
 ]
 
 [project.urls]
@@ -86,7 +87,7 @@ scitex-canvas = "scitex.canvas.mcp_server:main"
 scitex-capture = "scitex.capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
 scitex-plt = "scitex.plt.mcp_server:main"
-scitex-scholar = "scitex.scholar.mcp_server:main"
+scitex-scholar = "scitex_scholar.mcp_server:main"
 # scitex-stats entry point now in standalone scitex-stats package
 scitex-template = "scitex.template.mcp_server:main"
 scitex-ui = "scitex.ui.mcp_server:main"
@@ -552,54 +553,13 @@ rng = [
 # Scholar GUI - Minimal deps for Flask citation graph viewer
 # Use: pip install scitex[scholar-gui]
 scholar-gui = [
-    "flask>=2.0.0",
-    "click",
-    "crossref-local",
-    "openalex-local",
+    "scitex-scholar[gui]>=0.1.0",
 ]
 
 # Scholar Module - Paper management & browser
 # Use: pip install scitex[scholar]
 scholar = [
-    "selenium",
-    "webdriver-manager",
-    "beautifulsoup4",
-    "html2text",
-    "crawl4ai",
-    "scholarly",
-    "pymed",
-    "python-docx",
-    "pypdf",
-    "pdfplumber",
-    "PyMuPDF",
-    "pytesseract",
-    "bibtexparser",
-    "playwright>=1.40.0",
-    "feedparser",
-    "httpx",
-    "tenacity",
-    "pydantic",
-    "watchdog",
-    "natsort",
-    "aiohttp",
-    "openpyxl",
-    "sqlalchemy",
-    "nest-asyncio",
-    "seaborn",
-    "scikit-learn",
-    "Pillow",
-    "requests",
-    "matplotlib",
-    "pyyaml",
-    "tqdm",
-    "sql-manager",
-    "ruamel.yaml",
-    # Standalone packages
-    "crossref-local",
-    "openalex-local",
-    "connectedpapers-py",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "torch",
+    "scitex-scholar[full]>=0.1.0",
 ]
 
 # Schema Module - Data schema validation
@@ -928,29 +888,11 @@ path = "src/scitex/__version__.py"
 pattern = '__version__ = "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
-exclude = [
-    # Scholar development symlinks
-    "src/scitex/scholar/.env",
-    "src/scitex/scholar/.venv",
-    "src/scitex/scholar/.claude",
-    "src/scitex/scholar/crossref_local",
-    "src/scitex/scholar/library",
-    "src/scitex/scholar/docs/to_claude",
-    "src/scitex/scholar/data/impact_factor/impact_factor.db",
-]
+exclude = []
 
 
 [tool.hatch.build.targets.sdist]
-exclude = [
-    # Scholar development symlinks
-    "src/scitex/scholar/.env",
-    "src/scitex/scholar/.venv",
-    "src/scitex/scholar/.claude",
-    "src/scitex/scholar/crossref_local",
-    "src/scitex/scholar/library",
-    "src/scitex/scholar/docs/to_claude",
-    "src/scitex/scholar/data/impact_factor/impact_factor.db",
-]
+exclude = []
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -1131,7 +1073,6 @@ exclude = [
     "migrations",
     "htmlcov",
     "docs/to_claude",
-    "src/scitex/scholar/docs",
     "examples/*/docs",
 ]
 

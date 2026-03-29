@@ -75,7 +75,7 @@ def get_template_tree(template_id):
     import subprocess
     import tempfile
 
-    from scitex.scholar.ensure_workspace import SCHOLAR_SUBDIRS
+    from scitex_scholar.ensure_workspace import SCHOLAR_SUBDIRS
 
     tmpdir = tempfile.mkdtemp(prefix="scitex_tree_")
     try:

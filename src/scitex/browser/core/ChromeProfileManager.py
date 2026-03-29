@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from scitex import logging
-from scitex.scholar.config import ScholarConfig
+from scitex_scholar.config import ScholarConfig
 
 logger = logging.getLogger(__name__)
 

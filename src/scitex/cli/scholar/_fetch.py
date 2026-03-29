@@ -102,7 +102,7 @@ def fetch(
 
     if dry_run:
         if bibtex_file:
-            from scitex.scholar.bibtex import parse_bibtex_file
+            from scitex_scholar.bibtex import parse_bibtex_file
 
             entries = parse_bibtex_file(bibtex_file)
             plan = {
@@ -195,7 +195,7 @@ def _fetch_async(
     """Submit fetch job and start it in a background subprocess."""
     import subprocess
 
-    from scitex.scholar.jobs import JobManager, JobType
+    from scitex_scholar.jobs import JobManager, JobType
 
     manager = JobManager()
 
@@ -259,7 +259,7 @@ def _add_single(
     doi_or_title, project, browser_mode, chrome_profile, force, json_output
 ):
     """Add a single paper to library."""
-    from scitex.scholar.pipelines import ScholarPipelineSingle
+    from scitex_scholar.pipelines import ScholarPipelineSingle
 
     if not json_output:
         logger.info(f"Fetching: {doi_or_title}")
@@ -325,7 +325,7 @@ def _add_single(
 
 def _add_multiple(papers, project, workers, browser_mode, chrome_profile, json_output):
     """Add multiple papers to library in parallel."""
-    from scitex.scholar.pipelines import ScholarPipelineParallel
+    from scitex_scholar.pipelines import ScholarPipelineParallel
 
     if not json_output:
         logger.info(f"Fetching {len(papers)} papers ({workers} workers)")
@@ -380,7 +380,7 @@ def _add_from_bibtex(
     bibtex_file, project, workers, browser_mode, chrome_profile, output, json_output
 ):
     """Fetch papers from BibTeX file."""
-    from scitex.scholar.pipelines import ScholarPipelineBibTeX
+    from scitex_scholar.pipelines import ScholarPipelineBibTeX
 
     bibtex_path = Path(bibtex_file)
     workers = workers or 4
