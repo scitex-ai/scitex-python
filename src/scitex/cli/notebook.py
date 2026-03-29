@@ -182,19 +182,29 @@ def compile_cmd(path, output, mermaid, as_json):
     help="Cell ordering: cell (notebook order) or dag (execution order)",
 )
 @click.option(
+    "--mode",
+    type=click.Choice(["per_cell", "unified"]),
+    default="unified",
+    help="Conversion mode: per_cell (each cell = function) or unified (single main)",
+)
+@click.option(
     "--dry-run", is_flag=True, help="Show what would be done without making changes"
 )
-def convert_cmd(path, output, order, dry_run):
+def convert_cmd(path, output, order, mode, dry_run):
     """
     Convert .ipynb to .py with @scitex.session wrappers.
 
-    Each code cell becomes a function decorated with @stx.session.
-    Use --order=dag to reorder cells by actual execution order
-    (requires prior execution with clew tracking).
+    \b
+    Modes:
+      unified   Single @stx.session main() function (default, recommended).
+                Markdown cells become comments, imports are hoisted,
+                plt.show/pd.read_csv/np.save are converted to stx.io equivalents.
+      per_cell  Each code cell becomes a separate @stx.session function.
 
     \b
     Examples:
       scitex notebook convert experiment.ipynb
+      scitex notebook convert experiment.ipynb --mode per_cell
       scitex notebook convert experiment.ipynb -o script.py
       scitex notebook convert experiment.ipynb --order dag -o pipeline.py
     """
@@ -210,10 +220,11 @@ def convert_cmd(path, output, order, dry_run):
             click.secho("[dry-run] Would convert:", fg="cyan")
             click.echo(f"  input:  {path}  (.ipynb)")
             click.echo(f"  output: {output}  (.py)")
+            click.echo(f"  mode:   {mode}")
             click.echo(f"  order:  {order}")
             return
 
-        script = convert_notebook(path, output=output, order=order)
+        script = convert_notebook(path, output=output, order=order, mode=mode)
         click.secho(f"Converted to: {output}", fg="green")
 
     except Exception as e:
