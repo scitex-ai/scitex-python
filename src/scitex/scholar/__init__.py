@@ -1,4 +1,4 @@
-"""SciTeX Scholar - Scientific Literature Management Made Simple.
+"""SciTeX Scholar -- delegates to scitex-scholar package.
 
 Searching, enriching, downloading, and organising scientific papers.
 
@@ -13,158 +13,195 @@ Installation:
     pip install scitex[scholar]
 """
 
-# ── Internal bootstrap ───────────────────────────────────────────────────────
-from scitex._install_guide import warn_module_deps as _warn_module_deps
-
-_warn_module_deps("scholar")
-
-# ── Config first (required by Scholar via circular dep) ──────────────────────
 try:
-    from scitex.scholar.config import ScholarConfig
-except ImportError:
-    ScholarConfig = None  # type: ignore[assignment,misc]
-
-# ── Core classes ─────────────────────────────────────────────────────────────
-try:
-    from scitex.scholar.core import Paper, Papers, Scholar
-except ImportError:
-    Paper = None  # type: ignore[assignment,misc]
-    Papers = None  # type: ignore[assignment,misc]
-    Scholar = None  # type: ignore[assignment,misc]
-
-# ── Paper filtering ──────────────────────────────────────────────────────────
-# ── Internal helpers (accessible via __getattr__) ────────────────────────────
-from .ensure_workspace import ensure_workspace as _ensure_workspace  # noqa: E402
-from .filters import apply_filters  # noqa: E402
-
-# ── Citation formatting (internal, accessible via __getattr__) ───────────────
-from .formatting import clean_bibtex_for_arxiv as _clean_bibtex_for_arxiv  # noqa: E402
-from .formatting import clean_text as _clean_text  # noqa: E402
-
-# ── Citation formatting (public) ─────────────────────────────────────────────
-from .formatting import (  # noqa: E402
-    generate_cite_key,
-    make_citation_key,
-    papers_to_format,
-    to_bibtex,
-    to_endnote,
-    to_ris,
-    to_text_citation,
-)
-from .formatting import (
-    paper_from_search_result as _paper_from_search_result,  # noqa: E402
-)
-from .formatting import paper_normalize as _paper_normalize  # noqa: E402
-from .formatting import sanitize_filename as _sanitize_filename  # noqa: E402
-from .formatting import to_csv_row as _to_csv_row  # noqa: E402
-from .storage import (
-    normalize_search_filename as _normalize_search_filename,  # noqa: E402
-)
-
-# ── Migration (Connected Papers) ─────────────────────────────────────────────
-try:
-    from scitex.scholar.migration import from_connected_papers, to_connected_papers
-except ImportError:
-    from_connected_papers = None  # type: ignore[assignment,misc]
-    to_connected_papers = None  # type: ignore[assignment,misc]
-
-# ── Citation graph ───────────────────────────────────────────────────────────
-try:
-    from scitex.scholar.citation_graph import (
-        CitationGraphBuilder as _CitationGraphBuilder,
-    )
-    from scitex.scholar.citation_graph import (
-        plot_citation_graph as _plot_citation_graph,
+    # ── Delegate to standalone scitex-scholar package ────────────────────────
+    from scitex_scholar import (
+        CitationGraphBuilder,
+        Paper,
+        Papers,
+        Scholar,
+        ScholarConfig,
+        apply_filters,
+        from_connected_papers,
+        generate_cite_key,
+        make_citation_key,
+        papers_to_format,
+        plot_citation_graph,
+        to_bibtex,
+        to_connected_papers,
+        to_endnote,
+        to_ris,
+        to_text_citation,
     )
 
-    CitationGraphBuilder = _CitationGraphBuilder
-    plot_citation_graph = _plot_citation_graph
-except ImportError:
-    CitationGraphBuilder = None  # type: ignore[assignment,misc]
-    plot_citation_graph = None  # type: ignore[assignment,misc]
-
-# ── Advanced / power-user classes (hidden, accessible via __getattr__) ───────
-try:
-    from scitex.scholar.auth import ScholarAuthManager as _ScholarAuthManager
-except ImportError:
-    _ScholarAuthManager = None  # type: ignore[assignment]
-
-try:
-    from scitex.scholar.browser import ScholarBrowserManager as _ScholarBrowserManager
-except ImportError:
-    _ScholarBrowserManager = None  # type: ignore[assignment]
-
-try:
-    from scitex.scholar.metadata_engines import ScholarEngine as _ScholarEngine
-except ImportError:
-    _ScholarEngine = None  # type: ignore[assignment]
-
-try:
-    from scitex.scholar.pdf_download import (
-        ScholarPDFDownloader as _ScholarPDFDownloader,
+    # Internal helpers accessible via __getattr__
+    from scitex_scholar import (
+        __version__ as _scholar_version,
     )
-except ImportError:
-    _ScholarPDFDownloader = None  # type: ignore[assignment]
 
-try:
-    from scitex.scholar.storage import ScholarLibrary as _ScholarLibrary
-except ImportError:
-    _ScholarLibrary = None  # type: ignore[assignment]
+    _BACKEND = "scitex-scholar"
+    SCHOLAR_AVAILABLE = True
 
-try:
-    from scitex.scholar.url_finder import ScholarURLFinder as _ScholarURLFinder
-except ImportError:
-    _ScholarURLFinder = None  # type: ignore[assignment]
-
-# Local database integrations (available if crossref-local / openalex-local installed)
-try:
-    from .local_dbs import crossref_scitex as _crossref_scitex
-except ImportError:
-    _crossref_scitex = None  # type: ignore[assignment]
-
-try:
-    from .local_dbs import openalex_scitex as _openalex_scitex
-except ImportError:
-    _openalex_scitex = None  # type: ignore[assignment]
-
-# ── Hide leaked submodule attributes ─────────────────────────────────────────
-import sys as _sys
-
-_this_module = _sys.modules[__name__]
-for _submod in [
-    "auth",
-    "browser",
-    "config",
-    "core",
-    "ensure_workspace",
-    "filters",
-    "formatting",
-    "impact_factor",
-    "local_dbs",
-    "metadata_engines",
-    "pdf_download",
-    "storage",
-    "url_finder",
-    "citation_graph",
-    "migration",
-    "_utils",
-]:
+    # Power-user classes (lazy access)
     try:
-        delattr(_this_module, _submod)
-    except AttributeError:
-        pass
-del _this_module, _submod, _sys
+        from scitex_scholar.auth import ScholarAuthManager as _ScholarAuthManager
+    except ImportError:
+        _ScholarAuthManager = None
 
-# ── Lazy access for hidden names (backward compat for internal imports) ──────
+    try:
+        from scitex_scholar.browser import (
+            ScholarBrowserManager as _ScholarBrowserManager,
+        )
+    except ImportError:
+        _ScholarBrowserManager = None
+
+    try:
+        from scitex_scholar.metadata_engines import ScholarEngine as _ScholarEngine
+    except ImportError:
+        _ScholarEngine = None
+
+    try:
+        from scitex_scholar.pdf_download import (
+            ScholarPDFDownloader as _ScholarPDFDownloader,
+        )
+    except ImportError:
+        _ScholarPDFDownloader = None
+
+    try:
+        from scitex_scholar.storage import ScholarLibrary as _ScholarLibrary
+    except ImportError:
+        _ScholarLibrary = None
+
+    try:
+        from scitex_scholar.url_finder import ScholarURLFinder as _ScholarURLFinder
+    except ImportError:
+        _ScholarURLFinder = None
+
+    try:
+        from scitex_scholar.ensure_workspace import (
+            ensure_workspace as _ensure_workspace,
+        )
+    except ImportError:
+        _ensure_workspace = None
+
+    try:
+        from scitex_scholar.formatting import (
+            clean_bibtex_for_arxiv as _clean_bibtex_for_arxiv,
+        )
+        from scitex_scholar.formatting import clean_text as _clean_text
+        from scitex_scholar.formatting import (
+            paper_from_search_result as _paper_from_search_result,
+        )
+        from scitex_scholar.formatting import paper_normalize as _paper_normalize
+        from scitex_scholar.formatting import sanitize_filename as _sanitize_filename
+        from scitex_scholar.formatting import to_csv_row as _to_csv_row
+    except ImportError:
+        _clean_bibtex_for_arxiv = None
+        _clean_text = None
+        _paper_from_search_result = None
+        _paper_normalize = None
+        _sanitize_filename = None
+        _to_csv_row = None
+
+    try:
+        from scitex_scholar.storage import (
+            normalize_search_filename as _normalize_search_filename,
+        )
+    except ImportError:
+        _normalize_search_filename = None
+
+    # Local database integrations
+    try:
+        from scitex_scholar.local_dbs import crossref_scitex as _crossref_scitex
+    except ImportError:
+        _crossref_scitex = None
+
+    try:
+        from scitex_scholar.local_dbs import openalex_scitex as _openalex_scitex
+    except ImportError:
+        _openalex_scitex = None
+
+except ImportError:
+    # ── Fallback to local implementation ─────────────────────────────────────
+    _BACKEND = "local"
+    SCHOLAR_AVAILABLE = False
+    _scholar_version = None
+
+    from scitex._install_guide import warn_module_deps as _warn_module_deps
+
+    _warn_module_deps("scholar")
+
+    try:
+        from scitex.scholar.config import ScholarConfig
+    except ImportError:
+        ScholarConfig = None
+
+    try:
+        from scitex.scholar.core import Paper, Papers, Scholar
+    except ImportError:
+        Paper = None
+        Papers = None
+        Scholar = None
+
+    from .ensure_workspace import ensure_workspace as _ensure_workspace
+    from .filters import apply_filters
+    from .formatting import clean_bibtex_for_arxiv as _clean_bibtex_for_arxiv
+    from .formatting import clean_text as _clean_text
+    from .formatting import (
+        generate_cite_key,
+        make_citation_key,
+        papers_to_format,
+        to_bibtex,
+        to_endnote,
+        to_ris,
+        to_text_citation,
+    )
+    from .formatting import (
+        paper_from_search_result as _paper_from_search_result,
+    )
+    from .formatting import paper_normalize as _paper_normalize
+    from .formatting import sanitize_filename as _sanitize_filename
+    from .formatting import to_csv_row as _to_csv_row
+    from .storage import (
+        normalize_search_filename as _normalize_search_filename,
+    )
+
+    try:
+        from scitex.scholar.migration import (
+            from_connected_papers,
+            to_connected_papers,
+        )
+    except ImportError:
+        from_connected_papers = None
+        to_connected_papers = None
+
+    try:
+        from scitex.scholar.citation_graph import (
+            CitationGraphBuilder,
+            plot_citation_graph,
+        )
+    except ImportError:
+        CitationGraphBuilder = None
+        plot_citation_graph = None
+
+    _ScholarAuthManager = None
+    _ScholarBrowserManager = None
+    _ScholarEngine = None
+    _ScholarPDFDownloader = None
+    _ScholarLibrary = None
+    _ScholarURLFinder = None
+    _crossref_scitex = None
+    _openalex_scitex = None
+
+
+# ── Lazy access for hidden names (backward compat) ──────────────────────────
 _LAZY_NAMES = {
-    # Power-user classes
     "ScholarAuthManager": "_ScholarAuthManager",
     "ScholarBrowserManager": "_ScholarBrowserManager",
     "ScholarEngine": "_ScholarEngine",
     "ScholarPDFDownloader": "_ScholarPDFDownloader",
     "ScholarLibrary": "_ScholarLibrary",
     "ScholarURLFinder": "_ScholarURLFinder",
-    # Internal helpers
     "ensure_workspace": "_ensure_workspace",
     "normalize_search_filename": "_normalize_search_filename",
     "clean_bibtex_for_arxiv": "_clean_bibtex_for_arxiv",
@@ -184,15 +221,12 @@ def __getattr__(name):  # noqa: C901
 
 # ── Public API ────────────────────────────────────────────────────────────────
 __all__ = [
-    # Core classes
     "Scholar",
     "Paper",
     "Papers",
     "ScholarConfig",
-    # Citation graph
     "CitationGraphBuilder",
     "plot_citation_graph",
-    # Formatting (user-facing)
     "to_bibtex",
     "to_ris",
     "to_endnote",
@@ -200,11 +234,10 @@ __all__ = [
     "papers_to_format",
     "generate_cite_key",
     "make_citation_key",
-    # Migration
     "from_connected_papers",
     "to_connected_papers",
-    # Filtering
     "apply_filters",
+    "SCHOLAR_AVAILABLE",
 ]
 
 # EOF
