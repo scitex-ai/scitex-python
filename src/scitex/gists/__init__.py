@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Scitex gists module."""
+# File: src/scitex/gists/__init__.py
+"""SciTeX gists module — delegates to scitex-gists (single source of truth)."""
 
-from ._SigMacro_processFigure_S import (
+from scitex_gists import (
     SigMacro_processFigure_S,
+    SigMacro_toBlue,
     sigmacro_process_figure_s,
+    sigmacro_to_blue,
 )
-from ._SigMacro_toBlue import SigMacro_toBlue, sigmacro_to_blue
 
 __all__ = [
     "SigMacro_processFigure_S",
@@ -13,3 +15,5 @@ __all__ = [
     "sigmacro_process_figure_s",
     "sigmacro_to_blue",
 ]
+
+# EOF

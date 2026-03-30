@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""
-SciTeX Repro Module - Reproducibility utilities.
+# File: src/scitex/repro/__init__.py
+"""SciTeX repro module — delegates to scitex-repro (single source of truth).
 
 Provides tools for reproducible scientific computing:
 - Random state management (RandomStateManager)
@@ -9,18 +9,19 @@ Provides tools for reproducible scientific computing:
 - Array hashing (hash_array)
 """
 
-# ID and timestamp utilities
-from ._gen_ID import gen_ID, gen_id
-from ._gen_timestamp import gen_timestamp, timestamp
+from scitex_repro import (
+    RandomStateManager,
+    gen_ID,
+    gen_id,
+    gen_timestamp,
+    get,
+    hash_array,
+    reset,
+    timestamp,
+)
 
-# Hash utilities
-from ._hash_array import hash_array
 
-# Random state management (moved from scitex.rng)
-from ._RandomStateManager import RandomStateManager, get, reset
-
-
-# Legacy function for backward compatibility
+# Legacy function for backward compatibility (user-confirmed fallback)
 def fix_seeds(
     seed=42,
     os=True,
@@ -64,3 +65,5 @@ __all__ = [
     # Legacy (deprecated)
     "fix_seeds",
 ]
+
+# EOF

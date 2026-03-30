@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Scitex parallel module."""
+# File: src/scitex/parallel/__init__.py
+"""SciTeX parallel module — delegates to scitex-parallel (single source of truth)."""
 
-from ._run import run
+from scitex_parallel import run
 
 __all__ = [
     "run",
 ]
+
+# EOF
