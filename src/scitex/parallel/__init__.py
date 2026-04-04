@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-# File: src/scitex/parallel/__init__.py
-"""SciTeX parallel module — delegates to scitex-parallel (single source of truth)."""
+"""SciTeX parallel module — delegates to scitex-parallel if available."""
 
-from scitex_parallel import run
+try:
+    from scitex_parallel import run
+
+    _BACKEND = "scitex-parallel"
+except ImportError:
+    from ._run import run
+
+    _BACKEND = "local"
 
 __all__ = [
     "run",

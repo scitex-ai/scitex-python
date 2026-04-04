@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-# File: src/scitex/etc/__init__.py
-"""SciTeX etc module — delegates to scitex-etc (single source of truth)."""
+"""SciTeX etc module — delegates to scitex-etc if available."""
 
-from scitex_etc import count, wait_key
+try:
+    from scitex_etc import count, wait_key
+
+    _BACKEND = "scitex-etc"
+except ImportError:
+    from .wait_key import count, wait_key
+
+    _BACKEND = "local"
 
 __all__ = ["wait_key", "count"]
 

@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-# File: src/scitex/audit/__init__.py
-"""SciTeX audit module — delegates to scitex-audit (single source of truth)."""
+"""SciTeX audit module — delegates to scitex-audit if available."""
 
-from scitex_audit import audit
+try:
+    from scitex_audit import audit
+
+    _BACKEND = "scitex-audit"
+except ImportError:
+    from ._runner import audit
+
+    _BACKEND = "local"
 
 __all__ = ["audit"]
 
