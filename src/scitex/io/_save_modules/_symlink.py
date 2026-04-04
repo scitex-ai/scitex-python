@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 
 from scitex import logging
-from scitex.path._clean import clean
+from scitex.path import clean
 from scitex.sh import sh
 from scitex.str._color_text import color_text
 

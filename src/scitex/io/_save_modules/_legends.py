@@ -6,7 +6,7 @@
 
 import os
 
-from scitex.path._getsize import getsize
+from scitex.path import getsize
 from scitex.str._color_text import color_text
 from scitex.str._readable_bytes import readable_bytes
 

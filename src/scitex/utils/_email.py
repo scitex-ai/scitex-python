@@ -11,7 +11,7 @@ from email.mime.base import MIMEBase as _MIMEBase
 from email.mime.multipart import MIMEMultipart as _MIMEMultipart
 from email.mime.text import MIMEText as _MIMEText
 
-from scitex.repro._gen_ID import gen_ID
+from scitex.repro import gen_ID
 
 ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 

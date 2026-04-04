@@ -42,7 +42,7 @@ def audit(ctx, path, as_json, save, checks):
         return
 
     from scitex.audit import audit as do_audit
-    from scitex.audit._format import format_json, format_text
+    from scitex_audit._format import format_json, format_text
 
     results = do_audit(
         path=path,

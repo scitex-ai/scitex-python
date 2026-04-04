@@ -15,8 +15,8 @@ from pathlib import Path
 from typing import Any, Union
 
 from scitex import logging
-from scitex.path._clean import clean
-from scitex.path._getsize import getsize
+from scitex.path import clean
+from scitex.path import getsize
 from scitex.sh import sh
 from scitex.str._clean_path import clean_path
 from scitex.str._color_text import color_text
