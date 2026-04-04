@@ -251,6 +251,9 @@ benchmark = _LazyModule("benchmark")  # Benchmarking utilities
 bridge = _LazyModule("bridge")  # Bridge utilities
 browser = _LazyModule("browser")  # Browser automation
 compat = _LazyModule("compat")  # Compatibility utilities
+audit = _LazyModule("audit")  # Security auditing
+events = _LazyModule("events")  # Event system
+media = _LazyModule("media")  # Media utilities
 cli = _LazyModule("cli")  # Command-line interface
 linter = _LazyModule("linter")  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
@@ -375,6 +378,13 @@ __all__ = [
     "compat",
     "cli",
     "usage",
+    "audit",
+    "events",
+    "media",
+    "notification",
+    "clew",
+    "notebook",
+    "linter",
     "PATHS",
     "__version__",
 ]
