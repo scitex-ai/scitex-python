@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
-"""SciTeX audit module — delegates to scitex-audit if available."""
+"""SciTeX audit module — delegates to scitex-audit."""
 
-try:
-    from scitex_audit import audit
-
-    _BACKEND = "scitex-audit"
-except ImportError:
-    from ._runner import audit
-
-    _BACKEND = "local"
+from scitex_audit import audit
 
 __all__ = ["audit"]
 

@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
-"""SciTeX parallel module — delegates to scitex-parallel if available."""
+"""SciTeX parallel module — delegates to scitex-parallel."""
 
-try:
-    from scitex_parallel import run
-
-    _BACKEND = "scitex-parallel"
-except ImportError:
-    from ._run import run
-
-    _BACKEND = "local"
+from scitex_parallel import run
 
 __all__ = [
     "run",

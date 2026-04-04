@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SciTeX repro module — delegates to scitex-repro if available.
+"""SciTeX repro module — delegates to scitex-repro.
 
 Provides tools for reproducible scientific computing:
 - Random state management (RandomStateManager)
@@ -8,26 +8,16 @@ Provides tools for reproducible scientific computing:
 - Array hashing (hash_array)
 """
 
-try:
-    from scitex_repro import (
-        RandomStateManager,
-        gen_ID,
-        gen_id,
-        gen_timestamp,
-        get,
-        hash_array,
-        reset,
-        timestamp,
-    )
-
-    _BACKEND = "scitex-repro"
-except ImportError:
-    from ._gen_ID import gen_ID, gen_id
-    from ._gen_timestamp import gen_timestamp, timestamp
-    from ._hash_array import hash_array
-    from ._RandomStateManager import RandomStateManager, get, reset
-
-    _BACKEND = "local"
+from scitex_repro import (
+    RandomStateManager,
+    gen_ID,
+    gen_id,
+    gen_timestamp,
+    get,
+    hash_array,
+    reset,
+    timestamp,
+)
 
 
 # Legacy function for backward compatibility (user-confirmed fallback)
