@@ -324,3 +324,46 @@ class TestDelegatedModules:
         result = stx.path.split("/home/user/project/file.py")
         assert isinstance(result, tuple)
         assert len(result) == 3  # (parent, stem, suffix)
+
+    def test_dict_delegates(self):
+        """stx.dict delegates to scitex-dict package."""
+        assert hasattr(stx.dict, "DotDict")
+        assert hasattr(stx.dict, "flatten")
+        assert hasattr(stx.dict, "safe_merge")
+
+    def test_dict_dotdict_works(self):
+        """Verify stx.dict.DotDict attribute access."""
+        d = stx.dict.DotDict({"a": 1, "b": {"c": 2}})
+        assert d.a == 1
+
+    def test_logging_delegates(self):
+        """stx.logging delegates to scitex-logging package."""
+        assert hasattr(stx.logging, "getLogger")
+        assert hasattr(stx.logging, "SciTeXError")
+        assert hasattr(stx.logging, "tee")
+        assert hasattr(stx.logging, "llm")
+        assert hasattr(stx.logging, "configure")
+
+    def test_browser_delegates(self):
+        """stx.browser delegates to scitex-browser package."""
+        assert hasattr(stx.browser, "is_playwright_cli_available")
+        assert callable(stx.browser.is_playwright_cli_available)
+
+    def test_str_delegates(self):
+        """stx.str delegates to scitex-str package."""
+        assert hasattr(stx.str, "clean_path")
+        assert hasattr(stx.str, "color_text")
+        assert hasattr(stx.str, "grep")
+        assert hasattr(stx.str, "replace")
+        assert hasattr(stx.str, "set_fallback_mode")
+
+    def test_str_readable_bytes_works(self):
+        """Verify stx.str.readable_bytes produces readable output."""
+        result = stx.str.readable_bytes(1024)
+        assert "1" in result
+
+    def test_scholar_delegates(self):
+        """stx.scholar delegates to scitex-scholar package."""
+        assert hasattr(stx.scholar, "Scholar")
+        assert hasattr(stx.scholar, "Paper")
+        assert hasattr(stx.scholar, "Papers")

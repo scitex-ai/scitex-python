@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-12-02 12:00:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_configure_mpl.py
 
@@ -242,7 +241,7 @@ def configure_mpl(
 
             # Enable LaTeX fallback mode in the str module
             try:
-                from scitex.str._latex_fallback import set_fallback_mode
+                from scitex.str import set_fallback_mode
 
                 set_fallback_mode("force_mathtext")
                 if verbose:
@@ -335,7 +334,7 @@ def configure_mpl(
 
         # Set fallback mode to mathtext
         try:
-            from scitex.str._latex_fallback import set_fallback_mode
+            from scitex.str import set_fallback_mode
 
             set_fallback_mode("force_mathtext")
         except ImportError:

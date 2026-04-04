@@ -82,6 +82,10 @@ dependencies = [
     "scitex-etc>=0.1.0",
     "scitex-gists>=0.1.0",
     "scitex-audit>=0.1.0",
+    "scitex-logging>=0.1.0",
+    "scitex-dict>=0.1.0",
+    "scitex-browser>=0.1.0",
+    "scitex-str>=0.1.0",
 ]
 
 [project.urls]

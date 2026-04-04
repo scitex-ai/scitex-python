@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-02 13:29:31 (ywatanabe)"
 # File: ./scitex_repo/src/scitex/gen/_symlink.py
 
 import os
 
-from scitex.str._color_text import color_text
+from scitex.str import color_text
 
 
 def symlink(tgt, src, force=False):

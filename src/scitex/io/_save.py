@@ -15,12 +15,9 @@ from pathlib import Path
 from typing import Any, Union
 
 from scitex import logging
-from scitex.path import clean
-from scitex.path import getsize
+from scitex.path import clean, getsize
 from scitex.sh import sh
-from scitex.str._clean_path import clean_path
-from scitex.str._color_text import color_text
-from scitex.str._readable_bytes import readable_bytes
+from scitex.str import clean_path, color_text, readable_bytes
 
 # Import save functions from the modular structure
 from ._save_modules import (

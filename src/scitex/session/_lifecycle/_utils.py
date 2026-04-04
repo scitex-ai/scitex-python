@@ -13,7 +13,7 @@ from typing import Any, Dict, Tuple
 
 from scitex.logging import getLogger
 from scitex.repro import gen_ID
-from scitex.str._printc import printc as _printc
+from scitex.str import printc as _printc
 
 logger = getLogger(__name__)
 
