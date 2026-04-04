@@ -73,7 +73,7 @@ dependencies = [
     # Delegated modules from #51 standalonization
     "scitex-core>=0.2.0",
     "scitex-db>=0.1.0",
-    "scitex-scholar>=0.1.0",
+    "scitex-scholar>=1.0.0",
     "scitex-parallel>=0.1.0",
     "scitex-types>=0.1.0",
     "scitex-path>=0.1.0",
