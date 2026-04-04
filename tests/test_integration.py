@@ -246,3 +246,81 @@ class TestCrossModuleWorkflow:
         stx.io.save(result, path)
         loaded = stx.io.load(path)
         assert "pvalue" in loaded
+
+
+# ---------------------------------------------------------------------------
+# 8. Delegated modules (standalone packages via PyPI)
+# ---------------------------------------------------------------------------
+
+
+class TestDelegatedModules:
+    """Verify delegated modules import from standalone packages."""
+
+    def test_parallel_delegates(self):
+        """stx.parallel delegates to scitex-parallel package."""
+        assert hasattr(stx.parallel, "run")
+        assert callable(stx.parallel.run)
+
+    def test_types_delegates(self):
+        """stx.types delegates to scitex-types package."""
+        assert hasattr(stx.types, "ArrayLike")
+        assert hasattr(stx.types, "ColorLike")
+        assert hasattr(stx.types, "is_array_like")
+
+    def test_path_delegates(self):
+        """stx.path delegates to scitex-path package."""
+        assert hasattr(stx.path, "find_file")
+        assert hasattr(stx.path, "find_git_root")
+        assert hasattr(stx.path, "split")
+        assert hasattr(stx.path, "symlink")
+
+    def test_repro_delegates(self):
+        """stx.repro delegates to scitex-repro package."""
+        assert hasattr(stx.repro, "gen_ID")
+        assert hasattr(stx.repro, "gen_timestamp")
+        assert hasattr(stx.repro, "hash_array")
+        assert hasattr(stx.repro, "RandomStateManager")
+
+    def test_compat_delegates(self):
+        """stx.compat delegates to scitex-compat package."""
+        assert hasattr(stx.compat, "deprecated")
+        assert callable(stx.compat.deprecated)
+
+    def test_etc_delegates(self):
+        """stx.etc delegates to scitex-etc package."""
+        assert hasattr(stx.etc, "wait_key")
+        assert hasattr(stx.etc, "count")
+
+    def test_gists_delegates(self):
+        """stx.gists delegates to scitex-gists package."""
+        assert hasattr(stx.gists, "SigMacro_processFigure_S")
+        assert hasattr(stx.gists, "SigMacro_toBlue")
+
+    def test_db_delegates(self):
+        """stx.db delegates to scitex-db package."""
+        assert hasattr(stx.db, "SQLite3")
+        assert hasattr(stx.db, "PostgreSQL")
+        assert hasattr(stx.db, "check_health")
+
+    def test_repro_gen_id_works(self):
+        """Verify stx.repro.gen_ID produces valid output."""
+        id_val = stx.repro.gen_ID()
+        assert isinstance(id_val, str)
+        assert len(id_val) > 0
+
+    def test_repro_timestamp_works(self):
+        """Verify stx.repro.gen_timestamp produces valid output."""
+        ts = stx.repro.gen_timestamp()
+        assert isinstance(ts, str)
+        assert len(ts) > 0
+
+    def test_types_is_array_like(self):
+        """Verify stx.types.is_array_like works with numpy arrays."""
+        assert stx.types.is_array_like(np.array([1, 2, 3]))
+        assert not stx.types.is_array_like("not an array")
+
+    def test_path_split(self):
+        """Verify stx.path.split works."""
+        result = stx.path.split("/home/user/project/file.py")
+        assert isinstance(result, tuple)
+        assert len(result) == 3  # (parent, stem, suffix)
