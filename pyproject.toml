@@ -101,11 +101,11 @@ scitex = "scitex.__main__:main"
 scitex-canvas = "scitex.canvas.mcp_server:main"
 scitex-capture = "scitex.capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
-scitex-plt = "scitex.plt.mcp_server:main"
+# scitex-plt entry point now in standalone scitex-plt package
 scitex-scholar = "scitex.scholar.mcp_server:main"
 # scitex-stats entry point now in standalone scitex-stats package
 scitex-template = "scitex.template.mcp_server:main"
-scitex-ui = "scitex.ui.mcp_server:main"
+# scitex-ui entry point now in standalone scitex-ui package
 # Unified MCP Server (all modules in one)
 scitex-mcp-server = "scitex.mcp_server:main"
 
