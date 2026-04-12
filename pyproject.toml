@@ -60,6 +60,7 @@ dependencies = [
     "tqdm",
     "packaging",
     "natsort",  # Natural sorting - used by many modules
+    "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
     # Reproducibility Verification
     "scitex-clew>=0.1.0",
     # App SDK — unified file storage for local + cloud
