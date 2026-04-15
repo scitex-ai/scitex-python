@@ -63,11 +63,32 @@ class LazyGroup(click.Group):
                 formatter.write_dl(rows)
 
     def _load_lazy(self, cmd_name):
+        """Import a lazy subcommand, tolerating optional-dep failures.
+
+        If the subcommand's module cannot be imported (e.g., an optional
+        third-party dependency like ``bs4`` or ``flask`` is missing), we
+        return ``None`` and log a debug line rather than raising
+        ``ImportError``. This keeps ``scitex --json`` and
+        ``scitex --help-recursive`` -- which walk every lazy subcommand
+        to build the full command tree -- robust against a single broken
+        leaf. Direct invocation of the affected subcommand still fails
+        cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
+        """
         import importlib
+        import logging
 
         module_path, attr_name, _ = self._lazy_subcommands[cmd_name]
-        mod = importlib.import_module(module_path)
-        return getattr(mod, attr_name)
+        try:
+            mod = importlib.import_module(module_path)
+        except ImportError as exc:
+            logging.getLogger(__name__).debug(
+                "Lazy-loaded subcommand %r unavailable (%s): %s",
+                cmd_name,
+                module_path,
+                exc,
+            )
+            return None
+        return getattr(mod, attr_name, None)
 
 
 _LAZY_SUBCOMMANDS = {

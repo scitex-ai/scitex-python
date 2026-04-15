@@ -21,8 +21,13 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import requests
-from bs4 import BeautifulSoup
 from tqdm import tqdm
+
+# NOTE: ``bs4`` is imported lazily inside functions that actually use it.
+# Importing at module load leaks ``ModuleNotFoundError`` through
+# ``scitex.web.__init__`` and breaks ``scitex --json`` /
+# ``scitex --help-recursive`` on installs without beautifulsoup4.
+# See ywatanabe1989/todo#279.
 
 try:
     from io import BytesIO
@@ -73,6 +78,8 @@ def _is_direct_image_url(url: str) -> bool:
 
 def _extract_image_urls(url: str, same_domain: bool = False) -> List[str]:
     """Extract image URLs from a webpage."""
+    from bs4 import BeautifulSoup  # lazy: see module note, todo#279
+
     try:
         logger.info(f"Fetching page: {url}")
         response = requests.get(

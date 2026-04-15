@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 # File: ./src/scitex/web/_scraping.py
 
-"""Web scraping utilities for extracting URLs."""
+"""Web scraping utilities for extracting URLs.
+
+``bs4`` is an optional third-party dependency (only needed when actually
+scraping). Do **not** import it at module load -- doing so leaks the
+``ModuleNotFoundError`` through ``scitex.web.__init__`` and through
+``scitex.cli.web``, which in turn breaks ``scitex --json`` and
+``scitex --help-recursive`` on any install without ``beautifulsoup4``.
+See ywatanabe1989/todo#279. The import now lives inside each scraping
+function, so merely importing this module is side-effect-free.
+"""
 
 import re
 import urllib.parse
 from typing import List, Optional, Set
 
 import requests
-from bs4 import BeautifulSoup
 
 from scitex.logging import getLogger
 
@@ -42,6 +50,8 @@ def get_urls(
         >>> urls = get_urls('https://example.com', pattern=r'\\.pdf$')
         >>> urls = get_urls('https://example.com', same_domain=True)
     """
+    from bs4 import BeautifulSoup  # lazy: see module docstring, todo#279
+
     try:
         logger.info(f"Fetching URLs from: {url}")
         response = requests.get(
@@ -108,6 +118,8 @@ def get_image_urls(
         >>> img_urls = get_image_urls('https://example.com')
         >>> img_urls = get_image_urls('https://example.com', pattern=r'\\.png$')
     """
+    from bs4 import BeautifulSoup  # lazy: see module docstring, todo#279
+
     try:
         logger.info(f"Fetching image URLs from: {url}")
         response = requests.get(
