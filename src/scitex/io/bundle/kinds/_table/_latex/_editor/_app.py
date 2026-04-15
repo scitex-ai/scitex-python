@@ -2,7 +2,22 @@
 # Timestamp: 2025-12-20
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/fsb/_tables/_latex/_editor/_app.py
 
-"""Flask application for LaTeX error editor."""
+"""Flask application for LaTeX error editor.
+
+``flask`` is an optional third-party dependency used exclusively by the
+interactive LaTeX editor (``LaTeXEditor`` / ``launch_editor``). Importing
+it at module load leaks ``ModuleNotFoundError: No module named 'flask'``
+through the ``scitex.io.bundle`` eager-import chain, which in turn
+breaks the top-level public API ``import scitex.io`` on any install
+without ``flask`` -- see ywatanabe1989/todo#441.
+
+To keep ``import scitex.io`` side-effect-free, the flask import now
+lives inside ``LaTeXEditor.__init__`` (and the few methods that need
+the module-level ``request`` / ``jsonify`` names). Merely importing
+this module, ``scitex.io``, or any parent package no longer requires
+``flask``; only constructing a ``LaTeXEditor`` or calling
+``launch_editor`` does.
+"""
 
 import json
 import socket
@@ -11,8 +26,6 @@ import tempfile
 import webbrowser
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
-
-from flask import Flask, jsonify, render_template_string, request
 
 from .._validator import ValidationResult, validate_latex
 
@@ -477,6 +490,10 @@ class LaTeXEditor:
             bundle: Associated FTS bundle
             output_path: Where to save edits
         """
+        # Lazy flask import so ``import scitex.io`` does not require
+        # flask. See module docstring and ywatanabe1989/todo#441.
+        from flask import Flask  # noqa: PLC0415
+
         self.latex_code = latex_code
         self.bundle = bundle
         self.output_path = output_path
@@ -487,6 +504,13 @@ class LaTeXEditor:
 
     def _setup_routes(self) -> None:
         """Setup Flask routes."""
+        # Lazy flask imports so ``import scitex.io`` does not require
+        # flask. See module docstring and ywatanabe1989/todo#441.
+        from flask import (  # noqa: PLC0415
+            jsonify,
+            render_template_string,
+            request,
+        )
 
         @self.app.route("/")
         def index():
