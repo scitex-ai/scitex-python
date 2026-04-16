@@ -15,13 +15,17 @@ __DIR__ = os.path.dirname(__FILE__)
 import asyncio
 import functools
 
-from joblib import Memory as _Memory
-
 from scitex.config import get_paths
 
 
 def cache_disk_async(func):
     """Disk caching decorator for async functions.
+
+    joblib is lazy-imported inside the decorator body so that ``import
+    scitex.decorators`` does not fail on venvs without joblib (todo#442,
+    same class as #441 / #279). Without this, the eager top-level
+    ``from joblib import Memory`` propagates ``ModuleNotFoundError`` up
+    the ``scitex.io`` import chain and breaks unrelated callers.
 
     Usage:
         @cache_disk_async
@@ -30,6 +34,8 @@ def cache_disk_async(func):
             return x ** 2
     """
     cache_dir = str(get_paths().function_cache)
+    from joblib import Memory as _Memory  # lazy: see todo#442
+
     memory = _Memory(cache_dir, verbose=0)
 
     # Create sync wrapper for joblib

@@ -15,7 +15,16 @@ import tempfile
 import time
 from unittest.mock import MagicMock, patch
 
-from joblib import Memory
+# joblib was changed from top-level eager import to lazy-import inside the
+# decorator body (todo#442). The legacy tests in this file depend on
+# joblib being available (they construct Memory objects directly). The new
+# regression test for the lazy-import behavior lives in a sibling file
+# (test__lazy_imports.py) so it can run on venvs without joblib.
+joblib = pytest.importorskip(
+    "joblib",
+    reason="legacy cache_disk tests need joblib; lazy-import regression in test__lazy_imports.py",
+)
+Memory = joblib.Memory
 
 
 def create_cache_disk_decorator(cache_dir):
