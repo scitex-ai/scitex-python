@@ -71,6 +71,7 @@ dependencies = [
     "scitex-stats>=0.2.0",
     "scitex-audio>=0.1.0",
     "scitex-notification>=0.1.0",
+    "scitex-notebook>=0.1.0",
     # Delegated modules from #51 standalonization
     "scitex-core>=0.2.0",
     "scitex-db>=0.1.0",
@@ -478,7 +479,9 @@ nn = [
 
 # Notebook Module - Jupyter notebook utilities
 # Use: pip install scitex[notebook]
-notebook = []
+notebook = [
+    "scitex-notebook>=0.1.0",
+]
 
 # Notification Module - Phone call, SMS, and other notifications
 # Use: pip install scitex[notification]
