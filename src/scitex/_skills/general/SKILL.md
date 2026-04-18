@@ -29,6 +29,7 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 ### Guides
 - [skills.md](skills.md) — Practical guide for writing skills: lessons learned, workflow, quality checklist
 - [how-to-update-skills.md](how-to-update-skills.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
+- [skills-public-vs-private.md](skills-public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
 
 ### Repository Standards
 - [readme-organization.md](readme-organization.md) — Standard README template, sections, badges, footer
