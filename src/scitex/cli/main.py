@@ -103,6 +103,7 @@ _LAZY_SUBCOMMANDS = {
         "Notification and alerting tools.",
     ),  # backward compat alias
     "notebook": ("scitex.cli.notebook", "notebook", "Jupyter notebook tools."),
+    "pkg": ("scitex.cli.pkg", "pkg", "Package management (venv drift audit)."),
     "plt": ("scitex.cli.plt", "plt", "Plotting tools."),
     "repro": ("scitex.cli.repro", "repro", "Reproducibility tools."),
     "resource": ("scitex.cli.resource", "resource", "Resource management."),
