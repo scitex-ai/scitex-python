@@ -98,6 +98,8 @@ Repository = "https://github.com/ywatanabe1989/scitex-python"
 
 [project.scripts]
 scitex = "scitex.__main__:main"
+# Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
+scitex-pkg = "scitex.cli.pkg:pkg"
 # MCP Server entry points (individual modules)
 # scitex-audio entry point now in standalone scitex-audio package
 scitex-canvas = "scitex.canvas.mcp_server:main"
