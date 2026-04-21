@@ -1,9 +1,14 @@
 ---
 name: stx.cli
-description: Command-line interface for SciTeX platform operations — 30+ subcommands with lazy loading.
+description: Command-line interface for SciTeX platform operations — 30+ subcommands with lazy loading. Specialization of scitex-cli-convention.
 ---
 
 # stx.cli
+
+> **This skill is a specialization of `scitex-cli-convention`.**
+> See: `~/.dotfiles/src/.scitex/orochi/shared/skills/scitex-cli-convention/SKILL.md`
+> for the canonical rules. This file only covers `scitex` (scitex-python)
+> specific nouns, the 30+ module-CLI layout, and Click lazy-loading.
 
 The `stx.cli` module provides the unified `scitex` command-line interface for interacting with SciTeX platform services. It uses lazy loading so startup is instant regardless of how many subcommands exist.
 
