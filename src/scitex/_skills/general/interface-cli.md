@@ -41,8 +41,21 @@ is noun first, then verb:
 <cli> <noun> <verb> [OPTIONS] [ARGS]
 ```
 
-Hyphenate multi-word nouns or verbs. Illustrative shape (names are
-placeholders, not a real command set):
+Hyphenate multi-word nouns or verbs.
+
+Compound verbs (verb phrases like "send heartbeat" or "fetch status")
+are collapsed into a single hyphenated token in the invocation
+(`send-heartbeat`, `fetch-status`) rather than being split into an
+extra argument, so the parser always sees exactly one noun and one
+verb. Example:
+
+    <cli> machine send-heartbeat --host <name>
+
+reads as `<cli>` → noun `machine` → verb `send-heartbeat` — not
+`<cli>` → `machine` → `send` → `heartbeat` — even though the verb
+is conceptually a two-word phrase.
+
+Illustrative shape (names are placeholders, not a real command set):
 
 ```
 <cli> resource list
