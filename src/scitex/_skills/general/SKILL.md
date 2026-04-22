@@ -45,7 +45,7 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 
 ### Lessons & Scratch
 - [18_standalonization.md](18_standalonization.md) — Lessons from splitting packages into standalones
-- [19_src-vs-tests-vs-scripts.md](19_src-vs-tests-vs-scripts.md) — Layout boundaries between `src/`, `tests/`, `scripts/`
+- [19_src-tests-scripts-and-examples.md](19_src-tests-scripts-and-examples.md) — Layout boundaries between `src/`, `tests/`, `scripts/`, `examples/`
 - [20_playground.md](20_playground.md) — Scratch notes
 
 ### Quality Gates
