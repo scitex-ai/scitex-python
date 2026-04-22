@@ -27,9 +27,9 @@ html_context = {
 }
 ```
 
-## Four Interfaces Table (index.rst Rule)
+## Five Interfaces Table (index.rst Rule)
 
-SciTeX packages must include a four-interfaces table in `index.rst`:
+SciTeX packages must include a five-interfaces table in `index.rst`:
 
 | Interface | Description |
 |-----------|-------------|

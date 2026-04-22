@@ -6,7 +6,7 @@ description: Command-line interface for SciTeX platform operations — 30+ subco
 # stx.cli
 
 > **This skill is a specialization of the canonical SciTeX CLI convention.**
-> See: `src/scitex/_skills/general/interface-cli.md` (same repo)
+> See: `src/scitex/_skills/general/03_interface-cli.md` (same repo)
 > for the canonical rules. This file only covers `scitex` (scitex-python)
 > specific nouns, the 30+ module-CLI layout, and Click lazy-loading.
 

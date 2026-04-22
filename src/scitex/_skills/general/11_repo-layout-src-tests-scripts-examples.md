@@ -1,7 +1,7 @@
 <!-- ---
 !-- Timestamp: 2026-04-23 08:40:53
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/19_src-tests-scripts-and-examples.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/11_repo-layout-src-tests-scripts-examples.md
 !-- --- -->
 
 ## Code Organization

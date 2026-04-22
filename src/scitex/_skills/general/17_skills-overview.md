@@ -3,7 +3,7 @@ name: skills
 description: Practical guide for writing and maintaining skills for SciTeX packages — lessons learned, workflow, and quality checklist.
 ---
 
-> Structure rules: see [interface-skills.md](interface-skills.md)
+> Structure rules: see [05_interface-skills.md](05_interface-skills.md)
 
 # Writing Skills for SciTeX Packages
 

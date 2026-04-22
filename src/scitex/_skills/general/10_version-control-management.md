@@ -1,7 +1,7 @@
 <!-- ---
 !-- Timestamp: 2026-03-27 05:32:20
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/version-management.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/10_version-control-management.md
 !-- --- -->
 
 # SciTeX Version Management

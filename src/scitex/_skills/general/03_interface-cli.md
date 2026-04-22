@@ -2,7 +2,7 @@
 name: interface-cli
 description: Canonical CLI design convention for every SciTeX package — subcommand structure (noun-verb), universal flags, exit codes, help format, deprecation redirect, env var namespace, config precedence, MCP parity, stdout/stderr discipline.
 user-invocable: false
-canonical-location: scitex-python/src/scitex/_skills/general/interface-cli.md
+canonical-location: scitex-python/src/scitex/_skills/general/03_interface-cli.md
 ---
 
 # SciTeX CLI Convention (Canonical)
@@ -233,7 +233,7 @@ When auditing a new or existing SciTeX CLI:
 ## Cross-references
 
 **Canonical location (this file):**
-`scitex-python/src/scitex/_skills/general/interface-cli.md`
+`scitex-python/src/scitex/_skills/general/03_interface-cli.md`
 
 **Repo-specific specialization skills back-link here** via a path of
 the form `<repo>/src/<pkg>/_skills/<pkg>/convention-cli.md` (or the

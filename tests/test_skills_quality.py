@@ -1,5 +1,5 @@
 """Enforces SciTeX skills quality checklist §1–§4.
-Canonical: src/scitex/_skills/general/21_scitex-package-quality-checklist.md
+Canonical: src/scitex/_skills/general/20_skills-quality-checklist.md
 """
 from pathlib import Path
 from scitex_dev._skills_quality_pytest import make_skill_quality_tests
