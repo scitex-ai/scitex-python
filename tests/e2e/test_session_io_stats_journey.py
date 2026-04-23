@@ -82,7 +82,7 @@ def test_canonical_session_io_stats_journey(tmp_path, monkeypatch):
 
     fig, ax = plt.subplots()
     ax.boxplot([g1, g2], labels=["g1", "g2"], _array=[g1, g2])
-    stx.io.save(fig, "boxplot.png", symlink_from_cwd=False)
+    stx.io.save(fig, "./boxplot.png", symlink_from_cwd=False)
 
     png_path = os.path.join(run_dir, "boxplot.png")
     assert os.path.isfile(png_path), f"io.save did not write PNG at {png_path}"
@@ -93,7 +93,7 @@ def test_canonical_session_io_stats_journey(tmp_path, monkeypatch):
     assert "effect_size" in result
 
     # --- 4. persist stats result as YAML ------------------------------
-    stx.io.save(result, "stats.yaml", symlink_from_cwd=False)
+    stx.io.save(result, "./stats.yaml", symlink_from_cwd=False)
     yaml_path = os.path.join(run_dir, "stats.yaml")
     assert os.path.isfile(yaml_path)
 
