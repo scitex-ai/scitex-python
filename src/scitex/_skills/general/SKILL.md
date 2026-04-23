@@ -2,9 +2,12 @@
 name: general
 description: SciTeX ecosystem general standards — branding, package architecture, five interfaces, version management, and repository quality. Use when creating, auditing, or maintaining any SciTeX package.
 user-invocable: false
+primary_interface: python
 ---
 
 # SciTeX General Standards
+
+> **Primary interface: Python API.** Import in scripts/notebooks — CLI & MCP are thin wrappers over the Python functions.
 
 ## Installation
 
