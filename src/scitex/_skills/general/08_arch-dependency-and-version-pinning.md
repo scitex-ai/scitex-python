@@ -7,6 +7,31 @@ description: Dependency hygiene and version-pinning rules across the SciTeX 3-la
 
 Companion to [07_arch-upstream-and-downstream.md](07_arch-upstream-and-downstream.md). The 3-layer cascade imposes strict rules on what each layer may depend on and how versions are pinned.
 
+## Why minima matter — the multi-package development problem
+
+SciTeX is 33+ packages developed **in parallel**, not in lockstep. A feature
+added to `scitex-io` on Monday can be used by `scitex-writer` on Tuesday. If
+`scitex-writer`'s `pyproject.toml` does NOT declare `scitex-io>=<new>`, this
+happens:
+
+```bash
+$ pip install scitex-writer      # pip picks any scitex-io >= old minimum
+$ python -c "from scitex_writer import foo; foo()"   # AttributeError — new API missing
+```
+
+pip cannot know that your new `scitex-writer` silently requires a new
+`scitex-io` unless you spell it out. The rule:
+
+> **Every time you import another `scitex-*` package at runtime, pin its
+> minimum version (`>=X.Y.Z`) in `pyproject.toml`.**
+
+Without this: every cross-package feature turns into a user-facing
+`AttributeError`. With it: `pip install` is the single source of truth for
+"which scitex combination is known to work together."
+
+Mechanics (syntax, when to bump, ecosystem-specific layering rules)
+follow below.
+
 ## Dependency Hygiene
 
 Downstream is **standalone**, not **zero-dep**. Third-party runtime deps (numpy, matplotlib, click, …) are allowed; sibling/middle/upstream SciTeX packages are not, except via optional extras.

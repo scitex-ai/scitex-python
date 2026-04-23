@@ -82,6 +82,24 @@ git -C ~/proj/PACKAGE log $(git -C ~/proj/PACKAGE describe --tags --abbrev=0)..H
 
 Auto-determine from `git log`: if any commit starts with `feat:` → minor. Otherwise → patch.
 
+### Also: did consumers grow a new minimum?
+
+If your bump exposes a new API that downstream/middle/upstream packages
+already use, those packages' `pyproject.toml` lower bounds must be raised
+in the same wave. See [08 § When YOU update a package, bump minima in
+consumers](08_arch-dependency-and-version-pinning.md#when-you-update-a-package-bump-minima-in-consumers).
+
+Quick check:
+
+```bash
+# Which scitex packages import the one you just bumped?
+grep -r "^from scitex_io\|^import scitex_io" ~/proj/scitex-*/src \
+    | cut -d/ -f5 | sort -u
+```
+
+Each hit is a potential minimum-bump candidate — inspect its
+`pyproject.toml` to decide if the bound needs to move.
+
 ## Version Increment (Core Workflow)
 
 Format: `vX.Y.Z` (X=Major, Y=Minor, Z=Patch, may have -alpha/-beta suffix).
