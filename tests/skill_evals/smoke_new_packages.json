@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "description": "Smoke subset of pilot.json covering packages whose descriptions were strengthened in the 2026-04 pass. Used to empirically measure whether strengthened SKILL.md descriptions auto-load for realistic queries.",
+  "evals": [
+    {
+      "id": "scitex-container-build-sif",
+      "query": "Build an Apptainer SIF image from my .def recipe and tag it with a new version.",
+      "expected_skill": "scitex-container/SKILL.md",
+      "answer_contains": ["container_build"],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-tunnel-reverse",
+      "query": "Set up a persistent reverse SSH tunnel through a bastion host so I can reach this NAT-ed lab machine from outside.",
+      "expected_skill": "scitex-tunnel/SKILL.md",
+      "answer_contains": ["tunnel_setup"],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-notification-alert",
+      "query": "Send me a desktop alert when this long-running training job finishes, with audio fallback if desktop notifications don't work.",
+      "expected_skill": "scitex-notification/SKILL.md",
+      "answer_contains": ["notify"],
+      "complexity": "medium"
+    }
+  ]
+}
