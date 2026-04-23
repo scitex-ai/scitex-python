@@ -156,6 +156,13 @@ script_out/FINISHED_SUCCESS/2026-03-18_14-30-00_Z5MR/
 ├── CONFIGS/CONFIG.yaml        # Frozen parameters
 └── logs/{stdout,stderr}.log   # Execution logs
 ```
+
+Inside a session, the injected `CONFIG` already carries the resolved paths:
+
+- `CONFIG.SDIR_OUT` — base output dir (e.g., `analysis_out/`)
+- `CONFIG.SDIR_RUN` — this run's dir (`analysis_out/FINISHED_SUCCESS/<session_id>/`)
+
+Use `CONFIG.SDIR_RUN / "results.csv"` when you need to re-load a file saved earlier in the same session.
 </details>
 
 
