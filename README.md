@@ -61,7 +61,7 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 ## Installation
 
 ```bash
-pip install scitex[all]                # Recommended: everything
+pip install scitex[all]                # Recommended: everything (may take >1 hour on first install — see Installation Tips)
 ```
 
 <details>
@@ -86,6 +86,30 @@ Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast in
 </details>
 
 <details>
+<summary><strong>Installation Tips — timeouts, mirrors, <code>[all]</code> size</strong></summary>
+
+`pip install scitex[all]` pulls the full 33-package ecosystem plus heavy extras (playwright browsers, torch, jax, pymupdf, Apptainer/Docker integrations, etc.). On a typical connection it can take **30–90 minutes** — more if PyPI is slow. Common fixes:
+
+```bash
+# 1. Extend pip's socket timeout (default 15s) — stops big wheel pulls from aborting mid-stream
+pip install --timeout 600 --retries 5 "scitex[all]"
+
+# 2. Use uv — 10-30× faster resolver, far better retry behaviour
+pip install uv && uv pip install "scitex[all]"
+
+# 3. Install in groups if a single run keeps failing
+pip install scitex[io,stats,plt]         # core analysis layer first
+pip install scitex[scholar,writer]       # research layer
+pip install scitex[audio,browser,dataset,cloud]   # heavy extras last
+
+# 4. Mirror — for networks where pypi.org is unreliable
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple "scitex[all]"
+```
+
+If a single dep hangs, identify it with `pip install -v` and install that package alone with `--no-deps`, then resume the full install.
+</details>
+
+<details>
 <summary><strong>Module Overview</strong></summary>
 
 | Category | Modules | Description |
@@ -100,6 +124,28 @@ Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast in
 | **Dev** | `dev`, `template`, `linter`, `introspect` | Ecosystem tools, scaffolding, code analysis |
 
 </details>
+
+## Packages — 3-Layer Cascade Architecture
+
+The 33-package ecosystem follows a strict **dependency cascade**: upstream imports middle imports downstream, never the reverse. Downstream apps must work standalone; the umbrella only orchestrates.
+
+```
+Upstream (orchestration — SOC, integration tests only)
+    scitex (scitex-python), scitex-cloud
+        │ imports / re-exposes
+        ▼
+Middle (shared infrastructure — wraps, doesn't replace)
+    scitex-io, scitex-stats, scitex-app, scitex-ui, scitex-audio, scitex-dev
+        │ integrates / wraps via plugin registry
+        ▼
+Downstream (standalone apps — own IO/GUI, unit tests)
+    figrecipe, scitex-writer, scitex-scholar, scitex-clew, scitex-notebook,
+    scitex-dataset, scitex-tunnel, scitex-container, scitex-browser, scitex-linter,
+    openalex-local, crossref-local, socialia, + utility leaves
+    (scitex-{path,str,dict,logging,types,db,repro,audit,parallel,compat,gists,etc,core})
+```
+
+**One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [07_arch-upstream-and-downstream](src/scitex/_skills/general/07_arch-upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [08_arch-dependency-and-version-pinning](src/scitex/_skills/general/08_arch-dependency-and-version-pinning.md) for dep-pinning.
 
 ## Quick Start
 
@@ -333,7 +379,106 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 
 </details>
 
-> **[Additional modules](./docs/05_ADDITIONAL_MODULES.md)** — `stx.audio`, `stx.dataset`, `stx.container`, `stx.tunnel`, `stx.linter`, `stx.repro`, `stx.parallel`, `stx.path`, `stx.str`, `stx.dict`, `stx.logging`, `stx.types`, `stx.db`, `stx.audit`, `stx.browser`.
+<details>
+<summary><strong><code>scitex.audio</code> -- Text-to-Speech (ElevenLabs / LuxTTS / gTTS / pyttsx3)</strong></summary>
+
+```python
+import scitex as stx
+stx.audio.speak("Training complete. Accuracy ninety-four percent.")
+stx.audio.speak("Offline only", backend="pyttsx3")                  # force offline
+stx.audio.speak("Report", output_path="report.mp3", play=False)     # TTS → file
+```
+Backends fall back automatically: ElevenLabs (paid, highest) → LuxTTS (offline, 48 kHz, voice-cloning) → gTTS (free online) → pyttsx3 (offline espeak).
+</details>
+
+<details>
+<summary><strong><code>scitex.dataset</code> -- OpenNeuro / DANDI / PhysioNet / Zenodo Fetcher</strong></summary>
+
+```python
+import scitex as stx
+ds = stx.dataset.neuroscience.openneuro.fetch_all_datasets(max_datasets=10)
+stx.dataset.neuroscience.dandi.fetch_all_datasets(max_datasets=10)
+hits = stx.dataset.search_datasets(ds, text_query="phase-amplitude coupling")
+```
+Uniform API across neuroscience / biomedical / clinical-trial repositories.
+</details>
+
+<details>
+<summary><strong><code>scitex.container</code> -- Apptainer / Docker Management</strong></summary>
+
+```python
+import scitex as stx
+stx.container.apptainer.build(def_name="recipe")        # versioned SIF
+stx.container.apptainer.switch_version("2.19.5")        # atomic active-SIF flip
+stx.container.apptainer.rollback()                      # revert to previous
+snap = stx.container.env_snapshot()                     # full env for papers
+```
+Reproducible HPC containers — build, version, rollback, env-snapshot for manuscripts.
+</details>
+
+<details>
+<summary><strong><code>scitex.tunnel</code> -- Persistent SSH Reverse Tunnels</strong></summary>
+
+```python
+import scitex as stx
+stx.tunnel.setup(port=8888, bastion_server="gw.example.com")
+stx.tunnel.status()                                     # {"8888": "active"}
+```
+NAT traversal for lab machines — autossh-backed systemd service.
+</details>
+
+<details>
+<summary><strong><code>scitex.linter</code> -- 47-Rule Convention Checker</strong></summary>
+
+```python
+import scitex as stx
+issues = stx.linter.lint_file("src/")
+for i in issues:
+    print(f"{i.filepath}:{i.line} [{i.rule.id}] {i.message}")
+```
+Lints SciTeX projects for ecosystem conventions (`stx.io.save` usage, CONFIGS naming, matplotlib prefs, import hygiene). Complements ruff/flake8.
+</details>
+
+<details>
+<summary><strong><code>scitex.repro</code> -- Seed Everything + Array Hashing</strong></summary>
+
+```python
+import scitex as stx
+rng = stx.repro.RandomStateManager(seed=42)             # seeds random + numpy + torch + tf
+run_id = stx.repro.gen_ID()                             # "20260423_2155_abc12345"
+digest = stx.repro.hash_array(np_array)                 # deterministic SHA
+```
+One call seeds every RNG; generates experiment-run IDs; hashes arrays for fingerprinting.
+</details>
+
+<details>
+<summary><strong><code>scitex.parallel</code> -- Threaded Map with tqdm</strong></summary>
+
+```python
+import scitex as stx
+results = stx.parallel.run(download, [(u,) for u in urls], n_jobs=-1)
+```
+Drop-in parallel map for I/O-bound work — HTTP fetches, file reads, API calls. tqdm progress bar built-in.
+</details>
+
+<details>
+<summary><strong>Utility modules — lower-level helpers</strong></summary>
+
+| Module | Purpose | Key API |
+|--------|---------|---------|
+| `stx.path` | Project-aware paths | `find_git_root`, `get_spath`, `create_relative_symlink` |
+| `stx.str` | Text / LaTeX fallback / colored prints | `printc`, `safe_latex_render`, `grep` |
+| `stx.dict` | `DotDict` + safe merge / flatten | `DotDict`, `safe_merge`, `flatten` |
+| `stx.logging` | stdlib-logging + SUCCESS/FAIL + `SciTeXError` | `getLogger`, `warn_deprecated`, `Tee` |
+| `stx.types` | Union type aliases + predicates | `ArrayLike`, `ColorLike`, `is_array_like` |
+| `stx.db` | SQLite3 / PostgreSQL with ndarray BLOBs | `SQLite3`, `PostgreSQL`, `delete_duplicates` |
+| `stx.audit` | Unified security scan (bandit / shellcheck / pip-audit) | `audit()` |
+| `stx.browser` | Playwright helpers for scraping | `save_as_pdf`, `click_with_fallbacks_async` |
+| `stx.compat` | Deprecation shims | `@deprecated`, `notify` legacy alias |
+| `stx.etc` | Terminal keypress helpers | `wait_key`, `count` |
+
+See [docs/05_ADDITIONAL_MODULES.md](./docs/05_ADDITIONAL_MODULES.md) for full examples.
+</details>
 
 > **[Agentic usage](./docs/06_AGENTIC_USAGE.md)** — MCP setup, example prompts, real one-shot outputs, and skill-trigger testing.
 
