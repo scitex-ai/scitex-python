@@ -56,7 +56,7 @@ def start(
     dpi_display: int = 100,
     dpi_save: int = 300,
     fontsize="small",
-    autolayout=True,
+    autolayout=False,
     show_execution_flow=False,
     hide_top_right_spines: bool = True,
     alpha: float = 0.9,

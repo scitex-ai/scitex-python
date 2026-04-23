@@ -21,7 +21,7 @@ def configure_mpl(
     fig_scale: float = 1.0,
     dpi_display: Optional[int] = None,
     dpi_save: Optional[int] = None,
-    autolayout: bool = True,
+    autolayout: bool = False,
     n_ticks: Optional[int] = None,
     hide_top_right_spines: Optional[bool] = None,
     line_width: Optional[float] = None,
