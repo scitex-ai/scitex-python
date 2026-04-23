@@ -165,11 +165,13 @@ script_out/FINISHED_SUCCESS/2026-03-18_14-30-00_Z5MR/
 ```python
 import scitex as stx
 
-# Save and load -- format detected from extension
-stx.io.save(df, "results.csv")
+# Save and load -- format detected from extension.
+# symlink_from_cwd=True drops a symlink at cwd so round-trip by filename works;
+# without it, save() routes to <script>_out/ and load() must use an absolute path.
+stx.io.save(df, "results.csv", symlink_from_cwd=True)
 df = stx.io.load("results.csv")
 
-stx.io.save(arr, "data.npy")
+stx.io.save(arr, "data.npy", symlink_from_cwd=True)
 arr = stx.io.load("data.npy")
 
 stx.io.save(fig, "figure.png")       # Also exports figure data as CSV
