@@ -1,19 +1,26 @@
 ---
 name: upstream-and-downstream-packages
-description: Three-layer cascade architecture of the SciTeX ecosystem — dependency direction, import rules, test scope per layer, and the cascade pattern across Python API / CLI / MCP.
+description: SciTeX ecosystem architecture — the 3-layer library cascade (upstream / middle / downstream) plus orthogonal ecosystem/platform packages (scitex-dev, scitex-orochi, scitex-agent-container, scitex-container, scitex-cloud). Covers dependency direction, import rules, test scope per layer, and the cascade pattern across Python API / CLI / MCP.
 ---
 
-# SciTeX Package Architecture (3-Layer Cascade)
+# SciTeX Package Architecture
 
-The SciTeX ecosystem is organized as a **strict 3-layer cascade**. Dependencies flow in one direction only: upstream may import middle and downstream; middle may import downstream; downstream never imports upward.
+The ecosystem has **two orthogonal axes**:
+
+- **Axis 1 — Library cascade** (this skill's primary subject): a strict 3-layer dependency cascade for library code shipped as `scitex`, `scitex-io`, `figrecipe`, etc.
+- **Axis 2 — Ecosystem & platform packages**: orthogonal packages that *manage*, *orchestrate*, or *host* the cascade rather than participating in it. These do not fit the cascade rules and must be reasoned about separately.
+
+## Axis 1 — Library Cascade (3-Layer)
+
+Dependencies flow in one direction only: upstream may import middle and downstream; middle may import downstream; downstream never imports upward.
 
 ```
 Upstream (orchestration — SOC, integration tests only)
-    scitex (scitex-python), scitex-cloud
+    scitex (scitex-python)
         │ imports / re-exposes
         ▼
 Middle (shared infrastructure — integration tests of cascade)
-    scitex-io, scitex-app, scitex-ui, scitex-stats, scitex-audio, scitex-dev
+    scitex-io, scitex-app, scitex-ui, scitex-stats, scitex-audio
         │ integrates / wraps via plugin registry
         ▼
 Downstream (apps — standalone, own IO/GUI, unit tests)
@@ -21,6 +28,20 @@ Downstream (apps — standalone, own IO/GUI, unit tests)
 ```
 
 **One-line contract**: Downstream does not know upstream exists. Upstream does not duplicate downstream logic.
+
+## Axis 2 — Ecosystem & Platform Packages (Orthogonal)
+
+These packages belong to the SciTeX ecosystem but sit **outside** the library cascade. They are not "downstream of scitex" and not "upstream of figrecipe" — they serve a different concern entirely. Treat them as peers of the cascade, not members of it.
+
+| Package | Role | Relation to cascade |
+|---|---|---|
+| **scitex-dev** | Ecosystem-wide developer tooling, cross-repo management, skills quality harness, release automation | *Manages* the cascade (CI, tests, packaging) — not a library tier |
+| **scitex-orochi** | Multi-agent orchestration (head / master / telegrammer roles) | Runs alongside the cascade; drives development workflows |
+| **scitex-agent-container** | Container images & configuration for SciTeX agents | Infrastructure for scitex-orochi |
+| **scitex-container** | General container layer for SciTeX services | Infrastructure host |
+| **scitex-cloud** | Research hub, app-centric platform for creating and sharing custom lab apps | Different direction — user-facing platform, not a library layer |
+
+**Why this matters**: applying cascade rules (e.g. "downstream must not import upstream", "upstream has no logic") to these packages is a category error. They have their own internal architectures.
 
 > For dependency hygiene and version-pinning rules (optional extras, `>=X` minima, coordinated waves), see the sibling skill [08_arch-dependency-and-version-pinning.md](08_arch-dependency-and-version-pinning.md).
 
