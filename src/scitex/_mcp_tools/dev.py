@@ -15,7 +15,7 @@ def register_dev_tools(mcp) -> None:
     async def dev_ecosystem_list(
         packages: list[str] | None = None,
     ) -> str:
-        """List versions across the scitex ecosystem.
+        """Show the version of every SciTeX package across five sources — `pyproject.toml`, installed (`importlib.metadata`), latest git tag, current git branch, and live PyPI — and flag mismatches. Drop-in replacement for `pip show` + `git describe` + `curl pypi.org/pypi/...` loops. Use when the user asks "what versions do I have?", "are any packages out of sync?", "what's on PyPI vs local?", or before a release to audit drift.
 
         Shows version information from multiple sources:
         - pyproject.toml (local source)
@@ -42,7 +42,7 @@ def register_dev_tools(mcp) -> None:
 
     @mcp.tool()
     async def dev_config_show() -> str:
-        """Get current developer configuration.
+        """Dump the active `~/.scitex/dev_config.yaml` — tracked packages, SSH hosts, GitHub remotes, tracked branches. Drop-in replacement for `cat ~/.scitex/dev_config.yaml` + hand-parsing. Use when the user asks "show my dev config", "which hosts are set up?", "what packages am I tracking?", or is debugging why a `dev_ecosystem_*` call picked (or skipped) a particular host / package.
 
         Returns the configuration from ~/.scitex/dev_config.yaml including:
         - Packages to track
@@ -68,7 +68,7 @@ def register_dev_tools(mcp) -> None:
         pattern: str = "",
         parallel: str = "auto",
     ) -> str:
-        """Run project tests locally via pytest.
+        """Run the SciTeX project's pytest suite with parallel execution, auto-detecting project root from git — one-shot replacement for `cd $(git rev-parse --show-toplevel) && pytest -n auto`. Drop-in for `pytest` + manual `-n auto`, `--cov`, `-x`, `-k`, `-m` flag wrangling. Use when the user asks to "run the tests", "check if everything passes", "run scitex.stats tests", or after a code change and wants quick feedback.
 
         Auto-detects project root via git. Uses parallel execution by default.
 
@@ -108,7 +108,7 @@ def register_dev_tools(mcp) -> None:
         hpc_mem: str = "16G",
         async_mode: bool = False,
     ) -> str:
-        """Run project tests on HPC (Spartan) via Slurm.
+        """Ship the project to an HPC cluster via `rsync` and run pytest under SLURM — blocking via `srun` or fire-and-forget via `sbatch` (poll later with `dev_test_hpc_poll`). Drop-in replacement for `rsync -avz . hpc:$PWD && ssh hpc 'srun --cpus=8 --mem=16G pytest'`. Use when the user asks to "run tests on HPC", "submit this to Spartan / the cluster", "test under SLURM", "async-run the heavy GPU tests", or needs bigger resources than a laptop.
 
         Syncs project via rsync, then runs pytest via srun (blocking)
         or sbatch (async). Use dev_test_hpc_poll to check async job status.
@@ -147,7 +147,7 @@ def register_dev_tools(mcp) -> None:
     async def dev_test_hpc_poll(
         job_id: str | None = None,
     ) -> str:
-        """Check HPC test job status.
+        """Poll a SLURM job's state via `sacct` — COMPLETED / RUNNING / PENDING / FAILED / TIMEOUT / CANCELLED — plus the tail of its stdout if finished. Drop-in replacement for `ssh hpc 'sacct -j $jobid --format=State'` + `tail` on the log. Use when the user asks "is my HPC test done?", "check job X", "what happened to that async submission?", after `dev_test_hpc` with `async_mode=True`.
 
         Queries sacct for the job state. If completed/failed, also fetches
         the last 20 lines of output.
@@ -171,7 +171,7 @@ def register_dev_tools(mcp) -> None:
     async def dev_test_hpc_result(
         job_id: str | None = None,
     ) -> str:
-        """Fetch full HPC test output.
+        """Pull the complete stdout of a finished SLURM job back to local via `scp` — the full log, not just the tail from `dev_test_hpc_poll`. Use when the user asks "show me the full HPC output", "get the complete log for job X", "download the crashed job's stderr", after a `dev_test_hpc_poll` reports COMPLETED / FAILED.
 
         Downloads the complete stdout from a finished HPC test job via scp.
 
@@ -196,7 +196,7 @@ def register_dev_tools(mcp) -> None:
         install: bool = True,
         confirm: bool = False,
     ) -> str:
-        """Sync ecosystem packages to remote hosts (git stash, pull, pip install).
+        """Push ecosystem packages to remote SSH hosts in parallel — `git stash` + `git pull` + `pip install -e .` per (host, package) — so every workstation / cluster runs identical code. Drop-in replacement for hand-looping `ssh $host 'cd $pkg && git pull && pip install -e .'`. Use when the user asks to "sync all hosts", "update NAS/HPC to latest", "push my changes to the cluster", "deploy the ecosystem". Two-phase safety: `confirm=False` previews, `confirm=True` executes.
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute. Parallel by default across hosts and packages.
@@ -227,7 +227,7 @@ def register_dev_tools(mcp) -> None:
         packages: list[str] | None = None,
         confirm: bool = False,
     ) -> str:
-        """Install all local editable packages (pip install -e).
+        """`pip install -e .` across every configured local SciTeX package in one shot — keeps the dev install in sync after pulls / version bumps without hand-iterating repos. Drop-in replacement for `for d in ~/proj/scitex-*; do cd $d && pip install -e .; done`. Use when the user asks to "reinstall editable", "refresh dev installs", "sync local pip installs", after big cross-repo pulls, or when imports look stale. `confirm=False` previews first.
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute.
@@ -257,7 +257,7 @@ def register_dev_tools(mcp) -> None:
         remote: bool = True,
         confirm: bool = False,
     ) -> str:
-        """Detect and fix version mismatches across the ecosystem.
+        """One-shot healer — scans `dev_ecosystem_list`, identifies every package whose toml / installed / git / PyPI versions disagree, and fixes them: local `pip install -e .` where installed ≠ toml, remote `git pull + pip install` on SSH hosts. Drop-in replacement for manually reading a version dashboard then running per-row fixes. Use when the user asks to "fix version drift", "get everything back in sync", "resolve the mismatches", after a chaotic multi-repo session. `confirm=False` previews.
 
         Detects all packages with non-ok status, then fixes them:
         - Local: pip install -e . where installed != toml
@@ -292,7 +292,7 @@ def register_dev_tools(mcp) -> None:
         host: str | None = None,
         packages: list[str] | None = None,
     ) -> str:
-        """Show git diff on remote host(s). Read-only operation.
+        """Read-only `git status` + `git diff` on a remote SSH host — see uncommitted work a teammate / previous session left on NAS / HPC before deciding to commit, stash, or overwrite. Drop-in replacement for `ssh $host 'cd $pkg && git status && git diff'`. Use when the user asks "what's dirty on NAS?", "show remote diff", "did I leave changes on HPC?", before `dev_ecosystem_commit` or a destructive `dev_ecosystem_sync`.
 
         Shows uncommitted changes (git status + git diff) on remote hosts.
         Use this to review changes before committing with dev_ecosystem_commit.
@@ -321,7 +321,7 @@ def register_dev_tools(mcp) -> None:
         push: bool = True,
         confirm: bool = False,
     ) -> str:
-        """Commit dirty changes on a remote host and push to origin.
+        """Commit uncommitted changes on a remote SSH host and push to origin — auto-generates the message if omitted. Drop-in replacement for `ssh $host 'cd $pkg && git add -A && git commit -m "..." && git push'`. Use when the user asks to "commit NAS changes", "push remote edits from HPC", "save whatever's dirty on host X and push it". Typical flow: `dev_ecosystem_diff` → review → `dev_ecosystem_commit(confirm=True)` → `dev_ecosystem_pull` locally.
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute. Auto-generates commit message if not provided.
@@ -355,7 +355,7 @@ def register_dev_tools(mcp) -> None:
         confirm: bool = False,
         stash: bool = True,
     ) -> str:
-        """Pull latest from origin to local repos.
+        """`git pull` across every configured local SciTeX repo in parallel, with automatic `git stash pop` to preserve dirty work. Drop-in replacement for `for d in ~/proj/scitex-*; do cd $d && git pull; done`. Use when the user asks to "pull latest", "sync all repos locally", "refresh from origin", after `dev_ecosystem_commit` pushed remote-host changes. `stash=True` protects uncommitted work.
 
         Safety: call first without confirm to preview, then with confirm=True
         to execute. Use after dev_ecosystem_commit to sync remote changes locally.
@@ -396,7 +396,7 @@ def register_dev_tools(mcp) -> None:
         use_sudo: bool = False,
         sudo_password: str | None = None,
     ) -> str:
-        """Bulk rename files, contents, directories, and symlinks.
+        """Rename a pattern everywhere — inside every file's contents, every filename, every directory name, every symlink target — in one atomic 3-step dry-run → review-skip_ids → execute flow. Django-aware by default (protects `db_table`, `related_name`, migration files). Drop-in replacement for `sed -i + find -rename + git mv + manual symlink edits` and tools like `rope`, `bowler` for the non-Python parts. Use when the user asks to "rename X to Y across the repo", "change this variable name everywhere", "rename this module and every import of it", or "bulk replace matching pattern". Pass `regex=True` for regex with backrefs; `skip_ids` drops false positives from the dry-run report.
 
         WORKFLOW (3-step):
         1. DRY RUN: Call with confirm=False (default). Review the output.
