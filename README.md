@@ -245,7 +245,7 @@ import scitex as stx
 result = stx.stats.run_test("ttest_ind", group1, group2, return_as="dataframe")
 # Returns: p-value, effect size (Cohen's d), CI, normality check, power
 recommendations = stx.stats.recommend_tests(data)
-stx.stats.format_results(result, style="apa")   # "t(58) = 2.34, p = .021, d = 0.60"
+stx.stats.annotate(ax, test=result, style="apa")   # stars + "t(58) = 2.34, p = .021, d = 0.60" on a matplotlib Axes
 ```
 </details>
 
@@ -256,9 +256,10 @@ Search, download, enrich papers. Backed by local CrossRef (167M+) and OpenAlex (
 
 ```python
 import scitex as stx
-papers = stx.scholar.search("neural oscillations working memory", n=20)
-stx.scholar.fetch("10.1038/s41586-024-07804-3")
-stx.scholar.enrich_bibtex("references.bib", output="enriched.bib")
+scholar = stx.scholar.Scholar()                             # lazy-load library
+papers = scholar.process_papers(["neural oscillations working memory"])
+scholar.download_pdfs_from_dois(["10.1038/s41586-024-07804-3"])
+scholar.enrich_papers(bibtex_path="references.bib")
 ```
 
 ```bash
@@ -272,9 +273,9 @@ scitex scholar bibtex references.bib --output enriched.bib
 
 ```python
 import scitex as stx
-stx.writer.compile_manuscript("paper/")
-stx.writer.add_figure("paper/", "results.png", caption="Main results")
-stx.writer.add_table("paper/", "stats.csv", caption="Statistical summary")
+stx.writer.compile.manuscript("paper/")                     # latexmk wrapper
+stx.writer.figures.add("paper/", "results.png", caption="Main results")
+stx.writer.tables.add("paper/", "stats.csv", caption="Statistical summary")
 ```
 </details>
 
