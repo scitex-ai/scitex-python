@@ -40,19 +40,43 @@ scitex mcp list-tools | wc -l       # 293 tools across 23 modules
 ### 1.3 (Recommended) Install the skill pack
 
 SciTeX skills let Claude Code auto-load concise usage guides based on
-user intent, without reading package source code. Install them from
-[scitex-skills](https://github.com/ywatanabe1989/scitex-skills):
+user intent, without reading package source code. Pick the path that
+matches how you installed SciTeX:
+
+**End-users (wheel install from PyPI):**
 
 ```bash
 pip install scitex-skills
-
-# Or use the pre-extracted skill index
-python -c "from scitex_dev.skills import export_skills; from pathlib import Path; \
-    export_skills(Path.home() / '.claude/skills/scitex')"
 ```
 
-Skills are auto-updated daily from PyPI — see
-[scitex-skills nightly workflow](https://github.com/ywatanabe1989/scitex-skills/actions).
+The [scitex-skills](https://github.com/ywatanabe1989/scitex-skills) repo
+runs a daily GitHub Action that downloads every SciTeX wheel from PyPI,
+extracts the `_skills/` dirs, and commits them back. The PyPI package
+always reflects the latest released skill pack — no cron setup on your
+end.
+
+**Developers (editable install, `pip install -e`):**
+
+```bash
+scitex-dev skills export --link --clean
+```
+
+`--link` symlinks every `~/.claude/skills/scitex/<pkg>/*.md` to the
+editable source in your git working tree. Edits to any `_skills/` file
+propagate to Claude Code immediately — no cron, no re-export, no
+staleness. Re-run the same command only when a new package enters the
+ecosystem or a leaf file is added/removed (the command is idempotent).
+
+Why the split:
+
+| Audience | Skill source | Staleness model | Mechanism |
+|----------|-------------|-----------------|-----------|
+| Dev (editable) | Git working tree | Always live | Symlinks via `--link` |
+| End-user (wheel) | PyPI wheels | Daily refresh | `scitex-skills` repo pulls wheels |
+
+No cron needed for devs. For end-users, the `scitex-skills` nightly
+workflow handles freshness; you just `pip install --upgrade scitex-skills`
+when you want the latest.
 
 ## 2. Example prompt + real one-shot output
 
