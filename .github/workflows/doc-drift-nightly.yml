@@ -1,11 +1,13 @@
 name: Doc-Drift Nightly
 
-# Fast, cheap check that runs the two AST-based auditors:
+# Fast, cheap check that runs three AST/scan-based auditors:
 #   - scripts/audit_doc_examples.py  — every stx.X.Y.Z chain in every
 #     README + docs/*.md must resolve against the installed scitex API.
 #   - scripts/audit_test_scope.py    — downstream packages must not
 #     import the scitex umbrella in tests; sibling imports must be
 #     pytest.importorskip- or try/except-gated.
+#   - scripts/audit_line_limits.py   — no NEW files over the per-extension
+#     line cap (#95); grandfathered allowlist under scripts/.
 #
 # Runs on a public runner (ubuntu-latest) — no claude CLI needed.
 # Pairs with agentic-nightly.yml which is the heavier, self-hosted job.
@@ -18,6 +20,8 @@ on:
       - "docs/**"
       - "scripts/audit_doc_examples.py"
       - "scripts/audit_test_scope.py"
+      - "scripts/audit_line_limits.py"
+      - "scripts/line_limits_allowlist.txt"
       - ".github/workflows/doc-drift-nightly.yml"
   schedule:
     - cron: "30 7 * * *"  # 07:30 UTC daily (after package CI at 07:00)
@@ -60,3 +64,7 @@ jobs:
       - name: Run test-scope auditor
         run: |
           python3.11 scripts/audit_test_scope.py --projects-root "$HOME/proj"
+
+      - name: Run line-limit auditor
+        run: |
+          python3.11 scripts/audit_line_limits.py
