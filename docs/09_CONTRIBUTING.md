@@ -54,4 +54,4 @@ from {package} import *
 - [CLI Reference](01_CLI_COMMANDS.md)
 - [MCP Tools](02_MCP_TOOLS.md)
 - [Environment Variables](03_ENV_VARIABLES.md)
-- [SciTeX Family](05_SCITEX_FAMILY.md)
+- [SciTeX Ecosystem](08_SCITEX_ECOSYSTEM.md)

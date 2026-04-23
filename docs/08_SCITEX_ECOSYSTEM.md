@@ -1,7 +1,7 @@
 <!-- ---
 !-- Timestamp: 2026-01-29 22:43:42
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-code/docs/05_SCITEX_ECOSYSTEM.md
+!-- File: /home/ywatanabe/proj/scitex-python/docs/08_SCITEX_ECOSYSTEM.md
 !-- --- -->
 
 # SciTeX Ecosystem
