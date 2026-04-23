@@ -9,6 +9,7 @@ from scitex_scholar import (
     Scholar,
     ScholarConfig,
     apply_filters,
+    clean_abstract,
     from_connected_papers,
     generate_cite_key,
     make_citation_key,
@@ -38,6 +39,7 @@ __all__ = [
     "from_connected_papers",
     "to_connected_papers",
     "apply_filters",
+    "clean_abstract",
     "SCHOLAR_AVAILABLE",
 ]
 
