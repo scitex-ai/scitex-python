@@ -317,6 +317,8 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 
 > **[Additional modules](./docs/05_ADDITIONAL_MODULES.md)** — `stx.audio`, `stx.dataset`, `stx.container`, `stx.tunnel`, `stx.linter`, `stx.repro`, `stx.parallel`, `stx.path`, `stx.str`, `stx.dict`, `stx.logging`, `stx.types`, `stx.db`, `stx.audit`, `stx.browser`.
 
+> **[Agentic usage](./docs/06_AGENTIC_USAGE.md)** — MCP setup, example prompts, real one-shot outputs, and skill-trigger testing.
+
 > **[Full API reference](https://scitex-python.readthedocs.io/en/latest/api/index.html)** &middot; **[Examples](./examples/)** &middot; **[Module status](./docs/04_MODULE_STATUS.md)**
 
 <details>
