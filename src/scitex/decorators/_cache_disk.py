@@ -13,13 +13,18 @@ __DIR__ = os.path.dirname(__FILE__)
 
 import functools
 
-from joblib import Memory as _Memory
-
 from scitex.config import get_paths
 
 
 def cache_disk(func):
     """Disk caching decorator that uses joblib.Memory.
+
+    joblib is lazy-imported to keep ``import scitex.decorators`` (and the
+    transitive ``import scitex.io`` chain) usable on venvs without joblib
+    installed. Without lazy-import, the eager ``from joblib import Memory``
+    raised ``ModuleNotFoundError: No module named 'joblib'`` at import
+    time and broke any caller of scitex.io that didn't need caching at
+    all (todo#442, same class as #441 / #279).
 
     Usage:
         @cache_disk
@@ -27,6 +32,8 @@ def cache_disk(func):
             return x ** 2
     """
     cache_dir = str(get_paths().function_cache)
+    from joblib import Memory as _Memory  # lazy: see todo#442
+
     memory = _Memory(cache_dir, verbose=0)
 
     @functools.wraps(func)
