@@ -13,14 +13,13 @@ def register_orochi_tools(mcp) -> None:
         message: str,
         sender: Optional[str] = None,
     ) -> str:
-        """Send a message to an Orochi channel.
+        """Post a message to an Orochi IRC-like agent chat channel (e.g. `#general`, `#deploy`) — the multi-agent coordination bus used by scitex-orochi workflows. Drop-in replacement for manual `socket` + protocol framing, or shelling out to an IRC client. Use when an agent needs to notify peers, broadcast status, or coordinate with humans and other Claude instances via the shared Orochi room. `sender` defaults to hostname.
 
         Args:
             channel: Channel name (e.g. #general, #deploy)
             message: Message content to send
             sender: Sender name (defaults to hostname)
         """
-        import asyncio
         import platform
 
         # Lazy import to avoid import errors when orochi not installed
@@ -41,9 +40,7 @@ def register_orochi_tools(mcp) -> None:
 
     @mcp.tool()
     async def orochi_who() -> str:
-        """List all agents currently connected to Orochi."""
-        import json
-
+        """Enumerate every agent (Claude instance, human, bot) currently connected to Orochi and the channels each one is in — peer-discovery for multi-agent coordination. Drop-in replacement for shelling into the Orochi server and running a `WHO`-style query. Use when an agent asks "who else is online?", "which agents can I delegate to?", "is the telegrammer agent up?", or before calling `orochi_send` to pick a recipient."""
         try:
             from orochi.client import OrochiClient
         except ImportError:
@@ -70,7 +67,7 @@ def register_orochi_tools(mcp) -> None:
         channel: str = "#general",
         limit: int = 20,
     ) -> str:
-        """Get recent message history from an Orochi channel.
+        """Fetch the last N messages from an Orochi channel (default `#general`) — the scrollback buffer used to catch up on what other agents / humans said while offline. Drop-in replacement for custom log-tail scripts or IRC client history commands. Use when an agent joins a channel and asks "what did I miss?", "show recent activity in #deploy", "what was the last status report?", or is reconstructing context after a restart.
 
         Args:
             channel: Channel name (default: #general)
@@ -103,7 +100,7 @@ def register_orochi_tools(mcp) -> None:
 
     @mcp.tool()
     async def orochi_channels() -> str:
-        """List all active Orochi channels."""
+        """List every Orochi channel that has at least one connected agent — `ls /chat` for the agent coordination bus. Use when an agent asks "what channels are active?", "which rooms can I join?", "is there a #deploy channel?", or before calling `orochi_send` / `orochi_history` and needs to pick a target."""
         try:
             from orochi.client import OrochiClient
         except ImportError:
