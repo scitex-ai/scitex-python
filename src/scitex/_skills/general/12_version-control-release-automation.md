@@ -149,3 +149,27 @@ fix_mismatches(confirm=True)                           # Fix all (local + remote
 ```
 
 The `commits_since_tag` field in `list_versions()` output tells you how many commits exist since the last tag — if > 0 and version matches tag, a version bump is needed.
+
+## PyPI Trusted Publisher Setup (one-time per package)
+
+First PyPI release must be a manual `twine upload` (trusted publishing cannot create a *new* project — it can only publish to an *existing* one). After that, configure the trusted publisher so tag-triggered GitHub Actions can publish without tokens.
+
+Per-package settings URL:
+
+```
+https://pypi.org/manage/project/<pkg-name>/settings/publishing/
+```
+
+Fill in:
+
+| Field | Value |
+|---|---|
+| PyPI project name | `<pkg-name>` (auto) |
+| Owner | `ywatanabe1989` |
+| Repository name | `<pkg-name>` |
+| Workflow filename | `publish-pypi.yml` |
+| Environment name | `pypi` |
+
+**Verify it saved.** After submit, the publisher must appear under **Manage current publishers**. If that list still says "No publishers are currently configured", the save silently failed — re-enter the form. This is the most common cause of `invalid-publisher: Publisher with matching claims was not found` errors on tag push, even when PyPI shows the package existing.
+
+If a tag already failed to publish because trusted-publishing was missing, just `gh run rerun <id>` after configuring — no retag needed.
