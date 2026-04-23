@@ -17,7 +17,7 @@ accessibility. Backends ordered by quality:
 import scitex as stx
 stx.audio.speak("Training run complete. Accuracy ninety-four percent.")
 stx.audio.speak("Offline please", backend="pyttsx3")      # Force offline
-stx.audio.save_tts("Report", path="report.mp3")           # TTS to file
+stx.audio.speak("Report", output_path="report.mp3", play=False)  # TTS to file
 ```
 
 ```bash
@@ -31,10 +31,10 @@ PhysioNet, GEO, ChEMBL, ClinicalTrials.gov via a uniform API.
 
 ```python
 import scitex as stx
-ds = stx.dataset.openneuro_fetch("ds004148")            # BIDS MRI/EEG
-stx.dataset.dandi_fetch("000003")                       # Ephys / imaging
-stx.dataset.physionet_fetch("mitdb")                    # Clinical waveforms
-hits = stx.dataset.search("phase-amplitude coupling")
+ds = stx.dataset.neuroscience.openneuro.fetch_all_datasets(max_datasets=10)   # BIDS MRI/EEG
+stx.dataset.neuroscience.dandi.fetch_all_datasets(max_datasets=10)             # Ephys / imaging
+stx.dataset.neuroscience.physionet.fetch_all_datasets(max_datasets=10)         # Clinical waveforms
+hits = stx.dataset.search_datasets(ds, text_query="phase-amplitude coupling")
 ```
 
 ## `scitex.container` — Apptainer / Docker Management
@@ -43,9 +43,9 @@ Reproducible HPC containers — build, version, rollback, env snapshot.
 
 ```python
 import scitex as stx
-stx.container.build("recipe.def", tag="v3")
-stx.container.switch_to("myenv-v3")
-stx.container.rollback()                                # Revert to previous tag
+stx.container.build(def_name="recipe")                  # Builds versioned SIF
+stx.container.switch_version("2.19.5")                  # Atomic active-SIF flip
+stx.container.rollback()                                # Revert to previous version
 snap = stx.container.env_snapshot()                     # Full env for papers
 ```
 
@@ -67,7 +67,7 @@ matplotlib prefs, CONFIGS naming, import hygiene. Complements ruff/flake8.
 
 ```python
 import scitex as stx
-issues = stx.linter.check_source("src/")
+issues = stx.linter.lint_file("src/")
 for i in issues:
     print(f"{i.filepath}:{i.line} [{i.rule.id}] {i.message}")
 ```

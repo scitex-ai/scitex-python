@@ -72,9 +72,9 @@ np.random.seed(42)
 g1 = np.random.randn(30)
 g2 = np.random.randn(30)
 
-result = stx.stats.run_test("ttest_ind", g1, g2, return_as="dataframe")
-print(stx.stats.format_results(result, style="apa"))
-# → "t(58) = 2.34, p = .021, d = 0.60"
+result = stx.stats.run_test("ttest_ind", g1, g2, return_as="dict")
+print(result["formatted"])
+# → "t = 2.34, p = 0.021, Cohen's d = 0.60, *"
 ```
 
 ### 2.3 Claude Code output (without skills loaded)
