@@ -170,7 +170,7 @@ The injected `CONFIG` is a `DotDict` merging YAML user configs with session-reso
 | `CONFIG.ARGS` | Parsed CLI args |
 | `CONFIG.MODEL.*` | Values from `./config/MODEL.yaml` (one namespace per YAML file) |
 
-Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See [20_session-config](./src/scitex/_skills/general/20_session-config.md) for the full reference.
+Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See [25_session-config](./src/scitex/_skills/general/25_session-config.md) for the full reference.
 </details>
 
 
