@@ -54,6 +54,10 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 
 ### Logs
 - [23_remediation-log.md](23_remediation-log.md) — Dated remediation log for audit findings
+- [24_package-gaps-2026-04-23.md](24_package-gaps-2026-04-23.md) — Package-gap audit snapshot
+
+### Session
+- [25_session-config.md](25_session-config.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
 
 ### Scratch
 - [40_playground.md](40_playground.md) — Scratch notes

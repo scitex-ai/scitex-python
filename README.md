@@ -157,12 +157,20 @@ script_out/FINISHED_SUCCESS/2026-03-18_14-30-00_Z5MR/
 └── logs/{stdout,stderr}.log   # Execution logs
 ```
 
-Inside a session, the injected `CONFIG` already carries the resolved paths:
+The injected `CONFIG` is a `DotDict` merging YAML user configs with session-resolved keys:
 
-- `CONFIG.SDIR_OUT` — base output dir (e.g., `analysis_out/`)
-- `CONFIG.SDIR_RUN` — this run's dir (`analysis_out/FINISHED_SUCCESS/<session_id>/`)
+| Key | Meaning |
+|-----|---------|
+| `CONFIG.ID` | Session identifier, e.g. `2026-04-23T21-30-00_Z5MR` |
+| `CONFIG.PID` | Python process ID |
+| `CONFIG.START_DATETIME` | When the session started |
+| `CONFIG.FILE` | Path to caller script |
+| `CONFIG.SDIR_OUT` | Base output dir, e.g. `analysis_out/` |
+| `CONFIG.SDIR_RUN` | This run's dir, e.g. `analysis_out/FINISHED_SUCCESS/<ID>/` |
+| `CONFIG.ARGS` | Parsed CLI args |
+| `CONFIG.MODEL.*` | Values from `./config/MODEL.yaml` (one namespace per YAML file) |
 
-Use `CONFIG.SDIR_RUN / "results.csv"` when you need to re-load a file saved earlier in the same session.
+Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See [20_session-config](./src/scitex/_skills/general/20_session-config.md) for the full reference.
 </details>
 
 
