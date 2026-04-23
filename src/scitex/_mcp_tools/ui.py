@@ -18,7 +18,7 @@ def register_ui_tools(mcp) -> None:
         backends: Optional[list] = None,
         timeout: float = 5.0,
     ) -> str:
-        """Send a notification via configured backends."""
+        """Send a UI-level alert through scitex-notification's multi-backend stack (audio TTS, desktop popup, emacs minibuffer, matplotlib banner, playwright toast, email, webhook, Telegram, Twilio) with automatic fallback. Drop-in replacement for `plyer.notification.notify`, ad-hoc `subprocess.run(['notify-send', ...])`, or browser `Notification` API. Use when the user asks to "notify from the UI", "alert me when this UI task finishes", "send a desktop notification from the scitex shell", or wires an app page to page the user."""
         from scitex_dev.mcp_utils import wrap_as_mcp
         from scitex_notification._mcp.handlers import notify_handler
 
@@ -35,7 +35,7 @@ def register_ui_tools(mcp) -> None:
 
     @mcp.tool()
     async def ui_get_notification_config() -> str:
-        """Get current notification configuration."""
+        """Inspect the active scitex-notification config the UI will hand off to — fallback order, per-level backend routing (info/warning/error/critical), per-backend timeouts, credentials (redacted). Use when the user asks "which backends does ui_notify use?", "show UI notification config", or is debugging a silent `ui_notify` call."""
         from scitex_dev.mcp_utils import wrap_as_mcp
         from scitex_notification._mcp.handlers import get_config_handler
 
@@ -49,11 +49,7 @@ def register_ui_tools(mcp) -> None:
         selector: str,
         timeout: int = 10,
     ) -> str:
-        """Inspect a DOM element in the user's live browser by CSS selector.
-
-        Returns computed styles, dimensions, parent chain, inline styles,
-        and matching CSS rules. Essential for debugging CSS issues,
-        verifying layout changes, and autonomous mobile responsive work.
+        """Introspect one DOM element in the user's live playwright-cli browser — returns tag, id, classes, every attribute, bounding box, key computed styles (display / position / flex / width / height / margin / padding / z-index / overflow / background), inline `style.cssText`, 5-level parent chain, and all matching CSS rules with their source stylesheet. Drop-in replacement for hand-rolled `playwright.evaluate("getComputedStyle(...)")` JS blobs, Chrome DevTools `Elements → Computed` copy-pasting, and `document.querySelector` in the browser console. Use whenever the user asks to "inspect this element", "why isn't this styled?", "check computed width of #foo", "debug CSS for .bar", "verify my layout change", "is this hidden by overflow?", or is iterating on CSS / responsive design.
 
         Standalone — works on any website open in playwright-cli browser.
 
@@ -85,10 +81,7 @@ def register_ui_tools(mcp) -> None:
         limit: int = 10,
         timeout: int = 10,
     ) -> str:
-        """Inspect multiple DOM elements matching a CSS selector.
-
-        Returns a summary of each matching element with key computed
-        styles and dimensions. Use for bulk element inspection.
+        """Introspect every element matching a CSS selector in the user's live playwright-cli browser — returns total count + per-element summary (tag, id, classes, key computed styles, bounding rect, inline style, parent descriptor), capped by `limit`. Drop-in replacement for `document.querySelectorAll(...).forEach(el => el.getBoundingClientRect())` console loops. Use whenever the user asks to "list all .panel-resizer elements", "how many sidebars are rendered?", "check sizes of all app-card nodes", "audit every .stx-shell-* child", or is hunting for duplicate/misaligned elements.
 
         Standalone — works on any website open in playwright-cli browser.
 
