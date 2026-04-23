@@ -87,4 +87,4 @@ grep -rEn 'mba|spartan|orochi-server-stable|cloudflare.*key|zones/[a-f0-9]{32}' 
 ## Cross-references
 
 - [05_interface-skills.md](05_interface-skills.md) — `_skills/` layout and registration
-- [18_skills-how-to-update.md](18_skills-how-to-update.md) — edit sources, export workflow
+- [20_skills-how-to-update.md](20_skills-how-to-update.md) — edit sources, export workflow

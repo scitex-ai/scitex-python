@@ -1,4 +1,5 @@
 ---
+name: arch-environment-variables
 description: Environment variable naming convention — SCITEX_<MODULE_NAME>_* prefix rule to avoid namespace collisions across the SciTeX ecosystem.
 ---
 

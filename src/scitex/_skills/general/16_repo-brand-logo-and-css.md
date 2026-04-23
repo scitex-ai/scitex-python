@@ -1,3 +1,8 @@
+---
+name: repo-brand-logo-and-css
+description: SciTeX brand logo convention and CSS rule for the tilted "e" in SciTeX.
+---
+
 # SciTeX Branding
 
 Logo text: SciT**e**X — the "e" is tilted -21deg (inspired by Google's inclined "e").

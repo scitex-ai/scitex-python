@@ -3,8 +3,6 @@ name: readme-organization
 description: Standard README.md template structure for SciTeX packages — sections, badges, collapsible blocks, Four Freedoms footer.
 ---
 
-> General patterns: see [programming-common/readme-organization.md](../../commands/.claude/skills/programming-common/readme-organization.md)
-
 # README Organization (SciTeX)
 
 ## Standard Section Order
@@ -29,7 +27,7 @@ Every SciTeX package README follows this structure:
 <details><summary>Supported Formats / Feature Table</summary></details>
 ## Installation
 ## Quickstart
-## Four Interfaces
+## Five Interfaces (HTTP optional)
 ## Lint Rules (if applicable)
 ## Part of SciTeX
 [Four Freedoms blockquote]
@@ -51,7 +49,7 @@ Every SciTeX package README follows this structure:
 </p>
 ```
 
-## Four Interfaces (Collapsible)
+## Five Interfaces, HTTP optional (Collapsible)
 
 Each interface in its own `<details>` block:
 

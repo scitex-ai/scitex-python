@@ -3,8 +3,6 @@ name: interface-mcp
 description: MCP server standards for SciTeX packages — scitex-specific tool examples, skills integration, reference implementations.
 ---
 
-> General patterns: see [programming-common/interface-mcp.md](../../commands/.claude/skills/programming-common/interface-mcp.md)
-
 # MCP Server (SciTeX)
 
 ## Skills Integration (Standard for All SciTeX Packages)

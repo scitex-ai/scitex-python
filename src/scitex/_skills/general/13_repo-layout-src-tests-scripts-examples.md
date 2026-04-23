@@ -1,8 +1,13 @@
 <!-- ---
-!-- Timestamp: 2026-04-23 08:40:53
+!-- Timestamp: 2026-04-23 09:00:00
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/11_repo-layout-src-tests-scripts-examples.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/13_repo-layout-src-tests-scripts-examples.md
 !-- --- -->
+
+---
+name: repo-layout-src-tests-scripts-examples
+description: Layout boundaries between src/, tests/, scripts/, examples/, and references/ in every SciTeX package.
+---
 
 ## Code Organization
 

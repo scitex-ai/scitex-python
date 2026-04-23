@@ -1,8 +1,13 @@
 <!-- ---
-!-- Timestamp: 2026-04-23 07:57:36
+!-- Timestamp: 2026-04-23 09:00:00
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/playground.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/40_playground.md
 !-- --- -->
+
+---
+name: playground
+description: Scratch notes — temporary experiments and reminders during skill authoring.
+---
 
 - Use .playground for small, temporal experiments and testing
   - Port valuable .playground files to src, scripts, tests, scripts, and so on

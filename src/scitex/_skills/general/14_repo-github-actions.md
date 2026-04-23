@@ -3,8 +3,6 @@ name: github-actions
 description: Standard GitHub Actions workflows for SciTeX packages — CI, PyPI publish, CLA, and advanced patterns.
 ---
 
-> General patterns: see [programming-common/github-actions.md](../../commands/.claude/skills/programming-common/github-actions.md)
-
 # GitHub Actions (SciTeX)
 
 ## SciTeX-Specific CLA Allowlist
@@ -14,9 +12,9 @@ description: Standard GitHub Actions workflows for SciTeX packages — CI, PyPI 
 allowlist: bot*,ywatanabe1989
 ```
 
-## scitex-python Monorepo Pattern
+## scitex-python Transitional Pattern
 
-For the scitex-python monorepo with 50+ modules, use path-filtered reusable workflows:
+scitex-python is transitioning from monorepo to standalone packages; use path-filtered reusable workflows where modules remain in-tree.
 
 ```yaml
 # test-stats.yml (module-specific caller)

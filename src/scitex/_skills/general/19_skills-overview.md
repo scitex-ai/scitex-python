@@ -11,21 +11,21 @@ Practical lessons from building skills for scitex-io and scitex general.
 
 ## Workflow
 
+Source of truth lives in the package source. Dotfiles / `~/.claude/skills/scitex/` copies are **auto-generated exports** — never edit them directly (a pre-tool-use hook blocks such edits).
+
 ```bash
 # 1. Investigate the codebase first
 #    Read _builtin_handlers.py, __init__.py, _save.py — not just README
 #    Claims in docs must match actual registered handlers
 
-# 2. Write to dotfiles (single source of truth)
-~/.dotfiles/src/.claude/to_claude/skills/scitex/<pip-name>/
+# 2. Edit in the package source (single source of truth)
+vi ~/proj/<repo>/src/<pkg>/_skills/<pip-name>/<file>.md
 
-# 3. Copy to repo _skills/ (real files, no symlinks — wheels can't follow symlinks)
-cp -rf ~/.dotfiles/.../scitex/<pip-name>/* ~/proj/<repo>/src/<pkg>/_skills/<pip-name>/
-
-# 4. Update pyproject.toml if first time
-[tool.hatch.build.targets.wheel.force-include]
-"src/<pkg>/_skills" = "<pkg>/_skills"
+# 3. Export to ~/.claude/skills/scitex/<pip-name>/
+scitex-dev skills export --package <pip-name>
 ```
+
+Do NOT add `[tool.hatch.build.targets.wheel.force-include]` for `_skills/` — hatch already includes files under `src/<pkg>/` in the wheel. See [05_interface-skills.md](05_interface-skills.md).
 
 ## Lessons Learned
 
@@ -85,36 +85,14 @@ Two-tier registry — decorator and direct form
 
 ### 4. Keep consistent across README, Sphinx, and skills
 
-When you find a discrepancy (e.g., README says "Three Interfaces" but skills say four), fix all three:
+When you find a discrepancy (e.g., README says "Four Interfaces" but skills say five), fix all three:
 - `README.md`
 - `docs/sphinx/*.rst`
 - `_skills/<pip-name>/*.md`
 
-### 5. Separate general from SciTeX-specific
+### 5. Real files in packages, not symlinks
 
-Skills that apply to any Python package go in `programming-common/`:
-- readme-organization, sphinx-organization, github-actions
-- interface-python-api, interface-cli, interface-mcp
-- repository-quality, no-fallbacks, no-false-positives
-
-SciTeX-specific files cross-reference the general ones:
-```markdown
-> General patterns: see [programming-common/interface-cli.md](...)
-
-# CLI Commands (SciTeX)
-[Only SciTeX-specific content: scitex-io examples, scitex-dev helpers]
-```
-
-### 6. Real files for packages, not symlinks
-
-Symlinks break in Python wheels. Always use real file copies in `_skills/`:
-```bash
-# WRONG (breaks in pip install)
-ln -s ~/.dotfiles/.../scitex-io _skills/scitex-io
-
-# RIGHT (works in pip install)
-cp -rf ~/.dotfiles/.../scitex-io/* _skills/scitex-io/
-```
+Symlinks break in Python wheels. The package directory `src/<pkg>/_skills/<pip-name>/` must contain real files so they bundle into the wheel. Export copies (`~/.claude/skills/scitex/<pip-name>/`) are refreshed via `scitex-dev skills export`.
 
 ## Reference Implementation
 
@@ -122,8 +100,8 @@ cp -rf ~/.dotfiles/.../scitex-io/* _skills/scitex-io/
 - 9 focused sub-skill files, no monolith
 - SKILL.md is index-only with MCP tools table and CLI summary
 - Each sub-skill verified against `_builtin_handlers.py` and `_save.py`
-- Consistent with README.md and `docs/sphinx/` (Four Interfaces, format tables)
-- Real files (not symlinks), bundled via `pyproject.toml` force-include
+- Consistent with README.md and `docs/sphinx/` (Five Interfaces with HTTP optional, format tables)
+- Real files (not symlinks) bundled by hatch under `src/<pkg>/_skills/`
 
 ## Quality Checklist
 
@@ -135,5 +113,5 @@ cp -rf ~/.dotfiles/.../scitex-io/* _skills/scitex-io/
 - [ ] MCP tools table in SKILL.md
 - [ ] CLI summary in SKILL.md
 - [ ] Consistent with README and Sphinx docs
-- [ ] No SciTeX-specific content in programming-common files
+- [ ] No cross-ecosystem generic rules restated inside a package skill (link to `general/` instead)
 - [ ] Real files in `_skills/`, not symlinks

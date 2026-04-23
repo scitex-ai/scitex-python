@@ -1,4 +1,5 @@
 ---
+name: skills-how-to-update
 description: How to update SciTeX skills — source-of-truth locations, editable vs non-editable install paths, and the export workflow.
 ---
 
@@ -43,7 +44,7 @@ vi ~/proj/scitex-python/src/scitex/notification/_skills/voice-sms.md
 scitex-dev skills export --package scitex
 
 # general standards (within scitex-python)
-vi ~/proj/scitex-python/src/scitex/_skills/general/09_arch-environment-variables.md
+vi ~/proj/scitex-python/src/scitex/_skills/general/10_arch-environment-variables.md
 scitex-dev skills export --package scitex
 ```
 

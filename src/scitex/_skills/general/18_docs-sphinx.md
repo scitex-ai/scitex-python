@@ -3,8 +3,6 @@ name: sphinx-organization
 description: Standard Sphinx documentation structure, conf.py patterns, and Read the Docs configuration for SciTeX packages.
 ---
 
-> General patterns: see [programming-common/sphinx-organization.md](../../commands/.claude/skills/programming-common/sphinx-organization.md)
-
 # Sphinx & Read the Docs Organization (SciTeX)
 
 ## SciTeX-Specific conf.py Settings
@@ -29,7 +27,7 @@ html_context = {
 
 ## Five Interfaces Table (index.rst Rule)
 
-SciTeX packages must include a five-interfaces table in `index.rst`:
+SciTeX packages must include a five-interfaces table in `index.rst` (HTTP API is optional and included only when the package exposes web endpoints):
 
 | Interface | Description |
 |-----------|-------------|
@@ -37,6 +35,7 @@ SciTeX packages must include a five-interfaces table in `index.rst`:
 | CLI | `scitex-io <command>` |
 | MCP | AI agent tools via fastmcp |
 | Skills | AI agent knowledge pages |
+| HTTP API (optional) | FastAPI endpoints for web clients |
 
 ## RTD Reference Implementations
 
@@ -45,7 +44,7 @@ SciTeX packages must include a five-interfaces table in `index.rst`:
 
 ## SciTeX-Specific Rules
 
-- **Four interfaces table** in index.rst: Python API, CLI, MCP, Skills
+- **Five interfaces table** in index.rst: Python API, CLI, MCP, Skills, plus HTTP API when applicable
 - **Use `develop` branch** as github_version for "Edit on GitHub" links
 - **Exclude `to_claude/`** from Sphinx builds
 - `api/scitex_io.rst` — follow scitex-io naming pattern for API doc files

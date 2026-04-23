@@ -1,4 +1,5 @@
 ---
+name: arch-modules-and-standalone-packages
 description: Lessons learned from splitting scitex-scholar / scitex-browser out of the scitex monolith. Applies to any future standalonization.
 ---
 

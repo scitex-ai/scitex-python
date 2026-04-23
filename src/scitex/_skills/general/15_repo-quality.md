@@ -3,8 +3,6 @@ name: repository-quality
 description: Repository quality checklist for SciTeX packages — AGPL, Four Freedoms, _builtin_handlers.py verification, skills authoritative.
 ---
 
-> General patterns: see [programming-common/repository-quality.md](../../commands/.claude/skills/programming-common/repository-quality.md)
-
 # Repository Quality (SciTeX)
 
 ## SciTeX-Specific README Rules
@@ -20,8 +18,8 @@ description: Repository quality checklist for SciTeX packages — AGPL, Four Fre
 
 ## Documentation Accuracy (SciTeX-Specific)
 
-- **Verify format claims against `_builtin_handlers.py`** — if a format is listed as supported, its handler must be registered. Unregistered loaders (e.g., `_load_parquet` defined but not in `_LOADER_MAP`) are NOT supported
-- **Skills are authoritative for AI agents** — keep `_skills/` as single source of truth via dotfiles symlinks
+- **Verify documentation claims against the source of truth in the package, not just the README.** For each claim (supported formats, available flags, registered tools), open the actual registration/dispatch code in `src/` and confirm the claim matches.
+- **Skills are authoritative for AI agents** — keep `src/<pkg>/_skills/` as the single source of truth; exported copies under `~/.claude/skills/scitex/<pkg>/` are refreshed via `scitex-dev skills export`.
 
 ## GitHub Setup (SciTeX Packages)
 

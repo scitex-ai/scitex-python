@@ -1,5 +1,5 @@
 ---
-name: scitex-general
+name: general
 description: SciTeX ecosystem general standards — branding, package architecture, five interfaces, version management, and repository quality. Use when creating, auditing, or maintaining any SciTeX package.
 user-invocable: false
 ---
@@ -11,7 +11,7 @@ user-invocable: false
 ```bash
 pip install scitex
 # Development:
-pip install -e /home/ywatanabe/proj/scitex-code
+pip install -e /home/ywatanabe/proj/scitex-python
 ```
 
 Core standards that apply to ALL SciTeX ecosystem packages.
@@ -27,28 +27,33 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 - [06_interface-http-api.md](06_interface-http-api.md) — Optional FastAPI delegation
 
 ### Architecture
-- [07_arch-upstream-and-downstream.md](07_arch-upstream-and-downstream.md) — 3-layer cascade, test scope, dependency hygiene, version pinning
-- [08_arch-modules-and-standalone-packages.md](08_arch-modules-and-standalone-packages.md) — Module vs standalone package boundaries
-- [09_arch-environment-variables.md](09_arch-environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule
+- [07_arch-upstream-and-downstream.md](07_arch-upstream-and-downstream.md) — 3-layer cascade, test scope, cascade pattern
+- [08_arch-dependency-and-version-pinning.md](08_arch-dependency-and-version-pinning.md) — Dependency hygiene, optional extras, version-pinning rules
+- [09_arch-modules-and-standalone-packages.md](09_arch-modules-and-standalone-packages.md) — Module vs standalone package boundaries
+- [10_arch-environment-variables.md](10_arch-environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule
 
 ### Version Control
-- [10_version-control-management.md](10_version-control-management.md) — Version sync across ecosystem, tagging, release waves
+- [11_version-control-management.md](11_version-control-management.md) — Branches, tags, release waves, release gates (core workflow)
+- [12_version-control-release-automation.md](12_version-control-release-automation.md) — Automation commands, ecosystem sync CLI, MCP tools, Python API
 
 ### Repository
-- [11_repo-layout-src-tests-scripts-examples.md](11_repo-layout-src-tests-scripts-examples.md) — Layout boundaries between `src/`, `tests/`, `scripts/`, `examples/`, `references/`
-- [12_repo-github-actions.md](12_repo-github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
-- [13_repo-quality.md](13_repo-quality.md) — Repository-level quality (AGPL, Four Freedoms, README rules, GitHub setup)
-- [14_repo-brand-logo-and-css.md](14_repo-brand-logo-and-css.md) — Brand logo and CSS rules
+- [13_repo-layout-src-tests-scripts-examples.md](13_repo-layout-src-tests-scripts-examples.md) — Layout boundaries between `src/`, `tests/`, `scripts/`, `examples/`, `references/`
+- [14_repo-github-actions.md](14_repo-github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
+- [15_repo-quality.md](15_repo-quality.md) — Repository-level quality (AGPL, Four Freedoms, README rules, GitHub setup)
+- [16_repo-brand-logo-and-css.md](16_repo-brand-logo-and-css.md) — Brand logo and CSS rules
 
 ### Documentation
-- [15_docs-readme.md](15_docs-readme.md) — Standard README template, sections, badges, footer
-- [16_docs-sphinx.md](16_docs-sphinx.md) — Sphinx docs, conf.py, RTD config, troubleshooting
+- [17_docs-readme.md](17_docs-readme.md) — Standard README template, sections, badges, footer
+- [18_docs-sphinx.md](18_docs-sphinx.md) — Sphinx docs, conf.py, RTD config, troubleshooting
 
 ### Skill Authoring
-- [17_skills-overview.md](17_skills-overview.md) — Practical guide for writing skills: lessons learned, workflow
-- [18_skills-how-to-update.md](18_skills-how-to-update.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
-- [19_skills-public-vs-private.md](19_skills-public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
-- [20_skills-quality-checklist.md](20_skills-quality-checklist.md) — Release-gate checklist for `_skills/` directories (naming, indexing, no-monolith, no-duplication, cache hygiene)
+- [19_skills-overview.md](19_skills-overview.md) — Practical guide for writing skills: lessons learned, workflow
+- [20_skills-how-to-update.md](20_skills-how-to-update.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
+- [21_skills-public-vs-private.md](21_skills-public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
+- [22_skills-quality-checklist.md](22_skills-quality-checklist.md) — Release-gate checklist for `_skills/` directories (naming, indexing, no-monolith, no-duplication, cache hygiene)
+
+### Logs
+- [23_remediation-log.md](23_remediation-log.md) — Dated remediation log for audit findings
 
 ### Scratch
-- [21_playground.md](21_playground.md) — Scratch notes
+- [40_playground.md](40_playground.md) — Scratch notes

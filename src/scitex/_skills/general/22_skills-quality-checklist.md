@@ -1,8 +1,13 @@
 <!-- ---
-!-- Timestamp: 2026-04-23 08:07:23
+!-- Timestamp: 2026-04-23 09:00:00
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/20_skills-quality-checklist.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/22_skills-quality-checklist.md
 !-- --- -->
+
+---
+name: skills-quality-checklist
+description: Release-gate checklist for _skills/ directories — naming, indexing, no-monolith, no-duplication, cache hygiene.
+---
 
 # SciTeX Package Skills — Quality Checklist
 
@@ -15,7 +20,7 @@ findings from 2026-04-23 drove the concrete rules below.
 Applies to every `src/<pkg>/_skills/<skill>/` directory in every package in
 the ecosystem. Does **not** apply to private skills under
 `~/.scitex/<pkg>/shared/skills/` (those follow the private-skill schema in
-`19_skills-public-vs-private.md`).
+`21_skills-public-vs-private.md`).
 
 ## 1. Directory structure
 
@@ -79,7 +84,7 @@ the ecosystem. Does **not** apply to private skills under
 - [ ] **NEVER** restate general-ecosystem rules (four interfaces, env-var
       prefix, branding, version management) inside a package skill. Link
       to `general/` instead:
-      `See [../general/09_arch-environment-variables.md] for the canonical rule.`
+      `See [../general/10_arch-environment-variables.md] for the canonical rule.`
 
 ## 6. No contradictions with `general/`
 
@@ -115,30 +120,10 @@ Before bumping the package version:
 - [ ] Exported skills refreshed via `scitex-dev skills export` so
       `~/.claude/skills/scitex/<pkg>/` mirrors source.
 
-## 9. Audit snapshot (2026-04-23) — packages needing remediation
-
-Recorded so the next release cycle can close these gaps:
-
-1. **scitex-orochi** (highest priority) — 13 unlisted leaves, 12 files
-   >15 KB, dual `SKILL_INDEX.md` + `SKILL.md`, `legacy/` + `.old/` in-tree.
-2. **scitex-app** — `backend-sdk.md` and entire `references/` unlisted;
-   duplicate `app-lifecycle` and `app-registration` top-level vs references.
-3. **crossref-local** — dual `_skills/SKILL.md` and
-   `_skills/crossref-local/SKILL.md` with disjoint content; partial
-   prefixes.
-4. **scitex-writer** — `manuscript-workflow.md` unlisted; 4 leaves >10 KB.
-5. **scitex-scholar** — `SKILL.md` itself 168 lines (becoming monolith).
-6. **scitex-cloud** — `scitex-versions.md` 10.8 KB; 118 B / 181 B legacy
-   stubs.
-7. **scitex-dev** — `full-update.md` 13.6 KB monolith.
-8. **scitex-ui** — 2 leaves >10 KB.
-9. **All remaining packages** — adopt `01_–NN_` prefixes to match
-   `general/`.
-
-## 10. Automation
+## 9. Automation
 
 Future work: add a `scitex-linter` plugin that checks §1–§8
 programmatically and runs as part of the release gate. Tracking: see
-`../13_repo-quality.md` for the broader release checklist.
+`15_repo-quality.md` (sibling) for the broader release checklist.
 
 <!-- EOF -->
