@@ -462,18 +462,90 @@ Drop-in parallel map for I/O-bound work — HTTP fetches, file reads, API calls.
 </details>
 
 <details>
+<summary><strong><code>scitex.path</code> -- Project-Aware Paths &amp; Session Dirs</strong></summary>
+
+```python
+import scitex as stx
+root = stx.path.find_git_root()                     # walk up for .git/
+out = stx.path.get_spath("results.csv")             # → {script}_out/results.csv
+stx.path.create_relative_symlink(src, dst)          # relative (portable) symlink
+latest = stx.path.find_latest(".", "model_", ".pt") # model_v003.pt (highest version)
+stx.path.fix_broken_symlinks("dir/", remove=True)   # cleanup dangling links
+```
+Auto-routes saves to `{script}_out/` and resolves session-scoped paths so `@stx.session` scripts produce dated, hash-trackable output dirs with no boilerplate.
+</details>
+
+<details>
+<summary><strong><code>scitex.logging</code> -- Extended Logging + Exception Hierarchy + Tee</strong></summary>
+
+```python
+import scitex as stx
+logger = stx.logging.getLogger(__name__)
+logger.success("Training converged at epoch 87")    # SUCCESS level (custom)
+logger.fail("Validation loss diverged")             # FAIL level (custom)
+
+# Structured warnings with SciTeX categories
+stx.logging.warn_deprecated("old_api", replacement="new_api", version="3.0")
+stx.logging.warn_data_loss("NaN values dropped in column 'bp'")
+
+# Typed exceptions (30+ subclasses of SciTeXError)
+raise stx.logging.ShapeError("expected (N, 2), got (N, 3)")
+
+# Tee stdout/stderr to a log file
+with stx.logging.Tee("run.log"):
+    main()                                           # prints go to screen + file
+```
+Extends stdlib `logging` with SUCCESS/FAIL levels, a 30+ class exception tree (`IOError`/`ShapeError`/`ConfigKeyError`/...), structured warning categories, and tee-to-file. `SCITEX_LOGGING_LEVEL` env var sets default at import.
+</details>
+
+<details>
+<summary><strong><code>scitex.db</code> -- SQLite3 / PostgreSQL with ndarray BLOB Storage</strong></summary>
+
+```python
+import scitex as stx, numpy as np
+
+db = stx.db.SQLite3("experiments.db")
+with db:                                             # context-manager transaction
+    db.execute("CREATE TABLE IF NOT EXISTS runs (id TEXT, acc REAL)")
+    db.save_array("weights_epoch_87", np.random.rand(1024, 1024))   # compressed BLOB
+
+df = db.to_df("runs")                                # pandas round-trip
+w = db.load_array("weights_epoch_87")                # typed ndarray back
+db.check_health()                                    # integrity + schema drift
+stx.db.delete_duplicates(conn, "runs", columns=["id"])
+```
+SQLite / PostgreSQL clients with first-class compressed-ndarray BLOBs, dataframe round-trips, health checks, and duplicate removal. Drop-in replacement for hand-rolling `pickle → BLOB` storage or SQLAlchemy Core when you don't need an ORM.
+</details>
+
+<details>
+<summary><strong><code>scitex.browser</code> -- Playwright Helpers for Scientific Scraping</strong></summary>
+
+```python
+import scitex as stx, asyncio
+
+async def grab_pdf():
+    async with stx.browser.SyncBrowserSession() as session:
+        page = await session.new_page()
+        await page.goto("https://journal.example/article/123")
+        await stx.browser.click_with_fallbacks_async(
+            page, ["button.download-pdf", "a[href$='.pdf']"]   # fall through selectors
+        )
+        await stx.browser.save_as_pdf_async(page, "article.pdf")
+
+asyncio.run(grab_pdf())
+```
+Playwright wrappers with: Chrome-PDF-viewer download helper, popup/cookie dismissers (`close_popups_async`, `PopupHandler`), cursor/click/step overlays for debug video recording, console-log collectors, test-failure artifact capture. Drop-in replacement for raw Playwright scripts + stealth plugins.
+</details>
+
+<details>
 <summary><strong>Utility modules — lower-level helpers</strong></summary>
 
 | Module | Purpose | Key API |
 |--------|---------|---------|
-| `stx.path` | Project-aware paths | `find_git_root`, `get_spath`, `create_relative_symlink` |
 | `stx.str` | Text / LaTeX fallback / colored prints | `printc`, `safe_latex_render`, `grep` |
 | `stx.dict` | `DotDict` + safe merge / flatten | `DotDict`, `safe_merge`, `flatten` |
-| `stx.logging` | stdlib-logging + SUCCESS/FAIL + `SciTeXError` | `getLogger`, `warn_deprecated`, `Tee` |
 | `stx.types` | Union type aliases + predicates | `ArrayLike`, `ColorLike`, `is_array_like` |
-| `stx.db` | SQLite3 / PostgreSQL with ndarray BLOBs | `SQLite3`, `PostgreSQL`, `delete_duplicates` |
 | `stx.audit` | Unified security scan (bandit / shellcheck / pip-audit) | `audit()` |
-| `stx.browser` | Playwright helpers for scraping | `save_as_pdf`, `click_with_fallbacks_async` |
 | `stx.compat` | Deprecation shims | `@deprecated`, `notify` legacy alias |
 | `stx.etc` | Terminal keypress helpers | `wait_key`, `count` |
 
