@@ -65,9 +65,18 @@ def running2finished(CONFIG, exit_status=None, remove_src_dir=True, max_wait=60)
             time.sleep(0.1)
         if _os.path.exists(dest_dir):
             print()
-            logger.success(
-                f"Congratulations! The script completed: {dest_dir}",
-            )
+            if exit_status == 1:
+                logger.error(
+                    f"Script failed: {dest_dir}",
+                )
+            elif exit_status == 0:
+                logger.success(
+                    f"Congratulations! The script completed: {dest_dir}",
+                )
+            else:
+                logger.info(
+                    f"Script finished: {dest_dir}",
+                )
 
             if remove_src_dir:
                 shutil.rmtree(src_dir)
