@@ -1,0 +1,62 @@
+name: Doc-Drift Nightly
+
+# Fast, cheap check that runs the two AST-based auditors:
+#   - scripts/audit_doc_examples.py  — every stx.X.Y.Z chain in every
+#     README + docs/*.md must resolve against the installed scitex API.
+#   - scripts/audit_test_scope.py    — downstream packages must not
+#     import the scitex umbrella in tests; sibling imports must be
+#     pytest.importorskip- or try/except-gated.
+#
+# Runs on a public runner (ubuntu-latest) — no claude CLI needed.
+# Pairs with agentic-nightly.yml which is the heavier, self-hosted job.
+
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "scripts/audit_doc_examples.py"
+      - "scripts/audit_test_scope.py"
+      - ".github/workflows/doc-drift-nightly.yml"
+  schedule:
+    - cron: "30 7 * * *"  # 07:30 UTC daily (after package CI at 07:00)
+  workflow_dispatch:
+
+jobs:
+  doc-drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install scitex + downstream packages from PyPI
+        run: |
+          pip install --upgrade pip
+          pip install "scitex[all]"
+
+      - name: Checkout downstream package repos for README audit
+        run: |
+          mkdir -p "$HOME/proj"
+          for pkg in scitex-io scitex-stats scitex-scholar scitex-notebook \
+                    scitex-audio scitex-clew scitex-linter scitex-notification \
+                    scitex-app scitex-dataset scitex-ui scitex-container \
+                    scitex-tunnel figrecipe scitex-writer; do
+            git clone --depth 1 "https://github.com/ywatanabe1989/$pkg.git" \
+              "$HOME/proj/$pkg" 2>/dev/null || true
+          done
+          # scitex-python is already checked out — symlink so audit script finds it
+          ln -sf "$GITHUB_WORKSPACE" "$HOME/proj/scitex-python"
+
+      - name: Run doc-example auditor
+        run: |
+          python3.11 scripts/audit_doc_examples.py --projects-root "$HOME/proj"
+
+      - name: Run test-scope auditor
+        run: |
+          python3.11 scripts/audit_test_scope.py --projects-root "$HOME/proj"
