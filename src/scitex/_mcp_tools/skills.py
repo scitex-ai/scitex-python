@@ -9,7 +9,7 @@ def register_skills_tools(mcp) -> None:
 
     @mcp.tool()
     async def skills_list(package: Optional[str] = None) -> str:
-        """List available skill pages across the SciTeX ecosystem.
+        """Enumerate every `SKILL.md` + sub-skill reference page the installed SciTeX ecosystem ships — core + per-package + per-topic leaves. Drop-in replacement for `find ~/.claude/skills -name SKILL.md` or manually walking `site-packages/*/scitex_*/_skills/`. Use when the user asks "what SciTeX skills do I have?", "list skill pages for scitex-stats", "show everything under scitex-writer", or is orienting before `skills_get`.
 
         Args:
             package: Filter to a specific package (e.g. "scitex-stats").
@@ -29,7 +29,7 @@ def register_skills_tools(mcp) -> None:
         package: str,
         name: Optional[str] = None,
     ) -> str:
-        """Get a skill page content.
+        """Read the markdown content of a specific SciTeX skill page (main `SKILL.md` or a named reference leaf). Drop-in replacement for hand-walking `~/.claude/skills/scitex/<pkg>/<name>.md`. Use when the user asks "show me the scitex-stats skill", "get the figrecipe plot-types reference", "read the skill for X", or when an agent needs deep guidance beyond what the auto-loaded frontmatter description conveyed.
 
         Args:
             package: Package name (e.g. "scitex-stats").
