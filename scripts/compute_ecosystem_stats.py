@@ -1,39 +1,45 @@
 #!/usr/bin/env python3
 """Compute current SciTeX ecosystem stats for GitHub About / README.
 
-Outputs a single line ready for `gh api PATCH description`:
+Authoritative counts are taken from the live `scitex` CLI (must be importable
+in the env running this script) so the numbers always match what users see:
+
+    modules : count of `src/scitex/*/` public sub-packages (umbrella surface)
+    cli     : leaf commands from `scitex --help-recursive --json`
+    mcp     : `scitex mcp list-tools --json` → `total`
+    skills  : sum of all entries from `scitex skills list --json`
+
+Outputs a single About line by default:
 
     Python toolkit for reproducible science. {N} modules, {C} CLI commands,
     {T} MCP tools, and {S} skills. From raw data to manuscript.
 
-Counts are derived from the current scitex-python checkout plus (optionally)
-the sibling scitex-* repos under --projects-root.
-
 Usage:
-    python scripts/compute_ecosystem_stats.py \
-        [--projects-root /home/ywatanabe/proj] \
-        [--github-about]   # print the About one-liner only
+    python scripts/compute_ecosystem_stats.py [--github-about]
 """
 
 from __future__ import annotations
 
 import argparse
-import os
-import re
+import json
+import subprocess
 import sys
 from pathlib import Path
 
 UMBRELLA_SRC = Path(__file__).resolve().parent.parent / "src" / "scitex"
 
-DEFAULT_ABOUT_TEMPLATE = (
+ABOUT_TEMPLATE = (
     "Python toolkit for reproducible science. "
-    "{modules} modules, {cli} CLI commands, {mcp} MCP tools, and {skills} skills. "
+    "{modules} modules, {cli} CLI commands, "
+    "{mcp} MCP tools, and {skills} skills. "
     "From raw data to manuscript."
 )
 
 
 def count_modules() -> int:
     """Public submodules directly under src/scitex/ (exclude _private dirs)."""
+    if not UMBRELLA_SRC.exists():
+        return 0
     return sum(
         1
         for p in UMBRELLA_SRC.iterdir()
@@ -41,78 +47,71 @@ def count_modules() -> int:
     )
 
 
-def count_cli_commands(projects_root: Path) -> int:
-    """Sum of `[project.scripts]` entries across installed scitex-* repos."""
-    total = 0
-    for pyproject in sorted(projects_root.glob("scitex-*/pyproject.toml")):
-        try:
-            text = pyproject.read_text()
-        except OSError:
-            continue
-        # Naive but robust: count non-blank, non-comment lines inside
-        # [project.scripts] up to the next [section].
-        m = re.search(r"\[project\.scripts\][^\[]*", text, re.S)
-        if not m:
-            continue
-        block = m.group(0).splitlines()[1:]
-        for line in block:
-            s = line.strip()
-            if s and not s.startswith("#") and "=" in s:
-                total += 1
-    # also the umbrella itself
-    umbrella_py = UMBRELLA_SRC.parent.parent / "pyproject.toml"
-    if umbrella_py.exists():
-        text = umbrella_py.read_text()
-        m = re.search(r"\[project\.scripts\][^\[]*", text, re.S)
-        if m:
-            for line in m.group(0).splitlines()[1:]:
-                s = line.strip()
-                if s and not s.startswith("#") and "=" in s:
-                    total += 1
-    return total
+def _scitex_json(args: list[str]) -> dict | list | None:
+    """Invoke `scitex ... --json`, return parsed JSON or None on failure."""
+    try:
+        proc = subprocess.run(
+            ["scitex", *args, "--json"],
+            capture_output=True,
+            text=True,
+            timeout=60,
+            check=False,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return None
+    if proc.returncode != 0:
+        return None
+    try:
+        return json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        return None
 
 
-def count_mcp_tools(projects_root: Path) -> int:
-    """Count @mcp.tool() decorators across all scitex-*/src trees."""
-    total = 0
-    patterns = (r"@mcp\.tool\b", r"@app\.tool\b", r"@mcp_server\.tool\b")
-    rx = re.compile("|".join(patterns))
-    for src_py in projects_root.glob("scitex-*/src/**/*.py"):
-        try:
-            total += len(rx.findall(src_py.read_text(errors="ignore")))
-        except OSError:
-            continue
-    return total
+def count_cli_commands() -> int:
+    """Leaf commands in `scitex --help-recursive --json`."""
+    d = _scitex_json(["--help-recursive"])
+    if not d:
+        return 0
+    # payload is nested under data.subcommands for the recursive dump
+    root = d.get("data", d) if isinstance(d, dict) else d
+    if not isinstance(root, dict):
+        return 0
+
+    def walk(node):
+        subs = node.get("subcommands") or {}
+        if not subs:
+            yield 1
+            return
+        for child in subs.values():
+            yield from walk(child)
+
+    return sum(walk(root))
 
 
-def count_skills(projects_root: Path) -> int:
-    """Count non-index leaf .md files across all scitex-*/_skills/ trees."""
-    total = 0
-    seen: set[str] = set()
-    # Per-package in-repo _skills/
-    for skill_md in projects_root.glob("scitex-*/src/*/_skills/*/*.md"):
-        if skill_md.name in {"SKILL.md", "MANIFEST.md", "README.md"}:
-            continue
-        key = str(skill_md.relative_to(projects_root))
-        if key in seen:
-            continue
-        seen.add(key)
-        total += 1
-    # Umbrella's own general/ skills
-    for skill_md in UMBRELLA_SRC.glob("_skills/general/*.md"):
-        if skill_md.name in {"SKILL.md", "MANIFEST.md", "README.md"}:
-            continue
-        total += 1
-    return total
+def count_mcp_tools() -> int:
+    """`scitex mcp list-tools --json` → total field."""
+    d = _scitex_json(["mcp", "list-tools"])
+    if isinstance(d, dict):
+        if "total" in d:
+            return int(d["total"])
+        inner = d.get("data")
+        if isinstance(inner, dict) and "total" in inner:
+            return int(inner["total"])
+    return 0
+
+
+def count_skills() -> int:
+    """`scitex skills list --json` → sum of per-package entries."""
+    d = _scitex_json(["skills", "list"])
+    if isinstance(d, dict):
+        inner = d.get("data", d)
+        if isinstance(inner, dict):
+            return sum(len(v) for v in inner.values() if isinstance(v, list))
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--projects-root",
-        type=Path,
-        default=Path(os.environ.get("HOME", "/")) / "proj",
-    )
     ap.add_argument(
         "--github-about",
         action="store_true",
@@ -121,13 +120,11 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     modules = count_modules()
-    cli = count_cli_commands(args.projects_root)
-    mcp = count_mcp_tools(args.projects_root)
-    skills = count_skills(args.projects_root)
+    cli = count_cli_commands()
+    mcp = count_mcp_tools()
+    skills = count_skills()
 
-    about = DEFAULT_ABOUT_TEMPLATE.format(
-        modules=modules, cli=cli, mcp=mcp, skills=skills
-    )
+    about = ABOUT_TEMPLATE.format(modules=modules, cli=cli, mcp=mcp, skills=skills)
 
     if args.github_about:
         print(about)

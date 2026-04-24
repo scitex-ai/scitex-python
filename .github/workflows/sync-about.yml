@@ -1,8 +1,10 @@
 name: Sync GitHub About
 
-# Hourly refresh of the repo's GitHub About line from live ecosystem counts.
-# Counts: umbrella modules, CLI commands across scitex-*/pyproject.toml,
-# @mcp.tool() decorators across scitex-*/src, and _skills/ leaf pages.
+# Hourly refresh of the GitHub About line from LIVE scitex CLI:
+#   modules = umbrella src/scitex/*/ public subpackages
+#   cli     = leaf commands from `scitex --help-recursive --json`
+#   mcp     = `scitex mcp list-tools --json` → total
+#   skills  = sum of entries from `scitex skills list --json`
 
 on:
   push:
@@ -10,7 +12,6 @@ on:
     paths:
       - '.github/workflows/sync-about.yml'
       - 'scripts/compute_ecosystem_stats.py'
-      - 'src/scitex/**/__init__.py'
       - 'pyproject.toml'
   schedule:
     - cron: "0 * * * *"  # Hourly, top of every hour UTC
@@ -29,32 +30,21 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Checkout downstream scitex-* repos (develop preferred)
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install scitex[all] + downstream packages
         run: |
-          mkdir -p "$HOME/proj"
-          ln -sf "$GITHUB_WORKSPACE" "$HOME/proj/scitex-python"
-          for pkg in scitex-io scitex-stats scitex-scholar scitex-notebook \
-                    scitex-audio scitex-clew scitex-linter scitex-notification \
-                    scitex-app scitex-dataset scitex-ui scitex-container \
-                    scitex-tunnel figrecipe scitex-writer scitex-audit \
-                    scitex-browser scitex-core scitex-dev scitex-dict \
-                    scitex-gists scitex-logging scitex-path scitex-plt \
-                    scitex-repro scitex-str scitex-types scitex-agent-container \
-                    scitex-cloud scitex-orochi scitex-etc scitex-compat \
-                    scitex-db scitex-parallel; do
-            git clone --depth 1 --branch develop \
-              "https://github.com/ywatanabe1989/$pkg.git" \
-              "$HOME/proj/$pkg" 2>/dev/null || \
-            git clone --depth 1 \
-              "https://github.com/ywatanabe1989/$pkg.git" \
-              "$HOME/proj/$pkg" 2>/dev/null || true
-          done
+          echo "wrapt>=1.17" > /tmp/c.txt
+          export UV_CONSTRAINT=/tmp/c.txt
+          uv pip install --system ".[all]"
+          uv pip install --system scitex-dataset scitex-container scitex-scholar \
+                      scitex-notebook scitex-linter scitex-dev || true
 
       - name: Compute ecosystem stats
         id: stats
         run: |
-          about=$(python3 scripts/compute_ecosystem_stats.py \
-            --projects-root "$HOME/proj" --github-about)
+          about=$(python3 scripts/compute_ecosystem_stats.py --github-about)
           echo "about=$about" >> "$GITHUB_OUTPUT"
           echo "$about"
 
