@@ -188,7 +188,8 @@ regression from this pass), say so explicitly.
 
 ### 10b. Append-only audit log (for regression tracking)
 
-Append one entry per pass to `scitex-dev/logs/quality-audits/YYYY-MM-DD.md`:
+Append one entry per pass to `scitex-dev/quality-audits/YYYY-MM-DD.md`
+(top-level, not under `logs/` which is gitignored):
 
 ```markdown
 ## YYYY-MM-DD HH:MM UTC — /speak-and-call pass
