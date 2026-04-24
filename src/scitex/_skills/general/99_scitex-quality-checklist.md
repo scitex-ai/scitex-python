@@ -73,24 +73,10 @@ Never force-push shared branches.
 
 Flag: `failure`, `cancelled`, `in_progress > 1h`.
 
-**Typical failure modes & canonical fixes:**
-
-Severity: **CRITICAL** blocks downstream/release; **HIGH** one package;
-**MEDIUM** test bug; **LOW** cosmetic. Triage top-down. Full cookbook:
+Severity triage: **CRITICAL** blocks downstream/release; **HIGH** one
+package; **MEDIUM** test bug; **LOW** cosmetic. Full failure-mode
+cookbook — all ~18 patterns with fixes:
 [98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md).
-
-| Symptom | Severity | Fix |
-|---|---|---|
-| `ModuleNotFoundError: scitex_dev._skills_quality_pytest` | CRITICAL | bump+release scitex-dev (§98) |
-| Publish-to-PyPI `invalid-publisher` | CRITICAL | config trusted publisher; verify it *saved* (§98) |
-| Downstream import missing for a module that IS in git | CRITICAL | stale PyPI wheel — bump+release |
-| `Unnamed: *` column leaks past DataFrame loader | HIGH | narrow dtype guard (§98 §5c) |
-| `isinstance(plotly.graph_objs.Figure)` → NoneType crash | HIGH | optional-dep guard missing (§98 §5a) |
-| `assert func() is True` fails on numpy 2 | MEDIUM | `return bool(np.any(...))` (§98 §5b) |
-| `coverage < fail_under` despite tests green | LOW | lower `fail_under` to real floor |
-| SKILL.md/leaf over size cap | LOW | trim description or topical split |
-
-Full table (~18 patterns) in the playbook.
 
 ## 4. Test scope purity
 
@@ -225,19 +211,20 @@ same way on 3/7 runs" → systemic, worth investing in.
 
 ## 12. Do-not-touch list (refresh every run)
 
-Never modify files in a repo that has uncommitted user work. Determine
-via `git -C <path> status --short` per repo *at the start of every pass*
-— do not rely on a hardcoded list; dirty trees shift over time.
+Never modify files in a repo with uncommitted user work. Refresh via
+`git -C <path> status --short` at the start of *every* pass.
 
-If a probe in §§1–10 flags an issue inside a dirty tree, use
-non-invasive paths:
+If §§1–10 flag an issue in a dirty tree: prefer GH-API merge, or
+`git worktree add`, or just report commands. Never stash/pop.
 
-- GitHub-API merge (`gh api --method PUT repos/.../pulls/<n>/update-branch`)
-- `git worktree add` to a scratch dir
-- Report to user with exact commands, don't execute
+Commit-in-dirty-tree guard (mandatory):
 
-Touching a dirty tree risks clobbering the user's in-progress edits —
-always safer to report than to stash/pop under automation.
+```bash
+scripts/git_guard_commit.sh --repo <abs-path> <file1> [...] -- -m "msg"
+```
+
+Aborts if the index has extras. Prevents the 2026-04-24 failure where
+an agent's `git commit` swept 40 pre-staged user files.
 
 ## 16. Dynamic audit via agent task execution (planned)
 
@@ -285,16 +272,17 @@ python3.11 ~/proj/scitex-python/scripts/audit_english_only.py
 
 Excludes caches, node_modules, vendored `.claude/` mirrors.
 
-## Last Questions
-01. Is SciTeX ecosystem useful for Ph.D. students and researchers?
+## Release-gate questions
+
+01. Useful for Ph.D. students and researchers?
 02. Meaningful tests implemented? All green?
-03. Is it easy to understand SciTeX packages for both human and AI researchers?
-04. Is it easy to use SciTeX packages for both human and AI researchers?
-05. Is it easy to maintain SciTeX packages for both human and AI researchers?
-06. Are documents, Read the Docs, and examples up-to-date for actual codebase?
-07. Is periodical quality check implemented and actually running regularly?
-08. Are SciTeX conventions followed throughout the packages?
-09. Are all packages standardized and consistent as ecosystem?
-10. Is the ecosystem only written in English, including comments and documents?
+03. Easy to understand for humans and AI?
+04. Easy to use for humans and AI?
+05. Easy to maintain for humans and AI?
+06. Docs, Read the Docs, examples in sync with code?
+07. Periodic quality check actually running?
+08. SciTeX conventions followed throughout?
+09. All packages standardized and consistent?
+10. Only English in comments and docs?
 
 <!-- EOF -->
