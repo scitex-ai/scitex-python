@@ -268,14 +268,16 @@ See the forthcoming
 (not yet in tree) for task dataset, execution infrastructure, and
 metric-collection design.
 
-## 17. Dashboard export (planned)
+## 17. Dashboard export
 
-Pipeline: each /speak-and-call pass → append to §10b log → a weekly
-aggregator generates `scitex-dev/dashboards/quality.md` with:
+Run after a pass (or as a weekly cron):
 
-| package | CI | skills | API docs | last audit |
+```bash
+python3.11 ~/proj/scitex-python/scripts/audit_quality_dashboard.py
+```
 
-Render at README top for external visibility (grant reviewers,
-contributors). Implementation detail TBD.
+→ `scitex-dev/dashboards/quality.md`: per-package CI/tag/PyPI/aligned.
+Scope = §0 ∩ (`scitex*` prefix or allowlist: figrecipe, socialia,
+openalex-local, crossref-local).
 
 <!-- EOF -->
