@@ -263,10 +263,10 @@ logging tool-use distributions, error recovery, and output quality.
   requires a passing dynamic-audit run covering the ecosystem's primary
   research workflows.
 
-See the forthcoming
-[scitex-dev/_skills/scitex-dev/20_dynamic-audit.md](../../scitex-dev/_skills/scitex-dev/20_dynamic-audit.md)
-(not yet in tree) for task dataset, execution infrastructure, and
-metric-collection design.
+Design skeleton:
+`scitex-dev/src/scitex_dev/_skills/scitex-dev/20_dynamic-audit.md` —
+task dataset T01–T10, execution infra, metrics. Not yet implemented;
+minimal first pass (3 tasks) specified there.
 
 ## 17. Dashboard export
 
