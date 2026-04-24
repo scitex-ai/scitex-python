@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-04-24 10:30:00
+!-- Timestamp: 2026-04-24 11:30:59
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/99_scitex-quality-checklist.md
 !-- --- -->
@@ -34,60 +34,38 @@ Never touch user's uncommitted edits — run `git -C <path> status --short`
 and only stage files YOU modified. Use `-c core.hooksPath=/dev/null` on
 pushes to bypass the X11-dependent pre-push hook.
 
-**Scope this sweep to the library ecosystem only.** Some `scitex-*`
-directories are peripheral and will throw false positives if included:
-
-- Paper/manuscript drafts: `scitex-paper-*`, papers — no Python package
-- Agentic / TS exploration repos: `scitex-agentic-test`, any bun-only
-  repo — no `pyproject.toml`
-
-Gate every probe on two conditions, not just `pyproject.toml`:
-
-1. `test -f "$p/pyproject.toml"` — has a Python package config
-2. directory name matches the pyproject `name` field — filters out
-   project instances built from a template (e.g. `scitex-paper-1st/`
-   uses `name = "scitex-writer"` because it's a manuscript repo
-   scaffolded from the writer template).
-
-One-liner gate:
+**Scope** = has `pyproject.toml` AND directory name equals pyproject
+`name`. The second condition filters paper/template repos like
+`scitex-paper-1st/` that vendor `name = "scitex-writer"`. One-liner:
 
 ```bash
 name=$(grep -oP '^name\s*=\s*"\K[^"]+' "$p/pyproject.toml" | head -1)
 [ "$name" = "$(basename $p)" ] || continue
 ```
 
-Packages in scope = pass both conditions above, or are on an explicit
-ecosystem allowlist.
+(Or use an explicit ecosystem allowlist — see `audit_english_only.py`.)
 
 ## 1. Branch hygiene (every repo on `develop`)
 
-**Check:** for each `scitex-*` repo, confirm current branch is `develop`
-and it is equal-to or ahead-of `main`.
+Every in-scope repo on `develop`, ahead-of-or-equal `main`:
 
-```
+```bash
 for p in $HOME/proj/scitex-*; do
   br=$(git -C "$p" rev-parse --abbrev-ref HEAD 2>/dev/null) || continue
   [ "$br" != "develop" ] && echo "ANOMALY: $(basename $p) on $br"
 done
 ```
 
-**Fix:**
-- If on a feature branch that fast-forwards develop: advance develop
-  via `git update-ref` (avoids checkout touching user's dirty tree),
-  push, delete local feature branch with `-d`.
-- If `develop` doesn't exist yet: `git checkout -b develop main`, push
-  with `-u origin develop`, keep `main` intact.
+Fix: fast-forward develop via `git update-ref` (avoids checkout touching
+dirty tree), push, delete feature branch. If `develop` doesn't exist,
+`git checkout -b develop main; git push -u origin develop`.
 
-## 2. Push state (no silent unpushed work)
+## 2. Push state
 
-**Check:** no repo has committed-but-unpushed changes.
-
-```
-git -C "$p" log "origin/$br..$br" --oneline
-```
-
-If ahead: push (`-c core.hooksPath=/dev/null push origin develop`).
-Never force-push to shared branches.
+No committed-but-unpushed changes:
+`git -C "$p" log "origin/$br..$br" --oneline` → empty.
+If ahead, push (use `-c core.hooksPath=/dev/null` to bypass X11 hook).
+Never force-push shared branches.
 
 ## 3. CI green (per repo, latest run on develop)
 
@@ -97,26 +75,22 @@ Flag: `failure`, `cancelled`, `in_progress > 1h`.
 
 **Typical failure modes & canonical fixes:**
 
-Severity guide — **CRITICAL**: blocks downstream consumers or PyPI
-release. **HIGH**: one package red but independent. **MEDIUM**: tests
-flaky or a single test bug. **LOW**: cosmetic / threshold / lint.
-Triage CRITICAL first.
-
-Top-severity rows only (full cookbook in
-[98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md)):
+Severity: **CRITICAL** blocks downstream/release; **HIGH** one package;
+**MEDIUM** test bug; **LOW** cosmetic. Triage top-down. Full cookbook:
+[98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md).
 
 | Symptom | Severity | Fix |
 |---|---|---|
-| `ModuleNotFoundError: scitex_dev._skills_quality_pytest` | CRITICAL | bump+release scitex-dev so the wheel contains the module (see §98) |
-| Publish-to-PyPI `invalid-publisher` | CRITICAL | configure trusted publisher; verify "Manage current publishers" *actually* saved (see §98) |
-| Downstream ModuleNotFoundError for something that IS in git | CRITICAL | PyPI wheel stale — bump version + re-release |
-| `Unnamed: *` columns appear in DataFrame | HIGH | pandas dtype guard too narrow — use try/except (§98 §5c) |
-| `isinstance(obj, plotly.graph_objs.Figure)` → NoneType crash | HIGH | optional-dep guard missing (§98 §5a) |
-| `assert func() is True` fails on numpy 2 | MEDIUM | coerce `bool(np.any(...))` at return (§98 §5b) |
-| `coverage < fail_under` even though tests pass | LOW | lower `fail_under` to realistic floor |
-| SKILL.md / leaf over size cap | LOW | trim description or split topically |
+| `ModuleNotFoundError: scitex_dev._skills_quality_pytest` | CRITICAL | bump+release scitex-dev (§98) |
+| Publish-to-PyPI `invalid-publisher` | CRITICAL | config trusted publisher; verify it *saved* (§98) |
+| Downstream import missing for a module that IS in git | CRITICAL | stale PyPI wheel — bump+release |
+| `Unnamed: *` column leaks past DataFrame loader | HIGH | narrow dtype guard (§98 §5c) |
+| `isinstance(plotly.graph_objs.Figure)` → NoneType crash | HIGH | optional-dep guard missing (§98 §5a) |
+| `assert func() is True` fails on numpy 2 | MEDIUM | `return bool(np.any(...))` (§98 §5b) |
+| `coverage < fail_under` despite tests green | LOW | lower `fail_under` to real floor |
+| SKILL.md/leaf over size cap | LOW | trim description or topical split |
 
-Full table with all ~18 observed patterns is in the playbook.
+Full table (~18 patterns) in the playbook.
 
 ## 4. Test scope purity
 
@@ -277,7 +251,30 @@ python3.11 ~/proj/scitex-python/scripts/audit_quality_dashboard.py
 ```
 
 → `scitex-dev/dashboards/quality.md`: per-package CI/tag/PyPI/aligned.
-Scope = §0 ∩ (`scitex*` prefix or allowlist: figrecipe, socialia,
+Scope = §0 ∩ (`scitex*` or allowlist: figrecipe, socialia,
 openalex-local, crossref-local).
+
+## 18. English-only enforcement
+
+English-only. Exempt a line with `# i18n-ok` / `<!-- i18n-ok -->`
+(marker in ±2 lines covers docstring/class pairs and formatter splits).
+
+```bash
+python3.11 ~/proj/scitex-python/scripts/audit_english_only.py
+```
+
+Excludes caches, node_modules, vendored `.claude/` mirrors.
+
+## Last Questions
+01. Is SciTeX ecosystem useful for Ph.D. students and researchers?
+02. Meaningful tests implemented? All green?
+03. Is it easy to understand SciTeX packages for both human and AI researchers?
+04. Is it easy to use SciTeX packages for both human and AI researchers?
+05. Is it easy to maintain SciTeX packages for both human and AI researchers?
+06. Are documents, Read the Docs, and examples up-to-date for actual codebase?
+07. Is periodical quality check implemented and actually running regularly?
+08. Are SciTeX conventions followed throughout the packages?
+09. Are all packages standardized and consistent as ecosystem?
+10. Is the ecosystem only written in English, including comments and documents?
 
 <!-- EOF -->
