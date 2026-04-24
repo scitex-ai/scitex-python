@@ -108,7 +108,7 @@ scitex-diagram = "scitex.diagram.mcp_server:main"
 # scitex-plt entry point now in standalone scitex-plt package
 scitex-scholar = "scitex.scholar.mcp_server:main"
 # scitex-stats entry point now in standalone scitex-stats package
-scitex-template = "scitex.template.mcp_server:main"
+scitex-template = "scitex_template.mcp_server:main"
 # scitex-ui entry point now in standalone scitex-ui package
 # Unified MCP Server (all modules in one)
 scitex-mcp-server = "scitex.mcp_server:main"
@@ -682,8 +682,9 @@ str = [
 
 # Template Module - Project templates
 # Use: pip install scitex[template]
+# Delegates to standalone scitex-template package (per general rule §12).
 template = [
-    "scitex[git]",
+    "scitex-template>=0.1.0",
 ]
 
 # Tex Module - LaTeX utilities
