@@ -14,7 +14,7 @@ def register_browser_tools(mcp) -> None:
         format: str = "A4",
         margin: str = "10mm",
     ) -> str:
-        """Save a web page as PDF (print-style, like browser print-to-PDF).
+        """Render any URL to a print-style PDF via headless Chromium — full-page, JS-rendered, with configurable paper size + margins + background graphics. Drop-in replacement for Chrome's "Print → Save as PDF" dialog, `wkhtmltopdf`, `weasyprint`, and `playwright.page.pdf()` boilerplate. Use when the user asks to "save this page as PDF", "archive this article", "generate a PDF from the dashboard", "download the rendered HTML report", or is capturing a JS-heavy page that static scrapers miss. `wait_seconds` gives JS time to finish rendering.
 
         Args:
             url: URL to save as PDF.

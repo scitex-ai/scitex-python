@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-12-21 13:11:56 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_symlink.py
 
@@ -12,9 +11,9 @@ import os
 from pathlib import Path
 
 from scitex import logging
-from scitex.path._clean import clean
+from scitex.path import clean
 from scitex.sh import sh
-from scitex.str._color_text import color_text
+from scitex.str import color_text
 
 logger = logging.getLogger()
 
@@ -88,9 +87,7 @@ def symlink_to(spath_final, symlink_to_path, verbose):
         )
 
         if verbose:
-            logger.success(
-                f"Symlinked: {spath_final} ->\n" f"           {symlink_to_path}"
-            )
+            logger.success(f"Symlinked: {spath_final} ->\n           {symlink_to_path}")
 
 
 # EOF

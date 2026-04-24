@@ -122,7 +122,7 @@ def register_scholar_tools(mcp) -> None:
 
     @mcp.tool()
     async def scholar_parse_bibtex(bibtex_path: str) -> str:
-        """Parse a BibTeX file and return paper objects."""
+        """Parse a `.bib` file into structured paper dicts (title, authors, year, journal, doi, abstract). Drop-in replacement for `bibtexparser`, `pybtex`. Use when the user asks to "read my BibTeX", "parse this .bib", "load citations from file", or before enriching / exporting / filtering."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import parse_bibtex_handler
@@ -138,7 +138,7 @@ def register_scholar_tools(mcp) -> None:
         project: str | None = None,
         pdf_paths: list[str] | None = None,
     ) -> str:
-        """Validate PDF files in library for completeness and readability."""
+        """Catch truncated / HTML-disguised / zero-byte / encrypted PDFs in the library before citing them. Use when the user asks to "verify my PDFs", "check for broken downloads", "validate the library", after a big `scholar_download_pdfs_batch` to weed out corrupt files."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import validate_pdfs_handler
@@ -231,7 +231,7 @@ def register_scholar_tools(mcp) -> None:
         format: str = "bibtex",
         filter_has_pdf: bool = False,
     ) -> str:
-        """Export papers to various formats (BibTeX, RIS, JSON, CSV)."""
+        """Export a scholar project's papers to BibTeX / RIS / JSON / CSV — ready for LaTeX, EndNote, Zotero, Mendeley, or a spreadsheet. Drop-in replacement for `pybtex` writers + hand-rolled BibTeX templating. Use when the user asks to "export my library", "give me a .bib for this project", "write out RIS for EndNote", "dump papers to CSV". `filter_has_pdf=True` keeps only papers whose PDFs were actually downloaded."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import export_papers_handler
@@ -251,7 +251,7 @@ def register_scholar_tools(mcp) -> None:
         project_name: str,
         description: str | None = None,
     ) -> str:
-        """Create a new scholar project for organizing papers."""
+        """Create a named scholar project (folder) for grouping papers — one per manuscript, thesis chapter, or review. Papers live once in the deduplicated MASTER store and appear in projects via symlinks. Use when the user asks to "start a new project", "make a folder for paper X", "organize papers for my review on Y", or is setting up a fresh literature track."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import create_project_handler
@@ -306,7 +306,7 @@ def register_scholar_tools(mcp) -> None:
         extract_images: bool = False,
         max_pages: int | None = None,
     ) -> str:
-        """Parse PDF content to extract text, sections (IMRaD), tables, images, and metadata."""
+        """Extract structured content from a scientific PDF — plain text, IMRaD sections (Introduction / Methods / Results / Discussion), tables, images, metadata, or the full scientific skeleton. Drop-in replacement for `pdfplumber`, `PyPDF2`, `pymupdf`, `grobid`, manual regex section splitting. Use when the user asks to "extract text from this PDF", "give me the methods section", "pull tables from this paper", "parse the abstract/results", or is feeding a paper into an LLM prompt and needs IMRaD chunking. Accepts a direct `pdf_path`, a `doi` (looks up in library), or `project` + DOI."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import parse_pdf_content_handler
@@ -337,7 +337,7 @@ def register_scholar_tools(mcp) -> None:
         output: str | None = None,
         async_mode: bool = True,
     ) -> str:
-        """Fetch papers to your library. Supports async mode (default) which returns immediately with a job_id for tracking."""
+        """End-to-end paper acquisition — takes DOIs / BibTeX / titles, uses a real Chromium profile for OpenAthens / Shibboleth institutional access, downloads PDFs, and deduplicates into a named project. Default async mode returns a `job_id` immediately; track with `scholar_get_job_status` / `scholar_get_job_result`. Drop-in replacement for `unpaywall` + `requests` + institutional proxy scripts + hand-driven Zotero translators. Use when the user asks to "fetch these papers", "download everything in my bibtex", "grab the PDFs for this review", "ingest this reading list"."""
         from scitex_dev.mcp_utils import async_wrap_as_mcp
 
         from scitex.scholar._mcp.job_handlers import fetch_papers_handler

@@ -1,43 +1,70 @@
 ---
-name: scitex-general
-description: SciTeX ecosystem general standards — branding, package architecture, four interfaces, version management, and repository quality. Use when creating, auditing, or maintaining any SciTeX package.
+name: general
+description: SciTeX ecosystem general standards — branding, package architecture, five interfaces, version management, and repository quality. Use when creating, auditing, or maintaining any SciTeX package.
 user-invocable: false
+primary_interface: mixed
+interfaces:
+  python: 3
+  cli: 2
+  mcp: 2
+  skills: 3
+  hook: 0
+  http: 0
 ---
 
 # SciTeX General Standards
 
-## Installation
+> **Interfaces:** Python ⭐⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐⭐ · Hook — · HTTP —
 
-```bash
-pip install scitex
-# Development:
-pip install -e /home/ywatanabe/proj/scitex-code
-```
-
-Core standards that apply to ALL SciTeX ecosystem packages.
+`pip install scitex` — standards for all ecosystem packages.
 
 ## Sub-skills
 
-### Four Interfaces
-- [four-interfaces.md](four-interfaces.md) — Overview and delegation chain
-- [interface-python-api.md](interface-python-api.md) — Minimal API, `__all__`, hide internals, PyPI first publish
-- [interface-cli.md](interface-cli.md) — Required sub-commands, flags, AI-friendly rules, Click patterns
-- [interface-mcp.md](interface-mcp.md) — fastmcp, tool naming, reproducibility, standard commands
-- [interface-skills.md](interface-skills.md) — `_skills/` layout, no-monolith, registration, export
-- [interface-http-api.md](interface-http-api.md) — Optional FastAPI delegation
-
-### Guides
-- [skills.md](skills.md) — Practical guide for writing skills: lessons learned, workflow, quality checklist
-- [how-to-update-skills.md](how-to-update-skills.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
-
-### Repository Standards
-- [readme-organization.md](readme-organization.md) — Standard README template, sections, badges, footer
-- [sphinx-organization.md](sphinx-organization.md) — Sphinx docs, conf.py, RTD config, troubleshooting
-- [github-actions.md](github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
-- [repository-quality.md](repository-quality.md) — Quality checklist, documentation accuracy, GitHub setup
+### Interfaces
+- [01_interfaces-overview.md](01_interfaces-overview.md) — Five interfaces: overview and delegation chain
+- [02_interface-python-api.md](02_interface-python-api.md) — Minimal API, `__all__`, hide internals, PyPI first publish
+- [03_interface-cli.md](03_interface-cli.md) — Required sub-commands, flags, AI-friendly rules, Click patterns
+- [04_interface-mcp.md](04_interface-mcp.md) — fastmcp, tool naming, reproducibility, standard commands
+- [05_interface-skills.md](05_interface-skills.md) — `_skills/` layout, no-monolith, registration, export
+- [06_interface-http-api.md](06_interface-http-api.md) — Optional FastAPI delegation
 
 ### Architecture
-- [upstream-and-downstream-packages.md](upstream-and-downstream-packages.md) — 3-layer cascade architecture
-- [version-management.md](version-management.md) — Version sync across ecosystem
-- [blanding.md](blanding.md) — Brand logo and CSS rules
-- [environment-variables.md](environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule for env vars
+- [07_arch-upstream-and-downstream.md](07_arch-upstream-and-downstream.md) — 3-layer cascade, test scope, cascade pattern
+- [08_arch-dependency-and-version-pinning.md](08_arch-dependency-and-version-pinning.md) — Dependency hygiene, optional extras, version-pinning rules
+- [09_arch-modules-and-standalone-packages.md](09_arch-modules-and-standalone-packages.md) — Module vs standalone package boundaries
+- [10_arch-environment-variables.md](10_arch-environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule; mandates per-package `NN_env-vars.md` leaf
+- [26_arch-re-export.md](26_arch-re-export.md) — Umbrella `scitex.<name>` thin-re-export pattern + lazy-import guard
+
+### Version Control
+- [11_version-control-management.md](11_version-control-management.md) — Branches, tags, release waves, release gates (core workflow)
+- [12_version-control-release-automation.md](12_version-control-release-automation.md) — Automation commands, ecosystem sync CLI, MCP tools, Python API
+
+### Repository
+- [13_repo-layout-src-tests-scripts-examples.md](13_repo-layout-src-tests-scripts-examples.md) — Layout boundaries between `src/`, `tests/`, `scripts/`, `examples/`, `references/`
+- [14_repo-github-actions.md](14_repo-github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
+- [15_repo-quality.md](15_repo-quality.md) — Repository-level quality (AGPL, Four Freedoms, README rules, GitHub setup)
+- [16_repo-brand-logo-and-css.md](16_repo-brand-logo-and-css.md) — Brand logo and CSS rules
+
+### Documentation
+- [17_docs-readme.md](17_docs-readme.md) — Standard README template, sections, badges, footer
+- [18_docs-sphinx.md](18_docs-sphinx.md) — Sphinx docs, conf.py, RTD config, troubleshooting
+
+### Skill Authoring
+- [19_skills-overview.md](19_skills-overview.md) — Practical guide for writing skills: lessons learned, workflow
+- [20_skills-how-to-update.md](20_skills-how-to-update.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
+- [21_skills-public-vs-private.md](21_skills-public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
+- [22_skills-quality-checklist.md](22_skills-quality-checklist.md) — Release-gate checklist for `_skills/` directories
+
+### Logs
+- [23_remediation-log.md](23_remediation-log.md) — Dated remediation log for audit findings
+- [24_package-gaps-2026-04-23.md](24_package-gaps-2026-04-23.md) — Package-gap audit snapshot
+
+### Session
+- [25_session-config.md](25_session-config.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
+
+### Periodic Ecosystem Quality
+- [98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes
+- [99_scitex-quality-checklist.md](99_scitex-quality-checklist.md) — Strategic /speak-and-call runbook with append-only log
+
+### Scratch
+- [40_playground.md](40_playground.md) — Scratch notes

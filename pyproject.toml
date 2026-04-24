@@ -11,11 +11,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.27.2"
+version = "2.27.3"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "AGPL-3.0" }
+license = "AGPL-3.0-only"
 authors = [
     { name = "Yusuke Watanabe", email = "ywatanabe@scitex.ai" }
 ]
@@ -60,6 +60,7 @@ dependencies = [
     "tqdm",
     "packaging",
     "natsort",  # Natural sorting - used by many modules
+    "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
     # Reproducibility Verification
     "scitex-clew>=0.1.0",
     # App SDK — unified file storage for local + cloud
@@ -70,6 +71,23 @@ dependencies = [
     "scitex-stats>=0.2.0",
     "scitex-audio>=0.1.0",
     "scitex-notification>=0.1.0",
+    "scitex-notebook>=0.1.0",
+    # Delegated modules from #51 standalonization
+    "scitex-core>=0.2.0",
+    "scitex-db>=0.1.0",
+    "scitex-scholar>=1.0.0",
+    "scitex-parallel>=0.1.0",
+    "scitex-types>=0.1.0",
+    "scitex-path>=0.1.0",
+    "scitex-repro>=0.1.0",
+    "scitex-compat>=0.1.0",
+    "scitex-etc>=0.1.0",
+    "scitex-gists>=0.1.0",
+    "scitex-audit>=0.1.0",
+    "scitex-logging>=0.1.0",
+    "scitex-dict>=0.1.0",
+    "scitex-browser>=0.1.0",
+    "scitex-str>=0.1.0",
 ]
 
 [project.urls]
@@ -80,16 +98,18 @@ Repository = "https://github.com/ywatanabe1989/scitex-python"
 
 [project.scripts]
 scitex = "scitex.__main__:main"
+# Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
+scitex-pkg = "scitex.cli.pkg:pkg"
 # MCP Server entry points (individual modules)
 # scitex-audio entry point now in standalone scitex-audio package
 scitex-canvas = "scitex.canvas.mcp_server:main"
 scitex-capture = "scitex.capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
-scitex-plt = "scitex.plt.mcp_server:main"
+# scitex-plt entry point now in standalone scitex-plt package
 scitex-scholar = "scitex.scholar.mcp_server:main"
 # scitex-stats entry point now in standalone scitex-stats package
 scitex-template = "scitex.template.mcp_server:main"
-scitex-ui = "scitex.ui.mcp_server:main"
+# scitex-ui entry point now in standalone scitex-ui package
 # Unified MCP Server (all modules in one)
 scitex-mcp-server = "scitex.mcp_server:main"
 
@@ -157,7 +177,7 @@ audio = [
 
 # Audit Module - Code and security auditing
 # Use: pip install scitex[audit]
-audit = []
+audit = ["scitex-audit>=0.1.2"]
 
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
@@ -174,8 +194,7 @@ bridge = [
 
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
-# Note: scitex-container provided via host mount (not on PyPI)
-container = []
+container = ["scitex-container"]
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -183,6 +202,7 @@ browser = [
     "playwright>=1.40.0",
     "aiohttp",
     "matplotlib",
+    "scitex-browser>=0.1.8",
 ]
 
 # Capture Module - Screenshot capture
@@ -216,11 +236,12 @@ cli = [
 # Use: pip install scitex[cloud]
 cloud = [
     "matplotlib",
+    "scitex-cloud>=0.16.1",
 ]
 
 # Compat Module - Compatibility utilities
 # Use: pip install scitex[compat]
-compat = []
+compat = ["scitex-compat>=0.1.1"]
 
 # Config Module - Configuration management
 # Use: pip install scitex[config]
@@ -244,11 +265,12 @@ cv = [
 db = [
     "sqlalchemy",
     "psycopg2-binary",
+    "scitex-db>=0.1.3",
 ]
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = []
+dataset = ["scitex-dataset"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -275,7 +297,7 @@ diagram = [
 
 # Dict Module - Dictionary utilities
 # Use: pip install scitex[dict]
-dict = []
+dict = ["scitex-dict>=0.1.2"]
 
 # DSP Module - Digital Signal Processing
 # Use: pip install scitex[dsp]
@@ -337,6 +359,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
+    "scitex-etc>=0.1.1",
 ]
 
 # Events Module - Event system
@@ -345,7 +368,7 @@ events = []
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]
-gists = []
+gists = ["scitex-gists>=0.1.2"]
 
 # Git Module - Git operations
 # Use: pip install scitex[git]
@@ -415,6 +438,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
+    "scitex-logging>=0.1.2",
 ]
 
 # Media Module - Media display utilities
@@ -461,7 +485,9 @@ nn = [
 
 # Notebook Module - Jupyter notebook utilities
 # Use: pip install scitex[notebook]
-notebook = []
+notebook = [
+    "scitex-notebook>=0.1.0",
+]
 
 # Notification Module - Phone call, SMS, and other notifications
 # Use: pip install scitex[notification]
@@ -477,6 +503,7 @@ os = []
 # Use: pip install scitex[parallel]
 parallel = [
     "tqdm",
+    "scitex-parallel>=0.1.1",
 ]
 
 # Path Module - Path utilities
@@ -484,6 +511,7 @@ parallel = [
 path = [
     "GitPython",
     "matplotlib",
+    "scitex-path>=0.1.2",
 ]
 
 # Pd Module - Pandas utilities
@@ -520,6 +548,7 @@ repro = [
     # "torch",
     # "jax",
     # "tensorflow",
+    "scitex-repro>=0.1.2"
 ]
 
 # Resource Module - Resource monitoring
@@ -600,6 +629,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
+    "scitex-scholar>=1.2.1"
 ]
 
 # Schema Module - Data schema validation
@@ -647,6 +677,7 @@ str = [
     "natsort",
     "matplotlib",
     "xarray",
+    "scitex-str>=0.1.1",
 ]
 
 # Template Module - Project templates
@@ -679,11 +710,12 @@ types = [
     "xarray",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
+    "scitex-types>=0.1.2"
 ]
 
 # UI Module - User interface utilities
 # Use: pip install scitex[ui]
-ui = []
+ui = ["scitex-ui>=0.4.7"]
 
 # Utils Module - General utilities
 # Use: pip install scitex[utils]
@@ -731,7 +763,7 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = []
+clew = ["scitex-clew>=0.2.5"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
@@ -837,6 +869,7 @@ dev = [
     # SciTeX ecosystem packages
     "scitex-tunnel",
     "scitex-container",
+    "scitex-dev>=0.7.0",
 ]
 
 # All features (everything except dev)
@@ -917,11 +950,20 @@ all = [
     "scitex[verify]",
     "scitex[web]",
     "scitex[writer]",
+    "scitex[linter]",
+    "scitex[core]",
+    "scitex[orochi]",
+    "scitex[agent-container]",
+    "scitex[dev]",
 ]
 
 # ============================================
 # Tool Configurations
 # ============================================
+linter = ["scitex-linter>=0.3.5"]
+core = ["scitex-core>=0.2.2"]
+orochi = ["scitex-orochi>=0.13.0"]
+agent-container = ["scitex-agent-container>=0.7.1"]
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"

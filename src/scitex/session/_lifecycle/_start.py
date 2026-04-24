@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional, Tuple, Union
 from scitex.dict import DotDict
 from scitex.logging import getLogger
 from scitex.repro import RandomStateManager
-from scitex.str._clean_path import clean_path
+from scitex.str import clean_path
 
 from .._manager import get_global_session_manager
 from ._config import setup_configs
@@ -56,7 +56,7 @@ def start(
     dpi_display: int = 100,
     dpi_save: int = 300,
     fontsize="small",
-    autolayout=True,
+    autolayout=False,
     show_execution_flow=False,
     hide_top_right_spines: bool = True,
     alpha: float = 0.9,
@@ -146,7 +146,7 @@ def start(
     if sys is not None:
         from scitex_io._flush import flush
 
-        from scitex.logging._Tee import tee
+        from scitex.logging import tee
 
         flush(sys)
         sys.stdout, sys.stderr = tee(sys, sdir=sdir, verbose=verbose)
@@ -189,7 +189,7 @@ def start(
     print_header(ID, PID, caller_file, args, CONFIGS, verbose)
 
     if show_execution_flow:
-        from scitex.str._printc import printc as _printc
+        from scitex.str import printc as _printc
 
         structure = analyze_code_flow(caller_file)
         _printc(structure)

@@ -13,7 +13,7 @@ def register_project_tools(mcp) -> None:
         relative_path: str = ".",
         max_depth: int = 3,
     ) -> str:
-        """List files and directories in a project directory.
+        """Tree-walk a project's directory and return a nested file/dir listing bounded by `max_depth` — for agents that see a project as a remote root and need to orient before editing. Drop-in replacement for `tree -L N`, `ls -R`, and hand-rolled `os.walk` with depth tracking. Use when the agent is handed a `root_path` and needs to know what's in there before reading, or when the user asks "what's in this project?", "list the tree", "show me the layout".
 
         Parameters
         ----------
@@ -47,7 +47,7 @@ def register_project_tools(mcp) -> None:
         root_path: str,
         relative_path: str,
     ) -> str:
-        """Read the content of a file in a project.
+        """Read a text file's contents from a project root, auto-truncating at 64 KB so big files don't blow context. Drop-in replacement for `open(path).read()` with manual size guards. Use when an agent needs the content of a specific project file — e.g. a config, source module, or README — and knows the relative path. First call `project_list_files` or `project_search_files` if the path is uncertain.
 
         Parameters
         ----------
@@ -82,7 +82,7 @@ def register_project_tools(mcp) -> None:
         relative_path: str,
         content: str,
     ) -> str:
-        """Write or create a file in a project.
+        """Write or overwrite a *text* file inside a project root, auto-`mkdir -p`ing any missing parent directories. Drop-in replacement for `pathlib.Path(...).write_text()` + manual `parents=True, exist_ok=True`. Use when an agent needs to create / overwrite a config, script, README, or code file at a known relative path. For binary outputs (.png, .mp3, .mp4) use `project_exec_python` or `project_exec_shell` instead.
 
         Creates any missing parent directories automatically.
 
@@ -121,7 +121,7 @@ def register_project_tools(mcp) -> None:
         relative_path: str = ".",
         max_results: int = 50,
     ) -> str:
-        """Search project files by name glob and/or content substring.
+        """Find files in a project by filename glob and/or a substring inside the file contents, capped at `max_results`. Drop-in replacement for `find . -name '*.py' | xargs grep -l foo`, ripgrep, or `pathlib.Path.rglob(...)`. Use when the agent needs to locate a file whose exact path isn't known — "find configs", "grep for FUNC_NAME across the project", "where's the test for X?", before reading with `project_read_file`.
 
         At least one of name_pattern or content_pattern must be provided.
 
@@ -166,7 +166,7 @@ def register_project_tools(mcp) -> None:
         code: str,
         timeout: int = 30,
     ) -> str:
-        """Execute Python code in the project directory.
+        """Run an arbitrary Python snippet with `cwd` pinned to the project root, capturing stdout / stderr / exit code and reporting new files created — the escape hatch when `project_write_file` (text-only) cannot produce the needed output. Drop-in replacement for `subprocess.run(['python', '-c', code], cwd=root)`. Use when the agent must produce binary artifacts (PNG via matplotlib, MP3 via pydub, `.npz` via numpy, PDFs via reportlab) or run a computation that `project_write_file` can't express.
 
         Use this to generate binary files (audio, video, images) that
         project_write_file cannot create (it only writes text).
@@ -206,7 +206,7 @@ def register_project_tools(mcp) -> None:
         command: str,
         timeout: int = 30,
     ) -> str:
-        """Execute a shell command in the project directory.
+        """Run an arbitrary `/bin/bash` command with `cwd` pinned to the project root, capturing stdout / stderr / exit code and reporting new files created. Drop-in replacement for `subprocess.run(['bash', '-c', cmd], cwd=root)`. Use when the agent needs external binaries — `ffmpeg` for audio/video transcode, `sox` for audio edits, `imagemagick convert` for image ops, `pandoc` for doc conversion, `latex`/`pdflatex` for document build, `git` for VCS ops, `ls -la` / `du -sh` for diagnostics.
 
         Use this to run system commands (ffmpeg, sox, imagemagick, etc.)
         for file processing. The command runs via /bin/bash with cwd

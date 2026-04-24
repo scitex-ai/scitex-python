@@ -23,7 +23,7 @@ def register_audio_tools(mcp) -> None:
         signature: bool = False,
         num_threads: int | None = None,
     ) -> str:
-        """Convert text to speech with smart routing.
+        """Speak text through a TTS backend (ElevenLabs → LuxTTS → gTTS → pyttsx3 fallback chain) with smart routing — auto-detects suspended local audio sink and flips to a relay server when configured. Drop-in replacement for `pyttsx3.init().say()`, `gTTS().save()` + mpg123, direct `elevenlabs.generate()` SDK calls, or OS-specific `say` / `espeak`. Use whenever the user asks to "speak this aloud", "read me this text", "TTS this message", "voice notification", "say it on the speakers", or wires audio status updates from a running script.
 
         Smart routing (mode=auto, default):
         - If local audio sink is SUSPENDED and relay available -> uses relay

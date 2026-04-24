@@ -11,7 +11,7 @@ def register_tunnel_tools(mcp) -> None:
 
     @mcp.tool()
     async def tunnel_setup(port: int, bastion_server: str, secret_key_path: str) -> str:
-        """Set up a persistent SSH reverse tunnel.
+        """Install an `autossh`-backed `autossh-tunnel-<port>.service` systemd unit that opens a reverse SSH tunnel (local → bastion:port) and auto-reconnects on drop. Drop-in replacement for hand-crafted `autossh -M 0 -NR port:localhost:22 user@host`, `/etc/systemd/system/autossh-tunnel-*.service`, `sshuttle`, `tmux + ssh -R` loops. Use when the user asks to "set up a reverse tunnel", "expose this machine through a bastion", "open port X on the jump host", or mentions bastion, jump host, NAT traversal, HPC login node.
 
         Creates an autossh systemd service for NAT traversal.
         The tunnel forwards a remote port on the bastion server
@@ -31,7 +31,7 @@ def register_tunnel_tools(mcp) -> None:
 
     @mcp.tool()
     async def tunnel_remove(port: int) -> str:
-        """Remove a persistent SSH reverse tunnel.
+        """Tear down an autossh reverse-tunnel unit — `systemctl stop + disable + rm unit file + daemon-reload`. Drop-in replacement for running those by hand. Use when the user asks to "remove the tunnel", "delete reverse tunnel on port X", "stop autossh", "decommission this route".
 
         Stops and disables the autossh systemd service for the given port.
         """
@@ -47,7 +47,7 @@ def register_tunnel_tools(mcp) -> None:
 
     @mcp.tool()
     async def tunnel_status(port: int = 0) -> str:
-        """Check status of SSH reverse tunnels.
+        """Live state of autossh reverse-tunnel systemd units — active / inactive, PID, restart count, last journal lines. Drop-in replacement for `systemctl status autossh-tunnel-<port>.service` + `journalctl -u`. Use when the user asks "is my tunnel up?", "why can't I reach port 2222?", "list all reverse tunnels", "check tunnel health". `port=0` lists everything.
 
         If port is 0 (default), shows all tunnel services.
         Otherwise shows status for the specific port.

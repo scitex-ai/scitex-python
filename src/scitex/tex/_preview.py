@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2025-06-05 12:00:00 (ywatanabe)"
 # File: ./src/scitex/tex/_preview.py
 
@@ -20,7 +19,7 @@ Prerequisites:
 import numpy as np
 
 try:
-    from scitex.str._latex_fallback import latex_fallback_decorator, safe_latex_render
+    from scitex.str import latex_fallback_decorator, safe_latex_render
 
     FALLBACK_AVAILABLE = True
 except ImportError:

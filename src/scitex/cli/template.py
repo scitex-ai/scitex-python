@@ -118,6 +118,66 @@ def list_templates(as_json):
         sys.exit(1)
 
 
+@template.command(name="list-code-templates")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+def list_code_templates_cmd(as_json):
+    """
+    List available code template IDs
+
+    \b
+    Lists templates that can be used with 'scitex template get <id>'.
+
+    \b
+    Example:
+      scitex template list-code-templates
+      scitex template list-code-templates --json
+    """
+    try:
+        from scitex.template import list_code_templates
+
+        templates = list_code_templates()
+
+        # Categorize templates by their group
+        categories = {
+            "Core": ["session", "io", "config"],
+            "Session Variants": ["session-minimal", "session-plot", "session-stats"],
+            "Module": ["module"],
+            "Module Usage": ["plt", "stats", "scholar", "audio", "capture", "diagram", "canvas", "writer"],
+        }
+        id_to_category = {}
+        for category, ids in categories.items():
+            for tid in ids:
+                id_to_category[tid] = category
+
+        if as_json:
+            from scitex_dev import Result
+
+            data = [
+                {**tmpl, "category": id_to_category.get(tmpl["id"], "Other")}
+                for tmpl in templates
+            ]
+            click.echo(Result(success=True, data=data).to_json())
+        else:
+            click.secho("Available Code Templates", fg="cyan", bold=True)
+            click.echo("=" * 60)
+
+            current_category = None
+            for tmpl in templates:
+                category = id_to_category.get(tmpl["id"], "Other")
+                if category != current_category:
+                    click.echo()
+                    click.secho(f"  {category}:", fg="yellow", bold=True)
+                    current_category = category
+                click.echo(f"    {tmpl['id']:<20s} {tmpl['description']}")
+
+            click.echo()
+            click.echo("Use: scitex template get <id>")
+
+    except Exception as e:
+        click.secho(f"Error: {e}", fg="red", err=True)
+        sys.exit(1)
+
+
 @template.command()
 @click.argument(
     "template_type",

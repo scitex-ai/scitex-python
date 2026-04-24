@@ -36,10 +36,11 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 
 | # | Problem | Solution |
 |---|---------|----------|
-| 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides 50+ modules under one namespace, accessible via Python API, CLI, and MCP |
+| 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides 73 modules under one namespace, accessible via Python API, CLI, and MCP. These modules are standalone packages but loosely coupled through a plugin registry — each works on its own, yet composes into designed synergy (save a figure → auto-exports CSV + YAML recipe → hash-tracked by Clew → citeable in scitex-writer). |
 | 2 | **No verification** -- existing tools address whether work *could* be reproduced, not whether it *has* been verified | **Cryptographic verification** -- Clew builds SHA-256 hash-chain DAGs linking every manuscript claim back to source data |
-| 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **293 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
+| 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **323 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
 | 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-app](https://github.com/ywatanabe1989/scitex-app) SDK and share via [SciTeX Cloud](https://scitex.ai) |
+| 5 | **Vendor lock-in** -- cloud research tools (Overleaf, Zotero, Mendeley, Colab, GitHub Copilot) keep data on third-party servers and depend on APIs that can disappear overnight or monetize tomorrow | **Open and self-hostable** -- every SciTeX package is AGPL-3.0; the full 39-package ecosystem runs on your own hardware (or SciTeX Cloud which itself is self-hostable); cloud integrations are pluggable extras, not requirements |
 
 ## SciTeX and Research Workflow
 
@@ -61,7 +62,7 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 ## Installation
 
 ```bash
-pip install scitex[all]                # Recommended: everything
+pip install scitex[all]                # Recommended: everything (may take >1 hour on first install — see Installation Tips)
 ```
 
 <details>
@@ -86,6 +87,30 @@ Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast in
 </details>
 
 <details>
+<summary><strong>Installation Tips — timeouts, mirrors, <code>[all]</code> size</strong></summary>
+
+`pip install scitex[all]` pulls the full 33-package ecosystem plus heavy extras (playwright browsers, torch, jax, pymupdf, Apptainer/Docker integrations, etc.). On a typical connection it can take **30–90 minutes** — more if PyPI is slow. Common fixes:
+
+```bash
+# 1. Extend pip's socket timeout (default 15s) — stops big wheel pulls from aborting mid-stream
+pip install --timeout 600 --retries 5 "scitex[all]"
+
+# 2. Use uv — 10-30× faster resolver, far better retry behaviour
+pip install uv && uv pip install "scitex[all]"
+
+# 3. Install in groups if a single run keeps failing
+pip install scitex[io,stats,plt]         # core analysis layer first
+pip install scitex[scholar,writer]       # research layer
+pip install scitex[audio,browser,dataset,cloud]   # heavy extras last
+
+# 4. Mirror — for networks where pypi.org is unreliable
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple "scitex[all]"
+```
+
+If a single dep hangs, identify it with `pip install -v` and install that package alone with `--no-deps`, then resume the full install.
+</details>
+
+<details>
 <summary><strong>Module Overview</strong></summary>
 
 | Category | Modules | Description |
@@ -100,6 +125,28 @@ Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast in
 | **Dev** | `dev`, `template`, `linter`, `introspect` | Ecosystem tools, scaffolding, code analysis |
 
 </details>
+
+## Packages — 3-Layer Cascade Architecture
+
+The 33-package ecosystem follows a strict **dependency cascade**: upstream imports middle imports downstream, never the reverse. Downstream apps must work standalone; the umbrella only orchestrates.
+
+```
+Upstream (orchestration — SOC, integration tests only)
+    scitex (scitex-python), scitex-cloud
+        │ imports / re-exposes
+        ▼
+Middle (shared infrastructure — wraps, doesn't replace)
+    scitex-io, scitex-stats, scitex-app, scitex-ui, scitex-audio, scitex-dev
+        │ integrates / wraps via plugin registry
+        ▼
+Downstream (standalone apps — own IO/GUI, unit tests)
+    figrecipe, scitex-writer, scitex-scholar, scitex-clew, scitex-notebook,
+    scitex-dataset, scitex-tunnel, scitex-container, scitex-browser, scitex-linter,
+    openalex-local, crossref-local, socialia, + utility leaves
+    (scitex-{path,str,dict,logging,types,db,repro,audit,parallel,compat,gists,etc,core})
+```
+
+**One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [07_arch-upstream-and-downstream](src/scitex/_skills/general/07_arch-upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [08_arch-dependency-and-version-pinning](src/scitex/_skills/general/08_arch-dependency-and-version-pinning.md) for dep-pinning.
 
 ## Quick Start
 
@@ -156,6 +203,21 @@ script_out/FINISHED_SUCCESS/2026-03-18_14-30-00_Z5MR/
 ├── CONFIGS/CONFIG.yaml        # Frozen parameters
 └── logs/{stdout,stderr}.log   # Execution logs
 ```
+
+The injected `CONFIG` is a `DotDict` merging YAML user configs with session-resolved keys:
+
+| Key | Meaning |
+|-----|---------|
+| `CONFIG.ID` | Session identifier, e.g. `2026-04-23T21-30-00_Z5MR` |
+| `CONFIG.PID` | Python process ID |
+| `CONFIG.START_DATETIME` | When the session started |
+| `CONFIG.FILE` | Path to caller script |
+| `CONFIG.SDIR_OUT` | Base output dir, e.g. `analysis_out/` |
+| `CONFIG.SDIR_RUN` | This run's dir, e.g. `analysis_out/FINISHED_SUCCESS/<ID>/` |
+| `CONFIG.ARGS` | Parsed CLI args |
+| `CONFIG.MODEL.*` | Values from `./config/MODEL.yaml` (one namespace per YAML file) |
+
+Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See [25_session-config](./src/scitex/_skills/general/25_session-config.md) for the full reference.
 </details>
 
 
@@ -165,11 +227,13 @@ script_out/FINISHED_SUCCESS/2026-03-18_14-30-00_Z5MR/
 ```python
 import scitex as stx
 
-# Save and load -- format detected from extension
-stx.io.save(df, "results.csv")
+# Save and load -- format detected from extension.
+# symlink_from_cwd=True drops a symlink at cwd so round-trip by filename works;
+# without it, save() routes to <script>_out/ and load() must use an absolute path.
+stx.io.save(df, "results.csv", symlink_from_cwd=True)
 df = stx.io.load("results.csv")
 
-stx.io.save(arr, "data.npy")
+stx.io.save(arr, "data.npy", symlink_from_cwd=True)
 arr = stx.io.load("data.npy")
 
 stx.io.save(fig, "figure.png")       # Also exports figure data as CSV
@@ -228,7 +292,7 @@ import scitex as stx
 result = stx.stats.run_test("ttest_ind", group1, group2, return_as="dataframe")
 # Returns: p-value, effect size (Cohen's d), CI, normality check, power
 recommendations = stx.stats.recommend_tests(data)
-stx.stats.format_results(result, style="apa")   # "t(58) = 2.34, p = .021, d = 0.60"
+stx.stats.annotate(ax, test=result, style="apa")   # stars + "t(58) = 2.34, p = .021, d = 0.60" on a matplotlib Axes
 ```
 </details>
 
@@ -239,9 +303,10 @@ Search, download, enrich papers. Backed by local CrossRef (167M+) and OpenAlex (
 
 ```python
 import scitex as stx
-papers = stx.scholar.search("neural oscillations working memory", n=20)
-stx.scholar.fetch("10.1038/s41586-024-07804-3")
-stx.scholar.enrich_bibtex("references.bib", output="enriched.bib")
+scholar = stx.scholar.Scholar()                             # lazy-load library
+papers = scholar.process_papers(["neural oscillations working memory"])
+scholar.download_pdfs_from_dois(["10.1038/s41586-024-07804-3"])
+scholar.enrich_papers(bibtex_path="references.bib")
 ```
 
 ```bash
@@ -255,9 +320,9 @@ scitex scholar bibtex references.bib --output enriched.bib
 
 ```python
 import scitex as stx
-stx.writer.compile_manuscript("paper/")
-stx.writer.add_figure("paper/", "results.png", caption="Main results")
-stx.writer.add_table("paper/", "stats.csv", caption="Statistical summary")
+stx.writer.compile.manuscript("paper/")                     # latexmk wrapper
+stx.writer.figures.add("paper/", "results.png", caption="Main results")
+stx.writer.tables.add("paper/", "stats.csv", caption="Statistical summary")
 ```
 </details>
 
@@ -315,6 +380,181 @@ stx.clew.mermaid(claims=True)              # Visualize provenance DAG
 
 </details>
 
+<details>
+<summary><strong><code>scitex.audio</code> -- Text-to-Speech (ElevenLabs / LuxTTS / gTTS / pyttsx3)</strong></summary>
+
+```python
+import scitex as stx
+stx.audio.speak("Training complete. Accuracy ninety-four percent.")
+stx.audio.speak("Offline only", backend="pyttsx3")                  # force offline
+stx.audio.speak("Report", output_path="report.mp3", play=False)     # TTS → file
+```
+Backends fall back automatically: ElevenLabs (paid, highest) → LuxTTS (offline, 48 kHz, voice-cloning) → gTTS (free online) → pyttsx3 (offline espeak).
+</details>
+
+<details>
+<summary><strong><code>scitex.dataset</code> -- OpenNeuro / DANDI / PhysioNet / Zenodo Fetcher</strong></summary>
+
+```python
+import scitex as stx
+ds = stx.dataset.neuroscience.openneuro.fetch_all_datasets(max_datasets=10)
+stx.dataset.neuroscience.dandi.fetch_all_datasets(max_datasets=10)
+hits = stx.dataset.search_datasets(ds, text_query="phase-amplitude coupling")
+```
+Uniform API across neuroscience / biomedical / clinical-trial repositories.
+</details>
+
+<details>
+<summary><strong><code>scitex.container</code> -- Apptainer / Docker Management</strong></summary>
+
+```python
+import scitex as stx
+stx.container.apptainer.build(def_name="recipe")        # versioned SIF
+stx.container.apptainer.switch_version("2.19.5")        # atomic active-SIF flip
+stx.container.apptainer.rollback()                      # revert to previous
+snap = stx.container.env_snapshot()                     # full env for papers
+```
+Reproducible HPC containers — build, version, rollback, env-snapshot for manuscripts.
+</details>
+
+<details>
+<summary><strong><code>scitex.tunnel</code> -- Persistent SSH Reverse Tunnels</strong></summary>
+
+```python
+import scitex as stx
+stx.tunnel.setup(port=8888, bastion_server="gw.example.com")
+stx.tunnel.status()                                     # {"8888": "active"}
+```
+NAT traversal for lab machines — autossh-backed systemd service.
+</details>
+
+<details>
+<summary><strong><code>scitex.linter</code> -- 47-Rule Convention Checker</strong></summary>
+
+```python
+import scitex as stx
+issues = stx.linter.lint_file("src/")
+for i in issues:
+    print(f"{i.filepath}:{i.line} [{i.rule.id}] {i.message}")
+```
+Lints SciTeX projects for ecosystem conventions (`stx.io.save` usage, CONFIGS naming, matplotlib prefs, import hygiene). Complements ruff/flake8.
+</details>
+
+<details>
+<summary><strong><code>scitex.repro</code> -- Seed Everything + Array Hashing</strong></summary>
+
+```python
+import scitex as stx
+rng = stx.repro.RandomStateManager(seed=42)             # seeds random + numpy + torch + tf
+run_id = stx.repro.gen_ID()                             # "20260423_2155_abc12345"
+digest = stx.repro.hash_array(np_array)                 # deterministic SHA
+```
+One call seeds every RNG; generates experiment-run IDs; hashes arrays for fingerprinting.
+</details>
+
+<details>
+<summary><strong><code>scitex.parallel</code> -- Threaded Map with tqdm</strong></summary>
+
+```python
+import scitex as stx
+results = stx.parallel.run(download, [(u,) for u in urls], n_jobs=-1)
+```
+Drop-in parallel map for I/O-bound work — HTTP fetches, file reads, API calls. tqdm progress bar built-in.
+</details>
+
+<details>
+<summary><strong><code>scitex.path</code> -- Project-Aware Paths &amp; Session Dirs</strong></summary>
+
+```python
+import scitex as stx
+root = stx.path.find_git_root()                     # walk up for .git/
+out = stx.path.get_spath("results.csv")             # → {script}_out/results.csv
+stx.path.create_relative_symlink(src, dst)          # relative (portable) symlink
+latest = stx.path.find_latest(".", "model_", ".pt") # model_v003.pt (highest version)
+stx.path.fix_broken_symlinks("dir/", remove=True)   # cleanup dangling links
+```
+Auto-routes saves to `{script}_out/` and resolves session-scoped paths so `@stx.session` scripts produce dated, hash-trackable output dirs with no boilerplate.
+</details>
+
+<details>
+<summary><strong><code>scitex.logging</code> -- Extended Logging + Exception Hierarchy + Tee</strong></summary>
+
+```python
+import scitex as stx
+logger = stx.logging.getLogger(__name__)
+logger.success("Training converged at epoch 87")    # SUCCESS level (custom)
+logger.fail("Validation loss diverged")             # FAIL level (custom)
+
+# Structured warnings with SciTeX categories
+stx.logging.warn_deprecated("old_api", replacement="new_api", version="3.0")
+stx.logging.warn_data_loss("NaN values dropped in column 'bp'")
+
+# Typed exceptions (30+ subclasses of SciTeXError)
+raise stx.logging.ShapeError("expected (N, 2), got (N, 3)")
+
+# Tee stdout/stderr to a log file
+with stx.logging.Tee("run.log"):
+    main()                                           # prints go to screen + file
+```
+Extends stdlib `logging` with SUCCESS/FAIL levels, a 30+ class exception tree (`IOError`/`ShapeError`/`ConfigKeyError`/...), structured warning categories, and tee-to-file. `SCITEX_LOGGING_LEVEL` env var sets default at import.
+</details>
+
+<details>
+<summary><strong><code>scitex.db</code> -- SQLite3 / PostgreSQL with ndarray BLOB Storage</strong></summary>
+
+```python
+import scitex as stx, numpy as np
+
+db = stx.db.SQLite3("experiments.db")
+with db:                                             # context-manager transaction
+    db.execute("CREATE TABLE IF NOT EXISTS runs (id TEXT, acc REAL)")
+    db.save_array("weights_epoch_87", np.random.rand(1024, 1024))   # compressed BLOB
+
+df = db.to_df("runs")                                # pandas round-trip
+w = db.load_array("weights_epoch_87")                # typed ndarray back
+db.check_health()                                    # integrity + schema drift
+stx.db.delete_duplicates(conn, "runs", columns=["id"])
+```
+SQLite / PostgreSQL clients with first-class compressed-ndarray BLOBs, dataframe round-trips, health checks, and duplicate removal. Drop-in replacement for hand-rolling `pickle → BLOB` storage or SQLAlchemy Core when you don't need an ORM.
+</details>
+
+<details>
+<summary><strong><code>scitex.browser</code> -- Playwright Helpers for Scientific Scraping</strong></summary>
+
+```python
+import scitex as stx, asyncio
+
+async def grab_pdf():
+    async with stx.browser.SyncBrowserSession() as session:
+        page = await session.new_page()
+        await page.goto("https://journal.example/article/123")
+        await stx.browser.click_with_fallbacks_async(
+            page, ["button.download-pdf", "a[href$='.pdf']"]   # fall through selectors
+        )
+        await stx.browser.save_as_pdf_async(page, "article.pdf")
+
+asyncio.run(grab_pdf())
+```
+Playwright wrappers with: Chrome-PDF-viewer download helper, popup/cookie dismissers (`close_popups_async`, `PopupHandler`), cursor/click/step overlays for debug video recording, console-log collectors, test-failure artifact capture. Drop-in replacement for raw Playwright scripts + stealth plugins.
+</details>
+
+<details>
+<summary><strong>Utility modules — lower-level helpers</strong></summary>
+
+| Module | Purpose | Key API |
+|--------|---------|---------|
+| `stx.str` | Text / LaTeX fallback / colored prints | `printc`, `safe_latex_render`, `grep` |
+| `stx.dict` | `DotDict` + safe merge / flatten | `DotDict`, `safe_merge`, `flatten` |
+| `stx.types` | Union type aliases + predicates | `ArrayLike`, `ColorLike`, `is_array_like` |
+| `stx.audit` | Unified security scan (bandit / shellcheck / pip-audit) | `audit()` |
+| `stx.compat` | Deprecation shims | `@deprecated`, `notify` legacy alias |
+| `stx.etc` | Terminal keypress helpers | `wait_key`, `count` |
+
+See [docs/05_ADDITIONAL_MODULES.md](./docs/05_ADDITIONAL_MODULES.md) for full examples.
+</details>
+
+> **[Agentic usage](./docs/06_AGENTIC_USAGE.md)** — MCP setup, example prompts, real one-shot outputs, and skill-trigger testing.
+
 > **[Full API reference](https://scitex-python.readthedocs.io/en/latest/api/index.html)** &middot; **[Examples](./examples/)** &middot; **[Module status](./docs/04_MODULE_STATUS.md)**
 
 <details>
@@ -331,14 +571,14 @@ scitex audio speak "Analysis complete"   # Text-to-speech
 scitex notification alert "Job finished" # Multi-backend notification
 scitex template clone research my_proj   # Scaffold a project
 scitex dev versions                      # Check ecosystem versions
-scitex mcp list-tools                    # List all MCP tools (293)
+scitex mcp list-tools                    # List all MCP tools (323)
 ```
 
 > **[Full CLI reference](./docs/01_CLI_COMMANDS.md)**
 </details>
 
 <details>
-<summary><strong>MCP Server (293 tools across 23 modules)</strong></summary>
+<summary><strong>MCP Server (323 tools across 23 modules)</strong></summary>
 
 Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotocol.io/).
 

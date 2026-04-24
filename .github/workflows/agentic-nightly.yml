@@ -1,0 +1,58 @@
+name: Agentic Nightly
+
+# Runs the scitex agentic skill-trigger pilot on a self-hosted runner
+# that has `claude` (Claude Code Max CLI) logged in. Does NOT use
+# ANTHROPIC_API_KEY — routes through the logged-in host account so the
+# cost is covered by the user's Claude Code Max subscription.
+#
+# Prerequisites on the self-hosted runner:
+#   - Label: self-hosted, scitex-agentic
+#   - `claude` CLI installed and logged in (persistent HOME)
+#   - python3.11, scitex-dev installed editable
+
+on:
+  schedule:
+    - cron: "15 7 * * *"  # 07:15 UTC daily (15 min after package CI)
+  workflow_dispatch:
+
+jobs:
+  agentic-pilot:
+    runs-on: [self-hosted, scitex-agentic]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify claude CLI + auth
+        run: |
+          which claude
+          claude --version
+          # smoke test: small prompt should succeed
+          echo "2+2" | claude -p "What is 2+2?" --output-format json --model claude-haiku-4-5 | head -3
+
+      - name: Run agentic skill-trigger pilot
+        run: |
+          python3.11 scripts/run_agentic_trigger_tests.py \
+            --eval tests/skill_evals/pilot.json \
+            --runs 1 \
+            --model claude-haiku-4-5 \
+            --backend host \
+            --report GITIGNORED/reports/agentic_ci_${{ github.run_id }}.md
+        continue-on-error: true
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-pilot-report-${{ github.run_id }}
+          path: GITIGNORED/reports/agentic_ci_${{ github.run_id }}.md
+          retention-days: 30
+
+      - name: Print report summary
+        if: always()
+        run: |
+          report="GITIGNORED/reports/agentic_ci_${{ github.run_id }}.md"
+          if [ -f "$report" ]; then
+            tail -5 "$report"
+          else
+            echo "No report generated"
+          fi

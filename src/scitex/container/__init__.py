@@ -2,7 +2,10 @@
 """SciTeX container management -- delegates to scitex-container package."""
 
 try:
-    from scitex_container import env_snapshot
+    # Re-export subnamespaces so umbrella users can write
+    # `stx.container.apptainer.build(...)` as well as the flattened
+    # `stx.container.build(...)`.
+    from scitex_container import apptainer, docker, env_snapshot, host
     from scitex_container.apptainer import (
         build,
         build_dev_pythonpath,
@@ -44,11 +47,15 @@ except ImportError:
     _BACKEND = "local"
 
 __all__ = [
+    "apptainer",
     "build",
     "cleanup",
     "deploy",
+    "docker",
+    "env_snapshot",
     "freeze",
     "get_active_version",
+    "host",
     "list_versions",
     "rollback",
     "status",

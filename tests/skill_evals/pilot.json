@@ -1,0 +1,250 @@
+{
+  "version": 1,
+  "description": "Pilot skill-trigger eval set across frontmatter-strengthened SciTeX packages. Each case simulates a realistic user query and checks whether the expected package's SKILL.md is auto-loaded by Claude Code.",
+  "evals": [
+    {
+      "id": "scitex-io-load",
+      "query": "I have a directory of CSV files I want to load all at once into a dict keyed by filename. What's the simplest way?",
+      "expected_skill": "scitex-io/SKILL.md",
+      "answer_contains": [
+        "stx.io.load",
+        "glob"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-io-save-figure",
+      "query": "I just made a matplotlib figure and I want to save it as PNG, but also get a CSV export of the underlying data automatically. Is there a one-liner?",
+      "expected_skill": "scitex-io/SKILL.md",
+      "answer_contains": [
+        "stx.io.save"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-stats-ttest",
+      "query": "Run an independent-samples t-test between two numpy arrays and give me a publication-ready result with effect size, CI, and normality check.",
+      "expected_skill": "scitex-stats/SKILL.md",
+      "answer_contains": [
+        "test_ttest_ind"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-writer-bibtex",
+      "query": "Add a new BibTeX entry to my manuscript project for DOI 10.1038/s41586-021-03819-2.",
+      "expected_skill": "scitex-writer/SKILL.md",
+      "answer_contains": [
+        "writer_add_bibentry"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-scholar-search",
+      "query": "Search for recent papers on 'phase-amplitude coupling in hippocampus' and download the PDFs to a new project.",
+      "expected_skill": "scitex-scholar/SKILL.md",
+      "answer_contains": [
+        "scholar_search",
+        "scholar_create_project"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-clew-verify",
+      "query": "I re-ran an analysis script and want to verify every input/output hash still matches what I tracked before. How do I check provenance integrity?",
+      "expected_skill": "scitex-clew/SKILL.md",
+      "answer_contains": [
+        "clew"
+      ],
+      "complexity": "high"
+    },
+    {
+      "id": "figrecipe-raster",
+      "query": "Plot a raster/event plot from a list of spike-time arrays, publication-ready.",
+      "expected_skill": "figrecipe/SKILL.md",
+      "answer_contains": [
+        "stx_raster"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-audio-tts",
+      "query": "Speak this text aloud using text-to-speech with an offline backend, no network needed.",
+      "expected_skill": "scitex-audio/SKILL.md",
+      "answer_contains": [
+        "pyttsx3",
+        "luxtts"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-dataset-openneuro",
+      "query": "Fetch a specific BIDS dataset from OpenNeuro by accession number.",
+      "expected_skill": "scitex-dataset/SKILL.md",
+      "answer_contains": [
+        "dataset_openneuro_fetch"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-repro-seed",
+      "query": "I want to seed numpy, Python random, and PyTorch all at once for a reproducible experiment. Is there a one-call helper?",
+      "expected_skill": "scitex-repro/SKILL.md",
+      "answer_contains": [
+        "RandomStateManager"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-path-git-root",
+      "query": "Inside a script, find the git root directory by walking up from the current file.",
+      "expected_skill": "scitex-path/SKILL.md",
+      "answer_contains": [
+        "find_git_root"
+      ],
+      "complexity": "low"
+    },
+    {
+      "id": "scitex-str-latex-fallback",
+      "query": "Render a LaTeX string as a matplotlib label, but fall back to mathtext or unicode if there's no LaTeX install on the system.",
+      "expected_skill": "scitex-str/SKILL.md",
+      "answer_contains": [
+        "latex_fallback",
+        "mathtext"
+      ],
+      "complexity": "high"
+    },
+    {
+      "id": "scitex-container-build-sif",
+      "query": "Build an Apptainer SIF image from my .def recipe and tag it with a new version.",
+      "expected_skill": "scitex-container/SKILL.md",
+      "answer_contains": [
+        "container_build"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-container-rollback",
+      "query": "The container I just switched to is broken. How do I roll back to the previous version?",
+      "expected_skill": "scitex-container/SKILL.md",
+      "answer_contains": [
+        "container_rollback"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-container-env-snapshot",
+      "query": "Capture a full environment snapshot \u2014 container version, pip freeze, conda env, apt packages, git commits \u2014 for a reproducibility record attached to a paper claim.",
+      "expected_skill": "scitex-container/SKILL.md",
+      "answer_contains": [
+        "env_snapshot"
+      ],
+      "complexity": "high"
+    },
+    {
+      "id": "scitex-tunnel-reverse",
+      "query": "Set up a persistent reverse SSH tunnel through a bastion host so I can reach this NAT-ed lab machine from outside.",
+      "expected_skill": "scitex-tunnel/SKILL.md",
+      "answer_contains": [
+        "tunnel_setup"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-notification-alert",
+      "query": "Send me a desktop alert when this long-running training job finishes, with audio fallback if desktop notifications don't work.",
+      "expected_skill": "scitex-notification/SKILL.md",
+      "answer_contains": [
+        "notify"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-notification-phone",
+      "query": "Call my phone via Twilio if the server goes down.",
+      "expected_skill": "scitex-notification/SKILL.md",
+      "answer_contains": [
+        "call",
+        "twilio"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-ui-inspect",
+      "query": "Inspect the computed width, flex, and CSS rules of #ws-worktree-resizer in my live playwright browser so I can debug why it's not resizing.",
+      "expected_skill": "scitex-ui/SKILL.md",
+      "answer_contains": [
+        "ui_inspect_element"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-app-scaffold",
+      "query": "Scaffold a new SciTeX workspace app called 'viewer_app' with a React frontend.",
+      "expected_skill": "scitex-app/SKILL.md",
+      "answer_contains": [
+        "app_scaffold"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-linter-check",
+      "query": "Lint this SciTeX Python project for convention violations \u2014 CONFIGS naming, stx.io.save usage, matplotlib prefs, all the ecosystem rules.",
+      "expected_skill": "scitex-linter/SKILL.md",
+      "answer_contains": [
+        "linter_check"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-notebook-verify",
+      "query": "Verify this Jupyter notebook runs top-to-bottom without errors before I commit it.",
+      "expected_skill": "scitex-notebook/SKILL.md",
+      "answer_contains": [
+        "notebook_verify"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-dev-hpc-test",
+      "query": "Submit my test suite to SLURM and poll for results without blocking.",
+      "expected_skill": "scitex-dev/SKILL.md",
+      "answer_contains": [
+        "test_hpc_run"
+      ],
+      "complexity": "high"
+    },
+    {
+      "id": "scitex-io-filenotfound-after-save",
+      "query": "I ran stx.io.save(df, 'results.csv') but then stx.io.load('results.csv') raises FileNotFoundError. What's happening and how do I fix it?",
+      "expected_skill": "scitex-io/SKILL.md",
+      "answer_contains": [
+        "symlink_from_cwd",
+        "cwd"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "scitex-io-where-did-my-file-go",
+      "query": "Where does scitex.io.save put my file when I pass just 'results.csv'? I can't find it in the current directory.",
+      "expected_skill": "scitex-io/SKILL.md",
+      "answer_contains": [
+        "script",
+        "_out"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "id": "negative-generic-python",
+      "query": "How do I write a list comprehension that filters out None values?",
+      "expected_skill": null,
+      "complexity": "low"
+    },
+    {
+      "id": "negative-shell-ls",
+      "query": "How do I list files in a directory sorted by modification time on Linux?",
+      "expected_skill": null,
+      "complexity": "low"
+    }
+  ]
+}

@@ -63,11 +63,32 @@ class LazyGroup(click.Group):
                 formatter.write_dl(rows)
 
     def _load_lazy(self, cmd_name):
+        """Import a lazy subcommand, tolerating optional-dep failures.
+
+        If the subcommand's module cannot be imported (e.g., an optional
+        third-party dependency like ``bs4`` or ``flask`` is missing), we
+        return ``None`` and log a debug line rather than raising
+        ``ImportError``. This keeps ``scitex --json`` and
+        ``scitex --help-recursive`` -- which walk every lazy subcommand
+        to build the full command tree -- robust against a single broken
+        leaf. Direct invocation of the affected subcommand still fails
+        cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
+        """
         import importlib
+        import logging
 
         module_path, attr_name, _ = self._lazy_subcommands[cmd_name]
-        mod = importlib.import_module(module_path)
-        return getattr(mod, attr_name)
+        try:
+            mod = importlib.import_module(module_path)
+        except ImportError as exc:
+            logging.getLogger(__name__).debug(
+                "Lazy-loaded subcommand %r unavailable (%s): %s",
+                cmd_name,
+                module_path,
+                exc,
+            )
+            return None
+        return getattr(mod, attr_name, None)
 
 
 _LAZY_SUBCOMMANDS = {
@@ -103,6 +124,7 @@ _LAZY_SUBCOMMANDS = {
         "Notification and alerting tools.",
     ),  # backward compat alias
     "notebook": ("scitex.cli.notebook", "notebook", "Jupyter notebook tools."),
+    "pkg": ("scitex.cli.pkg", "pkg", "Package management (venv drift audit)."),
     "plt": ("scitex.cli.plt", "plt", "Plotting tools."),
     "repro": ("scitex.cli.repro", "repro", "Reproducibility tools."),
     "resource": ("scitex.cli.resource", "resource", "Resource management."),
@@ -132,7 +154,11 @@ _LAZY_SUBCOMMANDS = {
     "--json",
     "as_json",
     is_flag=True,
-    help="Output as structured JSON (Result envelope).",
+    help=(
+        "Output command listing / --help-recursive as structured JSON. "
+        "For subcommand JSON output, put --json AFTER the subcommand: "
+        "`scitex config list --json`, NOT `scitex --json config list`."
+    ),
 )
 @click.pass_context
 def cli(ctx, help_recursive, as_json):
@@ -154,6 +180,15 @@ def cli(ctx, help_recursive, as_json):
       scitex completion --show   # Show installation instructions
     """
     ctx.ensure_object(dict)["as_json"] = as_json
+    # #211: top-level `--json <sub>` can't propagate to subcommand click.options.
+    # Warn once on stderr so agent scripts piping to jq learn the right form.
+    if as_json and ctx.invoked_subcommand is not None and not help_recursive:
+        click.echo(
+            f"scitex: warning — top-level --json does not propagate to "
+            f"`{ctx.invoked_subcommand}`. "
+            f"Run `scitex {ctx.invoked_subcommand} ... --json` instead.",
+            err=True,
+        )
     if help_recursive:
         if as_json:
             from . import help_recursive_to_json

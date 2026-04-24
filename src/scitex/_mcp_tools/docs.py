@@ -9,7 +9,7 @@ def register_docs_tools(mcp) -> None:
 
     @mcp.tool()
     async def docs_list() -> str:
-        """List all installed SciTeX packages with documentation."""
+        """Enumerate every installed SciTeX package that ships bundled Sphinx docs — each entry includes version, manifest path, and docs URL. Drop-in replacement for running `scitex-doc list` across every sub-CLI. Use when the user asks "what SciTeX packages are installed?", "which ones have docs?", "what's the ecosystem I have?", or before calling `docs_get` / `docs_search`."""
         from scitex_dev.docs import get_docs
         from scitex_dev.mcp_utils import wrap_as_mcp
 
@@ -24,7 +24,7 @@ def register_docs_tools(mcp) -> None:
         format: Optional[str] = None,
         page: Optional[str] = None,
     ) -> str:
-        """Get documentation for a specific SciTeX package.
+        """Fetch a SciTeX package's bundled Sphinx docs — manifest (default), parsed JSON body, or a direct filesystem path to the built HTML. Drop-in replacement for manually hunting down `site-packages/<pkg>/_docs/index.html` or reading source README. Use when the user asks "show scitex-writer docs", "open the manual for X", "get the Sphinx output for Y", or is looking up per-function reference without opening the browser.
 
         Args:
             package: Package name (e.g. "scitex-writer").
@@ -47,7 +47,7 @@ def register_docs_tools(mcp) -> None:
         package: Optional[str] = None,
         formats: Optional[list[str]] = None,
     ) -> str:
-        """Build documentation from Sphinx source for one or all packages.
+        """Trigger `sphinx-build` on a single package or every installed SciTeX package, producing HTML and/or JSON output under each package's `_docs/_build/`. Drop-in replacement for `cd scitex-writer/docs && make html` in every repo. Use when the user asks to "rebuild docs", "regenerate Sphinx HTML", "refresh the manual for X", or after editing docstrings / `.rst` source.
 
         Args:
             package: Package name. None = build all.
@@ -70,7 +70,7 @@ def register_docs_tools(mcp) -> None:
         package: Optional[str] = None,
         max_results: int = 10,
     ) -> str:
-        """Search documentation, APIs, CLI commands, and MCP tools across SciTeX.
+        """Full-text search across every installed SciTeX package's docs / Python API / CLI reference / MCP tool registry — one Google-like query, cross-scope ranked results. Drop-in replacement for repeatedly grepping `site-packages/scitex*`, reading Sphinx separately, running `--help` on every CLI, and listing MCP servers by hand. Use whenever the user asks to "search the ecosystem for X", "find anything about figures / stats / writing", "which module does Y?", or is discovering functionality without knowing the owning package. Use `scope='api'|'cli'|'mcp'|'docs'` to narrow; `+required` / `-excluded` operators supported.
 
         Query syntax (Google-like):
             "save figure"       -> match any term

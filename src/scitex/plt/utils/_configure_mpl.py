@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-12-02 12:00:00 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/plt/utils/_configure_mpl.py
 
@@ -22,7 +21,7 @@ def configure_mpl(
     fig_scale: float = 1.0,
     dpi_display: Optional[int] = None,
     dpi_save: Optional[int] = None,
-    autolayout: bool = True,
+    autolayout: bool = False,
     n_ticks: Optional[int] = None,
     hide_top_right_spines: Optional[bool] = None,
     line_width: Optional[float] = None,
@@ -242,7 +241,7 @@ def configure_mpl(
 
             # Enable LaTeX fallback mode in the str module
             try:
-                from scitex.str._latex_fallback import set_fallback_mode
+                from scitex.str import set_fallback_mode
 
                 set_fallback_mode("force_mathtext")
                 if verbose:
@@ -286,34 +285,42 @@ def configure_mpl(
                 except Exception:
                     pass
 
-        # Configure font family
+        # Configure font family. We always hand matplotlib a *list* of
+        # families, not a single name, so that matplotlib 3.6+ per-glyph
+        # fallback kicks in when the primary font is missing a glyph
+        # (e.g. Arial has no U+2605 ★ / U+2080 ₀ — without the list form,
+        # those render as tofu boxes and reproducibility validation sees
+        # a pixel diff between original and reproduction).
+        _sans_chain = [
+            "Arial",
+            "Helvetica",
+            "DejaVu Sans",
+            "Liberation Sans",
+        ]
+
         if arial_enabled:
             mpl_config.update(
                 {
                     "text.usetex": False,
-                    "font.family": "Arial",
-                    "font.sans-serif": [
-                        "Arial",
-                        "Helvetica",
-                        "DejaVu Sans",
-                        "Liberation Sans",
-                    ],
+                    "font.family": _sans_chain,
+                    "font.sans-serif": _sans_chain,
                     "mathtext.fontset": "dejavusans",
                     "mathtext.default": "regular",
                 }
             )
         else:
             # Fall back to sans-serif with Helvetica/DejaVu Sans
+            _fallback_chain = [
+                "Helvetica",
+                "DejaVu Sans",
+                "Liberation Sans",
+                "sans-serif",
+            ]
             mpl_config.update(
                 {
                     "text.usetex": False,
-                    "font.family": "sans-serif",
-                    "font.sans-serif": [
-                        "Helvetica",
-                        "DejaVu Sans",
-                        "Liberation Sans",
-                        "sans-serif",
-                    ],
+                    "font.family": _fallback_chain,
+                    "font.sans-serif": _fallback_chain,
                     "mathtext.fontset": "dejavusans",
                     "mathtext.default": "regular",
                 }
@@ -324,8 +331,12 @@ def configure_mpl(
 
             _logger = _logging.getLogger(__name__)
             _logger.warning(
-                "Arial font not found. Using fallback fonts (Helvetica/DejaVu Sans). "
-                "For publication figures with Arial: sudo apt-get install ttf-mscorefonts-installer && fc-cache -fv"
+                "Arial not found. Falling back to %s — figures will render "
+                "reproducibly but typography may differ from Arial. To use "
+                "Arial, install ttf-mscorefonts-installer (system fontconfig) "
+                "or drop Arial.ttf files into ~/.fonts and run `fc-cache -fv`, "
+                "then `rm ~/.cache/matplotlib/fontlist-*.json`.",
+                _fallback_chain[0],
             )
 
         # Suppress matplotlib's own font warnings
@@ -335,7 +346,7 @@ def configure_mpl(
 
         # Set fallback mode to mathtext
         try:
-            from scitex.str._latex_fallback import set_fallback_mode
+            from scitex.str import set_fallback_mode
 
             set_fallback_mode("force_mathtext")
         except ImportError:

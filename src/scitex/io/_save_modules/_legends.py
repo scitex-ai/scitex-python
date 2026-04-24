@@ -6,9 +6,8 @@
 
 import os
 
-from scitex.path._getsize import getsize
-from scitex.str._color_text import color_text
-from scitex.str._readable_bytes import readable_bytes
+from scitex.path import getsize
+from scitex.str import color_text, readable_bytes
 
 # Optional: plotly-dependent save_image
 try:

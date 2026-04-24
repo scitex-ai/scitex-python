@@ -17,6 +17,7 @@ from .introspect import register_introspect_tools
 from .io import register_io_tools
 from .linter import register_linter_tools
 from .notification import register_notification_tools
+from .orochi_pull import register_orochi_tools
 from .plt import register_plt_tools
 from .project import register_project_tools
 from .scholar import register_scholar_tools
@@ -55,6 +56,7 @@ _TOOL_GROUPS = {
     "TEMPLATE": register_template_tools,
     "TUNNEL": register_tunnel_tools,
     "NOTIFICATION": register_notification_tools,
+    "OROCHI_PULL": register_orochi_tools,
     "UI": register_ui_tools,
     "USAGE": register_usage_tools,
     "WRITER": register_writer_tools,

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Scitex parallel module."""
+"""SciTeX parallel module — delegates to scitex-parallel."""
 
-from ._run import run
+from scitex_parallel import run
 
 __all__ = [
     "run",
 ]
+
+# EOF
