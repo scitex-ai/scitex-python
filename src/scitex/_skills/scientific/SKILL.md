@@ -3,7 +3,7 @@ name: scientific
 description: Scientific-methodology skills for the SciTeX ecosystem — publication-quality figures, statistics, experiment reproducibility. Distinct from `general/` (which covers package engineering) and per-package skills (which cover package-specific APIs). Load when authoring analysis scripts, preparing figures for manuscripts, or checking scientific rigour of ecosystem output.
 user-invocable: false
 primary_interface: mixed
-group: [research, paper, scientific]
+group: [scitex-python, scitex-scientific, scitex-package, research, paper]
 invocation:
   - "how should my figure look for a paper"
   - "comparison plot rules"

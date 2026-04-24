@@ -7,17 +7,32 @@ canonical-location: scitex-python/src/scitex/_skills/general/06_skills_06_frontm
 
 # Skill Frontmatter Metadata
 
-Every SciTeX skill file (the per-skill `SKILL.md` and every leaf `.md` under it) carries YAML frontmatter. The required fields are `name` and `description` (see `06_skills_01_overview.md`). This document defines the **optional metadata fields** that a well-authored skill SHOULD also declare.
+Every SciTeX skill file (the per-skill `SKILL.md` and every leaf `.md` under it) carries YAML frontmatter. Two sources of truth stack:
 
-## Required (already documented elsewhere)
+1. **Claude Code standard fields** — defined by the [Agent Skills](https://agentskills.io) open standard and documented at [Extend Claude with skills](https://code.claude.com/docs/en/claude-code/skills). These control how Claude Code loads, invokes, and scopes the skill.
+2. **SciTeX ecosystem extensions** — additional fields this project introduces for discoverability, context-cost accounting, and multi-repo hygiene. Claude Code ignores unknown fields, so extending the standard is safe.
 
-| Field | Type | Notes |
+## 1. Claude Code standard fields (authoritative)
+
+From the official docs — only `description` is strictly recommended; the rest are optional.
+
+| Field | Required | Purpose |
 |---|---|---|
-| `name` | string | kebab-case id, typically matches filename minus `NN_` prefix |
-| `description` | string (≥ 200 chars) | Written to help the model decide *when to load this skill*. See `06_skills_01_overview.md` |
-| `user-invocable` | bool | `true` for user-facing /slash commands; `false` for background rule sets |
+| `name` | No | Display name / slash-command id. Defaults to the directory name. Lowercase + hyphens only, ≤ 64 chars. |
+| `description` | **Recommended** | What the skill does and when to apply it. Claude uses this to decide whether to auto-load. If omitted, the first paragraph of the body is used. |
+| `argument-hint` | No | Autocomplete hint, e.g. `[issue-number]`. |
+| `disable-model-invocation` | No | `true` = only the user can invoke via `/name`; Claude cannot auto-load. Default `false`. |
+| `user-invocable` | No | `false` = hide from the `/` menu. Default `true`. |
+| `allowed-tools` | No | Tools the skill may use without per-use approval. |
+| `model` | No | Model override while the skill is active. |
+| `effort` | No | `low` / `medium` / `high` / `max` — overrides session effort. |
+| `context` | No | Set `fork` to run the skill body in an isolated subagent. |
+| `agent` | No | Subagent type when `context: fork` (e.g. `Explore`, `Plan`, `general-purpose`). |
+| `hooks` | No | Skill-scoped lifecycle hooks. |
 
-## Optional (defined here)
+SciTeX authors usually only set the first three (`name`, `description`, `user-invocable`). The others are for interactive workflow commands — not for the rule-file skills that dominate this repo.
+
+## 2. SciTeX ecosystem extensions (defined here)
 
 ### `group` — must-read categorisation
 
@@ -25,16 +40,79 @@ Every SciTeX skill file (the per-skill `SKILL.md` and every leaf `.md` under it)
 group: [scitex-package, research]
 ```
 
-Array of tags. Agents scanning skills for a project may auto-load every skill whose `group` matches the project's declared context. Canonical tag values (extend per-team as needed):
+Array of tags. Agents scanning skills for a project may auto-load every skill whose `group` matches the project's declared context. Canonical tag values:
 
 | Tag | Meaning |
 |---|---|
-| `scitex-package` | Rules for every `scitex-*` repo — package architecture, CLI, MCP, skills, release |
+| `scitex-package` | Rules that apply to every `scitex-*` repo (package architecture, CLI, MCP, skills, release gates) |
+| `scitex-general` | The ecosystem-wide `general/` skill category in scitex-python |
+| `scitex-python` | Specific to the scitex-python umbrella package itself |
+| `scitex-scientific` | The `scientific/` skill category (publication figures, stats, reproducibility) |
 | `research` | Rules for a research project *using* SciTeX — reproducibility, config, session decorator |
 | `paper` | Rules for manuscript preparation — figures, LaTeX, citation hygiene |
 | `infra` | Cross-cutting infrastructure — SSH, containers, cloud, tunnels |
 | `meta` | Rules about writing rules — skill authoring, quality checklists, release gates |
-| `scientific` | Scientific methodology — figures, statistics, experiment design |
+| `scientific` | Scientific methodology topics (alias of `scitex-scientific` when used outside scitex-python) |
+| `claude-code` | Claude Code runtime reference material (hooks, MCP, skills, CLI, etc.) |
+
+### How to stack tags (package / category / ecosystem levels)
+
+A single skill usually belongs to **three nested levels** — apply all three tags:
+
+```yaml
+group: [scitex-python, scitex-general, scitex-package]
+#        ^-- package      ^-- category     ^-- ecosystem-wide
+```
+
+Reading the tags:
+
+| Position | Role | Example values |
+|---|---|---|
+| Package | The concrete pip-name that owns the file | `scitex-python`, `scitex-io`, `figrecipe`, `scitex-cloud` |
+| Category | The `_skills/<category>/` subdirectory | `scitex-general`, `scitex-scientific`, `scitex-io` (for per-package skills) |
+| Ecosystem scope | What the skill applies to globally | `scitex-package` (every scitex-* repo), `research`, `paper`, `infra`, `meta` |
+
+Why all three? A **CLAUDE.md** at any level (ecosystem / package / project) can pick which tag layer to match and pull in exactly the skills relevant to that layer:
+
+- `<research-project>/CLAUDE.md` auto-loads everything tagged `research` or `scitex-package` (the rules authors must follow) but **not** `scitex-python` (which is about building that upstream package, not using it).
+- `~/proj/scitex-io/CLAUDE.md` auto-loads everything tagged `scitex-package` (ecosystem rules) and `scitex-io` (its own skills), skipping unrelated `scitex-cloud` tags.
+- `~/.claude/CLAUDE.md` (fleet-wide) can pull every `scitex-general` skill as must-read for any session.
+
+Rule: **every skill leaf declares all three levels** whenever they apply — never rely on inheritance from SKILL.md. Claude Code currently picks each file's frontmatter independently.
+
+### CLAUDE.md group shortcuts
+
+Once every skill carries proper `group:` tags, a **research project's `CLAUDE.md` can reference a group instead of hand-listing files**:
+
+```markdown
+<!-- research-project/CLAUDE.md -->
+# Project context
+
+@scitex                         # expands to every skill tagged `scitex-package`
+@scitex-scientific              # expands to every skill tagged `scitex-scientific`
+@research                       # expands to every skill tagged `research`
+```
+
+A resolver (future `scitex-dev skills group-expand <tag>`) walks every installed package's `_skills/` tree, grepping for files whose `group:` frontmatter contains the requested tag, and emits the absolute paths. The project's CLAUDE.md keeps a single `@scitex` line; the resolver fans it out.
+
+Benefits:
+
+- New/removed skills appear automatically — no hand-editing every project CLAUDE.md when the ecosystem changes.
+- Projects opt into exactly the layers they need (`research` but not `paper`, say).
+- Package authors own the `group:` field in their own tree; downstream consumers only touch tags, not file paths.
+
+Convention for the shorthand:
+
+| CLAUDE.md reference | Resolves to files with `group:` including |
+|---|---|
+| `@scitex` | `scitex-package` (must-know for every scitex-using project) |
+| `@scitex-general` | `scitex-general` |
+| `@scitex-scientific` | `scitex-scientific` |
+| `@research` | `research` |
+| `@paper` | `paper` |
+| `@infra` | `infra` |
+
+Until the resolver lands, projects can hand-list files — but tag them consistently now so the eventual resolver picks them up automatically.
 
 Rule: if you add a new tag, document it here first. An unknown tag is treated as a free-form label but will not trigger any must-read behaviour.
 
