@@ -16,8 +16,13 @@ the check cheap — delegate the big ones to subagents.
 - **§1–§3 — Repository-level audits** (branch, push, CI)
 - **§4–§7 — Content-level audits** (test scope, SKILL.md, README callout, doc chains)
 - **§8–§10 — Automation audits** (nightly schedule, deps, reporting)
-- **§11–§15 — Failure-mode specific playbooks** (PyPI, wheel drift, numpy 2, extras, Doc-Drift CI)
-- **§16+ — Planned dynamic audits** (agent-task execution)
+- **Response protocol + do-not-touch list** — agent behavior rules
+- **§16–§17 — Planned** (dynamic audits, dashboard export)
+
+Failure-mode cookbook lives in a sibling file:
+[98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md)
+(PyPI traps, wheel drift, numpy 2 / pandas / optional-dep guards,
+extras-completeness, Doc-Drift CI install source).
 
 ## 0. Prerequisites
 
@@ -204,26 +209,32 @@ Append one entry per pass to `scitex-dev/quality-audits/YYYY-MM-DD.md`
 This makes multi-week trends legible — e.g. "scitex-audio fails the
 same way on 3/7 runs" → systemic, worth investing in.
 
-## Standard response to a /speak-and-call quality run
+## 11. Response protocol for a /speak-and-call quality run
 
 1. Branch + push audit (§1, §2) — report anomalies only.
 2. CI audit (§3) — table of failing runs + canonical fix per symptom.
 3. Apply canonical fixes to the non-dirty repos; skip user's dirty
    trees and report them separately.
-4. Wait for CI to rerun (use `ScheduleWakeup` 270–900s depending on
+4. Wait for CI to rerun (use `ScheduleWakeup` 270–900 s depending on
    workflow length). Do not poll in tight loops.
 5. Final summary: X/N green, Y requires user attention, Z in progress.
+6. Append one entry to `scitex-dev/quality-audits/YYYY-MM-DD.md` (§10b).
 
-## Do-not-touch list at time of writing
+## 12. Do-not-touch list (refresh every run)
 
-User's in-progress dirty trees (never touch files in these, only
-workflows/tests/scripts if explicitly safe):
+Never modify files in a repo that has uncommitted user work. Determine
+via `git -C <path> status --short` per repo *at the start of every pass*
+— do not rely on a hardcoded list; dirty trees shift over time.
 
-- scitex-dev, scitex-writer, scitex-audio, scitex-scholar, scitex-clew,
-  scitex-str, scitex-python (docs/05_ADDITIONAL_MODULES.md,
-  submit_tests.slurm, ttest_publication.py, README.md)
+If a probe in §§1–10 flags an issue inside a dirty tree, use
+non-invasive paths:
 
-Refresh this list each run via `git -C <path> status --short`.
+- GitHub-API merge (`gh api --method PUT repos/.../pulls/<n>/update-branch`)
+- `git worktree add` to a scratch dir
+- Report to user with exact commands, don't execute
+
+Touching a dirty tree risks clobbering the user's in-progress edits —
+always safer to report than to stash/pop under automation.
 
 ## 16. Dynamic audit via agent task execution (planned)
 
