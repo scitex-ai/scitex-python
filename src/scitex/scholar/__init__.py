@@ -9,7 +9,6 @@ from scitex_scholar import (
     Scholar,
     ScholarConfig,
     apply_filters,
-    clean_abstract,
     from_connected_papers,
     generate_cite_key,
     make_citation_key,
@@ -21,6 +20,15 @@ from scitex_scholar import (
     to_ris,
     to_text_citation,
 )
+
+try:
+    from scitex_scholar import clean_abstract
+except ImportError:
+    # clean_abstract lands in scitex-scholar >= 1.3; fall back to no-op
+    # so this umbrella shim imports cleanly against 1.2.x on PyPI.
+    def clean_abstract(text):
+        return text
+
 
 __all__ = [
     "Scholar",
