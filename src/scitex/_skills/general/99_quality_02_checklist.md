@@ -8,6 +8,7 @@
 name: ecosystem-quality-checklist
 description: Periodic ecosystem-wide quality checklist — run during `/speak-and-call` passes or manually between release waves. Each section lists what to verify, how to run the check, and the canonical fix — covering README consistency, Sphinx build health, CI status across all repos, PyPI ↔ git-tag ↔ pyproject version alignment, skills-tree quality (via `06_skills_05_quality-checklist.md`), CLI noun-verb conformance (via `scitex-dev quality audit-cli`), frontmatter health (via `scitex-dev quality audit-frontmatter`), docs drift, and test-coverage regressions. Use as the strategic runbook when the ecosystem feels off, after a release wave, or on a fixed cadence. Append-only findings log at the end of the file; each pass timestamps new entries.
 canonical-location: scitex-python/src/scitex/_skills/general/99_quality_02_checklist.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # SciTeX Ecosystem — Periodic Quality Checklist

@@ -2,6 +2,7 @@
 name: arch-modules-and-standalone-packages
 description: How to decide whether a `scitex.<module>` should stay a submodule of scitex-python or split out as a standalone `scitex-<name>` package — decision rule (zero scitex deps + heavy standalone value → standalone; everything else → module), distinct `_skills/` directories and re-export bridges, lessons from splitting scitex-scholar/scitex-browser out of the scitex monolith (path-injection beats path-coupling, never hardcode `~/.scitex/<pkg>/`, always via `PathManager`, record failure outcomes in metadata), and when to merge a standalone back. Use when starting a new scitex-* repo or evaluating a submodule for extraction.
 canonical-location: scitex-python/src/scitex/_skills/general/01_arch_03_modules-and-standalone-packages.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # SciTeX Standalonization Lessons

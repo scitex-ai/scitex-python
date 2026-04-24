@@ -2,6 +2,7 @@
 name: readme-organization
 description: Canonical README.md template for every SciTeX package — required section order (one-liner → install → quickstart → interfaces → status/CI badges → links → licence → Four-Freedoms footer), badge set (PyPI version, CI, coverage, RTD, licence), collapsible blocks for long examples, `import scitex` (never `as stx`) in all snippets, absence of the ywatanabe@ signature, and the intra-README link contract that external RTD/Sphinx builds depend on. Use when scaffolding a new repo's README or auditing one for ecosystem drift.
 canonical-location: scitex-python/src/scitex/_skills/general/04_docs_01_readme.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # README Organization (SciTeX)

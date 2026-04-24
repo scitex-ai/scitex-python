@@ -10,7 +10,7 @@ interfaces:
   skills: 3
   hook: 0
   http: 0
-group: [scitex-package, meta]
+tags: [scitex-python, scitex-general, scitex-package]
 invocation:
   - "how do I structure a scitex package"
   - "noun-verb CLI convention"

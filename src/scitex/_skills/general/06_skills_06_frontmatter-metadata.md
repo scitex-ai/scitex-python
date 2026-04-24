@@ -1,8 +1,9 @@
 ---
 name: skills-frontmatter-metadata
-description: Additional YAML frontmatter fields every SciTeX skill (SKILL.md and every leaf) may declare to improve agent discoverability and cost accounting — `group` (must-read categorisation), `invocation` (trigger words beyond the description), `context_tokens` (loading-cost estimate), and `canonical-location`. Use when authoring new skills, auditing discoverability, or computing context budgets before loading a skill bundle.
+description: "Additional YAML frontmatter fields every SciTeX skill (SKILL.md and every leaf) declares to improve agent discoverability and cost accounting — `tags` (stacked three-level categorisation — package / category / ecosystem scope), `invocation` (trigger words beyond the description), `context_tokens` / `context_tokens_total` (loading-cost estimate), `canonical-location` (source-of-truth path), and `see-also` (cross-references). Also documents the Claude Code standard fields (`disable-model-invocation`, `allowed-tools`, `context` fork, etc.) for completeness. Use when authoring new skills, auditing discoverability, or computing context budgets before loading a bundle."
 user-invocable: false
 canonical-location: scitex-python/src/scitex/_skills/general/06_skills_06_frontmatter-metadata.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # Skill Frontmatter Metadata
@@ -34,13 +35,13 @@ SciTeX authors usually only set the first three (`name`, `description`, `user-in
 
 ## 2. SciTeX ecosystem extensions (defined here)
 
-### `group` — must-read categorisation
+### `tags` — must-read categorisation
 
 ```yaml
-group: [scitex-package, research]
+tags: [scitex-package, research]
 ```
 
-Array of tags. Agents scanning skills for a project may auto-load every skill whose `group` matches the project's declared context. Canonical tag values:
+Array of string tags (YAML frontmatter convention, same field name as Hugo / Jekyll / Gatsby / most SSGs). Agents scanning skills for a project may auto-load every skill whose `tags:` array contains a matching entry. Canonical tag values:
 
 | Tag | Meaning |
 |---|---|
@@ -60,7 +61,7 @@ Array of tags. Agents scanning skills for a project may auto-load every skill wh
 A single skill usually belongs to **three nested levels** — apply all three tags:
 
 ```yaml
-group: [scitex-python, scitex-general, scitex-package]
+tags: [scitex-python, scitex-general, scitex-package]
 #        ^-- package      ^-- category     ^-- ecosystem-wide
 ```
 
@@ -80,9 +81,9 @@ Why all three? A **CLAUDE.md** at any level (ecosystem / package / project) can 
 
 Rule: **every skill leaf declares all three levels** whenever they apply — never rely on inheritance from SKILL.md. Claude Code currently picks each file's frontmatter independently.
 
-### CLAUDE.md group shortcuts
+### CLAUDE.md tag shortcuts
 
-Once every skill carries proper `group:` tags, a **research project's `CLAUDE.md` can reference a group instead of hand-listing files**:
+Once every skill carries proper `tags:`, a **research project's `CLAUDE.md` can reference a tag instead of hand-listing files**:
 
 ```markdown
 <!-- research-project/CLAUDE.md -->
@@ -93,17 +94,17 @@ Once every skill carries proper `group:` tags, a **research project's `CLAUDE.md
 @research                       # expands to every skill tagged `research`
 ```
 
-A resolver (future `scitex-dev skills group-expand <tag>`) walks every installed package's `_skills/` tree, grepping for files whose `group:` frontmatter contains the requested tag, and emits the absolute paths. The project's CLAUDE.md keeps a single `@scitex` line; the resolver fans it out.
+A resolver (future `scitex-dev skills tags-expand <tag>`) walks every installed package's `_skills/` tree, grepping for files whose `tags:` frontmatter contains the requested tag, and emits the absolute paths. The project's CLAUDE.md keeps a single `@scitex` line; the resolver fans it out.
 
 Benefits:
 
 - New/removed skills appear automatically — no hand-editing every project CLAUDE.md when the ecosystem changes.
 - Projects opt into exactly the layers they need (`research` but not `paper`, say).
-- Package authors own the `group:` field in their own tree; downstream consumers only touch tags, not file paths.
+- Package authors own the `tags:` field in their own tree; downstream consumers only touch tags, not file paths.
 
 Convention for the shorthand:
 
-| CLAUDE.md reference | Resolves to files with `group:` including |
+| CLAUDE.md reference | Resolves to files whose `tags:` includes |
 |---|---|
 | `@scitex` | `scitex-package` (must-know for every scitex-using project) |
 | `@scitex-general` | `scitex-general` |
@@ -174,7 +175,7 @@ Sibling skill files whose content is related but distinct. Rendered as a footer 
 name: interface-cli
 description: Canonical CLI design convention for every SciTeX package — subcommand structure (noun-verb), universal flags, exit codes, help format, deprecation redirect, env var namespace, config precedence, MCP parity, stdout/stderr discipline.
 user-invocable: false
-group: [scitex-package, meta]
+tags: [scitex-python, scitex-general, scitex-package, meta]
 invocation:
   - "how do I structure CLI subcommands"
   - "noun-verb rule"
@@ -195,7 +196,7 @@ Before a release, verify:
 
 1. Every file in `general/` and `scientific/` has a `canonical-location` field and it points at the right path.
 2. Every file's `context_tokens` is within 20 % of `wc -c / 4 / 100` rounded.
-3. Every file declares at least one `group` tag.
+3. Every file declares at least one `tags:` entry.
 4. Every SKILL.md (index) declares `invocation` (3–7 strings).
 
-Automated via `scitex-dev quality audit-frontmatter` (future) and `06_skills_05_quality-checklist.md` §10 (to be added).
+Automated via `scitex-dev quality audit-frontmatter <dir>` — shipped as of scitex-dev v0.4+. Rules FM-0 through FM-6 cover all checks above, including legacy `group:` → `tags:` migration (FM-6).

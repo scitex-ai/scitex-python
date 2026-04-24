@@ -2,6 +2,7 @@
 name: arch-dependency-and-version-pinning
 description: Dependency hygiene and version-pinning rules across the SciTeX 3-layer cascade — what each package may depend on (upstream only, never downstream), how to declare minima (`>=X.Y` for scitex-* pkgs, exact pin only for security patches), optional-extras pattern (`pip install scitex[plt,stats]`), coordinated release waves so downstream consumers can bump their minima immediately, detection of circular/skipping deps, and the "when you bump, bump consumers' minima" rule. Use when editing any `pyproject.toml`, planning a release wave, or auditing cross-package version drift.
 canonical-location: scitex-python/src/scitex/_skills/general/01_arch_02_dependency-and-version-pinning.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # Dependency Hygiene & Version Pinning

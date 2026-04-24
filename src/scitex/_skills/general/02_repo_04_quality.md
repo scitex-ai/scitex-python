@@ -2,6 +2,7 @@
 name: repository-quality
 description: Release-gate repository quality checklist for every SciTeX package — AGPL-3.0-or-later licence + the Four Freedoms, README rules (no `import scitex as stx`, no trailing ywatanabe@ signature), `_builtin_handlers.py`/fallback-verification hygiene, skills-authoritative rule (no out-of-band docs in `docs/` duplicating `_skills/`), GitHub repo config (topics, default branch, branch protection), and allowlist checks before `git push` / PyPI release. Use as the final sign-off before any `vb release`.
 canonical-location: scitex-python/src/scitex/_skills/general/02_repo_04_quality.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # Repository Quality (SciTeX)

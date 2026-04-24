@@ -3,6 +3,7 @@ name: arch-local-state-directories
 description: Canonical filesystem layout for every scitex-* package's local state — config, logs, caches, PID files, workspace dirs. Two roots (`<project>/.scitex/<pkg-short>/` and `~/.scitex/<pkg-short>/`), project overrides user, always via PathManager.
 user-invocable: false
 canonical-location: scitex-python/src/scitex/_skills/general/01_arch_06_local-state-directories.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # Local State Directories — Canonical Layout

@@ -2,6 +2,7 @@
 name: scitex-ecosystem-quality-failure-playbook
 description: Per-symptom cookbook for the failure modes encountered across the SciTeX ecosystem. Paired with 99_quality_02_checklist.md — §99 is the strategic runbook, §98 is the cookbook. Each symptom carries a severity (CRITICAL / HIGH / MEDIUM / LOW) so an autonomous agent triages top-down.
 canonical-location: scitex-python/src/scitex/_skills/general/98_quality_01_failure-playbook.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
 ---
 
 # SciTeX Quality Failure Playbook
