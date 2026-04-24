@@ -7,6 +7,7 @@
 ---
 name: version-control-management
 description: Core version-control workflow across the SciTeX ecosystem — branch model (`main` stable + `develop` integration + `feature/*`), semver tagging and `vX.Y.Z` annotated tags, ecosystem release waves (upstream packages published before downstream consumers), release gates (tests + audits + docs build green, no dirty working tree, version bumped in pyproject.toml and `__init__.__version__`), and conflict-resolution policy for multi-repo feature branches. Use when cutting a release, auditing branch hygiene, or planning a cross-package version bump.
+canonical-location: scitex-python/src/scitex/_skills/general/05_version-control_01_management.md
 ---
 
 # SciTeX Version Management (Core Workflow)

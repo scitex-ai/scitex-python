@@ -1,6 +1,7 @@
 ---
 name: arch-environment-variables
-description: Environment variable naming convention — SCITEX_<MODULE_NAME>_* prefix rule to avoid namespace collisions across the SciTeX ecosystem.
+description: Canonical environment-variable naming convention for every SciTeX package — `SCITEX_<MODULE_NAME>_*` prefix rule (never bare `SCITEX_*` except the ecosystem-wide `SCITEX_DIR` relocator), per-package `SCITEX_<PKG>_CONFIG` override, adapter pattern for framework-owned vars (Django/Postgres/Vite settings translate inside their own config — never let framework names leak into SciTeX-owned code), and the mandate that every package document its own env vars in an `NN_env-vars.md` leaf inside its `_skills/`. Use when adding a new env var, auditing drift, or wiring an external-tool adapter.
+canonical-location: scitex-python/src/scitex/_skills/general/01_arch_04_environment-variables.md
 ---
 
 # Environment Variable Naming

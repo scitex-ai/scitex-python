@@ -1,6 +1,7 @@
 ---
 name: scientific-figures
-description: ALWAYS invoke when designing publication-quality scientific figures, comparison plots (treatment vs control, pre vs post), multi-panel reports, color choices, or PDF report layout. Universal principles independent of plotting library; pairs with `figrecipe/21_scientific-figure-patterns.md` for matplotlib/figrecipe code.
+description: Universal, library-agnostic standards for publication-quality scientific figures — comparison rules (shared colour scale, aligned axes, consistent sample-size annotations), multi-panel layout grids, colour-map selection for categorical vs continuous vs divergent data, typography and legend placement, PDF-report layout (aspect, DPI, bleed), and how to justify breaking each rule. Pairs with `figrecipe/21_scientific-figure-patterns.md` for matplotlib-specific implementation code. Use when designing any figure for a manuscript, poster, or talk; when reviewing a plot for common pitfalls; or when auditing an ecosystem output for scientific rigour.
+canonical-location: scitex-python/src/scitex/_skills/scientific/01_figures_01_standards.md
 ---
 
 # Scientific Figure Standards (universal principles)

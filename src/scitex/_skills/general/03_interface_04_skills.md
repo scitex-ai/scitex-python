@@ -1,6 +1,7 @@
 ---
 name: interface-skills
 description: How a SciTeX package exposes agent-facing skills — `_skills/<pip-name>/` directory layout, SKILL.md as index-only, two-level `NN_<category>_NN_<topic>.md` naming, no-monolith leaf-file rule (≤10 KB per file, ≤80 lines per SKILL.md), MANIFEST.md with version stamp, registration via `[project.entry-points."<pkg>.skills"]`, and export workflow to `~/.claude/skills/scitex/`. Use when adding or auditing `_skills/` in a package.
+canonical-location: scitex-python/src/scitex/_skills/general/03_interface_04_skills.md
 ---
 
 # Skills System

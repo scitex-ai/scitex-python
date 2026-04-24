@@ -1,6 +1,6 @@
 ---
 name: general
-description: SciTeX ecosystem general standards — branding, package architecture, five interfaces, version management, and repository quality. Use when creating, auditing, or maintaining any SciTeX package.
+description: Canonical engineering standards every `scitex-*` package and research project must follow — 3-layer architecture cascade, dependency/version pinning, local-state directory layout (`~/.scitex/<pkg-short>/` and `<project>/.scitex/<pkg-short>/`), repo layout (src/tests/scripts/examples), the five interfaces (Python API → CLI → MCP → Skills → optional HTTP) with their delegation rules and the noun-verb CLI convention, README/Sphinx docs, version-control workflow plus `scitex-dev ecosystem …` release automation, skill-authoring rules (layout, editable-vs-wheel install, public-vs-private), and the periodic quality checklist. Use as the single entry point for creating, auditing, reviewing, or releasing any SciTeX package.
 user-invocable: false
 primary_interface: mixed
 interfaces:
@@ -10,6 +10,17 @@ interfaces:
   skills: 3
   hook: 0
   http: 0
+group: [scitex-package, meta]
+invocation:
+  - "how do I structure a scitex package"
+  - "noun-verb CLI convention"
+  - "what's the release workflow"
+  - "where does config live"
+  - "skills directory layout"
+  - "AGPL license rules"
+  - "PathManager SCITEX_DIR"
+context_tokens_total: 41400
+canonical-location: scitex-python/src/scitex/_skills/general/SKILL.md
 ---
 
 # SciTeX General Standards
@@ -58,6 +69,7 @@ Read in this order when building or auditing a package. Each section presupposes
 - [06_skills_03_public-vs-private.md](06_skills_03_public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
 - [06_skills_04_editable-installation.md](06_skills_04_editable-installation.md) — Skill source resolution: editable install symlinks to `src/`, wheel install reads bundled copy
 - [06_skills_05_quality-checklist.md](06_skills_05_quality-checklist.md) — Release-gate checklist for `_skills/` directories
+- [06_skills_06_frontmatter-metadata.md](06_skills_06_frontmatter-metadata.md) — Optional YAML fields: `group`, `invocation`, `context_tokens`, `canonical-location`, `see-also`
 
 ### 7. Periodic ecosystem quality — run when something feels off
 - [98_quality_01_failure-playbook.md](98_quality_01_failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes

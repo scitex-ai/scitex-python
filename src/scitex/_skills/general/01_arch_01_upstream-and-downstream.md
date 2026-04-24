@@ -1,6 +1,7 @@
 ---
 name: upstream-and-downstream-packages
 description: SciTeX ecosystem architecture — the 3-layer library cascade (upstream / middle / downstream) plus orthogonal ecosystem/platform packages (scitex-dev, scitex-orochi, scitex-agent-container, scitex-container, scitex-cloud). Covers dependency direction, import rules, test scope per layer, and the cascade pattern across Python API / CLI / MCP.
+canonical-location: scitex-python/src/scitex/_skills/general/01_arch_01_upstream-and-downstream.md
 ---
 
 # SciTeX Package Architecture

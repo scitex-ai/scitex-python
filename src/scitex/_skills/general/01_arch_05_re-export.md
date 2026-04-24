@@ -1,6 +1,7 @@
 ---
 name: arch-re-export
-description: Re-export convention — each `scitex.<name>` umbrella bridge thin-re-exports the standalone `scitex_<name>` public API so `scitex.path.X` and `scitex_path.X` resolve to the same object.
+description: Re-export convention that lets `scitex.<name>.X` and `scitex_<name>.X` always resolve to the same object — the `scitex.<name>` umbrella subpackage thin-re-exports the standalone `scitex_<name>` public API, with a lazy-import guard so unused optional deps never trigger import errors, a stable `__all__` contract, and no original logic in the bridge. Prevents the common bug where agents read one form in docs and the other in examples, getting different runtime behaviour. Use when setting up a new scitex-* standalone + its bridge, adding a new public symbol, or debugging why `scitex.X.Y` differs from `scitex_X.Y`.
+canonical-location: scitex-python/src/scitex/_skills/general/01_arch_05_re-export.md
 ---
 
 # Umbrella Re-Export Convention

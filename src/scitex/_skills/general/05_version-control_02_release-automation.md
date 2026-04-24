@@ -1,6 +1,7 @@
 ---
 name: version-control-release-automation
 description: Ecosystem-wide release automation via `scitex-dev` — the `ecosystem` subcommand tree (`list`, `sync`, `sync-remote`, `fix-mismatches`, `start-dashboard`), the dashboard web UI at `http://localhost:8050` for at-a-glance version reconciliation across all scitex-* packages, the matching Python API in `scitex_dev.ecosystem`, and the MCP tools so agents can drive the same release flow. Complements `05_version-control_01_management.md` (manual workflow) with the automated path used during multi-package release waves. Use when bumping versions across the ecosystem, resolving cross-package version drift, or scripting a release.
+canonical-location: scitex-python/src/scitex/_skills/general/05_version-control_02_release-automation.md
 ---
 
 # Version Control — Release Automation

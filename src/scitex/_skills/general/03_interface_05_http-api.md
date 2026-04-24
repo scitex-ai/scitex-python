@@ -1,6 +1,7 @@
 ---
 name: interface-http-api
 description: Optional HTTP API interface for SciTeX packages — when a FastAPI layer is warranted, delegation rule (no original logic — always delegate to the Python API), JSON/OpenAPI convention, and which packages actually need this interface (mostly scitex-cloud; most packages do not). Use when adding web-accessible endpoints to a package or auditing whether existing FastAPI routes duplicate Python API logic.
+canonical-location: scitex-python/src/scitex/_skills/general/03_interface_05_http-api.md
 ---
 
 # HTTP API (Optional)

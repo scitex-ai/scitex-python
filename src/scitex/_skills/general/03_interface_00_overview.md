@@ -1,6 +1,7 @@
 ---
 name: interfaces-overview
 description: The five interfaces every SciTeX package must expose — Python API (primary), CLI (noun-verb), MCP (fastmcp), Skills (_skills/ directory), optional HTTP (FastAPI). Includes the delegation chain (Python API is canonical; CLI/MCP/HTTP are thin wrappers with no original logic) and cross-interface parity expectations. Use as the entry point when onboarding a new package or checking that all interfaces agree on a given feature.
+canonical-location: scitex-python/src/scitex/_skills/general/03_interface_00_overview.md
 ---
 
 # Five Interfaces (Required per Package)

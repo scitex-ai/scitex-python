@@ -1,6 +1,7 @@
 ---
 name: skills-public-vs-private
 description: Decision rule for every skill — does it belong in the public package (`src/<pkg>/_skills/<pip-name>/`, shipped to PyPI and GitHub) or in the private fleet store (`~/.scitex/<pkg-short>/shared/skills/<pip-name>-private/`, symlinked into `~/.claude/skills/`)? A skill is private if it names any specific hostname, container, credential, zone ID, fleet role, or incident detail; otherwise it is public. Includes the decision flow, split-pattern (public = pattern / private = operational recipe), and the grep-based safety check to run before `git push`. Use when starting any new skill or auditing an existing one for leaked fleet-internal details.
+canonical-location: scitex-python/src/scitex/_skills/general/06_skills_03_public-vs-private.md
 ---
 
 # Public vs Private Skills
