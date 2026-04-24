@@ -49,3 +49,30 @@ Some features require explicit opt-in due to external dependencies or resource c
 | `SCITEX_NOTIFICATION_TELEGRAM_POLLING_ENABLED` | Long-polling is resource-intensive; opt-in to avoid waste |
 
 These use `_ENABLED=true` to activate. The rule: if a feature touches external services, auth, or consumes resources when idle, it may use opt-in instead.
+
+## Mandatory per-package `NN_env-vars.md` leaf
+
+Every SciTeX package that reads one or more `SCITEX_*` env vars at import or
+runtime **MUST** ship an `NN_env-vars.md` leaf inside its
+`src/<pkg_snake>/_skills/<pkg>/` directory (next free `NN_`). The leaf lists
+every env var the package's source actually reads, as a table:
+
+| Variable | Purpose | Default | Type |
+|---|---|---|---|
+| `SCITEX_<PKG>_FOO` | One-line purpose | `default` or `—` (required) | string / int / bool / path |
+
+For boolean flags, add a **Feature flags** subsection distinguishing opt-out
+(`DISABLE=true` / `USE_*=0`, default enabled) from opt-in (`_ENABLED=true`,
+default disabled; justify why).
+
+**Rule:** `NN_env-vars.md` is mandatory for any package that reads one or more
+`SCITEX_*` env vars. Link it from the package's `SKILL.md` sub-skill list.
+
+**One-line audit** (run per package, exclude tests / archive):
+
+```bash
+grep -rhoE 'SCITEX_[A-Z0-9_]+' scitex-<pkg>/src/ | sort -u
+```
+
+Cross-check against the leaf; any var present in source but missing from the
+table is a release blocker (see `99_scitex-quality-checklist.md` §15).

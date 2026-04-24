@@ -6,9 +6,9 @@
 
 # SciTeX Ecosystem — Periodic Quality Checklist
 
-Run this during `/speak-and-call` autonomous passes or manually. Each
-section lists what to verify, how to verify, and the canonical fix. Keep
-the check cheap — delegate the big ones to subagents.
+Run during `/speak-and-call` passes or manually. Each section lists
+what to verify, how, and the canonical fix. Keep the check cheap —
+delegate big ones to subagents.
 
 **Section groups:**
 
@@ -20,9 +20,9 @@ the check cheap — delegate the big ones to subagents.
 - **Response protocol + do-not-touch list** — agent behavior rules
 - **§16–§17 — Planned** (dynamic audits, dashboard export)
 
-Failure-mode cookbook lives in a sibling file:
+Failure-mode cookbook: sibling
 [98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md)
-(PyPI traps, wheel drift, numpy 2 / pandas / optional-dep guards,
+(PyPI traps, wheel drift, numpy2/pandas/optional-dep guards,
 extras-completeness, Doc-Drift CI install source).
 
 ## 0. Prerequisites
@@ -55,26 +55,23 @@ for p in $HOME/proj/scitex-*; do
 done
 ```
 
-Fix: fast-forward develop via `git update-ref` (avoids checkout touching
-dirty tree), push, delete feature branch. If `develop` doesn't exist,
+Fix: fast-forward develop via `git update-ref` (avoids checkout on
+dirty tree), push, delete feature branch. If no `develop`:
 `git checkout -b develop main; git push -u origin develop`.
 
 ## 2. Push state
 
-No committed-but-unpushed changes:
-`git -C "$p" log "origin/$br..$br" --oneline` → empty.
-If ahead, push (use `-c core.hooksPath=/dev/null` to bypass X11 hook).
+No unpushed commits: `git -C "$p" log "origin/$br..$br" --oneline` →
+empty. If ahead, push (`-c core.hooksPath=/dev/null` bypasses X11 hook).
 Never force-push shared branches.
 
 ## 3. CI green (per repo, latest run on develop)
 
 **Check:** `gh run list --repo ywatanabe1989/<pkg> --branch develop --limit 1`.
+Flag `failure`, `cancelled`, `in_progress > 1h`.
 
-Flag: `failure`, `cancelled`, `in_progress > 1h`.
-
-Severity triage: **CRITICAL** blocks downstream/release; **HIGH** one
-package; **MEDIUM** test bug; **LOW** cosmetic. Full failure-mode
-cookbook — all ~18 patterns with fixes:
+Severity: **CRITICAL** blocks release; **HIGH** one pkg; **MEDIUM**
+test bug; **LOW** cosmetic. Full cookbook (~18 patterns):
 [98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md).
 
 ## 4. Test scope purity
@@ -145,11 +142,10 @@ on:
 
 ## 9. Optional-deps hygiene
 
-- Leaf packages keep a minimal default install — heavy deps in
+- Leaf pkgs keep a minimal default install; heavy deps go in
   `[project.optional-dependencies]`.
 - Every package defines an `[all]` extra (may be empty for utilities).
-- When a scitex package is consumed at import-time, pin its minimum
-  version in the consumer's `pyproject.toml` (see
+- Consumers of scitex pkgs pin min version in their pyproject (see
   `08_arch-dependency-and-version-pinning.md`).
 
 ## 10. Reporting back
@@ -176,8 +172,7 @@ Append one entry per pass to `scitex-dev/quality-audits/YYYY-MM-DD.md`
 - Next scheduled check: <ScheduleWakeup delay / cron>
 ```
 
-Makes multi-week trends legible (e.g. "scitex-audio fails the same way
-3/7 runs" → systemic).
+Makes multi-week trends legible ("audio fails same way 3/7" → systemic).
 
 ## 11. Response protocol for a /speak-and-call quality run
 
@@ -202,9 +197,8 @@ Commit-in-dirty-tree guard (mandatory):
     <file1> [...] -- -m "msg"
 ```
 
-Aborts if the index has extras — prevents the 2026-04-24 accident
-where a commit swept 40 pre-staged user files. Canonical home
-`~/.claude/to_claude/bin/` (alongside `safe_rm.sh`).
+Aborts if index has extras. Prevents the 2026-04-24 accident (commit
+swept 40 pre-staged user files). Home: `~/.claude/to_claude/bin/`.
 
 ## 14. Extras-completeness (every canonical package reachable)
 
@@ -245,57 +239,67 @@ pypi package OR raise an explicit ImportError from the shim (see `09`
 §12). Never merge pyproject changes that leave a canonical pkg
 unreachable.
 
+## 15. Env-var documentation completeness
+
+Every package that reads one or more `SCITEX_*` env vars MUST carry an
+`NN_env-vars.md` leaf under `src/<pkg_snake>/_skills/<pkg>/` that documents
+each variable (purpose, default, type, opt-in vs opt-out). Rule defined in
+`10_arch-environment-variables.md`.
+
+**Probe** (diff source vs docs across the ecosystem):
+
+```bash
+for p in $(scitex dev ecosystem list --json | python3 -c "import sys,json; d=json.load(sys.stdin); print(' '.join(x for x in d['packages'] if not x.endswith('template') and x!='scitex' and x!='automated-research-demo'))"); do
+  src_envs=$(grep -rhoE 'SCITEX_[A-Z0-9_]+' $HOME/proj/$p/src/ 2>/dev/null | sort -u | wc -l)
+  docs_envs=$(grep -rhoE 'SCITEX_[A-Z0-9_]+' $HOME/proj/$p/src/*/_skills/$p/*.md 2>/dev/null | sort -u | wc -l)
+  [ "$src_envs" -gt 0 ] && [ "$docs_envs" -lt "$src_envs" ] && echo "$p: $docs_envs/$src_envs documented"
+done
+```
+
+Any non-empty line is a release blocker — create/augment the leaf, link it
+from `SKILL.md`, commit as `docs(env-vars): document SCITEX_* variables
+actually read by <pkg>`.
+
 ## 16. Dynamic audit via agent task execution (planned)
 
-Static checks above verify **"looks right"**; dynamic checks will verify
-**"works right"** under realistic workloads — agents executing end-to-end
-tasks, logging tool-use distributions and output quality.
+Static = "looks right"; dynamic = "works right" under realistic
+workloads (agents on end-to-end tasks, logging tool-use + output
+quality). Static pass (§§1–15 + playbook §98) gates commit; dynamic
+additionally gates PyPI release.
 
-- Static pass (§§1–15 + playbook §98) gates commit to develop.
-- Dynamic pass additionally gates PyPI release.
-
-Design skeleton: `scitex-dev/src/scitex_dev/_skills/scitex-dev/20_dynamic-audit.md`
-(task dataset T01–T10; minimal first pass of 3 tasks specified).
-
-Host: `scitex-dev` owns canonical quality scripts
-(`scitex-dev/scripts/quality/`) and audit logs
-(`scitex-dev/logs/quality-audits/`); `scitex-python/scripts/` is a mirror.
+Design: `scitex-dev/src/scitex_dev/_skills/scitex-dev/20_dynamic-audit.md`
+(tasks T01–T10; 3-task first pass). Host: `scitex-dev` owns
+`scripts/quality/` + `logs/quality-audits/`; `scitex-python/scripts/`
+is a mirror.
 
 ## 17. Dashboard export
 
-```bash
-python3.11 ~/proj/scitex-python/scripts/audit_quality_dashboard.py
-```
-
-→ `scitex-dev/dashboards/quality.md` (per-pkg CI/tag/PyPI/aligned).
-Scope = §0 ∩ (`scitex*` or allowlist: figrecipe, socialia,
-openalex-local, crossref-local).
+`python3.11 ~/proj/scitex-python/scripts/audit_quality_dashboard.py` →
+`scitex-dev/dashboards/quality.md`. Scope = §0 ∩ (`scitex*` or
+allowlist: figrecipe, socialia, openalex-local, crossref-local).
 
 ## 18. English-only enforcement
 
-Exempt a line with `# i18n-ok` / `<!-- i18n-ok -->` (±2 lines).
-
-```bash
-python3.11 ~/proj/scitex-python/scripts/audit_english_only.py
-```
+Exempt with `# i18n-ok` / `<!-- i18n-ok -->` (±2-line marker).
+`python3.11 ~/proj/scitex-python/scripts/audit_english_only.py`.
 
 ## 19. License enforcement (AGPL-3.0-only)
 
 SPDX `license = "AGPL-3.0-only"` + AGPL classifier + LICENSE at root.
 `scitex-dev/scripts/quality/audit_license.py` (+ `fix_license.py
---apply --commit`; skips dirty trees, uses the guard).
+--apply --commit`; skips dirty trees).
 
 ## Release-gate questions
 
-01. Useful for Ph.D. students and researchers?
-02. Meaningful tests implemented? All green?
-03. Easy to understand for humans and AI?
-04. Easy to use for humans and AI?
-05. Easy to maintain for humans and AI?
-06. Docs, Read the Docs, examples in sync with code?
-07. Periodic quality check actually running?
-08. SciTeX conventions followed throughout?
-09. All packages standardized and consistent?
-10. Only English in comments and docs?
+1. Useful for Ph.D. students/researchers?
+2. Meaningful tests, all green?
+3. Easy to understand for humans and AI?
+4. Easy to use for humans and AI?
+5. Easy to maintain?
+6. Docs / Read the Docs / examples in sync with code?
+7. Periodic quality check actually running?
+8. SciTeX conventions followed throughout?
+9. All packages standardized and consistent?
+10. English-only in comments and docs?
 
 <!-- EOF -->

@@ -32,7 +32,8 @@ interfaces:
 - [07_arch-upstream-and-downstream.md](07_arch-upstream-and-downstream.md) — 3-layer cascade, test scope, cascade pattern
 - [08_arch-dependency-and-version-pinning.md](08_arch-dependency-and-version-pinning.md) — Dependency hygiene, optional extras, version-pinning rules
 - [09_arch-modules-and-standalone-packages.md](09_arch-modules-and-standalone-packages.md) — Module vs standalone package boundaries
-- [10_arch-environment-variables.md](10_arch-environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule
+- [10_arch-environment-variables.md](10_arch-environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule; mandates per-package `NN_env-vars.md` leaf
+- [26_arch-re-export.md](26_arch-re-export.md) — Umbrella `scitex.<name>` thin-re-export pattern + lazy-import guard
 
 ### Version Control
 - [11_version-control-management.md](11_version-control-management.md) — Branches, tags, release waves, release gates (core workflow)
