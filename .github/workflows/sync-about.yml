@@ -48,9 +48,13 @@ jobs:
           # Then ask scitex-dev for every package in the ecosystem and
           # install them all so every MCP tool / CLI command registers.
           uv pip install --system ".[all]"
+          # Filter out template / non-PyPI entries — they'd abort the whole batch.
           pkgs=$(scitex dev ecosystem list --json \
                  | python3 -c "import sys, json; d = json.load(sys.stdin); \
-                               print(' '.join(p for p in d['packages'] if p != 'scitex'))")
+                               skip = {'scitex', 'automated-research-demo', \
+                                       'singularity-template', 'pip-project-template', \
+                                       'scitex-research-template'}; \
+                               print(' '.join(p for p in d['packages'] if p not in skip))")
           echo "Installing ecosystem: $pkgs"
           uv pip install --system $pkgs || true
 
