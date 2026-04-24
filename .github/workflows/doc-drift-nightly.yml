@@ -39,23 +39,24 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install uv (10-100x faster than pip for this resolver)
+        uses: astral-sh/setup-uv@v3
+
       - name: Install scitex (this checkout) + downstream packages
         run: |
-          pip install --upgrade pip
-          # Constrain wrapt ≥1.17 for the whole resolver — deprecated<1.2.14
-          # (transitive dep via numcodecs) pulls wrapt<3,>=1.10 and the
-          # resolver lands on wrapt<1.15 which crashes on Python 3.11
-          # (inspect.formatargspec removed).
+          # Constrain wrapt ≥1.17 — deprecated<1.2.14 (transitive via
+          # numcodecs) pulls wrapt<3,>=1.10 and pip/uv may land on wrapt<1.15
+          # which crashes on Python 3.11 (inspect.formatargspec removed).
           echo "wrapt>=1.17" > /tmp/scitex-constraints.txt
-          export PIP_CONSTRAINT=/tmp/scitex-constraints.txt
+          export UV_CONSTRAINT=/tmp/scitex-constraints.txt
           # Install from the current checkout so doc-drift picks up pyproject
           # changes in this PR / push (e.g. extras that re-export new
           # downstream packages) before they're published to PyPI.
-          pip install ".[all]"
+          uv pip install --system ".[all]"
           # Explicitly install downstream packages that may not be covered by
           # [all] extra yet, so the doc-example auditor can resolve chains
           # like stx.dataset.neuroscience.openneuro and stx.container.apptainer.
-          pip install scitex-dataset scitex-container scitex-scholar \
+          uv pip install --system scitex-dataset scitex-container scitex-scholar \
                       scitex-notebook scitex-linter || true
 
       - name: Checkout downstream package repos for README audit
