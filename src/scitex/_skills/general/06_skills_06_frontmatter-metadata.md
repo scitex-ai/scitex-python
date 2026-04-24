@@ -81,41 +81,65 @@ Why all three? A **CLAUDE.md** at any level (ecosystem / package / project) can 
 
 Rule: **every skill leaf declares all three levels** whenever they apply — never rely on inheritance from SKILL.md. Claude Code currently picks each file's frontmatter independently.
 
-### CLAUDE.md tag shortcuts
+### CLAUDE.md `@skill-tags:` shortcut
 
-Once every skill carries proper `tags:`, a **research project's `CLAUDE.md` can reference a tag instead of hand-listing files**:
+Once every skill carries proper `tags:`, a **research project's `CLAUDE.md` references a tag list instead of hand-listing files**:
 
 ```markdown
 <!-- research-project/CLAUDE.md -->
 # Project context
 
-@scitex                         # expands to every skill tagged `scitex-package`
-@scitex-scientific              # expands to every skill tagged `scitex-scientific`
-@research                       # expands to every skill tagged `research`
+@skill-tags: scitex-package, research, paper
 ```
 
-A resolver (future `scitex-dev skills tags-expand <tag>`) walks every installed package's `_skills/` tree, grepping for files whose `tags:` frontmatter contains the requested tag, and emits the absolute paths. The project's CLAUDE.md keeps a single `@scitex` line; the resolver fans it out.
+The line syntax is:
+
+```
+@skill-tags: <tag>[, <tag>, <tag>, ...]
+```
+
+- Starts with `@skill-tags:` — the keyword + colon prevents Claude Code from auto-resolving it as a `@<path>` file include; it stays literal until a preprocessor rewrites it.
+- Comma-separated tag list, whitespace-tolerant.
+- Multiple `@skill-tags:` lines allowed (one per logical group); each is independent.
+
+**Resolver:** `scitex-dev skills tags-expand <tag>` (Python) or
+`~/.claude/skills/scripts/resolve-skills-in-claude-md.sh` (portable shell).
+Both walk every skill root — installed wheels, editable `~/proj/*/src/*/_skills/`,
+`~/.claude/skills/`, and `<cwd>/.claude/skills/` — and return the absolute
+paths of every `.md` whose `tags:` frontmatter contains the requested tag.
+
+The shell wrapper rewrites the original line to one `@<path>` include per
+matched file, each annotated with `# added by resolve-skills-in-claude-md (tag: …)`
+so the expansion is round-trippable (strip with `--strip`):
+
+```markdown
+# ↓ expanded from: @skill-tags: scitex-package, research
+@/home/…/01_arch_01_upstream-and-downstream.md # added by resolve-skills-in-claude-md (tag: scitex-package)
+@/home/…/01_arch_02_dependency-and-version-pinning.md # added by resolve-skills-in-claude-md (tag: scitex-package)
+…
+# ↑ end @skill-tags
+```
+
+### Scope flags
+
+The shell resolver accepts `--scope` (repeatable) to restrict where it searches:
+
+| Scope | Covers |
+|---|---|
+| `all` (default) | user + project + scitex |
+| `user` | `~/.claude/skills/` |
+| `project` | `<cwd>/.claude/skills/` |
+| `scitex` | `~/proj/*/src/*/_skills/` |
+| `/absolute/path` | An explicit directory |
 
 Benefits:
 
 - New/removed skills appear automatically — no hand-editing every project CLAUDE.md when the ecosystem changes.
-- Projects opt into exactly the layers they need (`research` but not `paper`, say).
+- Projects opt into exactly the tag layers they need (`research` but not `paper`, say).
 - Package authors own the `tags:` field in their own tree; downstream consumers only touch tags, not file paths.
+- Works for non-scitex skills too (ywatanabe, playwright-cli, claude-code-official, …) — the resolver is tag-driven, not package-specific.
 
-Convention for the shorthand:
-
-| CLAUDE.md reference | Resolves to files whose `tags:` includes |
-|---|---|
-| `@scitex` | `scitex-package` (must-know for every scitex-using project) |
-| `@scitex-general` | `scitex-general` |
-| `@scitex-scientific` | `scitex-scientific` |
-| `@research` | `research` |
-| `@paper` | `paper` |
-| `@infra` | `infra` |
-
-Until the resolver lands, projects can hand-list files — but tag them consistently now so the eventual resolver picks them up automatically.
-
-Rule: if you add a new tag, document it here first. An unknown tag is treated as a free-form label but will not trigger any must-read behaviour.
+Rule: if you add a new tag, document it in the canonical tags table above first. An unknown tag is treated as a free-form label but will not trigger any must-read behaviour.
 
 ### `invocation` — discoverability hints
 
