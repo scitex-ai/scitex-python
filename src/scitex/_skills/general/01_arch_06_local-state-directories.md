@@ -11,12 +11,40 @@ Every `scitex-*` package that writes anything to disk — config, logs, caches, 
 
 ## 1. The two roots
 
-| Precedence | Scope | Root | Example (`scitex-scholar`) |
-|---|---|---|---|
-| higher | **Project** | `<project-root>/.scitex/<pkg-short>/` | `./.scitex/scholar/` |
-| lower | **User** | `~/.scitex/<pkg-short>/` | `~/.scitex/scholar/` |
+Every scope carries two parallel trees — one **tracked** (rules / config the team commits) and one **runtime-only** (outputs / logs / caches that must not enter git):
+
+| Precedence | Scope | Root | Example (`scitex-scholar`) | Tracked by git? |
+|---|---|---|---|---|
+| higher | **Project (tracked)** | `<project-root>/.scitex/<pkg-short>/` | `./.scitex/scholar/` | Yes — config.yaml, custom dicts, skill bundles |
+| higher | **Project (runtime)** | `<project-root>/.scitex/<pkg-short>/runtime/` | `./.scitex/scholar/runtime/` | No — only `.gitkeep` + `README.md` committed |
+| lower | **User (tracked)** | `~/.scitex/<pkg-short>/` | `~/.scitex/scholar/` | Yes (inside dotfiles repo, if the user versions their home) |
+| lower | **User (runtime)** | `~/.scitex/<pkg-short>/runtime/` | `~/.scitex/scholar/runtime/` | No |
 
 **Project scope always wins.** A package reads project-local state if present and only falls back to the user root when the project file does not exist. CLI flags and env vars override both — see §3.
+
+### The `runtime/` subdirectory
+
+Every `<pkg-short>/` root **MUST** contain a `runtime/` subdirectory. This is where the package writes everything that is re-creatable from config + source: logs, PID files, cached downloads, temporary workspaces, SQLite databases, dashboard state, etc.
+
+`runtime/` is intentionally ignored by git. Each package ships two seed files and nothing else:
+
+```
+<pkg-short>/runtime/
+├── .gitkeep        # Committed so the directory exists in fresh clones
+└── README.md       # Committed, one paragraph explaining what lives here
+                    #   and pointing at the local-state-directories skill
+```
+
+The package's `.gitignore` contains a single line that excludes everything *except* those two files:
+
+```gitignore
+# <project-root>/.gitignore (or a nested one inside the package root)
+.scitex/*/runtime/*
+!.scitex/*/runtime/.gitkeep
+!.scitex/*/runtime/README.md
+```
+
+Rationale: the dir must exist on first clone (so `PathManager` doesn't have to `mkdir` and accidentally expose permission bugs), but its *contents* must never leak — they are per-host, per-run, often large, and sometimes sensitive. Seeing `runtime/` appear in a `git status` is an immediate signal that something wrote where it shouldn't, or that `.gitignore` was not set up.
 
 ## 2. `<pkg-short>` — prefix-stripping rule
 
@@ -46,22 +74,36 @@ Applies uniformly to config file resolution; packages may extend it to state fil
 | 3 | Project scope | `<project>/.scitex/<pkg-short>/config.yaml` |
 | 4 | User scope | `~/.scitex/<pkg-short>/config.yaml` |
 
-## 4. What goes in the package root
+## 4. What goes where
 
-Everything the package writes at runtime lives here:
+The package root splits into **tracked** (top-level) and **runtime** (under `runtime/`). The split is the same at both project and user scope.
+
+### 4a. Tracked at the root (`<pkg-short>/`)
+
+Intent: declarative inputs — things the team commits and reviews.
 
 | File / subdir | Purpose |
 |---|---|
 | `config.yaml` | Primary config (canonical name — always `config.yaml`, never `<pkg>_config.yaml`) |
+| `cli-audit-dict.yaml` | Per-scope linter custom dict (see `03_interface_02_cli.md` §1d) |
+| `shared/skills/<pkg>-private/` | Private skill bundle (see `06_skills_03_public-vs-private.md`) |
+| `runtime/.gitkeep` | Marker so the runtime dir exists in fresh clones |
+| `runtime/README.md` | One-paragraph notice explaining why `runtime/` is empty |
+
+### 4b. Runtime-only (`<pkg-short>/runtime/`)
+
+Intent: regenerable outputs — things each host / each run writes for itself, never to be committed.
+
+| File / subdir | Purpose |
+|---|---|
 | `dashboard.log`, `*.log` | Logs |
 | `dashboard.pid`, `*.pid` | PID files for background services |
 | `cache/` | Derived / regenerable data |
-| `workspace/` | Long-lived package-specific state (browser profiles, scratch dirs) |
+| `workspace/` | Long-lived package-specific scratch (browser profiles, build outputs) |
 | `*.db`, `*.sqlite` | Small embedded DBs (larger ones may relocate with `SCITEX_DIR`) |
-| `cli-audit-dict.yaml` | Per-scope linter custom dict (see `03_interface_02_cli.md` §1d) |
-| `shared/skills/<pkg>-private/` | Private skill bundle (see `06_skills_03_public-vs-private.md`) |
+| `export/` | Outputs of `scitex-dev skills export` and similar one-shot generators |
 
-Subdirectory layout is up to each package, but **no per-package state may live outside its own root**.
+Subdirectory layout within `runtime/` is up to each package, but **no per-package state may live outside its own root**.
 
 ## 5. Forbidden locations
 
