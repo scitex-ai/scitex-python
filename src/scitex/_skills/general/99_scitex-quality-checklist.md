@@ -220,11 +220,14 @@ If §§1–10 flag an issue in a dirty tree: prefer GH-API merge, or
 Commit-in-dirty-tree guard (mandatory):
 
 ```bash
-scripts/git_guard_commit.sh --repo <abs-path> <file1> [...] -- -m "msg"
+~/.claude/to_claude/bin/git_guard_commit.sh --repo <abs-path> \
+    <file1> [...] -- -m "msg"
 ```
 
 Aborts if the index has extras. Prevents the 2026-04-24 failure where
-an agent's `git commit` swept 40 pre-staged user files.
+an agent's `git commit` swept 40 pre-staged user files. Canonical home
+is `~/.claude/to_claude/bin/` alongside `safe_rm.sh` — same pattern of
+agent-facing wrapper enforcing safety on a destructive git op.
 
 ## 16. Dynamic audit via agent task execution (planned)
 
