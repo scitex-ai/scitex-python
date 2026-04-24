@@ -39,10 +39,13 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install scitex + downstream packages from PyPI
+      - name: Install scitex (this checkout) + downstream packages
         run: |
           pip install --upgrade pip
-          pip install "scitex[all]"
+          # Install from the current checkout so doc-drift picks up pyproject
+          # changes in this PR / push (e.g. extras that re-export new
+          # downstream packages) before they're published to PyPI.
+          pip install ".[all]"
 
       - name: Checkout downstream package repos for README audit
         run: |
