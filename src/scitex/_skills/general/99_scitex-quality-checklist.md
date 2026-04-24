@@ -102,6 +102,11 @@ Leaf packages (scitex-io, scitex-stats, etc.) MUST NOT import the
 in scitex-python. Reports every test-level `import scitex` or bare
 sibling import.
 
+> Canonical location: `scitex-dev/scripts/quality/audit_test_scope.py`,
+> mirrored for convenience in `scitex-python/scripts/`. Prefer
+> `python -m scitex_dev._cli_quality audit_scope --projects-root $HOME/proj`
+> once `scitex-dev` is installed.
+
 ## 5. SKILL.md frontmatter completeness
 
 Every `scitex-*/src/scitex_*/_skills/<pkg>/SKILL.md` must carry:
@@ -144,6 +149,16 @@ python3.11 scripts/audit_doc_examples.py --projects-root $HOME/proj
 
 If a chain fails: (a) install the missing downstream in the workflow,
 or (b) fix the docstring chain.
+
+> Canonical location: `scitex-dev/scripts/quality/audit_doc_examples.py`,
+> mirrored for convenience in `scitex-python/scripts/`. Prefer
+> `python -m scitex_dev._cli_quality audit_docs --projects-root $HOME/proj`
+> once `scitex-dev` is installed.
+
+Line-limit auditor (§cap enforcement) lives alongside these:
+`scitex-dev/scripts/quality/audit_line_limits.py` (mirrored to
+`scitex-python/scripts/audit_line_limits.py`), allowlist at
+`scitex-dev/scripts/quality/line_limits_allowlist.txt`.
 
 ## 8. Nightly workflows are scheduled
 
@@ -241,6 +256,11 @@ Design skeleton:
 `scitex-dev/src/scitex_dev/_skills/scitex-dev/20_dynamic-audit.md` —
 task dataset T01–T10, execution infra, metrics. Not yet implemented;
 minimal first pass (3 tasks) specified there.
+
+Host: `scitex-dev` owns the canonical quality-audit scripts under
+`scitex-dev/scripts/quality/` and the audit logs under
+`scitex-dev/logs/quality-audits/`. The `scitex-python/scripts/` copies
+are a convenience mirror for in-repo workflows.
 
 ## 17. Dashboard export
 

@@ -57,7 +57,7 @@ jobs:
           # [all] extra yet, so the doc-example auditor can resolve chains
           # like stx.dataset.neuroscience.openneuro and stx.container.apptainer.
           uv pip install --system scitex-dataset scitex-container scitex-scholar \
-                      scitex-notebook scitex-linter || true
+                      scitex-notebook scitex-linter scitex-dev || true
 
       - name: Checkout downstream package repos for README audit
         run: |
@@ -78,6 +78,12 @@ jobs:
           # scitex-python is already checked out — symlink so audit script finds it
           ln -sf "$GITHUB_WORKSPACE" "$HOME/proj/scitex-python"
 
+      # NOTE: The canonical home of these auditors is scitex-dev
+      # (scitex-dev/scripts/quality/). They are mirrored into
+      # scitex-python/scripts/ for workflow convenience. Going forward,
+      # prefer `python -m scitex_dev._cli_quality <cmd>` once the scitex-dev
+      # CLI wiring is complete. For now we keep calling the in-repo copies
+      # so this workflow stays self-contained.
       - name: Run doc-example auditor
         run: |
           python3.11 scripts/audit_doc_examples.py --projects-root "$HOME/proj"
