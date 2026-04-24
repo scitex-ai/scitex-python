@@ -41,9 +41,23 @@ directories are peripheral and will throw false positives if included:
 - Agentic / TS exploration repos: `scitex-agentic-test`, any bun-only
   repo — no `pyproject.toml`
 
-Gate every probe on `test -f "$p/pyproject.toml"` (or on a known
-allowlist). Packages in scope = those with both `pyproject.toml` and
-either a PyPI entry or a `_skills/` directory.
+Gate every probe on two conditions, not just `pyproject.toml`:
+
+1. `test -f "$p/pyproject.toml"` — has a Python package config
+2. directory name matches the pyproject `name` field — filters out
+   project instances built from a template (e.g. `scitex-paper-1st/`
+   uses `name = "scitex-writer"` because it's a manuscript repo
+   scaffolded from the writer template).
+
+One-liner gate:
+
+```bash
+name=$(grep -oP '^name\s*=\s*"\K[^"]+' "$p/pyproject.toml" | head -1)
+[ "$name" = "$(basename $p)" ] || continue
+```
+
+Packages in scope = pass both conditions above, or are on an explicit
+ecosystem allowlist.
 
 ## 1. Branch hygiene (every repo on `develop`)
 
