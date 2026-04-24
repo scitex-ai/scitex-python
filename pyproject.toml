@@ -194,8 +194,7 @@ bridge = [
 
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
-# Note: scitex-container provided via host mount (not on PyPI)
-container = []
+container = ["scitex-container"]
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -268,7 +267,7 @@ db = [
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = []
+dataset = ["scitex-dataset"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
