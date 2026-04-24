@@ -1,6 +1,6 @@
 ---
 name: version-control-release-automation
-description: Automation commands and ecosystem-sync CLI for SciTeX version management — scitex-dev ecosystem, dashboard, Python API, MCP tools.
+description: Ecosystem-wide release automation via `scitex-dev` — the `ecosystem` subcommand tree (`list`, `sync`, `sync-remote`, `fix-mismatches`, `start-dashboard`), the dashboard web UI at `http://localhost:8050` for at-a-glance version reconciliation across all scitex-* packages, the matching Python API in `scitex_dev.ecosystem`, and the MCP tools so agents can drive the same release flow. Complements `05_version-control_01_management.md` (manual workflow) with the automated path used during multi-package release waves. Use when bumping versions across the ecosystem, resolving cross-package version drift, or scripting a release.
 ---
 
 # Version Control — Release Automation
@@ -26,61 +26,73 @@ When user says "update all packages" or "full release", for each package:
 ## Dashboard
 
 ```bash
-scitex dev versions list --json
-scitex dev versions dashboard       # Web GUI at http://127.0.0.1:5000
+scitex-dev ecosystem list --json
+scitex-dev ecosystem start-dashboard                      # Web GUI (0.0.0.0:8050)
+scitex-dev ecosystem start-dashboard --background         # background process
+scitex-dev ecosystem start-dashboard --host 0.0.0.0 --port 8050 --force
 ```
+
+The dashboard reads `~/.scitex/dev/config.yaml` (or `<project>/.scitex/dev/config.yaml` if present — project overrides user; see `01_arch_06_local-state-directories.md`). Project-scope config.yaml wins when both exist.
 
 ## CLI Commands
 
 ### Read-only
 
 ```bash
-scitex dev versions list                         # Local + PyPI
-scitex dev versions list --json                  # JSON output
-scitex dev versions list -p scitex               # Specific package
-scitex dev versions list --local-only            # Skip PyPI
-scitex dev versions list-hosts                   # SSH host versions
-scitex dev versions list-hosts --host nas        # Specific host
-scitex dev versions list-remotes                 # GitHub remote versions
-scitex dev versions list-rtd                     # Read the Docs status
-scitex dev versions check                        # Consistency check
-scitex dev versions dashboard                    # Web GUI at http://127.0.0.1:5000
-scitex dev versions dashboard --background       # Run as background daemon
-scitex dev versions dashboard --stop             # Stop background daemon
+scitex-dev ecosystem list                         # Packages with version status
+scitex-dev ecosystem list --json                  # JSON output
+scitex-dev ecosystem list -p scitex               # Specific package
+scitex-dev show-stats                             # Ecosystem-wide stats (count/LOC/tests)
+scitex-dev show-config                            # Show resolved dev config
+scitex-dev search-docs <query>                    # Search package docs
 ```
 
-### Push (local -> remote)
+### Sync
 
 ```bash
-scitex dev versions sync                         # Preview (dry run)
-scitex dev versions sync --confirm               # Execute (parallel)
-scitex dev versions sync --confirm --host nas    # Specific host
-scitex dev versions sync --confirm -p scitex     # Specific package
-scitex dev versions sync --confirm --no-install  # Git pull only
-scitex dev versions sync --local --confirm       # Local reinstall
-scitex dev versions sync --tags --confirm        # Push tags
+scitex-dev ecosystem sync                         # Local editable reinstall (dry-run default)
+scitex-dev ecosystem sync --confirm               # Execute
+scitex-dev ecosystem sync-remote --host nas       # Push to remote host over SSH
+scitex-dev ecosystem sync-remote --confirm --host all
 ```
 
-### Pull (remote -> local)
+### Fix version mismatches
 
 ```bash
-scitex dev versions diff                         # Show remote diffs
-scitex dev versions commit --host nas --confirm  # Commit remote changes
-scitex dev versions pull --confirm               # Git pull all
+scitex-dev ecosystem fix-mismatches               # Preview
+scitex-dev ecosystem fix-mismatches --confirm     # Execute
+```
+
+Aligns installed version, pyproject toml version, and git tag for every package.
+
+### Utilities
+
+```bash
+scitex-dev doctor                                 # Check scitex-dev + dependencies
+scitex-dev mcp start                              # Start MCP server for agents
+scitex-dev mcp show-installation                  # Print MCP client config
+scitex-dev install-tab-completion --shell bash    # Install shell tab-completion
+scitex-dev print-tab-completion --shell bash      # Print completion script to stdout
+scitex-dev quality audit-cli <package>            # Audit a package's CLI (warn-only)
+scitex-dev quality audit-docs                     # Audit docs drift
+scitex-dev quality audit-scope                    # Audit test-coverage scope
+scitex-dev quality audit-lines                    # Audit per-file line limits
 ```
 
 ## MCP Tools
 
+Mirror the CLI verbs; names follow `dev_<noun>_<verb>` (see `03_interface_03_mcp.md`):
+
 | Tool | Purpose |
 |------|---------|
-| `dev_versions_list` | Read-only: list versions |
-| `dev_versions_sync` | Push local -> remote (confirm=False for preview) |
-| `dev_versions_sync_local` | Reinstall local (confirm=False for preview) |
-| `dev_versions_diff` | Read-only: show remote diffs |
-| `dev_versions_commit` | Commit remote changes (confirm=False for preview) |
-| `dev_versions_pull` | Pull remote -> local (confirm=False for preview) |
-| `dev_ecosystem_list` | Read-only: list all ecosystem packages with version status |
-| `dev_ecosystem_fix_mismatches` | Auto-fix installed vs pyproject mismatches (confirm=False for preview) |
+| `dev_ecosystem_list` | List every package with local/toml/git/PyPI version |
+| `dev_ecosystem_sync` | Local editable reinstall (confirm=False for preview) |
+| `dev_ecosystem_sync_remote` | Push to remote hosts over SSH |
+| `dev_ecosystem_fix_mismatches` | Align installed ↔ toml ↔ git tag (confirm=False for preview) |
+| `dev_quality_audit_cli` | Per-package noun-verb audit (warn-only) |
+| `dev_quality_audit_docs` | Docs-drift audit |
+| `dev_show_stats` | Ecosystem stats |
+| `dev_show_config` | Resolved dev config |
 
 ## Python API
 

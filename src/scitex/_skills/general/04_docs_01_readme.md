@@ -1,6 +1,6 @@
 ---
 name: readme-organization
-description: Standard README.md template structure for SciTeX packages — sections, badges, collapsible blocks, Four Freedoms footer.
+description: Canonical README.md template for every SciTeX package — required section order (one-liner → install → quickstart → interfaces → status/CI badges → links → licence → Four-Freedoms footer), badge set (PyPI version, CI, coverage, RTD, licence), collapsible blocks for long examples, `import scitex` (never `as stx`) in all snippets, absence of the ywatanabe@ signature, and the intra-README link contract that external RTD/Sphinx builds depend on. Use when scaffolding a new repo's README or auditing one for ecosystem drift.
 ---
 
 # README Organization (SciTeX)

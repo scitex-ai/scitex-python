@@ -1,6 +1,6 @@
 ---
 name: sphinx-organization
-description: Standard Sphinx documentation structure, conf.py patterns, and Read the Docs configuration for SciTeX packages.
+description: Canonical Sphinx documentation layout for every SciTeX package — `docs/source/` tree, required `conf.py` patterns (theme = sphinx_rtd_theme, autodoc, myst-parser, autodoc-typehints, copybutton), `.readthedocs.yaml` for RTD builds, version-switcher, RTD build-status checks, and common troubleshooting (empty autodoc, broken myst include, RTD failing on `import scitex`). Use when setting up RTD for a new package or fixing a failing Read the Docs build.
 ---
 
 # Sphinx & Read the Docs Organization (SciTeX)

@@ -1,6 +1,6 @@
 ---
 name: interface-python-api
-description: Python API design rules for SciTeX packages — minimal exposure, scitex-io examples, introspect commands.
+description: Python API design rules for every SciTeX package — minimal public surface via `__all__`, hide internals behind `_` prefix, no re-export of third-party symbols, `import scitex` (never `as stx`) in shipped docs, PyPI-first publish order, and the `scitex-dev introspect api <pkg>` self-audit. Use when choosing what to expose, reviewing pull requests that touch `__init__.py`, or auditing an existing package's public surface before release.
 ---
 
 # Python API (SciTeX)

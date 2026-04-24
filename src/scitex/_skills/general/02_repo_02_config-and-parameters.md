@@ -1,5 +1,6 @@
 ---
-description: The CONFIG object injected by @stx.session — keys, YAML merging, and how to use SDIR_OUT / SDIR_RUN for save-load round trips
+name: repo-config-and-parameters
+description: How SciTeX projects store and inject configuration/parameters into scripts — `./config/*.yaml` as the project-scope config tree, the auto-merged `CONFIG` object that `@stx.session` injects into main(), canonical keys (`PATH`, `PARAMS`, `DEBUG`, plus arbitrary user namespaces), deep-merge semantics (file merge + CLI override + env override), injected `SDIR_OUT`/`SDIR_RUN` path variables for deterministic save/load round trips, and how this integrates with the config-precedence chain in `01_arch_06_local-state-directories.md`. Use when adding parameters to a script, debugging config resolution, or auditing an experiment for reproducibility.
 ---
 
 # `@stx.session` and the `CONFIG` Object

@@ -1,6 +1,6 @@
 ---
 name: skills
-description: Practical guide for writing and maintaining skills for SciTeX packages — lessons learned, workflow, and quality checklist.
+description: Practical author's guide for writing and maintaining `_skills/` content in every SciTeX package — what a "skill" is in the Claude Code sense (an agent-loadable rule file, not a dev doc), the SKILL.md-as-index pattern, leaf-file scope (one topic per `.md`), prose over checkboxes, the two-level `NN_<category>_NN_<topic>.md` numbering rule, lessons from past audits (audit-driven remediation), and the authoring workflow from idea → draft → export → commit. Use when writing any new skill or overhauling an existing one.
 ---
 
 > Structure rules: see [03_interface_04_skills.md](03_interface_04_skills.md)

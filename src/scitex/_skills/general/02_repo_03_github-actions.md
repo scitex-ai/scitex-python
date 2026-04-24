@@ -1,6 +1,6 @@
 ---
 name: github-actions
-description: Standard GitHub Actions workflows for SciTeX packages — CI, PyPI publish, CLA, and advanced patterns.
+description: Canonical GitHub Actions workflows that every SciTeX repo ships — test matrix across supported Python versions, PyPI publish via trusted-publisher OIDC (no API tokens), CLA-bot, reusable workflow patterns, artefact caching, and release-gate checks that guard the main branch. Use when creating a new scitex-* repo, auditing CI drift across the ecosystem, or wiring a new release-on-tag action.
 ---
 
 # GitHub Actions (SciTeX)

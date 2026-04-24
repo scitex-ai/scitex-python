@@ -6,7 +6,7 @@
 
 ---
 name: skills-quality-checklist
-description: Release-gate checklist for _skills/ directories — naming, indexing, no-monolith, no-duplication, cache hygiene.
+description: Release-gate checklist that every `_skills/` directory in every SciTeX package must pass before a version bump — directory layout (one `_skills/` per package, one SKILL.md per sub-skill, no `legacy/` or `.old/`), two-level `NN_<category>_NN_<topic>.md` naming with `git mv` for renames, SKILL.md as index-only (≤~4 KB, ≤~80 lines), leaf-file no-monolith rule (≤10 KB per leaf, one topic each), no-duplication with `general/` rules, cache-friendly stable leaf ordering, and the concrete release-gate command to verify links. Use as the pre-release sign-off for the skills tree.
 ---
 
 # SciTeX Package Skills — Quality Checklist

@@ -1,6 +1,6 @@
 ---
 name: interface-mcp
-description: MCP server standards for SciTeX packages — scitex-specific tool examples, skills integration, reference implementations.
+description: MCP (Model Context Protocol) server standards for every SciTeX package — `fastmcp` as the canonical SDK, `<pkg>_<verb>_<noun>` tool-naming that mirrors the CLI subcommand tree, parity with the Python API (no original logic in MCP wrappers), `mcp start`/`mcp doctor`/`mcp list-tools`/`mcp show-installation` standard subcommands, skills integration, and JSON reproducibility envelope. Use when adding a new MCP tool, reviewing tool naming/arg parity, or wiring `scitex-<pkg> mcp start` into a Claude Code config.
 ---
 
 # MCP Server (SciTeX)

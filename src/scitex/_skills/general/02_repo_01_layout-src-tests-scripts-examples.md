@@ -1,6 +1,6 @@
 ---
 name: repo-layout-src-tests-scripts-examples
-description: Layout boundaries between src/, tests/, scripts/, examples/, and references/ in every SciTeX package and research project using SciTeX.
+description: Canonical top-level repo layout for every SciTeX package and every research project using SciTeX — what belongs in `src/` (shipped code, versioned), `tests/` (pytest, one-test-file-per-module mirror), `scripts/` (reproducible pipelines invoked with `@stx.session`), `examples/` (runnable doctest-backed snippets), `references/` (third-party paper PDFs, datasets, external API dumps — gitignored if heavy), and what must NOT live at the top level. Use when scaffolding a new repo or auditing a stray file.
 ---
 
 ## Code Organization
