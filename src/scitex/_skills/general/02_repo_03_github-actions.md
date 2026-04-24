@@ -8,8 +8,8 @@ description: Standard GitHub Actions workflows for SciTeX packages — CI, PyPI 
 ## SciTeX-Specific CLA Allowlist
 
 ```yaml
-# cla.yml — ywatanabe1989 is always in the allowlist for SciTeX packages
-allowlist: bot*,ywatanabe1989
+# cla.yml — <username> (commiter) is always in the allowlist for SciTeX packages
+allowlist: bot*,<username>
 ```
 
 ## scitex-python Transitional Pattern

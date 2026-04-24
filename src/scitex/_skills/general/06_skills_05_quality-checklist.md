@@ -1,7 +1,7 @@
 <!-- ---
 !-- Timestamp: 2026-04-23 09:00:00
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/06_skills_04_quality-checklist.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/06_skills_05_quality-checklist.md
 !-- --- -->
 
 ---
@@ -124,6 +124,6 @@ Before bumping the package version:
 
 Future work: add a `scitex-linter` plugin that checks §1–§8
 programmatically and runs as part of the release gate. Tracking: see
-`02_repo_03_quality.md` (sibling) for the broader release checklist.
+`02_repo_04_quality.md` (sibling) for the broader release checklist.
 
 <!-- EOF -->

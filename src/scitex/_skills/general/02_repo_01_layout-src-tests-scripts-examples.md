@@ -1,26 +1,20 @@
-<!-- ---
-!-- Timestamp: 2026-04-23 09:00:00
-!-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/02_repo_01_layout-src-tests-scripts-examples.md
-!-- --- -->
-
 ---
 name: repo-layout-src-tests-scripts-examples
-description: Layout boundaries between src/, tests/, scripts/, examples/, and references/ in every SciTeX package.
+description: Layout boundaries between src/, tests/, scripts/, examples/, and references/ in every SciTeX package and research project using SciTeX.
 ---
 
 ## Code Organization
 
-#### src
-- src is mainly for python packages
+### ./src
+- ./src is mainly for python packages
   - Minimal dependency for other scitex packages
 - e.g., <scitex-package>/src/<scitex_package>/path/to/file.py
 
-#### scripts
+### ./scripts
 - scripts is mainly for project maintenance and research experiments
   - e.g., <scitex-package>/scripts/... <FIXME>
 
-#### examples
+### ./examples
 - Use scitex packages, especially for scitex.{session,io,plt}
 - Ensure to have numbered prefix
   - e.g., <scitex-package>/examples/01_<descriptive-filename>.py
@@ -35,13 +29,13 @@ description: Layout boundaries between src/, tests/, scripts/, examples/, and re
   - e.g., MCP and prompt
   - e.g., Skills and prompt
 
-#### tests
+### ./tests
 - Control by pyproject.toml
 - Use pytest wisely
 - For large tests, consider using computational remote hosts
   - e.g., <scitex-package>/tests/<scitex_package>/path/to/test_file.py
 
-#### references
+### ./references
 - External/upstream material kept verbatim for provenance and reproducibility
   - e.g., specs, third-party docs, benchmark datasets, paper PDFs
 - Read-only — do NOT edit contents; only add/remove files
@@ -50,5 +44,3 @@ description: Layout boundaries between src/, tests/, scripts/, examples/, and re
 - Never imported from `src/`; consumed by tests, scripts, or examples as fixtures
 - Large binaries → prefer Git LFS or fetch-on-demand script, not committed blobs
 - Each subdir should have a one-line `README.md` stating source URL + retrieval date
-
-<!-- EOF -->

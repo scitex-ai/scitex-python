@@ -32,9 +32,9 @@ Read in this order when building or auditing a package. Each section presupposes
 
 ### 2. Repository — how does the code live on disk?
 - [02_repo_01_layout-src-tests-scripts-examples.md](02_repo_01_layout-src-tests-scripts-examples.md) — Layout boundaries between `src/`, `tests/`, `scripts/`, `examples/`, `references/`
-- [02_repo_02_github-actions.md](02_repo_02_github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
-- [02_repo_03_quality.md](02_repo_03_quality.md) — Repository-level quality (AGPL, Four Freedoms, README rules, GitHub setup)
-- [02_repo_04_brand-logo-and-css.md](02_repo_04_brand-logo-and-css.md) — Brand logo and CSS rules
+- [02_repo_02_config-and-parameters.md](02_repo_02_config-and-parameters.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
+- [02_repo_03_github-actions.md](02_repo_03_github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
+- [02_repo_04_quality.md](02_repo_04_quality.md) — Repository-level quality (AGPL, Four Freedoms, README rules, GitHub setup)
 
 ### 3. Interfaces — how do users and agents touch the package?
 - [03_interface_00_overview.md](03_interface_00_overview.md) — Five interfaces: overview and delegation chain
@@ -56,13 +56,10 @@ Read in this order when building or auditing a package. Each section presupposes
 - [06_skills_01_overview.md](06_skills_01_overview.md) — Practical guide for writing skills: lessons learned, workflow
 - [06_skills_02_how-to-update.md](06_skills_02_how-to-update.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
 - [06_skills_03_public-vs-private.md](06_skills_03_public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
-- [06_skills_04_quality-checklist.md](06_skills_04_quality-checklist.md) — Release-gate checklist for `_skills/` directories
+- [06_skills_04_editable-installation.md](06_skills_04_editable-installation.md) — Skill source resolution: editable install symlinks to `src/`, wheel install reads bundled copy
+- [06_skills_05_quality-checklist.md](06_skills_05_quality-checklist.md) — Release-gate checklist for `_skills/` directories
 
-### 7. Domain extras — ecosystem-wide topics not tied to one layer
-- [07_api_01_session-config.md](07_api_01_session-config.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
-- [08_figures_01_scientific.md](08_figures_01_scientific.md) — Universal scientific-figure standards; pairs with `figrecipe/21_scientific-figure-patterns.md`
-
-### 8. Periodic Ecosystem Quality — run these when something feels off
+### 7. Periodic ecosystem quality — run when something feels off
 - [98_quality_01_failure-playbook.md](98_quality_01_failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes
 - [99_quality_02_checklist.md](99_quality_02_checklist.md) — Strategic /speak-and-call runbook with append-only log
 

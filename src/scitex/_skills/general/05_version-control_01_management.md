@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2026-04-23 08:50:00
+!-- Timestamp: 2026-04-25 04:52:38
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/05_version-control_01_management.md
 !-- --- -->
@@ -128,6 +128,10 @@ Repository: ywatanabe1989/<package>
 Workflow: publish-pypi.yml
 Environment name: pypi
 ```
+
+If not setup correctly,
+1. Manually publish using twine
+2. Instruct user to open `https://pypi.org/manage/project/<pypi-package-name>/settings/publishing/`
 
 ## Troubleshooting
 

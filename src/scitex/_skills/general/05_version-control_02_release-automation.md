@@ -14,7 +14,7 @@ When user says "update all packages" or "full release", for each package:
 1. **Check CI** — verify GitHub Actions pass (`gh run list`).
 2. Check commits since last tag and classify (`feat:` → minor, `fix:` → patch).
 3. Skip alpha/beta packages unless explicitly requested.
-4. For each needing update: bump pyproject.toml → commit → tag → push → gh release → wait for PyPI → pip install -e → fix mismatches → sync to NAS.
+4. For each needing update: bump pyproject.toml → commit → tag → push → gh release → wait for PyPI → pip install -e → fix mismatches → sync to other hosts.
 5. Use parallel subagents for independent repos.
 
 **Key tools for the full update workflow:**
