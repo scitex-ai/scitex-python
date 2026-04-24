@@ -16,6 +16,7 @@ the check cheap — delegate the big ones to subagents.
 - **§1–§3 — Repository-level audits** (branch, push, CI)
 - **§4–§7 — Content-level audits** (test scope, SKILL.md, README callout, doc chains)
 - **§8–§10 — Automation audits** (nightly schedule, deps, reporting)
+- **§14 — Extras-completeness** (every canonical pkg reachable)
 - **Response protocol + do-not-touch list** — agent behavior rules
 - **§16–§17 — Planned** (dynamic audits, dashboard export)
 
@@ -26,24 +27,22 @@ extras-completeness, Doc-Drift CI install source).
 
 ## 0. Prerequisites
 
-- `gh auth status` succeeds
-- `$HOME/proj/scitex-*` repos are present
-- `gh`, `git -C`, and `pip` are on PATH
+- `gh auth status` succeeds; `$HOME/proj/scitex-*` present;
+  `gh`/`git -C`/`pip` on PATH.
+- Never touch user uncommitted edits (`git -C <path> status --short`);
+  only stage files YOU modified. Bypass X11 pre-push hook with
+  `-c core.hooksPath=/dev/null`.
 
-Never touch user's uncommitted edits — run `git -C <path> status --short`
-and only stage files YOU modified. Use `-c core.hooksPath=/dev/null` on
-pushes to bypass the X11-dependent pre-push hook.
-
-**Scope** = has `pyproject.toml` AND directory name equals pyproject
-`name`. The second condition filters paper/template repos like
-`scitex-paper-1st/` that vendor `name = "scitex-writer"`. One-liner:
+**Scope** = has `pyproject.toml` AND directory name == pyproject `name`
+(filters paper/template repos like `scitex-paper-1st/` that vendor
+`name = "scitex-writer"`):
 
 ```bash
 name=$(grep -oP '^name\s*=\s*"\K[^"]+' "$p/pyproject.toml" | head -1)
 [ "$name" = "$(basename $p)" ] || continue
 ```
 
-(Or use an explicit ecosystem allowlist — see `audit_english_only.py`.)
+Or use an explicit allowlist — see `audit_english_only.py`.
 
 ## 1. Branch hygiene (every repo on `develop`)
 
@@ -81,17 +80,15 @@ cookbook — all ~18 patterns with fixes:
 ## 4. Test scope purity
 
 Leaf packages (scitex-io, scitex-stats, etc.) MUST NOT import the
-`scitex` umbrella in their own tests — only in `scripts/` or
-`examples/`. Cross-package imports should be `pytest.importorskip`-gated.
+`scitex` umbrella in their tests — only in `scripts/` or `examples/`.
+Cross-package imports use `pytest.importorskip`.
 
-**Check:** run `scripts/audit_test_scope.py --projects-root $HOME/proj`
-in scitex-python. Reports every test-level `import scitex` or bare
-sibling import.
+**Check:** `scripts/audit_test_scope.py --projects-root $HOME/proj` in
+scitex-python. Reports every test-level `import scitex` / bare sibling.
 
-> Canonical location: `scitex-dev/scripts/quality/audit_test_scope.py`,
-> mirrored for convenience in `scitex-python/scripts/`. Prefer
-> `python -m scitex_dev._cli_quality audit_scope --projects-root $HOME/proj`
-> once `scitex-dev` is installed.
+> Canonical: `scitex-dev/scripts/quality/audit_test_scope.py` (mirrored
+> to `scitex-python/scripts/`). Prefer
+> `python -m scitex_dev._cli_quality audit_scope --projects-root $HOME/proj`.
 
 ## 5. SKILL.md frontmatter completeness
 
@@ -99,52 +96,39 @@ Every `scitex-*/src/scitex_*/_skills/<pkg>/SKILL.md` must carry:
 
 ```yaml
 name: <pkg>
-description: <single-sentence trigger phrase with drop-in replacement>
+description: <one-sentence trigger with drop-in replacement>
 primary_interface: python | cli | mcp | hook | mixed
-interfaces:
-  python: 0..3
-  cli: 0..3
-  mcp: 0..3
-  skills: 0..3
-  hook: 0..3
-  http: 0..3
+interfaces: {python: 0..3, cli: 0..3, mcp: 0..3, skills: 0..3, hook: 0..3, http: 0..3}
 ```
 
-Body must start with the callout:
-
-```
-> **Interfaces:** Python ⭐⭐⭐ (primary) · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP —
-```
+Body starts with the callout:
+`> **Interfaces:** Python ⭐⭐⭐ (primary) · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP —`
 
 **Check:** glob all SKILL.md, parse frontmatter, report missing fields.
 
 ## 6. README callout mirror
 
-Every `scitex-*/README.md` should have the same `> **Interfaces:** ...`
-callout line just above its `## Problem and Solution` table. Mirror the
-body callout in SKILL.md.
+Every `scitex-*/README.md` has the same `> **Interfaces:** ...` callout
+just above its `## Problem and Solution` table (mirrors SKILL.md body).
 
 ## 7. Doc-example chains resolve
 
-Every `stx.X.Y.Z` chain in every README / docs/*.md must resolve against
-the installed scitex API. Run:
+Every `stx.X.Y.Z` chain in READMEs / docs/*.md must resolve against the
+installed scitex API:
 
 ```
 python3.11 scripts/audit_doc_examples.py --projects-root $HOME/proj
 ```
 
-If a chain fails: (a) install the missing downstream in the workflow,
-or (b) fix the docstring chain.
+On failure: (a) install the missing downstream in the workflow, or (b)
+fix the docstring chain.
 
-> Canonical location: `scitex-dev/scripts/quality/audit_doc_examples.py`,
-> mirrored for convenience in `scitex-python/scripts/`. Prefer
-> `python -m scitex_dev._cli_quality audit_docs --projects-root $HOME/proj`
-> once `scitex-dev` is installed.
+> Canonical: `scitex-dev/scripts/quality/audit_doc_examples.py` (mirrored
+> to `scitex-python/scripts/`). Prefer
+> `python -m scitex_dev._cli_quality audit_docs --projects-root $HOME/proj`.
 
-Line-limit auditor (§cap enforcement) lives alongside these:
-`scitex-dev/scripts/quality/audit_line_limits.py` (mirrored to
-`scitex-python/scripts/audit_line_limits.py`), allowlist at
-`scitex-dev/scripts/quality/line_limits_allowlist.txt`.
+Line-limit auditor: `scitex-dev/scripts/quality/audit_line_limits.py`
+(mirrored), allowlist `line_limits_allowlist.txt` alongside.
 
 ## 8. Nightly workflows are scheduled
 
@@ -174,16 +158,13 @@ Two outputs per pass.
 
 ### 10a. Current-state table (for the human)
 
-| package | branch | push | CI | notes |
-
-Only call out anomalies. No false positives — verify each finding
-before reporting. If a failure is a pre-existing test-debt item (not a
-regression from this pass), say so explicitly.
+`| package | branch | push | CI | notes |` — anomalies only. Verify
+each finding (no false positives). Mark pre-existing test-debt as such.
 
 ### 10b. Append-only audit log (for regression tracking)
 
 Append one entry per pass to `scitex-dev/quality-audits/YYYY-MM-DD.md`
-(top-level, not under `logs/` which is gitignored):
+(top-level, not `logs/` which is gitignored):
 
 ```markdown
 ## YYYY-MM-DD HH:MM UTC — /speak-and-call pass
@@ -195,27 +176,24 @@ Append one entry per pass to `scitex-dev/quality-audits/YYYY-MM-DD.md`
 - Next scheduled check: <ScheduleWakeup delay / cron>
 ```
 
-This makes multi-week trends legible — e.g. "scitex-audio fails the
-same way on 3/7 runs" → systemic, worth investing in.
+Makes multi-week trends legible (e.g. "scitex-audio fails the same way
+3/7 runs" → systemic).
 
 ## 11. Response protocol for a /speak-and-call quality run
 
-1. Branch + push audit (§1, §2) — report anomalies only.
-2. CI audit (§3) — table of failing runs + canonical fix per symptom.
-3. Apply canonical fixes to the non-dirty repos; skip user's dirty
-   trees and report them separately.
-4. Wait for CI to rerun (use `ScheduleWakeup` 270–900 s depending on
-   workflow length). Do not poll in tight loops.
-5. Final summary: X/N green, Y requires user attention, Z in progress.
-6. Append one entry to `scitex-dev/quality-audits/YYYY-MM-DD.md` (§10b).
+1. Branch + push audit (§1, §2) — anomalies only.
+2. CI audit (§3) — table of failing runs + canonical fix.
+3. Apply fixes to non-dirty repos; report dirty ones separately.
+4. `ScheduleWakeup` 270–900 s for CI to rerun; no tight polling.
+5. Summary: X/N green, Y needs user, Z in progress.
+6. Append entry to `scitex-dev/quality-audits/YYYY-MM-DD.md` (§10b).
 
 ## 12. Do-not-touch list (refresh every run)
 
-Never modify files in a repo with uncommitted user work. Refresh via
-`git -C <path> status --short` at the start of *every* pass.
-
-If §§1–10 flag an issue in a dirty tree: prefer GH-API merge, or
-`git worktree add`, or just report commands. Never stash/pop.
+Never modify a repo with uncommitted user work. Run
+`git -C <path> status --short` each pass. For issues in dirty trees:
+prefer GH-API merge, `git worktree add`, or report commands. Never
+stash/pop.
 
 Commit-in-dirty-tree guard (mandatory):
 
@@ -224,56 +202,88 @@ Commit-in-dirty-tree guard (mandatory):
     <file1> [...] -- -m "msg"
 ```
 
-Aborts if the index has extras. Prevents the 2026-04-24 failure where
-an agent's `git commit` swept 40 pre-staged user files. Canonical home
-is `~/.claude/to_claude/bin/` alongside `safe_rm.sh` — same pattern of
-agent-facing wrapper enforcing safety on a destructive git op.
+Aborts if the index has extras — prevents the 2026-04-24 accident
+where a commit swept 40 pre-staged user files. Canonical home
+`~/.claude/to_claude/bin/` (alongside `safe_rm.sh`).
+
+## 14. Extras-completeness (every canonical package reachable)
+
+Stricter than playbook §6 (which only catches `foo = []` when
+`src/scitex/foo/` exists). Every canonical ecosystem package MUST appear
+in at least one named extra AND in `[all]`, so
+`pip install scitex[<name>]` actually pulls `scitex-<name>`.
+
+**Failure (2026-04-24).** `clew = []`, `path = ["GitPython","matplotlib"]`
+(no `scitex-path`), `ui = []`, `linter`/`core`/`scholar` absent.
+`pip install scitex[path]` installs GitPython but NOT `scitex-path`, so
+`stx.path.find_git_root()` silently falls back to the umbrella shim
+instead of the standalone's full implementation. Rule:
+`09_arch-modules-and-standalone-packages.md` §12.
+
+**Probe (uses canonical registry):**
+
+```bash
+python3.11 - <<'EOF'
+import subprocess, json, tomllib
+reg = json.loads(subprocess.check_output(
+  ["scitex","dev","ecosystem","list","--json"]))["packages"]
+non_lib = {"pip-project-template","singularity-template",
+  "automated-research-demo","scitex-research-template","scitex"}
+libs = sorted(p for p in reg if p not in non_lib)
+ex = tomllib.loads(open("pyproject.toml","rb").read()
+  )["project"]["optional-dependencies"]
+m_any = [p for p in libs if not any(p in ex.get(e,[]) for e in ex)]
+m_all = [p for p in libs if p not in ex.get("all", [])]
+if m_any: print("MISSING any extra:", m_any); raise SystemExit(1)
+if m_all: print("MISSING [all]:", m_all); raise SystemExit(1)
+print("OK:", len(libs), "ecosystem pkgs reachable")
+EOF
+```
+
+**Fix.** Add missing entries. TS-only modules (`ui`) either declare the
+pypi package OR raise an explicit ImportError from the shim (see `09`
+§12). Never merge pyproject changes that leave a canonical pkg
+unreachable.
 
 ## 16. Dynamic audit via agent task execution (planned)
 
-Static checks above verify the **"looks right"** dimension. Dynamic
-checks will verify **"works right"** under realistic workloads — agents
-executing end-to-end research tasks (paper drafts, data pipelines) and
-logging tool-use distributions, error recovery, and output quality.
+Static checks above verify **"looks right"**; dynamic checks will verify
+**"works right"** under realistic workloads — agents executing end-to-end
+tasks, logging tool-use distributions and output quality.
 
-- **Static pass gates commit.** Static audits in §§1–15 + the playbook
-  (§98) must be green before merging to develop.
-- **Dynamic pass gates release.** A PyPI release wave additionally
-  requires a passing dynamic-audit run covering the ecosystem's primary
-  research workflows.
+- Static pass (§§1–15 + playbook §98) gates commit to develop.
+- Dynamic pass additionally gates PyPI release.
 
-Design skeleton:
-`scitex-dev/src/scitex_dev/_skills/scitex-dev/20_dynamic-audit.md` —
-task dataset T01–T10, execution infra, metrics. Not yet implemented;
-minimal first pass (3 tasks) specified there.
+Design skeleton: `scitex-dev/src/scitex_dev/_skills/scitex-dev/20_dynamic-audit.md`
+(task dataset T01–T10; minimal first pass of 3 tasks specified).
 
-Host: `scitex-dev` owns the canonical quality-audit scripts under
-`scitex-dev/scripts/quality/` and the audit logs under
-`scitex-dev/logs/quality-audits/`. The `scitex-python/scripts/` copies
-are a convenience mirror for in-repo workflows.
+Host: `scitex-dev` owns canonical quality scripts
+(`scitex-dev/scripts/quality/`) and audit logs
+(`scitex-dev/logs/quality-audits/`); `scitex-python/scripts/` is a mirror.
 
 ## 17. Dashboard export
-
-Run after a pass (or as a weekly cron):
 
 ```bash
 python3.11 ~/proj/scitex-python/scripts/audit_quality_dashboard.py
 ```
 
-→ `scitex-dev/dashboards/quality.md`: per-package CI/tag/PyPI/aligned.
+→ `scitex-dev/dashboards/quality.md` (per-pkg CI/tag/PyPI/aligned).
 Scope = §0 ∩ (`scitex*` or allowlist: figrecipe, socialia,
 openalex-local, crossref-local).
 
 ## 18. English-only enforcement
 
-English-only. Exempt a line with `# i18n-ok` / `<!-- i18n-ok -->`
-(marker in ±2 lines covers docstring/class pairs and formatter splits).
+Exempt a line with `# i18n-ok` / `<!-- i18n-ok -->` (±2 lines).
 
 ```bash
 python3.11 ~/proj/scitex-python/scripts/audit_english_only.py
 ```
 
-Excludes caches, node_modules, vendored `.claude/` mirrors.
+## 19. License enforcement (AGPL-3.0-only)
+
+SPDX `license = "AGPL-3.0-only"` + AGPL classifier + LICENSE at root.
+`scitex-dev/scripts/quality/audit_license.py` (+ `fix_license.py
+--apply --commit`; skips dirty trees, uses the guard).
 
 ## Release-gate questions
 
