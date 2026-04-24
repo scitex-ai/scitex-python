@@ -29,10 +29,9 @@ from pathlib import Path
 UMBRELLA_SRC = Path(__file__).resolve().parent.parent / "src" / "scitex"
 
 ABOUT_TEMPLATE = (
-    "Python toolkit for reproducible science. "
-    "{modules} modules, {cli} CLI commands, "
-    "{mcp} MCP tools, and {skills} skills. "
-    "From raw data to manuscript."
+    "Python toolkit for reproducible science \u2014 from raw data to manuscript. "
+    "Includes {modules} modules, {cli} CLI commands, "
+    "{mcp} MCP tools, and {skills} skills."
 )
 
 
