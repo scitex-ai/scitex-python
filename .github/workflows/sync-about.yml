@@ -1,0 +1,69 @@
+name: Sync GitHub About
+
+# Hourly refresh of the repo's GitHub About line from live ecosystem counts.
+# Counts: umbrella modules, CLI commands across scitex-*/pyproject.toml,
+# @mcp.tool() decorators across scitex-*/src, and _skills/ leaf pages.
+
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - '.github/workflows/sync-about.yml'
+      - 'scripts/compute_ecosystem_stats.py'
+      - 'src/scitex/**/__init__.py'
+      - 'pyproject.toml'
+  schedule:
+    - cron: "0 * * * *"  # Hourly, top of every hour UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Checkout downstream scitex-* repos (develop preferred)
+        run: |
+          mkdir -p "$HOME/proj"
+          ln -sf "$GITHUB_WORKSPACE" "$HOME/proj/scitex-python"
+          for pkg in scitex-io scitex-stats scitex-scholar scitex-notebook \
+                    scitex-audio scitex-clew scitex-linter scitex-notification \
+                    scitex-app scitex-dataset scitex-ui scitex-container \
+                    scitex-tunnel figrecipe scitex-writer scitex-audit \
+                    scitex-browser scitex-core scitex-dev scitex-dict \
+                    scitex-gists scitex-logging scitex-path scitex-plt \
+                    scitex-repro scitex-str scitex-types scitex-agent-container \
+                    scitex-cloud scitex-orochi scitex-etc scitex-compat \
+                    scitex-db scitex-parallel; do
+            git clone --depth 1 --branch develop \
+              "https://github.com/ywatanabe1989/$pkg.git" \
+              "$HOME/proj/$pkg" 2>/dev/null || \
+            git clone --depth 1 \
+              "https://github.com/ywatanabe1989/$pkg.git" \
+              "$HOME/proj/$pkg" 2>/dev/null || true
+          done
+
+      - name: Compute ecosystem stats
+        id: stats
+        run: |
+          about=$(python3 scripts/compute_ecosystem_stats.py \
+            --projects-root "$HOME/proj" --github-about)
+          echo "about=$about" >> "$GITHUB_OUTPUT"
+          echo "$about"
+
+      - name: Sync GitHub repo description
+        env:
+          # PAT with administration:write stored as REPO_ADMIN_TOKEN.
+          # Step no-ops when the secret is absent.
+          GH_TOKEN: ${{ secrets.REPO_ADMIN_TOKEN }}
+        if: ${{ env.GH_TOKEN != '' }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}" -X PATCH \
+            -f description="${{ steps.stats.outputs.about }}" || true
