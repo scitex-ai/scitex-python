@@ -46,6 +46,11 @@ jobs:
           # changes in this PR / push (e.g. extras that re-export new
           # downstream packages) before they're published to PyPI.
           pip install ".[all]"
+          # Explicitly install downstream packages that may not be covered by
+          # [all] extra yet, so the doc-example auditor can resolve chains
+          # like stx.dataset.neuroscience.openneuro and stx.container.apptainer.
+          pip install scitex-dataset scitex-container scitex-scholar \
+                      scitex-notebook scitex-linter || true
 
       - name: Checkout downstream package repos for README audit
         run: |
