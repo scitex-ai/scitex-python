@@ -5,7 +5,7 @@ description: Dependency hygiene and version-pinning rules across the SciTeX 3-la
 
 # Dependency Hygiene & Version Pinning
 
-Companion to [07_arch-upstream-and-downstream.md](07_arch-upstream-and-downstream.md). The 3-layer cascade imposes strict rules on what each layer may depend on and how versions are pinned.
+Companion to [01_arch_01_upstream-and-downstream.md](01_arch_01_upstream-and-downstream.md). The 3-layer cascade imposes strict rules on what each layer may depend on and how versions are pinned.
 
 ## Why minima matter — the multi-package development problem
 

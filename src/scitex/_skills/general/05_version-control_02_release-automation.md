@@ -5,7 +5,7 @@ description: Automation commands and ecosystem-sync CLI for SciTeX version manag
 
 # Version Control — Release Automation
 
-Companion to [11_version-control-management.md](11_version-control-management.md). This skill documents the **automation commands** (CLI, MCP, Python API) that support the release workflow.
+Companion to [05_version-control_01_management.md](05_version-control_01_management.md). This skill documents the **automation commands** (CLI, MCP, Python API) that support the release workflow.
 
 ## Full Ecosystem Update
 

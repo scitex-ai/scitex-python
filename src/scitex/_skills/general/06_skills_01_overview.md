@@ -3,7 +3,7 @@ name: skills
 description: Practical guide for writing and maintaining skills for SciTeX packages — lessons learned, workflow, and quality checklist.
 ---
 
-> Structure rules: see [05_interface-skills.md](05_interface-skills.md)
+> Structure rules: see [03_interface_04_skills.md](03_interface_04_skills.md)
 
 # Writing Skills for SciTeX Packages
 
@@ -25,7 +25,7 @@ vi ~/proj/<repo>/src/<pkg>/_skills/<pip-name>/<file>.md
 scitex-dev skills export --package <pip-name>
 ```
 
-Do NOT add `[tool.hatch.build.targets.wheel.force-include]` for `_skills/` — hatch already includes files under `src/<pkg>/` in the wheel. See [05_interface-skills.md](05_interface-skills.md).
+Do NOT add `[tool.hatch.build.targets.wheel.force-include]` for `_skills/` — hatch already includes files under `src/<pkg>/` in the wheel. See [03_interface_04_skills.md](03_interface_04_skills.md).
 
 ## Lessons Learned
 

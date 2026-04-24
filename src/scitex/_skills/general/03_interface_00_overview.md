@@ -17,8 +17,8 @@ Every SciTeX package exposes up to five interfaces. No logic duplication — all
 
 ## Sub-skills
 
-* [02_interface-python-api.md](02_interface-python-api.md) — Minimal API design, no logic duplication
-* [03_interface-cli.md](03_interface-cli.md) — Required sub-commands, flags, consistency rules
-* [04_interface-mcp.md](04_interface-mcp.md) — fastmcp patterns, reproducibility, standard commands
-* [05_interface-skills.md](05_interface-skills.md) — `_skills/` layout, SKILL.md format, registration, export
-* [06_interface-http-api.md](06_interface-http-api.md) — Optional FastAPI, delegation rules
+* [03_interface_01_python-api.md](03_interface_01_python-api.md) — Minimal API design, no logic duplication
+* [03_interface_02_cli.md](03_interface_02_cli.md) — Required sub-commands, flags, consistency rules
+* [03_interface_03_mcp.md](03_interface_03_mcp.md) — fastmcp patterns, reproducibility, standard commands
+* [03_interface_04_skills.md](03_interface_04_skills.md) — `_skills/` layout, SKILL.md format, registration, export
+* [03_interface_05_http-api.md](03_interface_05_http-api.md) — Optional FastAPI, delegation rules

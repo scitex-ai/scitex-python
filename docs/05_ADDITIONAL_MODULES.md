@@ -40,13 +40,23 @@ hits = stx.dataset.search_datasets(ds, text_query="phase-amplitude coupling")
 ## `scitex.container` — Apptainer / Docker Management
 
 Reproducible HPC containers — build, version, rollback, env snapshot.
+Subcommands live on the `apptainer` / `docker` sub-namespaces:
 
 ```python
 import scitex as stx
-stx.container.build(def_name="recipe")                  # Builds versioned SIF
-stx.container.switch_version("2.19.5")                  # Atomic active-SIF flip
-stx.container.rollback()                                # Revert to previous version
-snap = stx.container.env_snapshot()                     # Full env for papers
+stx.container.apptainer.build(def_name="recipe")                  # Builds versioned SIF
+stx.container.apptainer.switch_version("2.19.5")                  # Atomic active-SIF flip
+stx.container.apptainer.rollback()                                # Revert to previous version
+stx.container.apptainer.status()                                  # Active version + sandbox info
+snap = stx.container.env_snapshot()                               # Full env for papers (top-level)
+```
+
+Or via the CLI:
+
+```bash
+scitex container build --def recipe.def
+scitex container switch-version 2.19.5
+scitex container rollback
 ```
 
 ## `scitex.tunnel` — Persistent SSH Reverse Tunnels

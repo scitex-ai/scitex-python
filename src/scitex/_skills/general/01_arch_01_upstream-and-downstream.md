@@ -43,7 +43,7 @@ These packages belong to the SciTeX ecosystem but sit **outside** the library ca
 
 **Why this matters**: applying cascade rules (e.g. "downstream must not import upstream", "upstream has no logic") to these packages is a category error. They have their own internal architectures.
 
-> For dependency hygiene and version-pinning rules (optional extras, `>=X` minima, coordinated waves), see the sibling skill [08_arch-dependency-and-version-pinning.md](08_arch-dependency-and-version-pinning.md).
+> For dependency hygiene and version-pinning rules (optional extras, `>=X` minima, coordinated waves), see the sibling skill [01_arch_02_dependency-and-version-pinning.md](01_arch_02_dependency-and-version-pinning.md).
 
 ---
 
@@ -174,4 +174,4 @@ re-exposes only. All interfaces cascade in the same direction.
 - [ ] All three interfaces (Python API, CLI, MCP) cascade in the same direction.
 - [ ] No reverse imports (check with grep / linter).
 
-For dependency hygiene and version-pinning checks, see [08_arch-dependency-and-version-pinning.md](08_arch-dependency-and-version-pinning.md).
+For dependency hygiene and version-pinning checks, see [01_arch_02_dependency-and-version-pinning.md](01_arch_02_dependency-and-version-pinning.md).

@@ -1,7 +1,7 @@
 <!-- ---
 !-- Timestamp: 2026-04-23 08:50:00
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/11_version-control-management.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/05_version-control_01_management.md
 !-- --- -->
 
 ---
@@ -11,7 +11,7 @@ description: Core version management workflow — branches, tags, release waves,
 
 # SciTeX Version Management (Core Workflow)
 
-For automation commands and ecosystem-sync CLI details, see the companion skill [12_version-control-release-automation.md](12_version-control-release-automation.md).
+For automation commands and ecosystem-sync CLI details, see the companion skill [05_version-control_02_release-automation.md](05_version-control_02_release-automation.md).
 
 ## Version Management Levels
 
@@ -87,7 +87,7 @@ Auto-determine from `git log`: if any commit starts with `feat:` → minor. Othe
 If your bump exposes a new API that downstream/middle/upstream packages
 already use, those packages' `pyproject.toml` lower bounds must be raised
 in the same wave. See [08 § When YOU update a package, bump minima in
-consumers](08_arch-dependency-and-version-pinning.md#when-you-update-a-package-bump-minima-in-consumers).
+consumers](01_arch_02_dependency-and-version-pinning.md#when-you-update-a-package-bump-minima-in-consumers).
 
 Quick check:
 
@@ -111,7 +111,7 @@ git add pyproject.toml
 git commit -m "chore: bump version to X.Y.Z"
 git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin develop --tags
-# 3. Sync — see 12_version-control-release-automation.md for commands
+# 3. Sync — see 05_version-control_02_release-automation.md for commands
 ```
 
 ## RULES: Never Sync Blind

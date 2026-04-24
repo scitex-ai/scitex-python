@@ -75,4 +75,4 @@ grep -rhoE 'SCITEX_[A-Z0-9_]+' scitex-<pkg>/src/ | sort -u
 ```
 
 Cross-check against the leaf; any var present in source but missing from the
-table is a release blocker (see `99_scitex-quality-checklist.md` §15).
+table is a release blocker (see `99_quality_02_checklist.md` §15).

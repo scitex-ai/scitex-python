@@ -1,7 +1,7 @@
 <!-- ---
 !-- Timestamp: 2026-04-23 09:00:00
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/22_skills-quality-checklist.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/06_skills_04_quality-checklist.md
 !-- --- -->
 
 ---
@@ -20,7 +20,7 @@ findings from 2026-04-23 drove the concrete rules below.
 Applies to every `src/<pkg>/_skills/<skill>/` directory in every package in
 the ecosystem. Does **not** apply to private skills under
 `~/.scitex/<pkg>/shared/skills/` (those follow the private-skill schema in
-`21_skills-public-vs-private.md`).
+`06_skills_03_public-vs-private.md`).
 
 ## 1. Directory structure
 
@@ -46,7 +46,7 @@ the ecosystem. Does **not** apply to private skills under
       - `40–49` lessons, scratch, playground
 - [ ] `SKILL.md` itself has **no** numeric prefix.
 - [ ] Filenames are **kebab-case** after the prefix:
-      `07_arch-upstream-and-downstream.md`.
+      `01_arch_01_upstream-and-downstream.md`.
 - [ ] **NEVER** rename a prefixed file by hand; use `git mv` so history is
       preserved.
 
@@ -84,7 +84,7 @@ the ecosystem. Does **not** apply to private skills under
 - [ ] **NEVER** restate general-ecosystem rules (four interfaces, env-var
       prefix, branding, version management) inside a package skill. Link
       to `general/` instead:
-      `See [../general/10_arch-environment-variables.md] for the canonical rule.`
+      `See [../general/01_arch_04_environment-variables.md] for the canonical rule.`
 
 ## 6. No contradictions with `general/`
 
@@ -124,6 +124,6 @@ Before bumping the package version:
 
 Future work: add a `scitex-linter` plugin that checks §1–§8
 programmatically and runs as part of the release gate. Tracking: see
-`15_repo-quality.md` (sibling) for the broader release checklist.
+`02_repo_03_quality.md` (sibling) for the broader release checklist.
 
 <!-- EOF -->

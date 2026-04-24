@@ -35,7 +35,7 @@ so the public surface is grep-able.
 
 The umbrella NEVER implements logic. If the extra isn't installed, the bridge
 raises `ImportError` with a pointer to `pip install scitex[<name>]`. This is
-the hard rule; see `09_arch-modules-and-standalone-packages.md` §12.
+the hard rule; see `01_arch_03_modules-and-standalone-packages.md` §12.
 
 ## When NOT to re-export
 

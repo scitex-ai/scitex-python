@@ -1,7 +1,7 @@
 <!-- ---
 !-- Timestamp: 2026-04-24 11:30:59
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/99_scitex-quality-checklist.md
+!-- File: /home/ywatanabe/proj/scitex-python/src/scitex/_skills/general/99_quality_02_checklist.md
 !-- --- -->
 
 # SciTeX Ecosystem — Periodic Quality Checklist
@@ -21,7 +21,7 @@ delegate big ones to subagents.
 - **§16–§17 — Planned** (dynamic audits, dashboard export)
 
 Failure-mode cookbook: sibling
-[98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md)
+[98_quality_01_failure-playbook.md](98_quality_01_failure-playbook.md)
 (PyPI traps, wheel drift, numpy2/pandas/optional-dep guards,
 extras-completeness, Doc-Drift CI install source).
 
@@ -72,7 +72,7 @@ Flag `failure`, `cancelled`, `in_progress > 1h`.
 
 Severity: **CRITICAL** blocks release; **HIGH** one pkg; **MEDIUM**
 test bug; **LOW** cosmetic. Full cookbook (~18 patterns):
-[98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md).
+[98_quality_01_failure-playbook.md](98_quality_01_failure-playbook.md).
 
 ## 4. Test scope purity
 
@@ -146,7 +146,7 @@ on:
   `[project.optional-dependencies]`.
 - Every package defines an `[all]` extra (may be empty for utilities).
 - Consumers of scitex pkgs pin min version in their pyproject (see
-  `08_arch-dependency-and-version-pinning.md`).
+  `01_arch_02_dependency-and-version-pinning.md`).
 
 ## 10. Reporting back
 
@@ -212,7 +212,7 @@ in at least one named extra AND in `[all]`, so
 `pip install scitex[path]` installs GitPython but NOT `scitex-path`, so
 `stx.path.find_git_root()` silently falls back to the umbrella shim
 instead of the standalone's full implementation. Rule:
-`09_arch-modules-and-standalone-packages.md` §12.
+`01_arch_03_modules-and-standalone-packages.md` §12.
 
 **Probe (uses canonical registry):**
 
@@ -244,7 +244,7 @@ unreachable.
 Every package that reads one or more `SCITEX_*` env vars MUST carry an
 `NN_env-vars.md` leaf under `src/<pkg_snake>/_skills/<pkg>/` that documents
 each variable (purpose, default, type, opt-in vs opt-out). Rule defined in
-`10_arch-environment-variables.md`.
+`01_arch_04_environment-variables.md`.
 
 **Probe** (diff source vs docs across the ecosystem):
 

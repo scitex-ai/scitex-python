@@ -90,7 +90,11 @@ Callers in the upstream package pass the resolved path explicitly. A
 back-compat duck-typed `config` kwarg can bridge the transition without
 reintroducing the import.
 
-## 6. Never hardcode `~/.scitex/<pkg>/...` — always `PathManager`
+## 6. Local-state root — always via `PathManager`
+
+Every package writes into exactly one subdirectory at each scope: `<project>/.scitex/<pkg-short>/` (project, wins) and `~/.scitex/<pkg-short>/` (user, fallback). Prefix-stripping: `scitex-scholar` → `scholar`. Full rules — filename conventions, forbidden locations, `SCITEX_DIR` relocation, migration — live in `01_arch_06_local-state-directories.md`.
+
+Inside the package, never hardcode the absolute path — resolve through `PathManager`:
 
 ```python
 # NO
@@ -102,7 +106,7 @@ screenshot_dir = (
 )
 ```
 
-Hardcoded paths break when users set `SCITEX_DIR`.
+Hardcoded paths break when users set `SCITEX_DIR` or switch between project and user scope.
 
 ## 7. Record failure outcomes in metadata, not just logs
 
@@ -149,7 +153,42 @@ that IS success. Strict `success = not timed_out AND ...` discards
 valid resolutions and forces the caller to fall back to the original
 OpenURL, producing "Found 0 PDF URLs" on pages that have no PDFs.
 
-## 12. Dead tests at collection break CI
+## 12. Every module MUST have an extra listing its standalone package
+
+**Rule.** For every canonical ecosystem package `scitex-<name>` listed in
+`scitex dev ecosystem list --json`, the umbrella's `pyproject.toml` MUST
+define an extra where the standalone package itself appears:
+
+```toml
+[project.optional-dependencies]
+<name> = ["scitex-<name>"]            # minimum
+# or, if the in-umbrella shim needs base python deps too:
+path    = ["scitex-path", "GitPython", "matplotlib"]
+```
+
+**Why.** A bare `pip install scitex` gives a thin umbrella with shim
+modules. `pip install scitex[<name>]` must actually install
+`scitex-<name>` — otherwise `stx.<name>.foo()` silently falls back to the
+in-umbrella shim instead of the real standalone package. Observed failure
+(2026-04-24 audit): `path = ["GitPython", "matplotlib"]` ships GitPython
+but NOT `scitex-path`, so `stx.path.find_git_root()` runs the umbrella
+shim — a confusingly different codepath from the standalone.
+
+**TypeScript-only modules (e.g. `ui`).** Two acceptable patterns:
+
+1. The extra still declares the pypi package so the Python re-export path
+   resolves: `ui = ["scitex-ui"]`.
+2. The extra is intentionally empty AND the umbrella shim raises a clear
+   `ImportError` pointing the user at the standalone TS/JS project.
+   Silent `None` re-exports are NOT acceptable (see §2).
+
+**`[all]` extra.** Must transitively install every canonical package.
+Easiest: `all = [<every scitex-* pinned>]`. A package missing from both
+its named extra and `[all]` is invisible to users — treat as a bug.
+
+**Probe.** See `99_quality_02_checklist.md` §14.
+
+## 13. Dead tests at collection break CI
 
 After splitting a package, `pytest` collects ALL test files — including
 ones that import modules that were removed. They fail at collection,

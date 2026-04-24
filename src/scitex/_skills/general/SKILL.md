@@ -20,54 +20,51 @@ interfaces:
 
 ## Sub-skills
 
-### Interfaces
-- [01_interfaces-overview.md](01_interfaces-overview.md) — Five interfaces: overview and delegation chain
-- [02_interface-python-api.md](02_interface-python-api.md) — Minimal API, `__all__`, hide internals, PyPI first publish
-- [03_interface-cli.md](03_interface-cli.md) — Required sub-commands, flags, AI-friendly rules, Click patterns
-- [04_interface-mcp.md](04_interface-mcp.md) — fastmcp, tool naming, reproducibility, standard commands
-- [05_interface-skills.md](05_interface-skills.md) — `_skills/` layout, no-monolith, registration, export
-- [06_interface-http-api.md](06_interface-http-api.md) — Optional FastAPI delegation
+Read in this order when building or auditing a package. Each section presupposes the ones above it.
 
-### Architecture
-- [07_arch-upstream-and-downstream.md](07_arch-upstream-and-downstream.md) — 3-layer cascade, test scope, cascade pattern
-- [08_arch-dependency-and-version-pinning.md](08_arch-dependency-and-version-pinning.md) — Dependency hygiene, optional extras, version-pinning rules
-- [09_arch-modules-and-standalone-packages.md](09_arch-modules-and-standalone-packages.md) — Module vs standalone package boundaries
-- [10_arch-environment-variables.md](10_arch-environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule; mandates per-package `NN_env-vars.md` leaf
-- [26_arch-re-export.md](26_arch-re-export.md) — Umbrella `scitex.<name>` thin-re-export pattern + lazy-import guard
+### 1. Architecture — what does this package *exist as*?
+- [01_arch_01_upstream-and-downstream.md](01_arch_01_upstream-and-downstream.md) — 3-layer cascade, test scope, cascade pattern
+- [01_arch_02_dependency-and-version-pinning.md](01_arch_02_dependency-and-version-pinning.md) — Dependency hygiene, optional extras, version-pinning rules
+- [01_arch_03_modules-and-standalone-packages.md](01_arch_03_modules-and-standalone-packages.md) — Module vs standalone package boundaries
+- [01_arch_04_environment-variables.md](01_arch_04_environment-variables.md) — `SCITEX_<MODULE_NAME>_*` prefix rule; mandates per-package `NN_env-vars.md` leaf
+- [01_arch_05_re-export.md](01_arch_05_re-export.md) — Umbrella `scitex.<name>` thin-re-export pattern + lazy-import guard
+- [01_arch_06_local-state-directories.md](01_arch_06_local-state-directories.md) — `<project>/.scitex/<pkg-short>/` + `~/.scitex/<pkg-short>/` layout, precedence, `SCITEX_DIR`, `PathManager`
 
-### Version Control
-- [11_version-control-management.md](11_version-control-management.md) — Branches, tags, release waves, release gates (core workflow)
-- [12_version-control-release-automation.md](12_version-control-release-automation.md) — Automation commands, ecosystem sync CLI, MCP tools, Python API
+### 2. Repository — how does the code live on disk?
+- [02_repo_01_layout-src-tests-scripts-examples.md](02_repo_01_layout-src-tests-scripts-examples.md) — Layout boundaries between `src/`, `tests/`, `scripts/`, `examples/`, `references/`
+- [02_repo_02_github-actions.md](02_repo_02_github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
+- [02_repo_03_quality.md](02_repo_03_quality.md) — Repository-level quality (AGPL, Four Freedoms, README rules, GitHub setup)
+- [02_repo_04_brand-logo-and-css.md](02_repo_04_brand-logo-and-css.md) — Brand logo and CSS rules
 
-### Repository
-- [13_repo-layout-src-tests-scripts-examples.md](13_repo-layout-src-tests-scripts-examples.md) — Layout boundaries between `src/`, `tests/`, `scripts/`, `examples/`, `references/`
-- [14_repo-github-actions.md](14_repo-github-actions.md) — CI, PyPI publish, CLA, reusable workflow patterns
-- [15_repo-quality.md](15_repo-quality.md) — Repository-level quality (AGPL, Four Freedoms, README rules, GitHub setup)
-- [16_repo-brand-logo-and-css.md](16_repo-brand-logo-and-css.md) — Brand logo and CSS rules
+### 3. Interfaces — how do users and agents touch the package?
+- [03_interface_00_overview.md](03_interface_00_overview.md) — Five interfaces: overview and delegation chain
+- [03_interface_01_python-api.md](03_interface_01_python-api.md) — Minimal API, `__all__`, hide internals, PyPI first publish
+- [03_interface_02_cli.md](03_interface_02_cli.md) — Required sub-commands, flags, noun-verb convention, AI-friendly rules
+- [03_interface_03_mcp.md](03_interface_03_mcp.md) — fastmcp, tool naming, reproducibility, standard commands
+- [03_interface_04_skills.md](03_interface_04_skills.md) — `_skills/` layout, no-monolith, registration, export
+- [03_interface_05_http-api.md](03_interface_05_http-api.md) — Optional FastAPI delegation
 
-### Documentation
-- [17_docs-readme.md](17_docs-readme.md) — Standard README template, sections, badges, footer
-- [18_docs-sphinx.md](18_docs-sphinx.md) — Sphinx docs, conf.py, RTD config, troubleshooting
+### 4. Documentation — how does the package become understandable?
+- [04_docs_01_readme.md](04_docs_01_readme.md) — Standard README template, sections, badges, footer
+- [04_docs_02_sphinx.md](04_docs_02_sphinx.md) — Sphinx docs, conf.py, RTD config, troubleshooting
 
-### Skill Authoring
-- [19_skills-overview.md](19_skills-overview.md) — Practical guide for writing skills: lessons learned, workflow
-- [20_skills-how-to-update.md](20_skills-how-to-update.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
-- [21_skills-public-vs-private.md](21_skills-public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
-- [22_skills-quality-checklist.md](22_skills-quality-checklist.md) — Release-gate checklist for `_skills/` directories
+### 5. Version Control — how does it ship?
+- [05_version-control_01_management.md](05_version-control_01_management.md) — Branches, tags, release waves, release gates (core workflow)
+- [05_version-control_02_release-automation.md](05_version-control_02_release-automation.md) — Automation commands, ecosystem sync CLI, MCP tools, Python API
 
-### Logs
-- [23_remediation-log.md](23_remediation-log.md) — Dated remediation log for audit findings
-- [24_package-gaps-2026-04-23.md](24_package-gaps-2026-04-23.md) — Package-gap audit snapshot
+### 6. Skill Authoring — meta: how do we write these rules themselves?
+- [06_skills_01_overview.md](06_skills_01_overview.md) — Practical guide for writing skills: lessons learned, workflow
+- [06_skills_02_how-to-update.md](06_skills_02_how-to-update.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
+- [06_skills_03_public-vs-private.md](06_skills_03_public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
+- [06_skills_04_quality-checklist.md](06_skills_04_quality-checklist.md) — Release-gate checklist for `_skills/` directories
 
-### Session
-- [25_session-config.md](25_session-config.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
+### 7. Domain extras — ecosystem-wide topics not tied to one layer
+- [07_api_01_session-config.md](07_api_01_session-config.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
+- [08_figures_01_scientific.md](08_figures_01_scientific.md) — Universal scientific-figure standards; pairs with `figrecipe/21_scientific-figure-patterns.md`
 
-### Figures
-- [30_scientific-figures.md](30_scientific-figures.md) — Universal scientific-figure standards: comparison rules (shared color scale, aligned axes), multi-panel layout, color maps, PDF report layout. Pairs with `figrecipe/21_scientific-figure-patterns.md` for matplotlib code.
-
-### Periodic Ecosystem Quality
-- [98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes
-- [99_scitex-quality-checklist.md](99_scitex-quality-checklist.md) — Strategic /speak-and-call runbook with append-only log
+### 8. Periodic Ecosystem Quality — run these when something feels off
+- [98_quality_01_failure-playbook.md](98_quality_01_failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes
+- [99_quality_02_checklist.md](99_quality_02_checklist.md) — Strategic /speak-and-call runbook with append-only log
 
 ### Scratch
 - [40_playground.md](40_playground.md) — Scratch notes
