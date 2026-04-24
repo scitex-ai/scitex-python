@@ -91,7 +91,14 @@ def walk_chains(module, source: str, alias: str):
         parts.reverse()
         obj = module
         for i, p in enumerate(parts):
-            if not hasattr(obj, p):
+            try:
+                has = hasattr(obj, p)
+            except ImportError:
+                # scitex umbrella's lazy-submodule __getattr__ raises
+                # ImportError (not AttributeError) when optional extras are
+                # missing; treat that as "chain not resolvable in this env".
+                has = False
+            if not has:
                 yield f"{alias}." + ".".join(parts[: i + 1]), False
                 break
             obj = getattr(obj, p)
