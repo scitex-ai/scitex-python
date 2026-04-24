@@ -62,6 +62,9 @@ interfaces:
 ### Session
 - [25_session-config.md](25_session-config.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
 
+### Figures
+- [30_scientific-figures.md](30_scientific-figures.md) — Universal scientific-figure standards: comparison rules (shared color scale, aligned axes), multi-panel layout, color maps, PDF report layout. Pairs with `figrecipe/21_scientific-figure-patterns.md` for matplotlib code.
+
 ### Periodic Ecosystem Quality
 - [98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes
 - [99_scitex-quality-checklist.md](99_scitex-quality-checklist.md) — Strategic /speak-and-call runbook with append-only log
