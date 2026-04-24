@@ -20,6 +20,17 @@ Never touch user's uncommitted edits — run `git -C <path> status --short`
 and only stage files YOU modified. Use `-c core.hooksPath=/dev/null` on
 pushes to bypass the X11-dependent pre-push hook.
 
+**Scope this sweep to the library ecosystem only.** Some `scitex-*`
+directories are peripheral and will throw false positives if included:
+
+- Paper/manuscript drafts: `scitex-paper-*`, papers — no Python package
+- Agentic / TS exploration repos: `scitex-agentic-test`, any bun-only
+  repo — no `pyproject.toml`
+
+Gate every probe on `test -f "$p/pyproject.toml"` (or on a known
+allowlist). Packages in scope = those with both `pyproject.toml` and
+either a PyPI entry or a `_skills/` directory.
+
 ## 1. Branch hygiene (every repo on `develop`)
 
 **Check:** for each `scitex-*` repo, confirm current branch is `develop`
