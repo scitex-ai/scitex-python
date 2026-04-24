@@ -30,8 +30,14 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install uv
+      - name: Install uv (with cache)
         uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          # cache is keyed on pyproject.toml — invalidates only when deps shift
+          cache-dependency-glob: |
+            pyproject.toml
+            .github/workflows/sync-about.yml
 
       - name: Install scitex[all] + downstream packages
         run: |
