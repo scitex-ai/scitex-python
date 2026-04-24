@@ -42,6 +42,10 @@ jobs:
       - name: Install scitex (this checkout) + downstream packages
         run: |
           pip install --upgrade pip
+          # Pin wrapt ≥1.15 up front — ancient wrapt (<1.15) fails metadata
+          # generation on Python 3.11 (removed inspect.formatargspec) and
+          # sends the resolver into runaway backtracking.
+          pip install "wrapt>=1.15"
           # Install from the current checkout so doc-drift picks up pyproject
           # changes in this PR / push (e.g. extras that re-export new
           # downstream packages) before they're published to PyPI.
