@@ -10,6 +10,15 @@ Run this during `/speak-and-call` autonomous passes or manually. Each
 section lists what to verify, how to verify, and the canonical fix. Keep
 the check cheap — delegate the big ones to subagents.
 
+**Section groups:**
+
+- **§0** Prerequisites & scope gate
+- **§1–§3 — Repository-level audits** (branch, push, CI)
+- **§4–§7 — Content-level audits** (test scope, SKILL.md, README callout, doc chains)
+- **§8–§10 — Automation audits** (nightly schedule, deps, reporting)
+- **§11–§15 — Failure-mode specific playbooks** (PyPI, wheel drift, numpy 2, extras, Doc-Drift CI)
+- **§16+ — Planned dynamic audits** (agent-task execution)
+
 ## 0. Prerequisites
 
 - `gh auth status` succeeds
@@ -69,26 +78,26 @@ Flag: `failure`, `cancelled`, `in_progress > 1h`.
 
 **Typical failure modes & canonical fixes:**
 
-| Symptom | Root cause | Fix |
+Severity guide — **CRITICAL**: blocks downstream consumers or PyPI
+release. **HIGH**: one package red but independent. **MEDIUM**: tests
+flaky or a single test bug. **LOW**: cosmetic / threshold / lint.
+Triage CRITICAL first.
+
+Top-severity rows only (full cookbook in
+[98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md)):
+
+| Symptom | Severity | Fix |
 |---|---|---|
-| `ModuleNotFoundError: scitex_dev` | test imports `scitex_dev._skills_quality_pytest` but CI doesn't install it | add `pip install scitex-dev` to workflow **before** pytest step; or guard with `pytest.importorskip("scitex_dev")` |
-| `pytest: command not found` | `pip install -e .[dev]` but no `[dev]` extra defined | add explicit `pip install pytest pytest-cov` to workflow |
-| Test uses `patch("pkg._torch")` and fails | `_torch` sentinel isn't a module-level attr | either add `try: import torch as _torch / except: _torch = None` at module top, or wrap the test with `pytest.importorskip("torch")` |
-| `patch("git.Repo")` fails with `No module named 'git'` | gitpython not a test dep | `pytest.importorskip("git")` at top of test class |
-| Test references fake package e.g. `'mypackage'` | test never had a fixture | use `tmp_path` + `sys.path.insert` + real package creation, or skip |
-| `Unnamed: *` columns in pandas DataFrame | loader's dtype guard matches `object` only; pandas ≥ 2.2 uses `str` dtype | broaden guard to also match `str(col_dtype) in ("str", "string")` |
-| `'NoneType' object has no attribute 'graph_objs'` | optional plotly isn't installed; save path calls `plotly.graph_objs` unconditionally | add `plotly` to `[dev]` or `[test]` extras; guard the plotly dispatch with `_is_plotly_figure(obj)` |
-| `Doc-Drift Nightly` cancelled | 10-minute `timeout-minutes` hit by pip resolver backtracking | bump to 25 min, or constrain sphinx version to avoid backtracking |
-| Doc-Drift `cannot import scitex_<x>` | downstream pkg not pulled by `.[all]` | add explicit `pip install scitex-<x>` after the `.[all]` line |
-| Publish-to-PyPI `invalid-publisher: no corresponding publisher` | trusted publishing not configured (or form silently discarded) | see §11 — verify "Manage current publishers" lists the entry after submit |
-| Downstream `ModuleNotFoundError` for something that IS in git | module added after last tag; PyPI wheel is stale | see §12 — bump version + re-release |
-| `assert func() is True` fails on numpy 2 runners | `np.any()`/`np.all()` return `np.True_`; `np.True_ is not True` | coerce at return: `return bool(np.any(...))` — see §13 |
-| `isinstance(obj, plotly.graph_objs.Figure)` → `NoneType has no attribute 'graph_objs'` | optional import fell back to `None`, check was unconditional | helper that short-circuits when dep is `None` — see §13 |
-| `patch("pkg._get_x.split") AttributeError: module does not have attribute 'split'` | module was simplified to a one-line alias; mock target no longer exists | replace the stale mock-based tests with a minimal alias check |
-| `coverage < fail_under` even though tests all pass | aspirational threshold; real coverage is lower | lower `fail_under` in `[tool.coverage.report]` to the current realistic floor and raise it again once new tests land |
-| Skill quality `§2.prefix: MANIFEST.md filename must match NN_kebab-name.md` | MANIFEST.md is a system file, not a leaf | upgrade scitex-dev to a version where the checker exempts `SYSTEM_FILES = {"MANIFEST.md"}` |
-| Skill quality `§3.index-monolith: SKILL.md > 4096B` | bloated frontmatter description | trim the `description:` field (it gets copied into skill-matching prompts; verbose prose costs tokens without helping trigger rates) |
-| Skill quality `§4.monolith: NN_foo.md > 10240B` | leaf grew unmanageably | split into two leaves with new prefixes, link both from `SKILL.md`, prefer topical split over length-based |
+| `ModuleNotFoundError: scitex_dev._skills_quality_pytest` | CRITICAL | bump+release scitex-dev so the wheel contains the module (see §98) |
+| Publish-to-PyPI `invalid-publisher` | CRITICAL | configure trusted publisher; verify "Manage current publishers" *actually* saved (see §98) |
+| Downstream ModuleNotFoundError for something that IS in git | CRITICAL | PyPI wheel stale — bump version + re-release |
+| `Unnamed: *` columns appear in DataFrame | HIGH | pandas dtype guard too narrow — use try/except (§98 §5c) |
+| `isinstance(obj, plotly.graph_objs.Figure)` → NoneType crash | HIGH | optional-dep guard missing (§98 §5a) |
+| `assert func() is True` fails on numpy 2 | MEDIUM | coerce `bool(np.any(...))` at return (§98 §5b) |
+| `coverage < fail_under` even though tests pass | LOW | lower `fail_under` to realistic floor |
+| SKILL.md / leaf over size cap | LOW | trim description or split topically |
+
+Full table with all ~18 observed patterns is in the playbook.
 
 ## 4. Test scope purity
 
@@ -167,13 +176,32 @@ on:
 
 ## 10. Reporting back
 
-After a pass, speak (or print) a concise table:
+Two outputs per pass.
+
+### 10a. Current-state table (for the human)
 
 | package | branch | push | CI | notes |
 
 Only call out anomalies. No false positives — verify each finding
 before reporting. If a failure is a pre-existing test-debt item (not a
 regression from this pass), say so explicitly.
+
+### 10b. Append-only audit log (for regression tracking)
+
+Append one entry per pass to `scitex-dev/logs/quality-audits/YYYY-MM-DD.md`:
+
+```markdown
+## YYYY-MM-DD HH:MM UTC — /speak-and-call pass
+
+- Fixes applied:
+  - <pkg>: <one-line fix> (<commit-sha>)
+- Outstanding (flagged for user):
+  - <pkg>: <one-line blocker>
+- Next scheduled check: <ScheduleWakeup delay / cron>
+```
+
+This makes multi-week trends legible — e.g. "scitex-audio fails the
+same way on 3/7 runs" → systemic, worth investing in.
 
 ## Standard response to a /speak-and-call quality run
 
@@ -196,147 +224,32 @@ workflows/tests/scripts if explicitly safe):
 
 Refresh this list each run via `git -C <path> status --short`.
 
-## 11. PyPI trusted-publisher setup (silent-save gotcha)
+## 16. Dynamic audit via agent task execution (planned)
 
-The **first** release of any new PyPI project must be `twine upload` from
-a local build — trusted publishing cannot create a new project.
-Afterwards, configure the trusted publisher at:
+Static checks above verify the **"looks right"** dimension. Dynamic
+checks will verify **"works right"** under realistic workloads — agents
+executing end-to-end research tasks (paper drafts, data pipelines) and
+logging tool-use distributions, error recovery, and output quality.
 
-```
-https://pypi.org/manage/project/<pkg>/settings/publishing/
-```
+- **Static pass gates commit.** Static audits in §§1–15 + the playbook
+  (§98) must be green before merging to develop.
+- **Dynamic pass gates release.** A PyPI release wave additionally
+  requires a passing dynamic-audit run covering the ecosystem's primary
+  research workflows.
 
-Fields: owner `ywatanabe1989`, repo `<pkg>`, workflow `publish-pypi.yml`,
-environment `pypi`.
+See the forthcoming
+[scitex-dev/_skills/scitex-dev/20_dynamic-audit.md](../../scitex-dev/_skills/scitex-dev/20_dynamic-audit.md)
+(not yet in tree) for task dataset, execution infrastructure, and
+metric-collection design.
 
-**Silent-save gotcha** — after submit, the "Manage current publishers"
-list must actually show the new entry. If it still says *"No publishers
-are currently configured"*, the form didn't persist. Re-enter it. This
-is the single most common cause of `invalid-publisher` errors on a
-tag-triggered publish when the package already exists on PyPI. Once
-configured, `gh run rerun <id>` — no retag needed.
+## 17. Dashboard export (planned)
 
-**Probe** (after a bulk setup session — confirms tag ↔ PyPI alignment):
+Pipeline: each /speak-and-call pass → append to §10b log → a weekly
+aggregator generates `scitex-dev/dashboards/quality.md` with:
 
-```bash
-for r in ~/proj/scitex-*; do
-  pkg=$(basename $r)
-  tag=$(git -C $r tag --sort=-v:refname | head -1)
-  pypi=$(curl -s https://pypi.org/pypi/$pkg/json \
-         | python3 -c "import sys,json;d=json.load(sys.stdin);print('v'+d['info']['version'])" 2>/dev/null)
-  [ -n "$tag" ] && [ "$tag" != "$pypi" ] && echo "$pkg: tag=$tag pypi=$pypi"
-done
-```
+| package | CI | skills | API docs | last audit |
 
-## 12. Wheel-content drift (git has it, PyPI doesn't)
-
-When downstream tests `ModuleNotFoundError` a submodule that clearly
-exists in `src/` on develop, the PyPI wheel was cut before that module
-landed. Verify with:
-
-```bash
-pip download <pkg>==<pypi-version> --no-deps -d /tmp/check
-python3 -c "import zipfile,os;p='/tmp/check';w=[f for f in os.listdir(p) if f.endswith('.whl')][0];z=zipfile.ZipFile(os.path.join(p,w));print([n for n in z.namelist() if 'submodule_name' in n])"
-```
-
-**Fix:** bump the package version, tag, push — publishes the current
-state. Never "fix" downstream by pinning to an older version; fix the
-upstream release.
-
-Specific case hit this session: `scitex-dev 0.6.1` on PyPI lacked
-`_skills_quality_pytest.py` even though it existed on develop. Released
-`0.7.0` to unblock 10 downstream CIs.
-
-## 13. Optional-dep guards + numpy 2 compat
-
-### 13a. Optional imports
-
-Leaf packages should import heavy optional deps via try/except and
-expose a safe-check helper rather than rely on isinstance at call-time:
-
-```python
-try:
-    import plotly
-except ImportError:
-    plotly = None
-
-def _is_plotly_figure(obj) -> bool:
-    if plotly is None:
-        return False
-    return isinstance(obj, plotly.graph_objs.Figure)
-```
-
-Do the same for `pandas`, `xarray`, `PIL.Image`, `torch`, etc. whenever
-they appear in isinstance chains. Bare `isinstance(obj,
-plotly.graph_objs.Figure)` will crash with `'NoneType' object has no
-attribute 'graph_objs'` when the dep isn't installed.
-
-### 13b. numpy 2 bool identity
-
-`np.any()`, `np.all()`, and similar reductions return `np.True_` /
-`np.False_` on numpy 2+. These compare equal to `True`/`False` but are
-NOT `is True` / `is False`. Any function annotated `-> bool` that
-forwards a numpy result must coerce:
-
-```python
-def is_listed_X(obj, types) -> bool:
-    ...
-    return bool(np.any(conditions))  # not `return np.any(conditions)`
-```
-
-Probe: `grep -rn 'return np\.\(any\|all\|bool_\)' <repo>/src/`.
-
-### 13c. pandas dtype breadth
-
-Column dtype checks for detecting text headers should not hardcode
-`"object"`. Newer pandas backends surface dtypes as `str`, `string`, or
-`string[python]`. Prefer try/except over string-match:
-
-```python
-try:
-    unnamed = obj.columns.str.contains("^Unnamed")
-except (AttributeError, TypeError):
-    unnamed = None
-if unnamed is not None and unnamed.any():
-    obj = obj.loc[:, ~unnamed]
-```
-
-## 14. Extras-completeness (empty `[foo]` silently breaks the umbrella)
-
-Every bridge directory under `src/scitex/<name>/` that re-exports a
-standalone package must have its extra actually list that package. An
-empty `[container] = []` with a stale comment "not on PyPI" leaves
-`stx.container.apptainer` unreachable from a fresh `pip install
-scitex[all]`, and Doc-Drift Nightly flags every chain in the README.
-
-**Probe (inside scitex-python):**
-
-```bash
-python3 -c "
-import tomllib
-d = tomllib.loads(open('pyproject.toml','rb').read())
-extras = d['project']['optional-dependencies']
-bridges = [p.name for p in __import__('pathlib').Path('src/scitex').iterdir()
-           if p.is_dir() and not p.name.startswith('_')]
-for b in bridges:
-    if b in extras and extras[b] == []:
-        print(f'EMPTY: scitex[{b}] but src/scitex/{b}/ exists')
-"
-```
-
-Fix: list the standalone package, e.g. `container =
-["scitex-container"]`, `dataset = ["scitex-dataset"]`.
-
-## 15. Doc-Drift CI install source
-
-`doc-drift-nightly.yml` must install scitex from **the current
-checkout** (`pip install ".[all]"`) rather than from PyPI (`pip install
-"scitex[all]"`). Otherwise a pyproject.toml fix in the same push won't
-take effect until a PyPI release catches up, and the auditor keeps
-reporting stale failures.
-
-Also: the workflow's `on: push: paths:` filter excludes `pyproject.toml`
-— a fix to extras alone will not re-trigger it. Force with
-`gh workflow run "Doc-Drift Nightly" --ref develop` after the push.
+Render at README top for external visibility (grant reviewers,
+contributors). Implementation detail TBD.
 
 <!-- EOF -->

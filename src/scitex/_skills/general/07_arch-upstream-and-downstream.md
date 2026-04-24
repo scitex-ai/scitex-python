@@ -125,61 +125,23 @@ scitex       Integration: session → io → figrecipe?  test_session_saves_via_
 
 ## Cascade Pattern — IO as the Canonical Example
 
-### (1) Downstream defines its own IO
-```python
-# figrecipe defines its own save/load for .yaml + .png
-def save(fig, path, **kwargs):
-    ...  # figrecipe-specific logic
+Three layers compose via a plugin registry:
 
-# Register with scitex-io plugin registry (only if scitex-io is present)
-FIGRECIPE_IO_SPEC = {
-    "extensions": [".yaml", ".yml"],
-    "save": save,
-    "load": load,
-    "description": "FigRecipe YAML recipe format",
-}
-```
+1. **Downstream defines** — each app implements `save`/`load` for its
+   formats and registers a spec dict (`{extensions, save, load}`) via
+   entry points.
+2. **Middle detects** — `scitex-io` auto-discovers plugins at import,
+   dispatches by extension: `plugin = _registry.get(ext); plugin.save(...)`.
+3. **Upstream re-exposes** — `from scitex_io import save, load` — no
+   additional wrapping.
 
-### (2) Middle detects and delegates
-```python
-# scitex-io auto-discovers downstream plugins via entry points
-def save(obj, path, **kwargs):
-    ext = Path(path).suffix
-    plugin = _registry.get(ext)
-    if plugin:
-        return plugin.save(obj, path, **kwargs)  # cascade to downstream
-    ...
-```
+All three interfaces (Python API, CLI, MCP) cascade the same direction:
+`stx.io.save()` → `scitex-io.save()` → `figrecipe.save()` (or the
+matching plugin). **Never reverse**: upstream imports downstream;
+downstream never imports upward.
 
-### (3) Upstream re-exposes with no modification
-```python
-# scitex just re-exports — NO additional logic
-from scitex_io import save, load  # stx.io.save == scitex_io.save
-```
-
-### Cascade flows through all three interfaces
-
-```
-                    Python API          CLI                   MCP
-                    ----------          -----------           ----------
-scitex              stx.io.save()       scitex io save        io_save
-(upstream)          (re-exposed)        (re-exposed)          (re-exposed)
-                         │                   │                    │
-                         ▼                   ▼                    ▼
-scitex-io           stx.io.save()       scitex io save        io_save
-(middle)                 │                   │                    │
-                         ▼                   ▼                    ▼
-figrecipe           fr.save()           figrecipe save        plt_plot
-(downstream)
-```
-
-### Cascade rules
-1. **Downstream defines** — each app implements save/load for its formats.
-2. **Middle detects** — discovers downstream plugins via entry points / registry.
-3. **Upstream re-exposes** — no additional wrapping.
-4. **Type checking** — middle validates input/output during cascade.
-5. **All three interfaces cascade the same direction** — Python API, CLI, MCP.
-6. **Never reverse** — upstream never imports from downstream directly; downstream never imports upstream.
+Rules: downstream defines, middle detects + type-checks, upstream
+re-exposes only. All interfaces cascade in the same direction.
 
 ---
 

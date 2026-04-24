@@ -16,15 +16,7 @@ interfaces:
 
 > **Interfaces:** Python ⭐⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐⭐ · Hook — · HTTP —
 
-## Installation
-
-```bash
-pip install scitex
-# Development:
-pip install -e /home/ywatanabe/proj/scitex-python
-```
-
-Core standards that apply to ALL SciTeX ecosystem packages.
+`pip install scitex` — standards for all ecosystem packages.
 
 ## Sub-skills
 
@@ -60,7 +52,7 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 - [19_skills-overview.md](19_skills-overview.md) — Practical guide for writing skills: lessons learned, workflow
 - [20_skills-how-to-update.md](20_skills-how-to-update.md) — Source-of-truth locations, editable vs non-editable paths, export workflow
 - [21_skills-public-vs-private.md](21_skills-public-vs-private.md) — Where a skill belongs: shipped with the package vs `~/.scitex/<pkg>/`
-- [22_skills-quality-checklist.md](22_skills-quality-checklist.md) — Release-gate checklist for `_skills/` directories (naming, indexing, no-monolith, no-duplication, cache hygiene)
+- [22_skills-quality-checklist.md](22_skills-quality-checklist.md) — Release-gate checklist for `_skills/` directories
 
 ### Logs
 - [23_remediation-log.md](23_remediation-log.md) — Dated remediation log for audit findings
@@ -68,6 +60,10 @@ Core standards that apply to ALL SciTeX ecosystem packages.
 
 ### Session
 - [25_session-config.md](25_session-config.md) — `@stx.session` and the `CONFIG` object (SDIR_OUT, SDIR_RUN, YAML merging)
+
+### Periodic Ecosystem Quality
+- [98_scitex-quality-failure-playbook.md](98_scitex-quality-failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes
+- [99_scitex-quality-checklist.md](99_scitex-quality-checklist.md) — Strategic /speak-and-call runbook with append-only log
 
 ### Scratch
 - [40_playground.md](40_playground.md) — Scratch notes
