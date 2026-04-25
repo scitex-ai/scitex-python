@@ -46,3 +46,56 @@ tags: [scitex-python, scitex-general, scitex-package, meta]
 - Never imported from `src/`; consumed by tests, scripts, or examples as fixtures
 - Large binaries → prefer Git LFS or fetch-on-demand script, not committed blobs
 - Each subdir should have a one-line `README.md` stating source URL + retrieval date
+
+### ./templates / ./assets — wheel-vs-git payload separation
+
+Some packages ship **bulky content** that's part of the project source-of-truth on GitHub but should NOT bloat the PyPI wheel:
+
+- `scitex-template/templates/<id>/` — six project scaffolds (~22 MB)
+- assets/data/example outputs that exceed a few hundred KB
+
+The pattern: vendor the content in git, exclude it from the wheel via hatch, fetch it on first use into the package's `~/.scitex/<pkg-short>/` cache.
+
+```toml
+# pyproject.toml
+[tool.hatch.build.targets.wheel]
+packages = ["src/<pkg>"]
+# templates/ is NOT in the wheel — populated at runtime by a shallow
+# clone of this repo into ~/.scitex/<pkg-short>/cache/ on first use.
+
+[tool.hatch.build.targets.sdist]
+include = ["src/<pkg>", "README.md", "LICENSE", "pyproject.toml"]
+```
+
+```python
+# src/<pkg>/_cache.py
+MONOREPO_URL = "https://github.com/<org>/<pkg>.git"
+CACHE_ROOT = Path.home() / ".scitex" / "<pkg-short>" / "cache"
+
+def ensure_cache(branch="main", force_refresh=False):
+    if not (CACHE_ROOT / ".git").is_dir() or force_refresh:
+        subprocess.run(["git", "clone", "--depth", "1", "--branch", branch,
+                        MONOREPO_URL, str(CACHE_ROOT)], check=True)
+    else:
+        subprocess.run(["git", "-C", str(CACHE_ROOT), "pull",
+                        "--ff-only", "--depth", "1"])
+    return CACHE_ROOT
+```
+
+When to use:
+- Wheel size approaching or exceeding 1 MB and most users won't need the bulk.
+- Content that updates more frequently than the package release cadence.
+- Symlinks / OS-specific binaries that `hatchling` won't ship cleanly anyway.
+
+When NOT to use:
+- Anything imported directly by `src/` Python code (must be in the wheel).
+- Small (<100 KB) static data — just include it in the wheel.
+- Content the package can't function without — air-gapped environments.
+
+Verify the wheel after building:
+
+```bash
+python -m build
+python -m zipfile -l dist/<pkg>-<ver>-py3-none-any.whl | head -20
+ls -la dist/                         # wheel should be <500 KB for cloner-style packages
+```

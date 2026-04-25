@@ -116,3 +116,53 @@ python -c "import scitex_<pkg> as a, scitex.<pkg> as b; \
 
 Any symbol missing from the umbrella that the standalone exports is a bug —
 either add the re-export or explicitly document why it's standalone-only.
+
+## Alternative bridge — `sys.modules` aliasing (use sparingly)
+
+The explicit-named-re-export pattern above does not preserve **deep
+submodule paths**. After:
+
+```python
+# scitex/foo/__init__.py
+from scitex_foo import bar, baz
+```
+
+`from scitex.foo import bar` works, but `from scitex.foo._private.helpers import X` does NOT — that import resolves through `scitex/foo/__path__`, which only contains the bridge `__init__.py`, no `_private/` subdir.
+
+When the package has callers that reach into private submodules (legacy code, tests, deeply-coupled MCP handlers) the alternative is **module-level `sys.modules` aliasing**:
+
+```python
+# scitex/template/__init__.py — the entire shim
+"""SciTeX template — thin compatibility shim for scitex-template."""
+
+import sys as _sys
+
+try:
+    import scitex_template as _real
+except ImportError as _e:
+    raise ImportError(
+        "scitex.template requires the 'scitex-template' package. "
+        "Install with: pip install scitex[template]"
+    ) from _e
+
+_sys.modules[__name__] = _real
+```
+
+Effect: `scitex.template` becomes literally the same module object as `scitex_template`. Every submodule path — `scitex.template._mcp.handlers`, `scitex.template._project.clone_research`, `scitex.template.<anything>` — resolves through `scitex_template`'s `__path__`. Subpackage attribute access works identically.
+
+**Tradeoffs:**
+
+| | Explicit named re-export (scholar pattern) | sys.modules aliasing (template pattern) |
+|---|---|---|
+| Public API discoverable in the bridge file | ✓ grep-able | ✗ docstring-only |
+| Deep submodule paths preserved | ✗ | ✓ |
+| Static analysers (Pyright) trace the API | ✓ | ⚠️ each tool varies |
+| Survives a `__all__` drift between bridge and standalone | ✗ release-gate catches it | ✓ no drift possible |
+| Implementation size | ~30 lines, one rule per symbol | ~5 lines, one trick |
+
+**When to choose which:**
+
+- Default to **explicit named re-exports** (scholar pattern). Most packages are fine — public surface stays grep-able and the release-gate check has teeth.
+- Reach for **sys.modules aliasing** only when external callers reach into private submodules and you cannot rewrite them all in one PR (transition shim during extraction). Plan to delete the shim once consumers are migrated to direct `scitex_<name>` imports.
+
+**Rule for tests inside the standalone repo** — never use the umbrella shim path in `tests/`. Always import via `from scitex_<name>.…`. The umbrella may not even be installed in CI; the shim path collapses (`ModuleNotFoundError`) and every test fails at collection time. See general/02_repo_03_github-actions.md §"Test imports".

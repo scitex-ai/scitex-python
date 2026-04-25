@@ -120,23 +120,57 @@ def save(obj, path, makedirs=True, ...):
 
 ## Registration
 
+`scitex-dev skills export` discovers a package via two entry points. **Both are required** — `skills` for the leaf files and `docs` for ecosystem-aware doc tooling. Without both, the package is silently skipped (with a warning logged) and `~/.claude/skills/scitex/<pkg>/` never gets populated.
+
 ```toml
-# pyproject.toml
+# pyproject.toml — every standalone scitex-* package needs BOTH:
+[project.entry-points."scitex_dev.docs"]
+my-package = "my_package"
+
 [project.entry-points."scitex_dev.skills"]
 my-package = "my_package"
 ```
 
+After editing `pyproject.toml`, **re-install** so the entry points hit the metadata. `pip install -e . --no-deps` will not always rebuild the entry-points cache — use `--force-reinstall` to be safe:
+
+```bash
+pip install -e . --no-deps --force-reinstall
+python -c "from importlib.metadata import entry_points as ep; print([e.name for e in ep(group='scitex_dev.skills')])"
+```
+
 Do NOT add `[tool.hatch.build.targets.wheel.force-include]` for `_skills/` — hatch already includes files under `src/<pkg>/`.
+
+## Numbered-prefix file convention
+
+Once a package has more than 3-4 skill files, use **numbered prefixes** so scitex-scholar / scitex-io / scitex-template all share the same browsing layout. Three buckets:
+
+| Range | Purpose | Examples |
+|---|---|---|
+| `01-09` | Interfaces — quick start, Python API, CLI, MCP | `01_quick-start.md`, `02_python-api.md`, `03_cli-reference.md`, `04_mcp-tools.md` |
+| `10-19` | Features — one focused capability per file | `10_save-and-load.md`, `11_centralized-config.md`, `12_supported-formats.md` |
+| `20-29` | Meta — env vars, lint rules, release notes | `20_env-vars.md`, `21_linting-rules.md` |
+
+Reasoning: a fresh agent landing on the package can read 01-04 to understand the surface in under 5 minutes, then drill into a 10-series file only when relevant. Without numbering the index has no implicit reading order; with numbering the SKILL.md links are sortable.
 
 ## Export Commands
 
 ```bash
 scitex-dev skills list      # List skills across installed packages
 scitex-dev skills get       # Get content of a skill
-scitex-dev skills export    # Copy to ~/.claude/skills/scitex/
+scitex-dev skills export    # Copy to ~/.claude/skills/scitex/<pkg>/
+scitex-dev skills export --package <pkg>   # Export only one package
+scitex-dev skills tags-expand <tag>        # Resolve `@skill-tags:` in CLAUDE.md
 ```
 
 `SCITEX_DEV_SKILLS_DEFAULT_EXPORT_DIR` env var overrides default export destination.
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `scitex-dev skills export` says "No skills found" | missing `scitex_dev.skills` / `scitex_dev.docs` entry point | add to `pyproject.toml` and `pip install --force-reinstall` |
+| Skills land at `_skills/*.md` (flat) but exporter can't find them | `_find_skills_dir` expects `_skills/<pip-name>/` subdir | move under `src/<pkg>/_skills/<pip-name>/` |
+| Some files exported, others skipped | files lack frontmatter or have empty `description` | give every leaf a YAML frontmatter block |
 
 ## Source of Truth
 
