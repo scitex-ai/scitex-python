@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional, Tuple
 try:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", DeprecationWarning)
-        from scitex.canvas.model import (
+        from scitex.io.bundle.kinds._plot._models import (
             AnnotationModel,
             AxesModel,
             AxesStyle,

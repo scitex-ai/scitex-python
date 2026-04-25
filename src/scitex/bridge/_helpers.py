@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # File: ./src/scitex/bridge/_helpers.py
 # Time-stamp: "2024-12-09 11:00:00 (ywatanabe)"
 """
@@ -9,7 +8,7 @@ These helpers provide a unified API for common workflows that span
 multiple modules, abstracting away backend-specific details.
 """
 
-from typing import List, Literal, Optional, Union
+from typing import List, Literal, Union
 
 # StatResult is now a dict - the GUI-specific StatResult is deprecated
 StatResult = dict
@@ -118,7 +117,7 @@ def _detect_backend(target) -> Literal["plt", "vis"]:
     """
     # Check for vis FigureModel
     try:
-        from scitex.canvas.model import FigureModel
+        from scitex.io.bundle.kinds._plot._models import FigureModel
 
         if isinstance(target, FigureModel):
             return "vis"
