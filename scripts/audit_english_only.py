@@ -7,7 +7,7 @@ content (TTS example strings, foreign brand names in data-extraction
 code) can be exempted by appending an `# i18n-ok` (or `<!-- i18n-ok -->`
 for markdown) marker to the line.
 
-Scope (per §0 of 99_scitex-quality-checklist.md):
+Scope (per §0 of 99_quality_02_checklist.md):
   - `src/**/*.py` and `src/**/*.md` under each ecosystem repo
   - directory name must match `pyproject.toml:name`
   - excludes `__pycache__/`, `node_modules/`, vendored `.claude/`

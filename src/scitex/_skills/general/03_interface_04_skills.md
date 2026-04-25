@@ -1,0 +1,183 @@
+---
+name: interface-skills
+description: How a SciTeX package exposes agent-facing skills — `_skills/<pip-name>/` directory layout, SKILL.md as index-only, two-level `NN_<category>_NN_<topic>.md` naming, no-monolith leaf-file rule (≤10 KB per file, ≤80 lines per SKILL.md), MANIFEST.md with version stamp, registration via `[project.entry-points."<pkg>.skills"]`, and export workflow to `~/.claude/skills/scitex/`. Use when adding or auditing `_skills/` in a package.
+canonical-location: scitex-python/src/scitex/_skills/general/03_interface_04_skills.md
+tags: [scitex-python, scitex-general, scitex-package, meta]
+---
+
+# Skills System
+
+
+
+Skills provide structured documentation for AI agents to discover package capabilities.
+
+## Directory Layout
+
+### Package-level (standalone pip packages)
+
+```
+src/<pkg>/_skills/<pip-name>/
+  SKILL.md                # Required index (links only, no content)
+  save-and-load.md        # Focused topic with actual examples
+  centralized-config.md   # Focused topic with actual examples
+  supported-formats.md    # Reference table
+  ...
+```
+
+Legacy `src/<pkg>/skills/SKILL.md` paths are **read-only** — do not create new ones. Migrate any encountered to `_skills/` during the next touch.
+
+### Module-level (submodules within scitex-python)
+
+Each public module under `src/scitex/<module>/` MUST have its own `_skills/` directory:
+
+```
+src/scitex/<module>/_skills/
+  SKILL.md                # Required index — same format as package-level
+  feature-topic.md        # Focused sub-skill (optional, add as needed)
+  ...
+```
+
+**Rules for module-level skills:**
+1. Every public module gets a `_skills/SKILL.md` — no exceptions
+2. Real files only — **no symlinks** (files are bundled in wheels)
+3. SKILL.md follows the same frontmatter format as package skills
+4. `name` field uses `stx.<module>` format (e.g., `stx.ai`, `stx.stats`)
+5. `description` is a one-line summary for AI agent discovery
+6. List Python API, relevant MCP tools, and CLI commands if any
+7. Sub-skill files are optional — add them when a module has complex features
+8. Skip internal/private directories (`_dev`, `_mcp_tools`, `_mcp_resources`, `_sphinx_html`, `__pycache__`)
+
+## No Monolith SKILL.md
+
+SKILL.md is an **index file only**. Content goes in focused sub-skill files.
+
+```markdown
+---
+name: scitex-io
+description: Universal file I/O supporting 30+ formats. Use when loading or saving data.
+allowed-tools: mcp__scitex__io_*
+---
+
+# scitex-io
+
+Universal scientific data I/O with plugin registry.
+
+## Sub-skills
+
+* [save-and-load](save-and-load.md) — Core save/load API, registry
+* [centralized-config](centralized-config.md) — load_configs() and DotDict
+* [supported-formats](supported-formats.md) — All 30+ format tables
+
+## MCP Tools
+
+| Tool | Purpose |
+|------|---------|
+| `io_save` | Save data to file |
+| `io_load` | Load data from file |
+
+## CLI
+
+scitex-io info data.csv
+scitex-io skills list
+```
+
+## Sub-skill File Format
+
+Each sub-skill covers one feature with actual code examples:
+
+```markdown
+---
+name: save-and-load
+description: Core save/load API with two-tier format registry.
+---
+
+# Save and Load
+
+## save()
+
+def save(obj, path, makedirs=True, ...):
+
+[Actual function signature, parameters, behavior]
+
+### Auto path routing
+
+[Table showing context → output directory]
+
+### use_caller_path
+
+[When and why to use it, with before/after examples]
+
+## load()
+
+[Same pattern — signature, examples, edge cases]
+```
+
+**Rules for sub-skill files:**
+1. Cover main features of that topic
+2. Include actual code examples (not just descriptions)
+3. Verify all claims against source code
+4. Be consistent with README and Read the Docs
+
+## Registration
+
+`scitex-dev skills export` discovers a package via two entry points. **Both are required** — `skills` for the leaf files and `docs` for ecosystem-aware doc tooling. Without both, the package is silently skipped (with a warning logged) and `~/.claude/skills/scitex/<pkg>/` never gets populated.
+
+```toml
+# pyproject.toml — every standalone scitex-* package needs BOTH:
+[project.entry-points."scitex_dev.docs"]
+my-package = "my_package"
+
+[project.entry-points."scitex_dev.skills"]
+my-package = "my_package"
+```
+
+After editing `pyproject.toml`, **re-install** so the entry points hit the metadata. `pip install -e . --no-deps` will not always rebuild the entry-points cache — use `--force-reinstall` to be safe:
+
+```bash
+pip install -e . --no-deps --force-reinstall
+python -c "from importlib.metadata import entry_points as ep; print([e.name for e in ep(group='scitex_dev.skills')])"
+```
+
+Do NOT add `[tool.hatch.build.targets.wheel.force-include]` for `_skills/` — hatch already includes files under `src/<pkg>/`.
+
+## Numbered-prefix file convention
+
+Once a package has more than 3-4 skill files, use **numbered prefixes** so scitex-scholar / scitex-io / scitex-template all share the same browsing layout. Three buckets:
+
+| Range | Purpose | Examples |
+|---|---|---|
+| `01-09` | Interfaces — quick start, Python API, CLI, MCP | `01_quick-start.md`, `02_python-api.md`, `03_cli-reference.md`, `04_mcp-tools.md` |
+| `10-19` | Features — one focused capability per file | `10_save-and-load.md`, `11_centralized-config.md`, `12_supported-formats.md` |
+| `20-29` | Meta — env vars, lint rules, release notes | `20_env-vars.md`, `21_linting-rules.md` |
+
+Reasoning: a fresh agent landing on the package can read 01-04 to understand the surface in under 5 minutes, then drill into a 10-series file only when relevant. Without numbering the index has no implicit reading order; with numbering the SKILL.md links are sortable.
+
+## Export Commands
+
+```bash
+scitex-dev skills list      # List skills across installed packages
+scitex-dev skills get       # Get content of a skill
+scitex-dev skills export    # Copy to ~/.claude/skills/scitex/<pkg>/
+scitex-dev skills export --package <pkg>   # Export only one package
+scitex-dev skills tags-expand <tag>        # Resolve `@skill-tags:` in CLAUDE.md
+```
+
+`SCITEX_DEV_SKILLS_DEFAULT_EXPORT_DIR` env var overrides default export destination.
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `scitex-dev skills export` says "No skills found" | missing `scitex_dev.skills` / `scitex_dev.docs` entry point | add to `pyproject.toml` and `pip install --force-reinstall` |
+| Skills land at `_skills/*.md` (flat) but exporter can't find them | `_find_skills_dir` expects `_skills/<pip-name>/` subdir | move under `src/<pkg>/_skills/<pip-name>/` |
+| Some files exported, others skipped | files lack frontmatter or have empty `description` | give every leaf a YAML frontmatter block |
+
+## Source of Truth
+
+The package source is the single source of truth — `src/<pkg>/_skills/<pip-name>/` contains real files that are bundled in wheels. Exported copies under `~/.claude/skills/scitex/<pip-name>/` are generated by `scitex-dev skills export` and must **never** be edited directly (a pre-tool-use hook blocks such edits).
+
+## Discovery Resolution (scitex-dev)
+
+Canonical location: `src/<pkg>/_skills/<pip-name>/SKILL.md`.
+
+Older layouts (`src/<pkg>/skills/SKILL.md`, `src/<pkg>/docs/MASTER/skills/`) are **read-only** — do not create new instances; migrate to `_skills/` when encountered.
