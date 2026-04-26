@@ -89,6 +89,9 @@ autodoc_mock_imports = [
     "scitex_cloud",
     # OpenAlex (pulls awscli causing pip deadlock)
     "openalex_local",
+    # MCP SDK — pydantic 2.13 incompat with currently-released mcp triggers
+    # PydanticSchemaGenerationError on import; mock for autodoc.
+    "mcp",
 ]
 
 # Autosummary settings
