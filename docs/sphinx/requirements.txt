@@ -1,8 +1,10 @@
-# Pin mcp <= 1.25 — newer mcp.types.TaskMetadata declares
-# __pydantic_extra__ with a Dict forward-ref that pydantic cannot resolve
-# at class-creation, breaking Sphinx autodoc on RTD when mcp is pulled in
-# transitively via scitex-writer → fastmcp.
-mcp<=1.25
+# RTD-only pins: mcp.types.TaskMetadata declares __pydantic_extra__ with
+# an unqualified Dict forward-ref that recent pydantic strict-validates
+# and rejects. We need BOTH: pydantic<2.13 (skips the strict check) AND
+# mcp<1.20 (predates TaskMetadata entirely). mcp pulled in transitively
+# via scitex-writer → fastmcp.
+mcp<1.20
+pydantic<2.13
 
 sphinx>=7.0
 sphinx-rtd-theme>=2.0
