@@ -267,7 +267,8 @@ dataset = ["scitex-dataset"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
-datetime = []
+# Real implementation lives in the standalone scitex-datetime package.
+datetime = ["scitex-datetime>=0.1.0"]
 
 # Decorators Module - Caching and utilities
 # Use: pip install scitex[decorators]
