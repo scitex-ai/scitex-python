@@ -7,6 +7,19 @@
 
 import os
 import sys
+import types
+
+# Stub `mcp` / `fastmcp` BEFORE any `import scitex` so autodoc never triggers
+# the broken pydantic schema generation in mcp.types.TaskMetadata. Real mcp is
+# pulled in transitively via scitex-writer → fastmcp; we don't need the actual
+# implementation to render docs. autodoc_mock_imports doesn't help because the
+# package is installed (so it's "present").
+for _name in ("mcp", "mcp.types", "mcp.server", "mcp.client", "fastmcp"):
+    if _name not in sys.modules:
+        _mod = types.ModuleType(_name)
+        if "." not in _name:
+            _mod.__path__ = []  # mark as package
+        sys.modules[_name] = _mod
 
 sys.path.insert(0, os.path.abspath("../../src"))
 
