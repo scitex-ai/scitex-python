@@ -365,9 +365,9 @@ gists = ["scitex-gists>=0.1.2"]
 
 # Git Module - Git operations
 # Use: pip install scitex[git]
+# Real implementation lives in the standalone scitex-git package.
 git = [
-    "GitPython",
-    "matplotlib",
+    "scitex-git>=0.1.0",
 ]
 
 # IO Module - File I/O operations

@@ -1,35 +1,30 @@
-#!/usr/bin/env python3
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/git/__init__.py
+"""SciTeX git — thin compatibility shim for scitex-git.
 
+Every public name that used to live in ``scitex.git`` now lives in the
+standalone ``scitex-git`` package (module ``scitex_git``). This file
+aliases ``scitex.git`` to ``scitex_git`` via ``sys.modules`` so every
+previous import path keeps resolving (``scitex.git is scitex_git``).
+
+Public API:
+    Init / discovery: init_git_repo, find_parent_git, create_child_git, remove_child_git
+    Clone / init:     clone_repo, git_init
+    Stage / commit:   git_add_all, git_commit
+    Branch ops:       git_branch_rename, git_checkout_new_branch, setup_branches
+    Remote helpers:   get_remote_url, is_cloned_from, ls_remote, get_head_hash
+    Retry decorator:  git_retry
+
+Install: ``pip install scitex[git]``  (or ``pip install scitex-git``).
+See: https://github.com/ywatanabe1989/scitex-git
 """
-Git operations and utilities.
-"""
 
-from ._branch import git_branch_rename, git_checkout_new_branch
-from ._clone import clone_repo, git_init
-from ._commit import git_add_all, git_commit
-from ._init import create_child_git, find_parent_git, init_git_repo, remove_child_git
-from ._remote import get_head_hash, get_remote_url, is_cloned_from, ls_remote
-from ._retry import git_retry
-from ._workflow import setup_branches
+import sys as _sys
 
-__all__ = [
-    "init_git_repo",
-    "find_parent_git",
-    "create_child_git",
-    "remove_child_git",
-    "clone_repo",
-    "git_init",
-    "git_add_all",
-    "git_commit",
-    "git_branch_rename",
-    "git_checkout_new_branch",
-    "get_remote_url",
-    "is_cloned_from",
-    "ls_remote",
-    "get_head_hash",
-    "setup_branches",
-    "git_retry",
-]
+try:
+    import scitex_git as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.git requires the 'scitex-git' package. "
+        "Install with: pip install scitex[git]  (or: pip install scitex-git)"
+    ) from _e
 
-# EOF
+_sys.modules[__name__] = _real
