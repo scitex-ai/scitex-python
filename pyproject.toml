@@ -186,10 +186,8 @@ benchmark = [
 
 # Bridge Module - External system integration
 # Use: pip install scitex[bridge]
-bridge = [
-    "matplotlib",
-    "scipy",
-]
+# Real implementation lives in the standalone scitex-bridge package.
+bridge = ["scitex-bridge>=0.1.0"]
 
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
