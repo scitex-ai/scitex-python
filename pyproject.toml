@@ -334,19 +334,7 @@ dt = [
 
 # Gen Module - General utilities
 # Use: pip install scitex[gen]
-gen = [
-    "ipython",
-    "h5py",
-    "pyperclip",
-    "readchar",
-    "scipy",
-    "matplotlib",
-    "xarray",
-    "requests",
-    "joblib",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "torch",
-]
+gen = ["scitex-gen>=0.1.0"]
 
 # Etc Module - Miscellaneous utilities
 # Use: pip install scitex[etc]
