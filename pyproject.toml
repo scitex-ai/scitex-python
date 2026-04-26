@@ -271,15 +271,9 @@ datetime = []
 
 # Decorators Module - Caching and utilities
 # Use: pip install scitex[decorators]
+# Real implementation lives in the standalone scitex-decorators package.
 decorators = [
-    "joblib",
-    "tqdm",
-    "xarray",
-    "pytest-asyncio",
-    "matplotlib",
-    "scipy",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "torch",
+    "scitex-decorators[all]>=0.1.0",
 ]
 
 # Diagram Module - Diagram generation
