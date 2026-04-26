@@ -238,9 +238,8 @@ compat = ["scitex-compat>=0.1.1"]
 
 # Config Module - Configuration management
 # Use: pip install scitex[config]
-config = [
-    "PyYAML",
-]
+# Real implementation lives in the standalone scitex-config package.
+config = ["scitex-config>=0.1.0"]
 
 # Context Module - Context managers
 # Use: pip install scitex[context]

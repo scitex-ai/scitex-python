@@ -1,70 +1,20 @@
-#!/usr/bin/env python3
-# Timestamp: "2025-12-09 (ywatanabe)"
-# File: ./src/scitex/config/__init__.py
+"""SciTeX config — thin compatibility shim for scitex-config.
 
-"""
-SciTeX configuration module.
+Aliases ``scitex.config`` to the standalone ``scitex_config`` package via
+``sys.modules``. ``scitex.config is scitex_config``.
 
-Provides two configuration patterns (both use same priority order):
-
-1. **ScitexConfig** (YAML-based, recommended):
-   - Loads configuration from YAML files
-   - YAML supports env var substitution: ${VAR:-default}
-
-2. **PriorityConfig** (dict-based, for programmatic use):
-   - Uses a Python dictionary for configuration
-
-**Priority Order** (same for both):
-   direct → config (YAML/dict) → env → default
-
-Usage:
-    from scitex.config import ScitexConfig, ScitexPaths, get_config, get_paths
-
-    # YAML-based configuration (Scholar pattern)
-    config = get_config()
-    log_level = config.resolve("logging.level", default="INFO")
-
-    # Centralized path manager
-    paths = get_paths()
-    print(paths.logs)      # ~/.scitex/logs
-    print(paths.cache)     # ~/.scitex/cache
-
-    # Use resolve() pattern in modules
-    cache_dir = paths.resolve("cache", user_provided_path)
+Install: ``pip install scitex[config]``  (or ``pip install scitex-config``).
+See: https://github.com/ywatanabe1989/scitex-config
 """
 
-from ._env_registry import (
-    ENV_REGISTRY,
-    EnvVar,
-    generate_template,
-    get_all_modules,
-    get_env_by_module,
-    get_env_docs,
-)
-from ._paths import ScitexPaths, get_paths
-from ._PriorityConfig import PriorityConfig, get_scitex_dir, load_dotenv
-from ._ScitexConfig import ScitexConfig, get_config, load_yaml
+import sys as _sys
 
-__all__ = [
-    # YAML-based config (Scholar pattern)
-    "ScitexConfig",
-    "get_config",
-    "load_yaml",
-    # Path management
-    "ScitexPaths",
-    "get_paths",
-    # Legacy/utility
-    "PriorityConfig",
-    "get_scitex_dir",
-    "load_dotenv",
-    # Environment variable registry
-    "ENV_REGISTRY",
-    "EnvVar",
-    "generate_template",
-    "get_all_modules",
-    "get_env_by_module",
-    "get_env_docs",
-]
+try:
+    import scitex_config as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.config requires the 'scitex-config' package. "
+        "Install with: pip install scitex[config]  (or: pip install scitex-config)"
+    ) from _e
 
-
-# EOF
+_sys.modules[__name__] = _real
