@@ -25,7 +25,7 @@ import json
 import warnings
 
 # Load environment variables from SCITEX_ENV_SRC early
-from scitex._env_loader import load_scitex_env
+from scitex.helpers import load_scitex_env
 
 load_scitex_env()
 
