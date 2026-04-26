@@ -729,30 +729,8 @@ verify = [
 
 # Web Module - Web utilities
 # Use: pip install scitex[web]
-web = [
-    "aiohttp",
-    "beautifulsoup4",
-    "readability-lxml",
-    "requests",
-    "Pillow",
-    "matplotlib",
-    "tqdm",
-    "joblib",
-    "scikit-learn",
-    "pytest-asyncio",
-    "ruamel.yaml",
-    "xarray",
-    "seaborn",
-    "scipy",
-    "markdown2",
-    "anthropic",
-    "openai",
-    "google-genai",
-    "groq",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "torch",
-    # "umap-learn",
-]
+# Real implementation lives in the standalone scitex-web package.
+web = ["scitex-web[readability]>=0.1.0"]
 
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
