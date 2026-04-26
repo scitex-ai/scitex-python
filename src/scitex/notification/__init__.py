@@ -1,30 +1,13 @@
-#!/usr/bin/env python3
-"""SciTeX Notification — thin wrapper delegating to scitex-notification package.
+"""SciTeX notification — thin compatibility shim for scitex-notification."""
 
-All notification logic lives in the standalone scitex-notification package.
-This module re-exports the public API.
-"""
+import sys as _sys
 
-from scitex_notification import (
-    DEFAULT_FALLBACK_ORDER,
-    alert,
-    alert_async,
-    available_backends,
-    call,
-    call_async,
-    sms,
-    sms_async,
-)
+try:
+    import scitex_notification as _real
+except ImportError as _e:
+    raise ImportError(
+        "scitex.notification requires the 'scitex-notification' package. "
+        "Install with: pip install scitex[notification]  (or: pip install scitex-notification)"
+    ) from _e
 
-__all__ = [
-    "alert",
-    "alert_async",
-    "call",
-    "call_async",
-    "sms",
-    "sms_async",
-    "available_backends",
-    "DEFAULT_FALLBACK_ORDER",
-]
-
-# EOF
+_sys.modules[__name__] = _real
