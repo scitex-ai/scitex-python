@@ -416,15 +416,10 @@ introspect = []
 
 # Linalg Module - Linear algebra
 # Use: pip install scitex[linalg]
+# Real implementation lives in the standalone scitex-linalg package; this
+# extra installs it (with the [torch] sub-extra for geometric_median).
 linalg = [
-    "scipy",
-    "sympy",
-    "geom_median",
-    "matplotlib",
-    "joblib",
-    "xarray",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "torch",
+    "scitex-linalg[torch]>=0.1.0",
 ]
 
 # Logging Module - Enhanced logging
