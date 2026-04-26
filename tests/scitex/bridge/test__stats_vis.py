@@ -12,7 +12,7 @@ class TestStatResultToAnnotation:
     def test_creates_annotation_model(self):
         """Test that function creates AnnotationModel."""
         from scitex.bridge import stat_result_to_annotation
-        from scitex.canvas.model import AnnotationModel
+        from scitex.io.bundle.kinds._plot._models import AnnotationModel
         from scitex.schema import create_stat_result
 
         result = create_stat_result("t-test", "t", 2.5, 0.01)
@@ -53,7 +53,7 @@ class TestAddStatsToFigureModel:
     @pytest.fixture
     def figure_model(self):
         """Create a basic FigureModel."""
-        from scitex.canvas.model import FigureModel
+        from scitex.io.bundle.kinds._plot._models import FigureModel
 
         return FigureModel(
             width_mm=170,
@@ -160,7 +160,7 @@ if __name__ == "__main__":
 #
 # # Legacy model imports - may not be available
 # try:
-#     from scitex.canvas.model import AnnotationModel, AxesModel, FigureModel, TextStyle
+#     from scitex.io.bundle.kinds._plot._models import AnnotationModel, AxesModel, FigureModel, TextStyle
 #
 #     VIS_MODEL_AVAILABLE = True
 # except ImportError:

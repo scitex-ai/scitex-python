@@ -41,7 +41,7 @@ class TestAddStatsFromResults:
     def test_auto_detect_figure_model(self, stat_results):
         """Test auto-detection works with FigureModel."""
         from scitex.bridge import add_stats_from_results
-        from scitex.canvas.model import FigureModel
+        from scitex.io.bundle.kinds._plot._models import FigureModel
 
         model = FigureModel(
             width_mm=170,
@@ -74,7 +74,7 @@ class TestAddStatsFromResults:
     def test_explicit_vis_backend(self, stat_results):
         """Test explicit vis backend."""
         from scitex.bridge import add_stats_from_results
-        from scitex.canvas.model import FigureModel
+        from scitex.io.bundle.kinds._plot._models import FigureModel
 
         model = FigureModel(
             width_mm=170,
@@ -280,7 +280,7 @@ if __name__ == "__main__":
 #     """
 #     # Check for vis FigureModel
 #     try:
-#         from scitex.canvas.model import FigureModel
+#         from scitex.io.bundle.kinds._plot._models import FigureModel
 #         if isinstance(target, FigureModel):
 #             return "vis"
 #     except ImportError:
