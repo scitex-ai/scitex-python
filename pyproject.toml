@@ -248,10 +248,8 @@ context = []
 
 # CV Module - Computer vision
 # Use: pip install scitex[cv]
-cv = [
-    "opencv-python",
-    "Pillow",
-]
+# Real implementation lives in the standalone scitex-cv package.
+cv = ["scitex-cv>=0.1.0"]
 
 # DB Module - Database operations
 # Use: pip install scitex[db]

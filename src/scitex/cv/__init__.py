@@ -1,62 +1,20 @@
-#!/usr/bin/env python3
-# Timestamp: 2026-01-08
-# File: src/scitex/cv/__init__.py
-"""SciTeX Computer Vision Module.
+"""SciTeX cv — thin compatibility shim for scitex-cv.
 
-Provides reusable cv2-based utilities for image processing:
-- I/O: load, save, color conversions
-- Transform: resize, rotate, flip, crop, pad
-- Filters: blur, sharpen, edge detection, threshold, denoise
-- Draw: rectangle, circle, line, text, polylines, arrow
+Aliases ``scitex.cv`` to the standalone ``scitex_cv`` package via ``sys.modules``.
+``scitex.cv is scitex_cv``.
 
-Example
--------
->>> import scitex.cv as cv
->>> # Load and process an image
->>> img = cv.load("input.png")
->>> img = cv.resize(img, scale=0.5)
->>> img = cv.blur(img, ksize=5)
->>> edges = cv.edge_detect(img, method="canny")
->>> cv.save(edges, "edges.png")
+Install: ``pip install scitex[cv]``  (or ``pip install scitex-cv``).
+See: https://github.com/ywatanabe1989/scitex-cv
 """
 
-# I/O
-# Drawing
-from ._draw import arrow, circle, line, polylines, rectangle, text
+import sys as _sys
 
-# Filters
-from ._filters import blur, denoise, edge_detect, sharpen, threshold
-from ._io import load, save, to_bgr, to_gray, to_rgb
+try:
+    import scitex_cv as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.cv requires the 'scitex-cv' package. "
+        "Install with: pip install scitex[cv]  (or: pip install scitex-cv)"
+    ) from _e
 
-# Transforms
-from ._transform import crop, flip, pad, resize, rotate
-
-__all__ = [
-    # I/O
-    "load",
-    "save",
-    "to_rgb",
-    "to_bgr",
-    "to_gray",
-    # Transforms
-    "resize",
-    "rotate",
-    "flip",
-    "crop",
-    "pad",
-    # Filters
-    "blur",
-    "sharpen",
-    "edge_detect",
-    "threshold",
-    "denoise",
-    # Drawing
-    "rectangle",
-    "circle",
-    "line",
-    "text",
-    "polylines",
-    "arrow",
-]
-
-# EOF
+_sys.modules[__name__] = _real
