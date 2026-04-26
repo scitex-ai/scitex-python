@@ -244,7 +244,8 @@ config = [
 
 # Context Module - Context managers
 # Use: pip install scitex[context]
-context = []
+# Real implementation lives in the standalone scitex-context package.
+context = ["scitex-context>=0.1.0"]
 
 # CV Module - Computer vision
 # Use: pip install scitex[cv]
