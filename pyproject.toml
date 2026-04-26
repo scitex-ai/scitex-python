@@ -102,7 +102,7 @@ scitex = "scitex.__main__:main"
 scitex-pkg = "scitex.cli.pkg:pkg"
 # MCP Server entry points (individual modules)
 # scitex-audio entry point now in standalone scitex-audio package
-scitex-capture = "scitex.capture.mcp_server:main"
+scitex-capture = "scitex_capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
 # scitex-plt entry point now in standalone scitex-plt package
 scitex-scholar = "scitex.scholar.mcp_server:main"
@@ -206,12 +206,8 @@ browser = [
 
 # Capture Module - Screenshot capture
 # Use: pip install scitex[capture]
-capture = [
-    "mss",
-    "Pillow",
-    "playwright>=1.40.0",
-    "mcp",
-]
+# Real implementation lives in the standalone scitex-capture package.
+capture = ["scitex-capture[mcp,playwright]>=0.1.0"]
 
 # CLI Module - Command line interface
 # Use: pip install scitex[cli]
