@@ -1,12 +1,20 @@
-#!/usr/bin/env python3
-"""Scitex os module."""
+"""SciTeX os — thin compatibility shim for scitex-os.
 
-from ._check_host import check_host, is_host, verify_host
-from ._mv import mv
+Aliases ``scitex.os`` to the standalone ``scitex_os`` package via ``sys.modules``.
+``scitex.os is scitex_os``.
 
-__all__ = [
-    "check_host",
-    "is_host",
-    "mv",
-    "verify_host",
-]
+Install: ``pip install scitex[os]``  (or ``pip install scitex-os``).
+See: https://github.com/ywatanabe1989/scitex-os
+"""
+
+import sys as _sys
+
+try:
+    import scitex_os as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.os requires the 'scitex-os' package. "
+        "Install with: pip install scitex[os]  (or: pip install scitex-os)"
+    ) from _e
+
+_sys.modules[__name__] = _real

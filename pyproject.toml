@@ -490,7 +490,8 @@ notification = [
 
 # OS Module - OS utilities
 # Use: pip install scitex[os]
-os = []
+# Real implementation lives in the standalone scitex-os package.
+os = ["scitex-os>=0.1.0"]
 
 # Parallel Module - Parallel processing
 # Use: pip install scitex[parallel]
