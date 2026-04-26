@@ -1,3 +1,8 @@
+# Pin pydantic < 2.13 — released `mcp` SDK declares __pydantic_extra__ in a
+# way 2.13 rejects, breaking Sphinx autodoc on RTD when mcp is pulled in
+# transitively via scitex-writer/socialia.
+pydantic<2.13
+
 sphinx>=7.0
 sphinx-rtd-theme>=2.0
 myst-parser>=2.0
