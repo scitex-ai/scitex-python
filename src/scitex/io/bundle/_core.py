@@ -44,7 +44,8 @@ def get_type(path: Union[str, Path]) -> Optional[str]:
     Args:
         path: Path to bundle (directory or ZIP).
 
-    Returns:
+    Returns
+    -------
         Bundle type string ('figure', 'plot', 'stats') or None if not a bundle.
 
     Example:
@@ -74,7 +75,8 @@ def _get_type_from_manifest(path: Path) -> Optional[str]:
     Args:
         path: Path to bundle (directory or ZIP).
 
-    Returns:
+    Returns
+    -------
         Bundle type from manifest or None if not found.
     """
     import json
@@ -114,7 +116,8 @@ def _get_type_from_extension(path: Path) -> Optional[str]:
     Args:
         path: Path to bundle.
 
-    Returns:
+    Returns
+    -------
         Bundle type from extension or None.
     """
     from ._types import DIR_EXTENSIONS, EXTENSIONS
@@ -141,7 +144,8 @@ def is_bundle(path: Union[str, Path]) -> bool:
     Args:
         path: Path to check.
 
-    Returns:
+    Returns
+    -------
         True if path is a bundle.
 
     Example:
@@ -187,7 +191,8 @@ def pack(
         dir_path: Path to bundle directory (e.g., Figure1.figure/).
         output_path: Output ZIP path. Auto-generated if None.
 
-    Returns:
+    Returns
+    -------
         Path to created ZIP archive.
 
     Example:
@@ -227,7 +232,8 @@ def unpack(
         zip_path: Path to bundle ZIP (e.g., Figure1.figure.zip).
         output_path: Output directory path. Auto-generated if None.
 
-    Returns:
+    Returns
+    -------
         Path to created directory.
 
     Example:
@@ -263,10 +269,12 @@ def validate_spec(
         bundle_type: Bundle type ('figure', 'plot', 'stats').
         strict: If True, raise BundleValidationError on failure.
 
-    Returns:
+    Returns
+    -------
         List of validation warning/error messages (empty if valid).
 
-    Raises:
+    Raises
+    ------
         BundleValidationError: If strict=True and validation fails.
     """
     errors = []
@@ -285,7 +293,7 @@ def validate_spec(
 
     # Delegate to domain-specific validators
     if bundle_type == BundleType.FIGURE:
-        from scitex.canvas.io._bundle import validate_figure_spec
+        from scitex.io.bundle.kinds._figure import validate_figure_spec
 
         errors.extend(validate_figure_spec(spec))
     elif bundle_type == BundleType.PLOT:
@@ -312,14 +320,16 @@ def validate(path: Union[str, Path], strict: bool = False) -> Dict[str, Any]:
         path: Path to bundle (directory or ZIP).
         strict: If True, raise BundleValidationError on failure.
 
-    Returns:
+    Returns
+    -------
         Dictionary with:
         - 'valid': bool
         - 'errors': list of error messages
         - 'bundle_type': detected bundle type
         - 'spec': parsed spec (if available)
 
-    Raises:
+    Raises
+    ------
         BundleValidationError: If strict=True and validation fails.
     """
     result = {
@@ -373,7 +383,8 @@ def load(path: Union[str, Path], in_memory: bool = True) -> Dict[str, Any]:
         in_memory: If True, load ZIP contents in-memory without extracting.
                    If False, extract to temp directory (legacy behavior).
 
-    Returns:
+    Returns
+    -------
         Bundle data as dictionary with:
         - 'type': Bundle type ('figure', 'plot', 'stats')
         - 'spec': Parsed JSON specification
@@ -437,7 +448,7 @@ def load(path: Union[str, Path], in_memory: bool = True) -> Dict[str, Any]:
 
     # Delegate to domain-specific loaders
     if bundle_type == BundleType.FIGURE:
-        from scitex.canvas.io._bundle import load_figure_bundle
+        from scitex.io.bundle.kinds._figure import load_figure_bundle
 
         result.update(load_figure_bundle(bundle_dir))
     elif bundle_type == BundleType.PLOT:
@@ -468,7 +479,8 @@ def save(
         as_zip: If True, save as ZIP archive.
         atomic: If True, use atomic write (temp file + rename) for ZIP.
 
-    Returns:
+    Returns
+    -------
         Path to saved bundle.
 
     Example:
@@ -537,7 +549,7 @@ def save(
 
     # Delegate to domain-specific savers
     if bundle_type == BundleType.FIGURE:
-        from scitex.canvas.io._bundle import save_figure_bundle
+        from scitex.io.bundle.kinds._figure import save_figure_bundle
 
         save_figure_bundle(data, dir_path)
     elif bundle_type == BundleType.PLOT:
@@ -580,10 +592,12 @@ def copy(
         dst: Destination path (will be created as directory).
         overwrite: If True, overwrite existing destination.
 
-    Returns:
+    Returns
+    -------
         Path to copied bundle (directory form).
 
-    Raises:
+    Raises
+    ------
         BundleNotFoundError: If source bundle doesn't exist.
         FileExistsError: If destination exists and overwrite=False.
 

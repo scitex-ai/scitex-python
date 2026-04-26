@@ -107,6 +107,7 @@ PACKAGE is part of [**SciTeX**](https://scitex.ai).
 - **Use `import scitex`** in examples, not `import scitex as stx`
 - **Verify all format/feature claims** against actual `_builtin_handlers.py` or source code
 - **Match quickstart.rst** — README Quickstart and Sphinx quickstart should show the same examples
+- **Add Logo and Icon** docs/assets/images/{scitex-logo-blue-cropped.png,scitex-icon-navy-inverted.png}
 
 ---
 
@@ -344,7 +345,7 @@ The SciTeX system follows the Four Freedoms for Research below, inspired by [the
 ---
 
 <p align="center">
-  <a href="https://scitex.ai" target="_blank"><img src="docs/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
+  <a href="https://scitex.ai" target="_blank"><img src="docs/assets/images/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
 </p>
 
 ```
