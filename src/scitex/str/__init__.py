@@ -1,96 +1,21 @@
-#!/usr/bin/env python3
-"""SciTeX str — delegates to scitex-str."""
+"""SciTeX str — thin compatibility shim for scitex-str.
 
-from scitex_str import (
-    LaTeXFallbackError,
-    add_hat_in_latex_style,
-    auto_factor_axis,
-    axis_label,
-    check_latex_capability,
-    check_unit_consistency,
-    clean_path,
-    color_text,
-    ct,
-    decapitalize,
-    disable_latex_fallback,
-    enable_latex_fallback,
-    factor_out_digits,
-    format_axis_label,
-    format_plot_text,
-    format_title,
-    get_fallback_mode,
-    get_latex_status,
-    grep,
-    hat_latex_style,
-    latex_fallback_decorator,
-    latex_style,
-    latex_to_mathtext,
-    latex_to_unicode,
-    mask_api,
-    parse,
-    print_debug,
-    printc,
-    readable_bytes,
-    remove_ansi,
-    replace,
-    reset_latex_cache,
-    safe_add_hat_in_latex_style,
-    safe_latex_render,
-    safe_to_latex_style,
-    scientific_text,
-    search,
-    set_fallback_mode,
-    smart_tick_formatter,
-    squeeze_spaces,
-    title,
-    title_case,
-    to_latex_style,
-)
+Aliases ``scitex.str`` to the standalone ``scitex_str`` package via
+``sys.modules`` so ``scitex.str is scitex_str`` and any new public name
+added to scitex_str is automatically visible.
 
-__all__ = [
-    "LaTeXFallbackError",
-    "add_hat_in_latex_style",
-    "auto_factor_axis",
-    "axis_label",
-    "check_latex_capability",
-    "check_unit_consistency",
-    "clean_path",
-    "color_text",
-    "ct",
-    "decapitalize",
-    "disable_latex_fallback",
-    "enable_latex_fallback",
-    "factor_out_digits",
-    "format_axis_label",
-    "format_plot_text",
-    "format_title",
-    "get_fallback_mode",
-    "get_latex_status",
-    "grep",
-    "hat_latex_style",
-    "latex_fallback_decorator",
-    "latex_style",
-    "latex_to_mathtext",
-    "latex_to_unicode",
-    "mask_api",
-    "parse",
-    "print_debug",
-    "printc",
-    "readable_bytes",
-    "remove_ansi",
-    "replace",
-    "reset_latex_cache",
-    "safe_add_hat_in_latex_style",
-    "safe_latex_render",
-    "safe_to_latex_style",
-    "scientific_text",
-    "search",
-    "set_fallback_mode",
-    "smart_tick_formatter",
-    "squeeze_spaces",
-    "title",
-    "title_case",
-    "to_latex_style",
-]
+Install: ``pip install scitex-str``.
+See: https://github.com/ywatanabe1989/scitex-str
+"""
 
-# EOF
+import sys as _sys
+
+try:
+    import scitex_str as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.str requires the 'scitex-str' package. "
+        "Install with: pip install scitex-str"
+    ) from _e
+
+_sys.modules[__name__] = _real

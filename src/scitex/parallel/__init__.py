@@ -1,10 +1,21 @@
-#!/usr/bin/env python3
-"""SciTeX parallel module — delegates to scitex-parallel."""
+"""SciTeX parallel — thin compatibility shim for scitex-parallel.
 
-from scitex_parallel import run
+Aliases ``scitex.parallel`` to the standalone ``scitex_parallel`` package via
+``sys.modules`` so ``scitex.parallel is scitex_parallel`` and any new public name
+added to scitex_parallel is automatically visible.
 
-__all__ = [
-    "run",
-]
+Install: ``pip install scitex-parallel``.
+See: https://github.com/ywatanabe1989/scitex-parallel
+"""
 
-# EOF
+import sys as _sys
+
+try:
+    import scitex_parallel as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.parallel requires the 'scitex-parallel' package. "
+        "Install with: pip install scitex-parallel"
+    ) from _e
+
+_sys.modules[__name__] = _real

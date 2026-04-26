@@ -1,66 +1,21 @@
-#!/usr/bin/env python3
-"""SciTeX repro module — delegates to scitex-repro.
+"""SciTeX repro — thin compatibility shim for scitex-repro.
 
-Provides tools for reproducible scientific computing:
-- Random state management (RandomStateManager)
-- ID generation (gen_ID)
-- Timestamp generation (gen_timestamp)
-- Array hashing (hash_array)
+Aliases ``scitex.repro`` to the standalone ``scitex_repro`` package via
+``sys.modules`` so ``scitex.repro is scitex_repro`` and any new public name
+added to scitex_repro is automatically visible.
+
+Install: ``pip install scitex-repro``.
+See: https://github.com/ywatanabe1989/scitex-repro
 """
 
-from scitex_repro import (
-    RandomStateManager,
-    gen_ID,
-    gen_id,
-    gen_timestamp,
-    get,
-    hash_array,
-    reset,
-    timestamp,
-)
+import sys as _sys
 
+try:
+    import scitex_repro as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.repro requires the 'scitex-repro' package. "
+        "Install with: pip install scitex-repro"
+    ) from _e
 
-# Legacy function for backward compatibility (user-confirmed fallback)
-def fix_seeds(
-    seed=42,
-    os=True,
-    random=True,
-    np=True,
-    torch=True,
-    tf=False,
-    jax=False,
-    verbose=False,
-    **kwargs,
-):
-    """
-    Deprecated: Use stx.repro.RandomStateManager instead.
-
-    This function maintains backward compatibility with the old fix_seeds API.
-    """
-    import warnings
-
-    warnings.warn(
-        "fix_seeds is deprecated. Use stx.repro.RandomStateManager instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return RandomStateManager(seed=seed, verbose=verbose)
-
-
-__all__ = [
-    # ID and timestamp utilities
-    "gen_ID",
-    "gen_id",
-    "gen_timestamp",
-    "timestamp",
-    # Hash utilities
-    "hash_array",
-    # Random state management
-    "RandomStateManager",
-    "get",
-    "reset",
-    # Legacy (deprecated)
-    "fix_seeds",
-]
-
-# EOF
+_sys.modules[__name__] = _real

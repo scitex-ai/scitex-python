@@ -1,52 +1,21 @@
-#!/usr/bin/env python3
-"""SciTeX path module — delegates to scitex-path."""
+"""SciTeX path — thin compatibility shim for scitex-path.
 
-from scitex_path import (
-    clean,
-    create_relative_symlink,
-    find_dir,
-    find_file,
-    find_git_root,
-    find_latest,
-    fix_broken_symlinks,
-    get_data_path_from_a_package,
-    get_spath,
-    get_this_path,
-    getsize,
-    increment_version,
-    is_symlink,
-    list_symlinks,
-    mk_spath,
-    readlink,
-    resolve_symlinks,
-    split,
-    symlink,
-    this_path,
-    unlink_symlink,
-)
+Aliases ``scitex.path`` to the standalone ``scitex_path`` package via
+``sys.modules`` so ``scitex.path is scitex_path`` and any new public name
+added to scitex_path is automatically visible.
 
-__all__ = [
-    "clean",
-    "create_relative_symlink",
-    "find_dir",
-    "find_file",
-    "find_git_root",
-    "find_latest",
-    "fix_broken_symlinks",
-    "get_data_path_from_a_package",
-    "get_spath",
-    "get_this_path",
-    "getsize",
-    "increment_version",
-    "is_symlink",
-    "list_symlinks",
-    "mk_spath",
-    "readlink",
-    "resolve_symlinks",
-    "split",
-    "symlink",
-    "this_path",
-    "unlink_symlink",
-]
+Install: ``pip install scitex-path``.
+See: https://github.com/ywatanabe1989/scitex-path
+"""
 
-# EOF
+import sys as _sys
+
+try:
+    import scitex_path as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.path requires the 'scitex-path' package. "
+        "Install with: pip install scitex-path"
+    ) from _e
+
+_sys.modules[__name__] = _real

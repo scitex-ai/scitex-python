@@ -1,18 +1,21 @@
-#!/usr/bin/env python3
-"""SciTeX gists module — delegates to scitex-gists."""
+"""SciTeX gists — thin compatibility shim for scitex-gists.
 
-from scitex_gists import (
-    SigMacro_processFigure_S,
-    SigMacro_toBlue,
-    sigmacro_process_figure_s,
-    sigmacro_to_blue,
-)
+Aliases ``scitex.gists`` to the standalone ``scitex_gists`` package via
+``sys.modules`` so ``scitex.gists is scitex_gists`` and any new public name
+added to scitex_gists is automatically visible.
 
-__all__ = [
-    "SigMacro_processFigure_S",
-    "SigMacro_toBlue",
-    "sigmacro_process_figure_s",
-    "sigmacro_to_blue",
-]
+Install: ``pip install scitex-gists``.
+See: https://github.com/ywatanabe1989/scitex-gists
+"""
 
-# EOF
+import sys as _sys
+
+try:
+    import scitex_gists as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.gists requires the 'scitex-gists' package. "
+        "Install with: pip install scitex-gists"
+    ) from _e
+
+_sys.modules[__name__] = _real

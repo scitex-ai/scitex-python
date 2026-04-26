@@ -1,41 +1,21 @@
-#!/usr/bin/env python3
-"""SciTeX Audio — thin wrapper delegating to scitex-audio package."""
+"""SciTeX audio — thin compatibility shim for scitex-audio.
 
-from scitex_audio import *  # noqa: F401,F403
-from scitex_audio import (
-    FALLBACK_ORDER,
-    TTS,
-    ElevenLabsTTS,
-    GoogleTTS,
-    LuxTTS,
-    SystemTTS,
-    available_backends,
-    available_models,
-    check_local_audio_available,
-    check_wsl_audio,
-    find_whisper_cli,
-    find_whisper_model,
-    generate_bytes,
-    get_tts,
-    speak,
-    stop_speech,
-    transcribe,
-)
+Aliases ``scitex.audio`` to the standalone ``scitex_audio`` package via
+``sys.modules`` so ``scitex.audio is scitex_audio`` and any new public name
+added to scitex_audio is automatically visible.
 
-__all__ = [
-    "speak",
-    "generate_bytes",
-    "stop_speech",
-    "check_wsl_audio",
-    "check_local_audio_available",
-    "TTS",
-    "GoogleTTS",
-    "ElevenLabsTTS",
-    "SystemTTS",
-    "LuxTTS",
-    "get_tts",
-    "available_backends",
-    "FALLBACK_ORDER",
-]
+Install: ``pip install scitex-audio``.
+See: https://github.com/ywatanabe1989/scitex-audio
+"""
 
-# EOF
+import sys as _sys
+
+try:
+    import scitex_audio as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.audio requires the 'scitex-audio' package. "
+        "Install with: pip install scitex-audio"
+    ) from _e
+
+_sys.modules[__name__] = _real

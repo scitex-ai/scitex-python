@@ -1,82 +1,21 @@
-#!/usr/bin/env python3
-"""SciTeX browser — delegates to scitex-browser."""
+"""SciTeX browser — thin compatibility shim for scitex-browser.
 
-from scitex_browser import (
-    PopupHandler,
-    SyncBrowserSession,
-    TestMonitor,
-    browser_logger,
-    click_center_async,
-    click_download_for_chrome_pdf_viewer_async,
-    click_with_fallbacks_async,
-    close_popups_async,
-    collect_console_logs,
-    collect_console_logs_detailed,
-    create_browser_session_fixture,
-    create_failure_capture_fixture,
-    create_test_monitor_fixture,
-    detect_chrome_pdf_viewer_async,
-    ensure_no_popups_async,
-    fill_with_fallbacks_async,
-    format_logs_devtools_style,
-    highlight_element_async,
-    inject_visual_effects,
-    inject_visual_effects_async,
-    is_playwright_cli_available,
-    monitor_test,
-    save_as_pdf,
-    save_as_pdf_async,
-    save_failure_artifacts,
-    setup_console_interceptor,
-    show_click_effect,
-    show_click_effect_async,
-    show_cursor_at,
-    show_cursor_at_async,
-    show_grid_async,
-    show_step,
-    show_step_async,
-    show_test_result,
-    show_test_result_async,
-    sync_browser_session,
-)
+Aliases ``scitex.browser`` to the standalone ``scitex_browser`` package via
+``sys.modules`` so ``scitex.browser is scitex_browser`` and any new public name
+added to scitex_browser is automatically visible.
 
-__all__ = [
-    "is_playwright_cli_available",
-    "browser_logger",
-    "show_grid_async",
-    "highlight_element_async",
-    "inject_visual_effects",
-    "show_cursor_at",
-    "show_click_effect",
-    "show_step",
-    "show_test_result",
-    "inject_visual_effects_async",
-    "show_cursor_at_async",
-    "show_click_effect_async",
-    "show_step_async",
-    "show_test_result_async",
-    "setup_console_interceptor",
-    "collect_console_logs",
-    "collect_console_logs_detailed",
-    "format_logs_devtools_style",
-    "save_failure_artifacts",
-    "create_failure_capture_fixture",
-    "TestMonitor",
-    "create_test_monitor_fixture",
-    "monitor_test",
-    "SyncBrowserSession",
-    "sync_browser_session",
-    "create_browser_session_fixture",
-    "save_as_pdf",
-    "save_as_pdf_async",
-    "detect_chrome_pdf_viewer_async",
-    "click_download_for_chrome_pdf_viewer_async",
-    "click_center_async",
-    "click_with_fallbacks_async",
-    "fill_with_fallbacks_async",
-    "PopupHandler",
-    "close_popups_async",
-    "ensure_no_popups_async",
-]
+Install: ``pip install scitex-browser``.
+See: https://github.com/ywatanabe1989/scitex-browser
+"""
 
-# EOF
+import sys as _sys
+
+try:
+    import scitex_browser as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.browser requires the 'scitex-browser' package. "
+        "Install with: pip install scitex-browser"
+    ) from _e
+
+_sys.modules[__name__] = _real
