@@ -25,12 +25,6 @@ except ImportError:
 # SciTeX-specific load modules (NOT in scitex-io)
 # =============================================================================
 
-# Canvas loading (scitex-specific)
-try:
-    from ._canvas import load_canvas  # noqa: F401
-except ImportError:
-    pass
-
 # Clean up
 del _importlib, _inspect
 

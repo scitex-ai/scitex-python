@@ -102,7 +102,6 @@ scitex = "scitex.__main__:main"
 scitex-pkg = "scitex.cli.pkg:pkg"
 # MCP Server entry points (individual modules)
 # scitex-audio entry point now in standalone scitex-audio package
-scitex-canvas = "scitex.canvas.mcp_server:main"
 scitex-capture = "scitex.capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
 # scitex-plt entry point now in standalone scitex-plt package
@@ -212,12 +211,6 @@ capture = [
     "Pillow",
     "playwright>=1.40.0",
     "mcp",
-]
-
-# Canvas Module - High-level figure composition
-# Use: pip install scitex[canvas]
-canvas = [
-    "figrecipe>=0.16.0",
 ]
 
 # CLI Module - Command line interface
@@ -886,7 +879,6 @@ all = [
     "scitex[benchmark]",
     "scitex[bridge]",
     "scitex[browser]",
-    "scitex[canvas]",
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
