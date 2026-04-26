@@ -642,9 +642,8 @@ session = [
 
 # Sh Module - Shell utilities
 # Use: pip install scitex[sh]
-sh = [
-    "matplotlib",
-]
+# Real implementation lives in the standalone scitex-sh package.
+sh = ["scitex-sh>=0.1.0"]
 
 # Social Module - Social media integration
 # Use: pip install scitex[social]
