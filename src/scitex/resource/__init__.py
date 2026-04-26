@@ -1,31 +1,20 @@
-#!/usr/bin/env python3
-"""Scitex resource module."""
+"""SciTeX resource — thin compatibility shim for scitex-resource.
 
-from ._get_processor_usages import get_processor_usages
-from ._get_specs import (
-    _cpu_info,
-    _disk_info,
-    _memory_info,
-    _network_info,
-    _supple_nvidia_info,
-    _supple_os_info,
-    _supple_python_info,
-    _system_info,
-    get_specs,
-)
-from ._log_processor_usages import log_processor_usages, main
+Aliases ``scitex.resource`` to the standalone ``scitex_resource`` package via
+``sys.modules``. ``scitex.resource is scitex_resource``.
 
-__all__ = [
-    "get_processor_usages",
-    "get_specs",
-    "log_processor_usages",
-    "main",
-    "_cpu_info",
-    "_disk_info",
-    "_memory_info",
-    "_network_info",
-    "_supple_nvidia_info",
-    "_supple_os_info",
-    "_supple_python_info",
-    "_system_info",
-]
+Install: ``pip install scitex[resource]``  (or ``pip install scitex-resource``).
+See: https://github.com/ywatanabe1989/scitex-resource
+"""
+
+import sys as _sys
+
+try:
+    import scitex_resource as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.resource requires the 'scitex-resource' package. "
+        "Install with: pip install scitex[resource]  (or: pip install scitex-resource)"
+    ) from _e
+
+_sys.modules[__name__] = _real

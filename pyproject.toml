@@ -546,18 +546,8 @@ repro = [
 
 # Resource Module - Resource monitoring
 # Use: pip install scitex[resource]
-resource = [
-    "psutil",
-    "matplotlib",
-    "pyyaml",
-    "joblib",
-    "ruamel.yaml",
-    "h5py",
-    "scipy",
-    "readchar",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "torch",
-]
+# Real implementation lives in the standalone scitex-resource package.
+resource = ["scitex-resource[sh]>=0.1.0"]
 
 # Reproduce Module - Reproducibility tools
 # Use: pip install scitex[reproduce]
