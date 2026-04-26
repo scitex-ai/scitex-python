@@ -357,7 +357,8 @@ etc = [
 
 # Events Module - Event system
 # Use: pip install scitex[events]
-events = []
+# Real implementation lives in the standalone scitex-events package.
+events = ["scitex-events>=0.1.0"]
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]

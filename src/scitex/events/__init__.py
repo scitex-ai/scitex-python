@@ -1,33 +1,22 @@
-#!/usr/bin/env python3
-# Timestamp: 2026-02-14
-# File: scitex/events/__init__.py
+"""SciTeX events — thin compatibility shim for scitex-events.
 
-"""
-SciTeX Event Bus — general-purpose async event system.
+Aliases ``scitex.events`` to the standalone ``scitex_events`` package via
+``sys.modules``. ``scitex.events is scitex_events``.
 
-Emit events from CLI, HPC, or any process. Events are stored locally
-as state files and optionally forwarded to the cloud API via webhook.
+Public API: emit, latest, history, list_types, get_type_info, Event
 
-Usage
------
->>> from scitex.events import emit, latest
->>> emit("test_complete", project="figrecipe", status="success",
-...      payload={"exit_code": 0, "module": "stats"})
->>> latest("test_complete")
-{"type": "test_complete", "project": "figrecipe", ...}
+Install: ``pip install scitex[events]``  (or ``pip install scitex-events``).
+See: https://github.com/ywatanabe1989/scitex-events
 """
 
-from ._emit import emit, history, latest
-from ._schema import Event
-from ._types import get_type_info, list_types
+import sys as _sys
 
-__all__ = [
-    "Event",
-    "emit",
-    "latest",
-    "history",
-    "list_types",
-    "get_type_info",
-]
+try:
+    import scitex_events as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.events requires the 'scitex-events' package. "
+        "Install with: pip install scitex[events]  (or: pip install scitex-events)"
+    ) from _e
 
-# EOF
+_sys.modules[__name__] = _real
