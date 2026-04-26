@@ -412,7 +412,8 @@ io = [
 
 # Introspect Module - Code introspection
 # Use: pip install scitex[introspect]
-introspect = []
+# Real implementation lives in the standalone scitex-introspect package.
+introspect = ["scitex-introspect>=0.1.0"]
 
 # Linalg Module - Linear algebra
 # Use: pip install scitex[linalg]

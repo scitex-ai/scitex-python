@@ -1,76 +1,20 @@
-#!/usr/bin/env python3
-# Timestamp: 2025-01-20
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/introspect/__init__.py
+"""SciTeX introspect — thin compatibility shim for scitex-introspect.
 
-"""
-Introspection utilities for Python packages.
+Aliases ``scitex.introspect`` to the standalone ``scitex_introspect`` package
+via ``sys.modules``. ``scitex.introspect is scitex_introspect``.
 
-Provides IPython-like introspection capabilities for any Python package.
-
-IPython-style shortcuts:
-- q: Function/class signature with type hints (like `func?`)
-- qq: Full source code (like `func??`)
-- dir: List attributes/methods (like `dir()`)
-- list_api: Recursive module API tree
-
-Basic Introspection:
-- get_docstring: Docstring extraction with parsing
-- get_exports: Module's __all__ contents
-- find_examples: Find usage examples in tests/examples
-
-Advanced Introspection:
-- get_class_hierarchy: Inheritance tree (MRO + subclasses)
-- get_mro: Method Resolution Order only
-- get_type_hints_detailed: Detailed type annotation analysis
-- get_class_annotations: Class variable and method annotations
-- get_imports: Static import analysis using AST
-- get_dependencies: Module dependency analysis
-- get_call_graph: Function call graph (with timeout protection)
-- get_function_calls: Simple outgoing calls list
+Install: ``pip install scitex[introspect]``  (or ``pip install scitex-introspect``).
+See: https://github.com/ywatanabe1989/scitex-introspect
 """
 
-from ._core import (  # IPython-style names; Basic; Advanced - Call graph; Advanced - Type hints; Advanced - Class hierarchy; Advanced - Imports
-    dir,
-    find_examples,
-    get_call_graph,
-    get_class_annotations,
-    get_class_hierarchy,
-    get_dependencies,
-    get_docstring,
-    get_exports,
-    get_function_calls,
-    get_imports,
-    get_mro,
-    get_type_hints_detailed,
-    get_type_info,
-    q,
-    qq,
-    resolve_object,
-)
-from ._list_api import list_api
+import sys as _sys
 
-__all__ = [
-    # IPython-style names
-    "q",
-    "qq",
-    "dir",
-    "list_api",
-    # Basic
-    "get_docstring",
-    "get_exports",
-    "find_examples",
-    "resolve_object",
-    "get_type_info",
-    # Advanced - Class hierarchy
-    "get_class_hierarchy",
-    "get_mro",
-    # Advanced - Type hints
-    "get_type_hints_detailed",
-    "get_class_annotations",
-    # Advanced - Imports
-    "get_imports",
-    "get_dependencies",
-    # Advanced - Call graph
-    "get_call_graph",
-    "get_function_calls",
-]
+try:
+    import scitex_introspect as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.introspect requires the 'scitex-introspect' package. "
+        "Install with: pip install scitex[introspect]  (or: pip install scitex-introspect)"
+    ) from _e
+
+_sys.modules[__name__] = _real
