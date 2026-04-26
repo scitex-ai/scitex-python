@@ -631,7 +631,8 @@ schema = []
 
 # Security Module - Security utilities
 # Use: pip install scitex[security]
-security = []
+# Real implementation lives in the standalone scitex-security package.
+security = ["scitex-security>=0.1.0"]
 
 # Session Module - Session management
 # Use: pip install scitex[session]

@@ -1,33 +1,23 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# File: ~/proj/scitex-code/src/scitex/security/__init__.py
+"""SciTeX security — thin compatibility shim for scitex-security.
 
-"""
-SciTeX Security Module
+Aliases ``scitex.security`` to the standalone ``scitex_security`` package via
+``sys.modules``. ``scitex.security is scitex_security``.
 
-Reusable security utilities for the SciTeX ecosystem.
-Handles GitHub security alerts, secret scanning, and vulnerability management.
+Public API: check_github_alerts, save_alerts_to_file, get_latest_alerts_file,
+            format_alerts_report, GitHubSecurityError
 
-Usage:
-    from scitex.security import check_github_alerts
-
-    alerts = check_github_alerts()
-    if alerts:
-        print(f"Found {len(alerts)} security alerts!")
+Install: ``pip install scitex[security]``  (or ``pip install scitex-security``).
+See: https://github.com/ywatanabe1989/scitex-security
 """
 
-from .github import (
-    GitHubSecurityError,
-    check_github_alerts,
-    format_alerts_report,
-    get_latest_alerts_file,
-    save_alerts_to_file,
-)
+import sys as _sys
 
-__all__ = [
-    "check_github_alerts",
-    "save_alerts_to_file",
-    "get_latest_alerts_file",
-    "format_alerts_report",
-    "GitHubSecurityError",
-]
+try:
+    import scitex_security as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.security requires the 'scitex-security' package. "
+        "Install with: pip install scitex[security]  (or: pip install scitex-security)"
+    ) from _e
+
+_sys.modules[__name__] = _real
