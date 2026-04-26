@@ -450,9 +450,9 @@ module = []
 
 # MSWord Module - MS Word document handling
 # Use: pip install scitex[msword]
+# Real implementation lives in the standalone scitex-msword package.
 msword = [
-    "python-docx",
-    "pypandoc",
+    "scitex-msword>=0.1.0",
 ]
 
 # NN Module - Neural Networks
