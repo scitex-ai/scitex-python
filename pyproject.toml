@@ -682,9 +682,8 @@ template = [
 
 # Tex Module - LaTeX utilities
 # Use: pip install scitex[tex]
-tex = [
-    "matplotlib",
-]
+# Real implementation lives in the standalone scitex-tex package.
+tex = ["scitex-tex>=0.1.0"]
 
 # Tunnel Module - SSH reverse tunnel for NAT traversal
 # Use: pip install scitex[tunnel]

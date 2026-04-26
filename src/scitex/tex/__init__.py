@@ -1,14 +1,20 @@
-#!/usr/bin/env python3
-"""LaTeX utilities module for scitex."""
+"""SciTeX tex — thin compatibility shim for scitex-tex.
 
-from ._export import CompileResult, compile_tex, export_tex
-from ._preview import preview
-from ._to_vec import to_vec
+Aliases ``scitex.tex`` to the standalone ``scitex_tex`` package via ``sys.modules``.
+``scitex.tex is scitex_tex``.
 
-__all__ = [
-    "export_tex",
-    "compile_tex",
-    "CompileResult",
-    "preview",
-    "to_vec",
-]
+Install: ``pip install scitex[tex]``  (or ``pip install scitex-tex``).
+See: https://github.com/ywatanabe1989/scitex-tex
+"""
+
+import sys as _sys
+
+try:
+    import scitex_tex as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.tex requires the 'scitex-tex' package. "
+        "Install with: pip install scitex[tex]  (or: pip install scitex-tex)"
+    ) from _e
+
+_sys.modules[__name__] = _real
