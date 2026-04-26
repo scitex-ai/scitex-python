@@ -180,9 +180,8 @@ audit = ["scitex-audit>=0.1.2"]
 
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
-benchmark = [
-    "psutil",
-]
+# Real implementation lives in the standalone scitex-benchmark package.
+benchmark = ["scitex-benchmark>=0.1.0"]
 
 # Bridge Module - External system integration
 # Use: pip install scitex[bridge]

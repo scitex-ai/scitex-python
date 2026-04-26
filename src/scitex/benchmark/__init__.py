@@ -1,40 +1,20 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Time-stamp: "2025-07-25 05:25:00"
-# File: __init__.py
+"""SciTeX benchmark — thin compatibility shim for scitex-benchmark.
 
-"""
-SciTeX Performance Benchmarking Suite
+Aliases ``scitex.benchmark`` to the standalone ``scitex_benchmark`` package
+via ``sys.modules``. ``scitex.benchmark is scitex_benchmark``.
 
-This module provides tools for benchmarking and monitoring the performance
-of SciTeX functions.
+Install: ``pip install scitex[benchmark]``  (or ``pip install scitex-benchmark``).
+See: https://github.com/ywatanabe1989/scitex-benchmark
 """
 
-from .benchmark import (
-    BenchmarkResult,
-    BenchmarkSuite,
-    benchmark_function,
-    benchmark_module,
-    compare_implementations,
-    run_all_benchmarks,
-)
-from .monitor import PerformanceMonitor, get_performance_stats, track_performance
-from .profiler import get_profile_report, profile_function, profile_module
+import sys as _sys
 
-__all__ = [
-    # Benchmarking
-    "benchmark_function",
-    "benchmark_module",
-    "BenchmarkResult",
-    "BenchmarkSuite",
-    "run_all_benchmarks",
-    "compare_implementations",
-    # Profiling
-    "profile_function",
-    "profile_module",
-    "get_profile_report",
-    # Monitoring
-    "PerformanceMonitor",
-    "track_performance",
-    "get_performance_stats",
-]
+try:
+    import scitex_benchmark as _real
+except ImportError as _e:  # pragma: no cover
+    raise ImportError(
+        "scitex.benchmark requires the 'scitex-benchmark' package. "
+        "Install with: pip install scitex[benchmark]  (or: pip install scitex-benchmark)"
+    ) from _e
+
+_sys.modules[__name__] = _real
