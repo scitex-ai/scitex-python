@@ -509,9 +509,8 @@ path = [
 
 # Pd Module - Pandas utilities
 # Use: pip install scitex[pd]
-pd = [
-    "xarray",
-]
+# Real implementation lives in the standalone scitex-pd package.
+pd = ["scitex-pd>=0.1.0"]
 
 # PLT Module - Plotting utilities
 # Use: pip install scitex[plt]
