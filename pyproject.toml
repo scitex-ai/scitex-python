@@ -457,24 +457,7 @@ msword = [
 
 # NN Module - Neural Networks
 # Use: pip install scitex[nn]
-nn = [
-    "seaborn",
-    "ipdb",
-    "matplotlib",
-    "joblib",
-    "tensorpac",
-    "ruamel.yaml",
-    "h5py",
-    "readchar",
-    "xarray",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "torch",
-    # "torchaudio",
-    # "torchsummary",
-    # "julius",
-    # "mne",
-    # "ripple_detection",
-]
+nn = ["scitex-nn>=0.1.0"]
 
 # Notebook Module - Jupyter notebook utilities
 # Use: pip install scitex[notebook]
