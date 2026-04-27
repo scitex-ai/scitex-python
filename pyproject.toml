@@ -294,25 +294,7 @@ dict = ["scitex-dict>=0.1.2"]
 
 # DSP Module - Digital Signal Processing
 # Use: pip install scitex[dsp]
-dsp = [
-    "scipy",
-    "sounddevice",
-    "matplotlib",
-    "joblib",
-    "tensorpac",
-    "ruamel.yaml",
-    "h5py",
-    "readchar",
-    "xarray",
-    "seaborn",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "mne",
-    # "torch",
-    # "ripple_detection",
-    # "torchsummary",
-    # "julius",
-    # "torchaudio",
-]
+dsp = ["scitex-dsp>=0.1.0"]
 
 # DevTools Module - scitex.dev code analysis and development tools
 # Use: pip install scitex[devtools]
