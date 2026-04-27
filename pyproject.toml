@@ -138,6 +138,10 @@ app = [
     "scitex-app>=0.1.0",
 ]
 
+# HPC Module - Generic SLURM dispatch (srun, sbatch, sync, poll, fetch)
+# Use: pip install scitex[hpc]
+hpc = ["scitex-hpc>=0.1.0"]
+
 # AI Module - LLM APIs and ML tools
 # Use: pip install scitex[ai]
 ai = [
