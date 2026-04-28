@@ -25,6 +25,12 @@ All SciTeX packages MUST use the `SCITEX_<MODULE_NAME>_*` prefix for environment
 - Show `$ENV_VAR_NAME` in CLI help defaults, not resolved values
 - Configuration is external (env vars, config files) — never hardcode secrets or defaults that should be user-configurable
 
+## Resolution precedence
+
+Per-field precedence is **direct (CLI flag) → config_dict (YAML) → env var → default**. Env vars sit between YAML and built-in defaults — they're a fallback when no YAML config is loaded, never an override of explicit YAML or CLI values.
+
+Use `scitex_config.PriorityConfig.resolve()` rather than hand-rolling the cascade. See `03_interface_02_cli.md` §6c for the full CLI rule and `~/proj/scitex-config/src/scitex_config/_PriorityConfig.py` for the canonical implementation.
+
 ## Feature Flags
 
 All SciTeX feature flags follow the **opt-out** pattern (default enabled, explicitly disable):
