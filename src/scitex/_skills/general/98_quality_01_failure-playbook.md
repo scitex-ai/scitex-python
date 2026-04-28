@@ -217,4 +217,68 @@ The companion `audit_ecosystem.py` script runs nightly, opens a
 GitHub issue tagged `quality-audit` on CRITICAL/HIGH, and uploads the
 full JSON as an artifact.
 
+## 11. Orphan License classifier blocks setuptools 80+ build (the 2026-04-28b class-action)
+
+**Symptom.** ``pip install -e .`` fails with
+``setuptools.errors.InvalidConfigError: License classifiers have been
+superseded by license expressions``. CI's *Test* / *Tests* job aborts
+before any test runs.
+
+**Root cause.** PEP 639 deprecated the legacy
+``"License :: OSI Approved :: ..."`` classifier in favour of the
+``license = "AGPL-3.0-only"`` SPDX expression. setuptools 80+ refuses
+the build when *both* are present. After our 2026-04-28a normalization
+to SPDX (E5C11), 41 ecosystem packages still carried the legacy
+classifier alongside the new SPDX form.
+
+**Detection** is automated in
+`scitex_dev._pyproject_lint.check_orphan_license_classifier`
+(rule ``E5C13_orphan_license_classifier``, severity HIGH).
+
+**Fix.** Remove the classifier line; SPDX is authoritative now:
+
+```toml
+[project]
+license = "AGPL-3.0-only"
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    # "License :: OSI Approved :: GNU Affero General Public License v3",  ← drop
+]
+```
+
+**Affected on 2026-04-28 (all 31 fixed + republished):** crossref-local,
+figrecipe, openalex-local, scitex-agent-container, scitex-audio,
+scitex-audit, scitex-browser, scitex-clew, scitex-compat, scitex-core,
+scitex-dataset, scitex-db, scitex-dict, scitex-etc, scitex-gists,
+scitex-io, scitex-logging, scitex-notification, scitex-orochi,
+scitex-parallel, scitex-path, scitex-plt, scitex-repro, scitex-scholar,
+scitex-stats, scitex-str, scitex-template, scitex-types, scitex-writer,
+socialia, scitex-python.
+
+## 12. Click subcommand rename desyncs tests
+
+**Symptom.** Click CLI tests exit with code 2 ("usage error") because
+``runner.invoke(cli, ["send", ...])`` references the old command name
+after a refactor renamed it to ``send-notification``.
+
+**Root cause.** A package introduces a deprecated-redirect for old
+command names:
+
+```python
+cli.add_command(_deprecated_redirect("send", "send-notification"))
+```
+
+The redirect prints a usage error and exits 2 (correctly — operators
+shouldn't keep using the old name). But test code that still invokes
+``["send", ...]`` hits this exit-2 path and asserts ``exit_code == 0``.
+
+**Fix.** Update the test invocations to the new names. Caught for
+scitex-notification on 2026-04-28: send→send-notification,
+sms→send-sms, config→show-config, backends→list-backends.
+
+**Followup rule** (not yet codified): every Click command rename
+should sweep `tests/` for the old literal at the same time. Could
+codify as `E5G2_test_uses_renamed_cli` if this pattern recurs.
+
 <!-- EOF -->
