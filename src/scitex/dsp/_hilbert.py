@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-04 02:07:11 (ywatanabe)"
 # File: ./scitex_repo/src/scitex/dsp/_hilbert.py
 
@@ -21,7 +20,15 @@ def hilbert(
     x,
     dim=-1,
 ):
-    y = Hilbert(x.shape[-1], dim=dim)(x)
+    seq_len = x.shape[dim]
+    if seq_len == 0:
+        empty = (
+            x[..., :0]
+            if dim in (-1, x.ndim - 1)
+            else x.swapaxes(dim, -1)[..., :0].swapaxes(dim, -1)
+        )
+        return empty, empty
+    y = Hilbert(seq_len, dim=dim)(x)
     return y[..., 0], y[..., 1]
 
 
