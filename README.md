@@ -141,7 +141,7 @@ Middle (shared infrastructure — wraps, doesn't replace)
         ▼
 Downstream (standalone apps — own IO/GUI, unit tests)
     figrecipe, scitex-writer, scitex-scholar, scitex-clew, scitex-notebook,
-    scitex-dataset, scitex-tunnel, scitex-container, scitex-browser, scitex-linter,
+    scitex-dataset, scitex-ssh, scitex-container, scitex-browser, scitex-linter,
     openalex-local, crossref-local, socialia, + utility leaves
     (scitex-{path,str,dict,logging,types,db,repro,audit,parallel,compat,gists,etc,core})
 ```
@@ -655,7 +655,7 @@ Each package exposes the ecosystem via up to six interfaces: Python library, CLI
 | [scitex-container](https://github.com/ywatanabe1989/scitex-container) | `stx.container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified container management for Apptainer/Singularity + Docker |
 | [scitex-dev](https://github.com/ywatanabe1989/scitex-dev) | `stx.dev` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Developer utilities for maintaining the whole SciTeX ecosystem |
 | [scitex-notebook](https://github.com/ywatanabe1989/scitex-notebook) | `stx.notebook` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐⭐ · Hook — · HTTP — | Jupyter notebook reproducibility — verify, compile to DAG, convert to script |
-| [scitex-tunnel](https://github.com/ywatanabe1989/scitex-tunnel) | `stx.tunnel` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Persistent, auto-reconnecting SSH reverse tunnels for NAT traversal |
+| [scitex-ssh](https://github.com/ywatanabe1989/scitex-ssh) | `stx.tunnel` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | SSH primitives (exec/copy/attach) plus gated, auto-reconnecting reverse tunnels for NAT traversal |
 
 ### MCP-first
 
