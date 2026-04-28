@@ -320,6 +320,29 @@ Precedence (highest first): `--config PATH` → `$SCITEX_<PKG>_CONFIG` → `<pro
 
 Canonical filename is always `config.yaml` (not `<pkg>_config.yaml`). Project scope overrides user scope; CLI flags and env vars override both. The full layout rule — two roots, prefix-stripping (`scitex-dev` → `dev`), forbidden locations, `SCITEX_DIR` relocation, `PathManager` usage — lives in `01_arch_06_local-state-directories.md`. Document the fallback order in `--help`.
 
+### 6c. Value precedence — `scitex_config.PriorityConfig`
+
+For every individual config field (host, port, package list, etc.), resolve via the cascade:
+
+```
+direct (CLI flag) → config_dict (YAML) → env var → default
+```
+
+**Direct CLI flags ALWAYS win** — never let the YAML override an explicit `--flag`. Config files come second, env vars third, hardcoded defaults last.
+
+**Implementation: do not hand-roll the cascade.** Use `scitex_config.PriorityConfig`:
+
+```python
+from scitex_config import PriorityConfig
+
+cfg = PriorityConfig(config_dict=yaml_data, env_prefix="SCITEX_DEV_")
+host = cfg.resolve("host", direct_val=cli_args.host, default="localhost")
+```
+
+Reference implementations: `scitex_hpc._config.JobConfig.resolve()`, the `scitex_config` package itself.
+
+**Why centralized:** when every CLI follows the same precedence, operators learn it once. A YAML silently overriding a CLI flag is a class of "I told you to do X but you did Y" bugs that disappear when this rule is enforced uniformly.
+
 ## 7. MCP tool parity
 
 When a CLI command has an MCP tool counterpart:
@@ -336,7 +359,97 @@ When a CLI command has an MCP tool counterpart:
 - **Rule:** a user must be able to `cmd --json | jq ...` with zero
   log contamination on stdout.
 
-## 9. Audit checklist
+## 9. Mutating operations — observation → dry-run → execute
+
+For any command that **changes remote state** (sync, deploy, install, push, delete, etc.), provide three modes selected by mutually exclusive flags. Default = observation. The operator must understand what will happen *before* it happens.
+
+### 9a. Three modes
+
+| Mode | Flag | Behavior |
+|---|---|---|
+| **Observation** (default) | (none) | Read-only audit. Print what's currently true, what's stale, what's missing. Exit 0 if everything matches reference; 1 otherwise. |
+| **Dry-run** | `--dry-run` | Print the **exact commands** that would execute (`git pull`, `pip install`, `scp`, etc.) — one per line per (target, item). No execution. |
+| **Execute** | `--<verb>-<scope>` (e.g. `--update-hosts`, `--upload-files`) | Actually run the dry-run plan. |
+
+### 9b. Flag-naming for execute mode
+
+**Name the action by the scope it touches.** A flag called `--apply` is too abstract — the operator can't tell what gets modified. A flag called `--update-hosts` says "this updates hosts" so the scope is unambiguous.
+
+Examples:
+- `--update-hosts` (sync git + pip on remote machines)
+- `--upload-files` (push artifacts somewhere)
+- `--delete-stale-runs` (remove old job dirs)
+
+Avoid: `--apply`, `--commit`, `--go`, `--run` — too generic.
+
+### 9c. Reference flag for source-of-truth
+
+When the operation converges to a target state, name the source explicitly:
+
+```
+--reference origin/develop      # default: github branch
+--reference localhost           # local working copy
+--reference pypi                # latest published version
+--reference <host>:<branch>     # arbitrary peer
+```
+
+This makes "what are we converging toward?" answerable from the flags alone.
+
+### 9d. Filter flags name the object scope
+
+Filter flags should be **plural nouns** that name the scope:
+
+| Flag | Scope |
+|---|---|
+| `--hosts mba,nas` | machines (filter sync targets) |
+| `--packages scitex-io,scitex-nn` | packages (filter what to operate on) |
+| `--branches main,develop` | git branches |
+| `--users alice,bob` | accounts |
+
+Singular forms (`--host`, `--package`) are accepted as aliases but plurals signal "list values".
+
+### 9e. Dry-run is **enforced**, not optional
+
+For destructive or wide-scope mutating operations (renames, mass deletes, cross-host syncs), execute mode must **refuse to run** unless a matching `--dry-run` has been performed recently and the operator confirms the same plan is being executed.
+
+**Reference implementation: `scitex-dev rename-symbols`** (canonical workflow):
+
+```
+1. Clean git tree            ← refuses if uncommitted changes
+2. Dry-run preview           ← refuses execute without recent --dry-run
+3. Review the change list    ← inspect the dry-run file list + counts
+4. Real run                  ← matching --dry-run gates the execute
+5. Test the result           ← reminder printed after execute
+```
+
+**Enforcement mechanism:** the dry-run writes a manifest (set of operations + hash of inputs) to a state file (e.g. `~/.scitex/<pkg>/last-dry-run.json`). Execute reads it, recomputes the hash from current state, and refuses to run if:
+- No manifest exists, OR
+- Manifest is older than N minutes, OR
+- Recomputed hash doesn't match (state changed since dry-run)
+
+The error message tells the operator: "Re-run `--dry-run` first; the plan may have changed." A `--force` escape hatch is provided for CI/scripted contexts where the dry-run was already performed and audited out-of-band.
+
+**Why enforce, not just suggest:** a non-enforced dry-run gets skipped under time pressure ("I already know what it'll do"). An enforced dry-run is a literal checkpoint where the operator sees the plan, then opts in. This eliminates "I thought it would do X but it did Y" failures.
+
+### 9f. Worked example
+
+```bash
+# Observation: where do hosts stand vs origin/develop?
+scitex-dev ecosystem packages
+
+# Filter to a subset
+scitex-dev ecosystem packages --hosts mba --packages scitex-io
+
+# Preview what sync would do (writes a manifest)
+scitex-dev ecosystem packages --hosts mba --dry-run
+
+# Execute — refuses if no recent matching --dry-run
+scitex-dev ecosystem packages --hosts mba --update-hosts
+```
+
+The same command surface gives a three-step ritual: observe → preview → act. The operator who reads the dry-run output knows exactly what `--update-hosts` will do, and the tool enforces the order.
+
+## 10. Audit checklist
 
 When auditing a new or existing SciTeX CLI:
 
@@ -347,8 +460,13 @@ When auditing a new or existing SciTeX CLI:
 - [ ] Deprecated names hard-error with redirect (§5)
 - [ ] Env vars use `SCITEX_<PKG>_*` prefix (§6a)
 - [ ] Config file path follows §6b
+- [ ] Per-field precedence via `scitex_config.PriorityConfig` (§6c)
 - [ ] MCP parity if applicable (§7)
 - [ ] stdout/stderr separation clean (§8)
+- [ ] Mutating ops: observation default + `--dry-run` + scope-named execute flag (§9)
+- [ ] Filter flags use plural scope nouns (`--hosts`, `--packages`) (§9d)
+- [ ] `--reference` names the source-of-truth for state-converging ops (§9c)
+- [ ] Destructive ops enforce `--dry-run` before execute via manifest gate (§9e; reference: `scitex-dev rename-symbols`)
 
 ## Cross-references
 
