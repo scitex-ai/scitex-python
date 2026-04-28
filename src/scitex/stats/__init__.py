@@ -150,4 +150,21 @@ __all__ = [
     "load_and_annotate",
 ]
 
+# Register scitex_stats submodules at the `scitex.stats.<name>` import path.
+# Without this, `from scitex.stats._utils import X` fails: Python's import
+# machinery resolves dotted-paths against sys.modules + finder hooks, not
+# the parent's namespace dict (where the `from scitex_stats import _utils`
+# above has only added it as an attribute). Mirroring the alias-shim pattern
+# from `scitex.plt = figrecipe`.
+import sys as _sys
+
+import scitex_stats as _scitex_stats
+
+for _submod in ("_utils",):
+    _mod = getattr(_scitex_stats, _submod, None)
+    if _mod is not None:
+        _sys.modules[f"scitex.stats.{_submod}"] = _mod
+
+del _sys, _scitex_stats
+
 # EOF

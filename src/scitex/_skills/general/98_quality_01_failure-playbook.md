@@ -149,4 +149,136 @@ for b in bridges:
 
 The workflow's `on: push: paths:` filter also excludes `pyproject.toml` — force a run with `gh workflow run "Doc-Drift Nightly" --ref develop` after the push.
 
+## 8. Implicit transitive dep after a refactor (the 2026-04-28 class-action)
+
+**Symptom.** `pip install <pkg>==<latest>` in a fresh venv fails with
+`ModuleNotFoundError: No module named 'scitex_config'` (or any other
+ecosystem package). CI's *Test* job is green because the dev environment
+has the dep installed editable; only the *Install Test (fresh venv)* job
+catches it.
+
+**Root cause.** A migration sweep edits `src/<pkg>/...` to `from
+scitex_config._ecosystem import local_state` but doesn't audit
+`pyproject.toml` for the new transitive dep. The package now imports
+something it doesn't declare, so PyPI consumers hit ModuleNotFoundError.
+
+**Detection** is automated in
+`scitex-dev/scripts/quality/audit_ecosystem.py` (`§C5 src imports
+scitex_config but pyproject does not declare scitex-config`). The
+nightly `quality-audit.yml` workflow opens a tracking GitHub issue
+tagged `quality-audit` if any CRITICAL findings appear.
+
+**Fix recipe.**
+
+1. Add the dep to `dependencies = [...]` (NOT `optional-dependencies`).
+2. Bump the patch version (`0.1.9 → 0.1.10`).
+3. `git tag v<new>` and push tags. If the publish workflow uses
+   `event: release` instead of `push: tags: ['v*']`, also create a
+   `gh release create v<new>` so PyPI publish actually fires.
+4. Verify on PyPI with `pip index versions <pkg>` — a pushed tag without
+   a corresponding release is invisible to consumers.
+
+**Affected on 2026-04-28 (all fixed + republished):** scitex-core 0.2.5,
+scitex-container 0.1.10, scitex-browser 0.1.11, scitex-dataset 0.3.5,
+scitex-decorators 0.1.4, scitex-template 0.6.1.
+
+## 9. Local-state path migration breaks tests (silent twin of §8)
+
+**Symptom.** Local pytest passes; CI Test fails with assertions like
+`assert "scitex-dataset" in str(path)` because the resolved path is now
+`<scitex_dir>/dataset/runtime/datasets.db` — no `scitex-` prefix anywhere.
+
+**Root cause.** Migrating to
+`scitex_config._ecosystem.local_state.{path,runtime_path,user_path}`
+changes the layout from `~/.cache/scitex-<pkg>/...` or
+`~/.scitex/<full-pkg-name>/...` to the canonical
+`<scitex_dir>/<pkg-short>/runtime/...` (where `pkg-short` strips the
+`scitex-` prefix). Tests that asserted the old substrings now fail.
+
+**Fix recipe.**
+
+- Replace `assert "scitex-<pkg>" in str(path)` with semantic checks
+  against the new layout: `assert "<pkg-short>" in s and "runtime" in s`,
+  or construct the expected path via
+  `local_state.runtime_path("<pkg-short>", "...")` rather than asserting
+  string substrings.
+- Canonical fixups: scitex-dataset `2190783`, scitex-container `8724740`.
+
+## 10. PostToolUse CI watcher closes the loop end-to-end
+
+`~/.claude/hooks/post-tool-use/check_ci_status.sh` emits
+`WARN  CI FAILURE  ...` to stderr + `exit 2` so Claude Code forwards the
+message to the assistant on every tool call inside a git repo. Pair it
+with the `speak-and-call` directive ("don't continue past a WARN").
+Without the watcher, the bugs from §8 and §9 stay silent until a human
+notices PyPI is broken.
+
+The companion `audit_ecosystem.py` script runs nightly, opens a
+GitHub issue tagged `quality-audit` on CRITICAL/HIGH, and uploads the
+full JSON as an artifact.
+
+## 11. Orphan License classifier blocks setuptools 80+ build (the 2026-04-28b class-action)
+
+**Symptom.** ``pip install -e .`` fails with
+``setuptools.errors.InvalidConfigError: License classifiers have been
+superseded by license expressions``. CI's *Test* / *Tests* job aborts
+before any test runs.
+
+**Root cause.** PEP 639 deprecated the legacy
+``"License :: OSI Approved :: ..."`` classifier in favour of the
+``license = "AGPL-3.0-only"`` SPDX expression. setuptools 80+ refuses
+the build when *both* are present. After our 2026-04-28a normalization
+to SPDX (E5C11), 41 ecosystem packages still carried the legacy
+classifier alongside the new SPDX form.
+
+**Detection** is automated in
+`scitex_dev._pyproject_lint.check_orphan_license_classifier`
+(rule ``E5C13_orphan_license_classifier``, severity HIGH).
+
+**Fix.** Remove the classifier line; SPDX is authoritative now:
+
+```toml
+[project]
+license = "AGPL-3.0-only"
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    # "License :: OSI Approved :: GNU Affero General Public License v3",  ← drop
+]
+```
+
+**Affected on 2026-04-28 (all 31 fixed + republished):** crossref-local,
+figrecipe, openalex-local, scitex-agent-container, scitex-audio,
+scitex-audit, scitex-browser, scitex-clew, scitex-compat, scitex-core,
+scitex-dataset, scitex-db, scitex-dict, scitex-etc, scitex-gists,
+scitex-io, scitex-logging, scitex-notification, scitex-orochi,
+scitex-parallel, scitex-path, scitex-plt, scitex-repro, scitex-scholar,
+scitex-stats, scitex-str, scitex-template, scitex-types, scitex-writer,
+socialia, scitex-python.
+
+## 12. Click subcommand rename desyncs tests
+
+**Symptom.** Click CLI tests exit with code 2 ("usage error") because
+``runner.invoke(cli, ["send", ...])`` references the old command name
+after a refactor renamed it to ``send-notification``.
+
+**Root cause.** A package introduces a deprecated-redirect for old
+command names:
+
+```python
+cli.add_command(_deprecated_redirect("send", "send-notification"))
+```
+
+The redirect prints a usage error and exits 2 (correctly — operators
+shouldn't keep using the old name). But test code that still invokes
+``["send", ...]`` hits this exit-2 path and asserts ``exit_code == 0``.
+
+**Fix.** Update the test invocations to the new names. Caught for
+scitex-notification on 2026-04-28: send→send-notification,
+sms→send-sms, config→show-config, backends→list-backends.
+
+**Followup rule** (not yet codified): every Click command rename
+should sweep `tests/` for the old literal at the same time. Could
+codify as `E5G2_test_uses_renamed_cli` if this pattern recurs.
+
 <!-- EOF -->

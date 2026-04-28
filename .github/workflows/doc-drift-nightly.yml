@@ -65,7 +65,7 @@ jobs:
           for pkg in scitex-io scitex-stats scitex-scholar scitex-notebook \
                     scitex-audio scitex-clew scitex-linter scitex-notification \
                     scitex-app scitex-dataset scitex-ui scitex-container \
-                    scitex-tunnel figrecipe scitex-writer; do
+                    scitex-ssh figrecipe scitex-writer; do
             # Prefer develop branch (most-proceeding per convention);
             # fall back to default branch if develop doesn't exist on remote.
             git clone --depth 1 --branch develop \

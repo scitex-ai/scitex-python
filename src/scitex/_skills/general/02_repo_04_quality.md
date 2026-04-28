@@ -27,3 +27,39 @@ tags: [scitex-python, scitex-general, scitex-package, meta]
 
 - Add `scitex` keyword as a topic for ecosystem discoverability
 - CLA workflow with `allowlist: bot*,ywatanabe1989`
+
+## Codified pyproject.toml lint (run before any release)
+
+`scitex-dev` ships ``scitex_dev._pyproject_lint`` — a unit-tested AST-aware
+linter that catches the regressions we've hit in the wild. Run it on
+the package you're about to release:
+
+```bash
+python -c "from scitex_dev._cli_quality import lint_pyproject_cli;
+import sys; sys.exit(lint_pyproject_cli('.'))"
+```
+
+Or invoke the ecosystem-wide sweep (matches the nightly
+``quality-audit.yml`` workflow):
+
+```bash
+python ~/proj/scitex-dev/scripts/quality/audit_ecosystem.py
+```
+
+Rules (each has a stable id + unit test in
+``tests/test_pyproject_lint.py``):
+
+| Rule | Severity | Catches |
+| ---- | -------- | ------- |
+| ``E5C5_implicit_deps`` | CRITICAL | src imports an ecosystem dist that pyproject doesn't declare. AST-aware: ``try/except ImportError`` (any depth) and ``if TYPE_CHECKING:`` count as guards. |
+| ``E5C9_skill_bundling`` | HIGH | ``_skills/`` on disk but build won't ship it (setuptools needs explicit ``package-data``; hatchling default is inclusive) OR no ``[project.entry-points."scitex_dev.skills"]`` registration. |
+| ``E5C10_duplicate_table`` | HIGH | Same TOML table declared twice. Setuptools silently drops the first; tomllib refuses outright. |
+| ``E5C11_invalid_pep639_license`` | MEDIUM | ``license`` is anything but the SPDX expression ``"AGPL-3.0-only"``. |
+| ``E5L1_dirty_release_state`` | LOW | pyproject ↔ git tag ↔ PyPI version mismatch. |
+
+Failure → fix the underlying issue, do NOT add to an allowlist. Each
+finding ships with a ``fix_hint`` showing the exact pyproject edit.
+
+The lint is *the source of truth* for ecosystem invariants. When a new
+regression is discovered, the response is to add a rule + unit test —
+not to remind the agent in conversation.

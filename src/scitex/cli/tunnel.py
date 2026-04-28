@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # File: src/scitex/cli/tunnel.py
 """
-SciTeX Tunnel CLI - Thin wrapper delegating to scitex-tunnel package.
+SciTeX Tunnel CLI - Thin wrapper delegating to scitex-ssh package.
 
-All commands are delegated to scitex-tunnel CLI for maintainability.
+All commands are delegated to `scitex-ssh tunnel ...` (the tunnel subgroup
+of the renamed scitex-ssh package, gated by ~/.scitex/ssh/config.yaml).
 """
 
 import subprocess
@@ -11,9 +12,9 @@ import sys
 
 import click
 
-# Check if scitex-tunnel package is available
+# Check if scitex-ssh package is available
 try:
-    import scitex_tunnel  # noqa: F401
+    import scitex_ssh  # noqa: F401
 
     HAS_TUNNEL = True
 except ImportError:
@@ -21,11 +22,10 @@ except ImportError:
 
 
 def _require_tunnel_pkg():
-    """Check if scitex-tunnel package is available."""
+    """Check if scitex-ssh package is available."""
     if not HAS_TUNNEL:
         click.secho(
-            "scitex-tunnel package not installed. "
-            "Install with: pip install scitex-tunnel",
+            "scitex-ssh package not installed. Install with: pip install scitex-ssh",
             fg="red",
             err=True,
         )
@@ -50,10 +50,10 @@ _TUNNEL_COMMANDS = {
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def tunnel(ctx, args):
-    """SSH reverse tunnel for NAT traversal (delegates to scitex-tunnel).
+    """SSH reverse tunnel for NAT traversal (delegates to `scitex-ssh tunnel`).
 
     \b
-    Commands (from scitex-tunnel):
+    Commands (from scitex-ssh tunnel):
       setup    Set up a persistent SSH reverse tunnel
       remove   Remove a persistent SSH reverse tunnel
       status   Check status of SSH reverse tunnels
@@ -68,7 +68,7 @@ def tunnel(ctx, args):
     \b
     For full help:
       scitex tunnel --help
-      scitex-tunnel --help
+      scitex-ssh tunnel --help
     """
     args_list = list(args)
 
@@ -78,7 +78,7 @@ def tunnel(ctx, args):
         click.echo(
             Result(
                 success=True,
-                data={"package": "scitex-tunnel", "commands": _TUNNEL_COMMANDS},
+                data={"package": "scitex-ssh", "commands": _TUNNEL_COMMANDS},
             ).to_json()
         )
         return
@@ -89,8 +89,8 @@ def tunnel(ctx, args):
 
     _require_tunnel_pkg()
 
-    # Delegate to scitex-tunnel CLI
-    cmd = ["scitex-tunnel"] + args_list
+    # Delegate to `scitex-ssh tunnel` CLI subgroup
+    cmd = ["scitex-ssh", "tunnel"] + args_list
     sys.exit(subprocess.call(cmd))
 
 

@@ -66,7 +66,7 @@ DOWNSTREAM_PACKAGES = {
     "scitex-dataset": "scitex_dataset",
     "scitex-ui": "scitex_ui",
     "scitex-container": "scitex_container",
-    "scitex-tunnel": "scitex_tunnel",
+    "scitex-ssh": "scitex_ssh",
     "figrecipe": "figrecipe",
     "scitex-writer": "scitex_writer",
 }
