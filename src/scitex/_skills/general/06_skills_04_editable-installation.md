@@ -50,7 +50,37 @@ is_editable = direct_url and '"editable": true' in direct_url
 "src/<pkg_name>/_skills" = "<pkg_name>/_skills"
 ```
 
-- After every wheel-publish, verify a fresh `pip install scitex-<pkg>` into a clean venv still sees the skills:
+### Why setuptools needs the explicit `package-data` entry
+
+`[tool.setuptools.packages.find] where = ["src"]` only picks up **Python packages** (directories containing `__init__.py`). Markdown files in subdirectories like `_skills/<pkg>/SKILL.md` are NOT auto-included. The result is a silent failure mode:
+
+- `git ls-files` shows `SKILL.md` is tracked ✅
+- The source tree under `src/<pkg>/_skills/` is intact ✅
+- `python -m build --wheel` builds successfully ✅
+- But the resulting wheel does NOT contain the file ❌
+
+PyPI users who `pip install <pkg>` see no skill page, and skill-discovery agents iterate over an empty `<pkg>._skills` namespace. The CI workflow won't catch this because nothing imports the markdown file.
+
+### Pre-publish verification (5-second check that catches the silent failure)
+
+After every `python -m build`, **before tagging the release**, verify the wheel actually contains the data files you expect:
+
+```bash
+unzip -l dist/<pkg>-<version>-py3-none-any.whl | grep -E '_skills|SKILL\.md'
+```
+
+Expected output (one line per shipped skill leaf):
+```
+6716  2026-04-28 01:58   <pkg>/_skills/<pip-name>/SKILL.md
+```
+
+No matching lines = the wheel is missing skills. Re-check `pyproject.toml`'s `[tool.setuptools.package-data]` (or the hatch `force-include` block), rebuild, re-verify. **Don't tag until this passes.**
+
+A real instance of this trap, scitex-hpc 0.6.1 (2026-04-28): the SKILL.md was added to git but the package-data entry was missing. The wheel built without errors, the version bumped fine, CI was green. Caught at the unzip-l step before the tag was pushed; shipped 0.6.2 with the fix on the same day. Without the unzip check, 0.6.1 would have been an "everything looks done" release that failed silently for every PyPI user.
+
+### Post-install verification (after the wheel is live)
+
+For belt-and-suspenders, confirm a fresh `pip install scitex-<pkg>` into a clean venv resolves the skill:
 
 ```bash
 python -c "from importlib.resources import files; print(list(files('<pkg_name>._skills').iterdir()))"
