@@ -23,7 +23,7 @@ When user says "update all packages" or "full release", for each package:
 
 - `mcp__scitex__dev_ecosystem_list` — initial status check across all packages
 - `mcp__scitex__dev_ecosystem_fix_mismatches` — auto-fix installed vs pyproject.toml mismatches after PyPI publish
-- CLI equivalent: `scitex-dev ecosystem fix-mismatches --confirm`
+- CLI equivalent: `scitex-dev ecosystem packages --update-hosts`
 
 ## Dashboard
 
@@ -49,23 +49,22 @@ scitex-dev show-config                            # Show resolved dev config
 scitex-dev search-docs <query>                    # Search package docs
 ```
 
-### Sync
+### Sync / verify packages
+
+The unified `ecosystem packages` command observes, previews, or executes
+sync against `--reference` (default `origin/develop`):
 
 ```bash
-scitex-dev ecosystem sync                         # Local editable reinstall (dry-run default)
-scitex-dev ecosystem sync --confirm               # Execute
-scitex-dev ecosystem sync-remote --host nas       # Push to remote host over SSH
-scitex-dev ecosystem sync-remote --confirm --host all
+scitex-dev ecosystem packages                     # observation: state per (host, package)
+scitex-dev ecosystem packages --hosts nas         # filter by host (plural noun)
+scitex-dev ecosystem packages --packages scitex-io --dry-run   # preview the plan
+scitex-dev ecosystem packages --hosts all --update-hosts       # execute (after dry-run)
 ```
 
-### Fix version mismatches
+The legacy `sync-remote` and `fix-mismatches` subcommands are deprecated
+aliases; they print a redirect and exit 2.
 
-```bash
-scitex-dev ecosystem fix-mismatches               # Preview
-scitex-dev ecosystem fix-mismatches --confirm     # Execute
-```
-
-Aligns installed version, pyproject toml version, and git tag for every package.
+Aligns installed version, pyproject.toml version, and git tag for every package.
 
 ### Utilities
 
@@ -145,11 +144,12 @@ Run `scitex-dev ecosystem list` for the authoritative roster and current version
 Detects both **version mismatches** (toml != tag != PyPI) and **code-version mismatches** (commits exist since last tag but version not bumped).
 
 ```bash
-scitex-dev ecosystem fix-mismatches              # Preview mismatches
-scitex-dev ecosystem fix-mismatches --confirm    # Fix them
+scitex-dev ecosystem packages                    # Observation: print mismatches
+scitex-dev ecosystem packages --dry-run          # Preview the fix plan
+scitex-dev ecosystem packages --update-hosts     # Execute the fixes
 ```
 
-Or via MCP: `mcp__scitex__dev_ecosystem_fix_mismatches`.
+Or via MCP: `mcp__scitex__dev_ecosystem_packages`.
 
 Python API:
 
