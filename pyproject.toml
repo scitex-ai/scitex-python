@@ -31,7 +31,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -88,6 +87,8 @@ dependencies = [
     "scitex-dict>=0.1.0",
     "scitex-browser>=0.1.0",
     "scitex-str>=0.1.0",
+    "figrecipe>=0.28.0",
+    "scitex-ui>=0.4.0",
 ]
 
 [project.urls]
