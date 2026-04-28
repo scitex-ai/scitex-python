@@ -149,4 +149,72 @@ for b in bridges:
 
 The workflow's `on: push: paths:` filter also excludes `pyproject.toml` — force a run with `gh workflow run "Doc-Drift Nightly" --ref develop` after the push.
 
+## 8. Implicit transitive dep after a refactor (the 2026-04-28 class-action)
+
+**Symptom.** `pip install <pkg>==<latest>` in a fresh venv fails with
+`ModuleNotFoundError: No module named 'scitex_config'` (or any other
+ecosystem package). CI's *Test* job is green because the dev environment
+has the dep installed editable; only the *Install Test (fresh venv)* job
+catches it.
+
+**Root cause.** A migration sweep edits `src/<pkg>/...` to `from
+scitex_config._ecosystem import local_state` but doesn't audit
+`pyproject.toml` for the new transitive dep. The package now imports
+something it doesn't declare, so PyPI consumers hit ModuleNotFoundError.
+
+**Detection** is automated in
+`scitex-dev/scripts/quality/audit_ecosystem.py` (`§C5 src imports
+scitex_config but pyproject does not declare scitex-config`). The
+nightly `quality-audit.yml` workflow opens a tracking GitHub issue
+tagged `quality-audit` if any CRITICAL findings appear.
+
+**Fix recipe.**
+
+1. Add the dep to `dependencies = [...]` (NOT `optional-dependencies`).
+2. Bump the patch version (`0.1.9 → 0.1.10`).
+3. `git tag v<new>` and push tags. If the publish workflow uses
+   `event: release` instead of `push: tags: ['v*']`, also create a
+   `gh release create v<new>` so PyPI publish actually fires.
+4. Verify on PyPI with `pip index versions <pkg>` — a pushed tag without
+   a corresponding release is invisible to consumers.
+
+**Affected on 2026-04-28 (all fixed + republished):** scitex-core 0.2.5,
+scitex-container 0.1.10, scitex-browser 0.1.11, scitex-dataset 0.3.5,
+scitex-decorators 0.1.4, scitex-template 0.6.1.
+
+## 9. Local-state path migration breaks tests (silent twin of §8)
+
+**Symptom.** Local pytest passes; CI Test fails with assertions like
+`assert "scitex-dataset" in str(path)` because the resolved path is now
+`<scitex_dir>/dataset/runtime/datasets.db` — no `scitex-` prefix anywhere.
+
+**Root cause.** Migrating to
+`scitex_config._ecosystem.local_state.{path,runtime_path,user_path}`
+changes the layout from `~/.cache/scitex-<pkg>/...` or
+`~/.scitex/<full-pkg-name>/...` to the canonical
+`<scitex_dir>/<pkg-short>/runtime/...` (where `pkg-short` strips the
+`scitex-` prefix). Tests that asserted the old substrings now fail.
+
+**Fix recipe.**
+
+- Replace `assert "scitex-<pkg>" in str(path)` with semantic checks
+  against the new layout: `assert "<pkg-short>" in s and "runtime" in s`,
+  or construct the expected path via
+  `local_state.runtime_path("<pkg-short>", "...")` rather than asserting
+  string substrings.
+- Canonical fixups: scitex-dataset `2190783`, scitex-container `8724740`.
+
+## 10. PostToolUse CI watcher closes the loop end-to-end
+
+`~/.claude/hooks/post-tool-use/check_ci_status.sh` emits
+`WARN  CI FAILURE  ...` to stderr + `exit 2` so Claude Code forwards the
+message to the assistant on every tool call inside a git repo. Pair it
+with the `speak-and-call` directive ("don't continue past a WARN").
+Without the watcher, the bugs from §8 and §9 stay silent until a human
+notices PyPI is broken.
+
+The companion `audit_ecosystem.py` script runs nightly, opens a
+GitHub issue tagged `quality-audit` on CRITICAL/HIGH, and uploads the
+full JSON as an artifact.
+
 <!-- EOF -->
