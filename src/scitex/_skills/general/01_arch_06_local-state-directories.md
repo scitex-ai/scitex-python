@@ -151,9 +151,55 @@ If a package already ships a different layout (`~/.scitex/<pkg>_config.yaml`, `~
 
 Do not keep permanent back-compat shims — legacy locations silently defeat `SCITEX_DIR`.
 
-## 9. Related
+## 9. Cross-package SoC — each package owns a domain
+
+The `.scitex/<pkg-short>/` layout is also the canonical place each package stores config that **other packages then consume**. The rule of thumb:
+
+> If a question has one obviously-correct answer that should be the same everywhere ("what is this machine called?", "what is the SLURM cluster?", "where is the scholar cache?"), exactly one scitex-* package owns it. Every other package imports its API.
+
+Anti-pattern: each package re-deriving the answer (e.g. `socket.gethostname()` in five places, getting different results because of FQDN drift, login-node aliasing, container hostnames). When the answer drifts between packages the user sees inconsistency on the dashboard, in logs, in cron entries.
+
+### Worked example — machine identity (owner: `scitex-resource`)
+
+`scitex-resource` owns "what machine am I?" because resource detection is its domain. Config lives at `~/.scitex/resource/config.yaml`:
+
+```yaml
+machine:
+  canonical_name: mba
+  aliases:
+    - Yusukes-MacBook-Air
+    - Yusukes-MacBook-Air.local
+  role: head
+  hpc:                                  # optional
+    cluster: spartan
+    login_only: true
+```
+
+API (resolution: `$SCITEX_RESOURCE_MACHINE` → project config → user config → short hostname):
+
+```python
+from scitex_resource import get_machine_name, get_machine_config
+
+name = get_machine_name()              # always returns the same string everywhere
+cfg  = get_machine_config()            # full block with aliases / role / hpc
+```
+
+Consumers — `scitex-orochi`, `scitex-hpc`, `scitex-agent-container` — call `get_machine_name()` instead of rolling their own hostname logic. The user sets the canonical name once per host; every package agrees.
+
+### When to make a new package the owner
+
+You're tempted to add config to `~/.scitex/<your-pkg>/config.yaml` for a fact that other packages will also need. Ask:
+
+1. **Is the fact about `<your-pkg>`'s domain?** If yes, you own it. Expose a public function. Done.
+2. **Is the fact about a domain another scitex-* package already owns?** Consume their API. Don't duplicate the config.
+3. **Is the fact ecosystem-wide and no package owns it yet?** Decide who *should* own it (whose name fits best), put the config there, expose the API there. Don't create a "scitex-shared" or "scitex-common" — that's anti-pattern (everyone depends on it, no one feels responsible for it).
+
+The `runtime/` directory follows the same rule: `<pkg-short>/runtime/` is exclusively for *that* package's regenerable state. Never write into another package's `runtime/`.
+
+## 10. Related
 
 - `03_interface_02_cli.md` §6b — config-file resolution uses this layout.
 - `01_arch_03_modules-and-standalone-packages.md` §5–§6 — `PathManager` dependency-injection pattern.
 - `01_arch_04_environment-variables.md` — `SCITEX_DIR` and per-package `SCITEX_<PKG>_CONFIG`.
 - `06_skills_03_public-vs-private.md` — private skills live under `<pkg-short>/shared/skills/`.
+- `scitex-resource` `_machine.py` — reference implementation of cross-package SoC (machine identity).

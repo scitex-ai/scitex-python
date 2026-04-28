@@ -39,6 +39,18 @@ def signal_fn(func: Callable) -> Callable:
         # Store original object for type preservation
         original_object = args[0] if args else None
 
+        # Capture the original numpy dtype (if any) so we can restore it on
+        # the way back. This protects against operations inside ``func`` that
+        # silently upcast/downcast (e.g. torch ops that promote to float32).
+        original_dtype = getattr(original_object, "dtype", None)
+        try:
+            if original_dtype is not None and not np.issubdtype(
+                original_dtype, np.floating
+            ):
+                original_dtype = None
+        except TypeError:
+            original_dtype = None
+
         # Convert only the first argument (signal) to torch tensor
         if args:
             # Convert first argument to torch
@@ -54,33 +66,41 @@ def signal_fn(func: Callable) -> Callable:
         # Convert results back to original input types
         import torch
 
+        def _to_np(t):
+            arr = t.detach().cpu().numpy()
+            # Restore original numpy dtype when caller used a real ndarray /
+            # pandas / xarray with a known floating dtype.
+            if original_dtype is not None and arr.dtype != original_dtype:
+                arr = arr.astype(original_dtype, copy=False)
+            return arr
+
         if isinstance(results, torch.Tensor):
             if original_object is not None:
                 if isinstance(original_object, list):
-                    return results.detach().cpu().numpy().tolist()
+                    return _to_np(results).tolist()
                 elif isinstance(original_object, np.ndarray):
-                    return results.detach().cpu().numpy()
+                    return _to_np(results)
                 elif (
                     hasattr(original_object, "__class__")
                     and original_object.__class__.__name__ == "DataFrame"
                 ):
                     import pandas as pd
 
-                    return pd.DataFrame(results.detach().cpu().numpy())
+                    return pd.DataFrame(_to_np(results))
                 elif (
                     hasattr(original_object, "__class__")
                     and original_object.__class__.__name__ == "Series"
                 ):
                     import pandas as pd
 
-                    return pd.Series(results.detach().cpu().numpy().flatten())
+                    return pd.Series(_to_np(results).flatten())
                 elif (
                     hasattr(original_object, "__class__")
                     and original_object.__class__.__name__ == "DataArray"
                 ):
                     import xarray as xr
 
-                    return xr.DataArray(results.detach().cpu().numpy())
+                    return xr.DataArray(_to_np(results))
             return results
 
         # Handle tuple returns (e.g., (signal, frequencies))
@@ -93,7 +113,7 @@ def signal_fn(func: Callable) -> Callable:
                     if original_object is not None and isinstance(
                         original_object, np.ndarray
                     ):
-                        converted_results.append(r.detach().cpu().numpy())
+                        converted_results.append(_to_np(r))
                     else:
                         converted_results.append(r)
                 else:

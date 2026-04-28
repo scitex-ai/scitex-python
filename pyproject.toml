@@ -52,6 +52,7 @@ classifiers = [
 #   pip install scitex[audio,scholar]  # multiple modules
 #   pip install scitex[all]            # everything
 dependencies = [
+    "scitex-config>=0.3.0",
     # Essential Scientific Computing
     "numpy",
     "pandas",
