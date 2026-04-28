@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Timestamp: "2025-04-10 12:46:06 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/src/scitex/nn/_Hilbert.py
 # ----------------------------------------
@@ -42,7 +41,11 @@ class Hilbert(nn.Module):
         # )
 
         orig_dtype = x.dtype
-        x = x.float()
+        # Preserve float32/float64 dtype (float64 stays float64).
+        # FFT does not support torch.float16/bfloat16 or integer dtypes,
+        # so only those are upcast to float32; float32/float64 pass through.
+        if x.dtype not in (torch.float32, torch.float64):
+            x = x.float()
         xf = fft(x, n=self.n, dim=self.dim)
         x = x.to(orig_dtype)
 
@@ -51,6 +54,12 @@ class Hilbert(nn.Module):
         u = torch.sigmoid(
             steepness * self.f.type_as(x)
         )  # Soft step function for differentiability
+
+        # Reshape u to broadcast along self.dim (was implicit -1 only).
+        if x.ndim > 1:
+            shape = [1] * x.ndim
+            shape[self.dim] = self.n
+            u = u.view(*shape)
 
         transformed = ifft(xf * 2 * u, dim=self.dim)
 
