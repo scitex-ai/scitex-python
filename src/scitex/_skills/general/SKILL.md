@@ -58,6 +58,7 @@ Read in this order when building or auditing a package. Each section presupposes
 ### 4. Documentation — how does the package become understandable?
 - [04_docs_01_readme.md](04_docs_01_readme.md) — Standard README template, sections, badges, footer
 - [04_docs_02_sphinx.md](04_docs_02_sphinx.md) — Sphinx docs, conf.py, RTD config, troubleshooting
+- [04_docs_03_rtd.md](04_docs_03_rtd.md) — Read the Docs onboarding, token loading, project import, build triggering
 
 ### 5. Version Control — how does it ship?
 - [05_version-control_01_management.md](05_version-control_01_management.md) — Branches, tags, release waves, release gates (core workflow)
@@ -72,8 +73,9 @@ Read in this order when building or auditing a package. Each section presupposes
 - [06_skills_06_frontmatter-metadata.md](06_skills_06_frontmatter-metadata.md) — Optional YAML fields: `group`, `invocation`, `context_tokens`, `canonical-location`, `see-also`
 
 ### 7. Periodic ecosystem quality — run when something feels off
-- [98_quality_01_failure-playbook.md](98_quality_01_failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes
+- [98_quality_01_failure-playbook.md](98_quality_01_failure-playbook.md) — Severity-tagged cookbook of ecosystem failure modes (incl. a2a/protobuf, SLURM cgroup tmux, login-shell banner noise)
 - [99_quality_02_checklist.md](99_quality_02_checklist.md) — Strategic /speak-and-call runbook with append-only log
+- [99_quality_03_packaging-bar.md](99_quality_03_packaging-bar.md) — Packaging quality bar (declared deps, peer-pin minimums, extras, install-test CI, twine-first publishing)
 
 ### Scratch
 - [40_playground.md](40_playground.md) — Scratch notes

@@ -36,6 +36,7 @@ Cookbook of the specific symptoms observed during ecosystem-wide remediation pas
 | **LOW** | Skill quality `§2.prefix: MANIFEST.md filename must match NN_kebab-name.md` | MANIFEST.md is a system file, not a leaf | upgrade scitex-dev to a version where the checker exempts `SYSTEM_FILES = {"MANIFEST.md"}` |
 | **LOW** | Skill quality `§3.index-monolith: SKILL.md > 4096B` | bloated frontmatter description | trim `description:` — it gets copied into skill-matching prompts; verbose prose costs tokens without helping trigger rates |
 | **LOW** | Skill quality `§4.monolith: NN_foo.md > 10240B` | leaf grew unmanageably | split into two leaves with new prefixes, link both from `SKILL.md`, prefer topical split over length-based |
+| **HIGH** | "I added the change and the deploy log shows it landed" — yet the user-visible behavior is unchanged | **Confused "I made the change" with "the change took effect."** Between input and output sit silent defeats: CDN/browser cache, wrong build artifact, wrong code path / wrong host, identity mismatch (same name in two places), unmet preconditions — none throw errors | Verify the EFFECT, not the change. Read the live response / measurement on the deployed system, not the source diff. Quote numbers in the report. (Cross-cuts every package; CSS-specific instances live in package-private skills.) |
 
 ## 2. Triage order
 
@@ -148,5 +149,79 @@ for b in bridges:
 `doc-drift-nightly.yml` must install scitex from **the current checkout** (`pip install ".[all]"`) rather than from PyPI (`pip install "scitex[all]"`). Otherwise a pyproject.toml fix in the same push won't take effect until a PyPI release catches up.
 
 The workflow's `on: push: paths:` filter also excludes `pyproject.toml` — force a run with `gh workflow run "Doc-Drift Nightly" --ref develop` after the push.
+
+## 8. a2a-sdk + protobuf 6.x — `FieldDescriptor.label` AttributeError
+
+**Symptom (CI):** test runs against `a2a-sdk[http-server]>=1.0.2` fail with::
+
+    AttributeError: 'google._upb._message.FieldDescriptor' object has no attribute 'label'
+
+**Root cause.** protobuf **6.x** removed `FieldDescriptor.label` from the
+upb backend. a2a-sdk 1.0.x's `validate_proto_required_fields` still
+references it (see `a2a/utils/proto_utils.py`). protobuf 7.x continues
+to lack the attribute.
+
+**Fix.** In `pyproject.toml`::
+
+    "protobuf<6",   # not <7 — the bug is in 6.x already
+
+Don't write `protobuf<7`: that allows 6.x which has the bug.
+
+**Discovered.** scitex-agent-container 2026-04-27 (CI red on every
+develop push since the a2a SDK 1.0 PR). Fixed in v0.5.1 of scitex-hpc
+and v0.9.1 of sac. scitex-orochi shipped the same fix on 2026-04-28.
+
+## 9. SLURM cgroup kills tmux spawned by `srun --overlap`
+
+**Symptom.** `tmux new-session -d` returns rc=0 inside an `srun --jobid
+--overlap` invocation, but `tmux ls` 2 seconds later shows no sessions.
+The daemon you just started is gone.
+
+**Root cause.** SLURM kills *all processes in a step's cgroup* when the
+step ends. A tmux daemon spawned by `srun --jobid --overlap …` runs in
+that step's transient cgroup, not the job's cgroup. When the wrapping
+bash process exits, SIGKILL takes the daemon with it.
+
+**Fix.** Run tmux as **PID 1 of the sbatch script**, before the hold
+body. The daemon then lives in the job's main cgroup and survives
+across `srun --overlap` invocations. Tenants connect via the same
+named socket::
+
+    # In the sbatch script body (e.g. from Reservation.book(tmux_server="sac"))
+    tmux -L sac new-session -d -s _root 'sleep infinity'
+    tail -f /dev/null   # holds the allocation
+
+    # Tenants (run via srun --overlap) attach to the same server
+    tmux -L sac new-session -d -s tenant-a 'claude --flags ...'
+
+**Discovered.** scitex-agent-container 2026-04-28, Phase 4 multi-tenant
+runtime (verified live on spartan-bm005). The `tmux_server` parameter
+on `scitex_hpc.Reservation.book()` exists for exactly this reason.
+
+## 10. Chatty login-shell banners break SLURM-output parsing
+
+**Symptom.** ``squeue`` / ``scancel`` / ``scontrol`` calls run via
+``ssh <host> 'bash -lc "squeue ..."'`` return data that *contains* the
+expected output, but parsers fail because the data is preceded by 5-10
+banner lines like::
+
+    XAUTHORITY:
+    DISPLAY: 1.2.3.4:0
+    DISPLAY_GPU: :42
+    RUNNING node-x
+
+Naive parsing (``stdout.strip().split()[0]``) returns ``"XAUTHORITY:"``
+as the SLURM state, never matches ``"RUNNING"``, and the polling loop
+runs to timeout.
+
+**Fix.** Parse line-by-line and filter against a known vocabulary
+(SLURM states, jobid integers, etc.) — don't trust the first whitespace
+token. ``scitex_hpc._reservation._parse_squeue_state_node`` is the
+reference implementation.
+
+**Discovered.** scitex-agent-container 2026-04-28 — first call to
+``Reservation.book()`` on Spartan polled forever because Spartan's
+``.bashrc`` emits 7 banner lines before any command output. Fixed in
+scitex-hpc 0.5.1.
 
 <!-- EOF -->
