@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/ywatanabe1989-scitex-python-badge.png)](https://mseep.ai/app/ywatanabe1989-scitex-python)
+
 <!-- ---
 !-- Timestamp: 2026-03-23 01:22:48
 !-- Author: ywatanabe
