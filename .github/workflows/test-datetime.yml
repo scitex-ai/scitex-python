@@ -1,22 +1,22 @@
-name: DT Module Tests
+name: Datetime Module Tests
 
 on:
   push:
     branches: [main, develop]
     paths:
-      - 'src/scitex/dt/**'
-      - 'tests/scitex/dt/**'
-      - '.github/workflows/test-dt.yml'
+      - 'src/scitex/datetime/**'
+      - 'tests/scitex/datetime/**'
+      - '.github/workflows/test-datetime.yml'
       - 'scripts/test-module.sh'
   pull_request:
     branches: [main, develop]
     paths:
-      - 'src/scitex/dt/**'
-      - 'tests/scitex/dt/**'
+      - 'src/scitex/datetime/**'
+      - 'tests/scitex/datetime/**'
 
 jobs:
   test:
     uses: ./.github/workflows/_test-module.yml
     with:
-      module: dt
+      module: datetime
       mode: editable
