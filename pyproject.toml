@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.28.9"
+version = "2.28.10"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -73,11 +73,11 @@ dependencies = [
     "scitex-notebook>=0.1.1",
     # Delegated modules from #51 standalonization
     "scitex-core>=0.2.0",
-    "scitex-db>=0.1.0",
+    "scitex-db>=0.1.7",
     "scitex-scholar>=1.2.3",
-    "scitex-parallel>=0.1.0",
+    "scitex-parallel>=0.1.4",
     "scitex-types>=0.1.0",
-    "scitex-path>=0.1.0",
+    "scitex-path>=0.1.3",
     "scitex-repro>=0.1.3",
     "scitex-compat>=0.1.4",
     "scitex-etc>=0.1.4",
@@ -497,7 +497,7 @@ os = []
 # Use: pip install scitex[parallel]
 parallel = [
     "tqdm",
-    "scitex-parallel>=0.1.1",
+    "scitex-parallel>=0.1.4",
 ]
 
 # Path Module - Path utilities
@@ -505,7 +505,7 @@ parallel = [
 path = [
     "GitPython",
     "matplotlib",
-    "scitex-path>=0.1.2",
+    "scitex-path>=0.1.3",
 ]
 
 # Pd Module - Pandas utilities

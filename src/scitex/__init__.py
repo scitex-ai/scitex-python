@@ -209,6 +209,9 @@ _EXTERNAL_REEXPORTS = {
     "str": "scitex_str",
     "logging": "scitex_logging",
     "browser": "scitex_browser",
+    "parallel": "scitex_parallel",
+    "path": "scitex_path",
+    "db": "scitex_db",
 }
 import importlib as _importlib
 import sys as _sys
@@ -230,14 +233,14 @@ ai = _LazyModule("ai")
 pd = _LazyModule("pd")
 str = _LazyModule("str", external="scitex_str")
 stats = _LazyModule("stats")
-path = _LazyModule("path")
+path = _LazyModule("path", external="scitex_path")
 dict = _LazyModule("dict", external="scitex_dict")
 decorators = _LazyModule("decorators")
 dsp = _LazyModule("dsp")
 nn = _LazyModule("nn")
 torch = _LazyModule("torch")
 web = _LazyModule("web")
-db = _LazyModule("db")
+db = _LazyModule("db", external="scitex_db")
 repro = _LazyModule("repro", external="scitex_repro")
 scholar = _LazyModule("scholar", external="scitex_scholar")
 writer = _LazyModule("writer")
@@ -245,7 +248,7 @@ fig = _LazyModule("fig")
 resource = _LazyModule("resource")
 tex = _LazyModule("tex")
 linalg = _LazyModule("linalg")
-parallel = _LazyModule("parallel")
+parallel = _LazyModule("parallel", external="scitex_parallel")
 datetime = _LazyModule("datetime")
 dt = datetime  # Shorter alias — same lazy-loaded module instance.
 types = _LazyModule("types")
