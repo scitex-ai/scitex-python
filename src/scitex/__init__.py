@@ -225,14 +225,32 @@ _EXTERNAL_REEXPORTS = {
     "tex": "scitex_tex",
 }
 import importlib as _importlib
+import importlib.util as _importlib_util
 import sys as _sys
 
+# Register every external standalone LAZILY in sys.modules. `import scitex.io`
+# resolves immediately (returns the lazy proxy), but the actual `scitex_io`
+# module body — and its transitive cv2 / docx / torch imports — only runs on
+# first attribute access. This keeps `import scitex` < 0.5s instead of 8s+.
+#
+# Mechanism: importlib.util.LazyLoader wraps the real loader; module_from_spec
+# returns a proxy that delegates __getattr__ to a deferred exec_module().
 for _short, _ext in _EXTERNAL_REEXPORTS.items():
+    if _ext in _sys.modules:
+        # Already imported (e.g. by user code earlier in this process); reuse.
+        _sys.modules[f"scitex.{_short}"] = _sys.modules[_ext]
+        continue
     try:
-        _sys.modules[f"scitex.{_short}"] = _importlib.import_module(_ext)
+        _spec = _importlib_util.find_spec(_ext)
+        if _spec is None or _spec.loader is None:
+            continue  # missing optional dep — handled by __getattr__ proxy below
+        _spec.loader = _importlib_util.LazyLoader(_spec.loader)
+        _mod = _importlib_util.module_from_spec(_spec)
+        _sys.modules[_ext] = _mod
+        _sys.modules[f"scitex.{_short}"] = _mod
+        _spec.loader.exec_module(_mod)  # records spec; defers body
     except ImportError:
-        # Optional dep not installed — fall back to the lazy proxy below, which
-        # raises a friendly install hint when first accessed.
+        # Hard-missing — friendly install hint via the __getattr__ proxy below.
         pass
 
 # Deprecated module aliases. All four (`ml`, `verify`, `reproduce`, `rng`)
