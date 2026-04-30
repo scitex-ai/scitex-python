@@ -204,6 +204,11 @@ _EXTERNAL_REEXPORTS = {
     "repro": "scitex_repro",
     "app": "scitex_app",
     "scholar": "scitex_scholar",
+    "dict": "scitex_dict",
+    "notebook": "scitex_notebook",
+    "str": "scitex_str",
+    "logging": "scitex_logging",
+    "browser": "scitex_browser",
 }
 import importlib as _importlib
 import sys as _sys
@@ -223,10 +228,10 @@ gen = _LazyModule("gen")
 plt = _LazyModule("plt")
 ai = _LazyModule("ai")
 pd = _LazyModule("pd")
-str = _LazyModule("str")
+str = _LazyModule("str", external="scitex_str")
 stats = _LazyModule("stats")
 path = _LazyModule("path")
-dict = _LazyModule("dict")
+dict = _LazyModule("dict", external="scitex_dict")
 decorators = _LazyModule("decorators")
 dsp = _LazyModule("dsp")
 nn = _LazyModule("nn")
@@ -251,7 +256,7 @@ dev = _LazyModule("dev")
 gists = _LazyModule("gists", external="scitex_gists")
 errors = _LazyModule("errors")
 units = _LazyModule("units")
-logging = _LazyModule("logging")
+logging = _LazyModule("logging", external="scitex_logging")
 session = _CallableModuleWrapper("session", main_decorator_name="session")
 session._setup_persistence("scitex", "session")
 module = _CallableModuleWrapper("module", main_decorator_name="module")
@@ -281,7 +286,7 @@ canvas = _LazyModule("canvas")  # Canvas utilities for figure composition
 security = _LazyModule("security")  # Security utilities
 benchmark = _LazyModule("benchmark")  # Benchmarking utilities
 bridge = _LazyModule("bridge")  # Bridge utilities
-browser = _LazyModule("browser")  # Browser automation
+browser = _LazyModule("browser", external="scitex_browser")  # Browser automation
 compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilities
 audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
 events = _LazyModule("events")  # Event system
@@ -289,7 +294,9 @@ media = _LazyModule("media")  # Media utilities
 cli = _LazyModule("cli")  # Command-line interface
 linter = _LazyModule("linter")  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
-notebook = _LazyModule("notebook")  # Jupyter notebook verification & compilation
+notebook = _LazyModule(
+    "notebook", external="scitex_notebook"
+)  # Jupyter notebook verification & compilation
 app = _LazyModule(
     "app", external="scitex_app"
 )  # App SDK — unified file storage for local + cloud
