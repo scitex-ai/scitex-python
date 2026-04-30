@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.28.7"
+version = "2.28.8"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -63,7 +63,7 @@ dependencies = [
     # Reproducibility Verification
     "scitex-clew>=0.1.0",
     # App SDK — unified file storage for local + cloud
-    "scitex-app>=0.1.0",
+    "scitex-app>=0.2.5",
     # Delegated core modules (thin re-exports)
     "scitex-dev>=0.8.0",
     "scitex-io>=0.2.0",
@@ -74,15 +74,15 @@ dependencies = [
     # Delegated modules from #51 standalonization
     "scitex-core>=0.2.0",
     "scitex-db>=0.1.0",
-    "scitex-scholar>=1.0.0",
+    "scitex-scholar>=1.2.3",
     "scitex-parallel>=0.1.0",
     "scitex-types>=0.1.0",
     "scitex-path>=0.1.0",
-    "scitex-repro>=0.1.0",
-    "scitex-compat>=0.1.0",
-    "scitex-etc>=0.1.0",
-    "scitex-gists>=0.1.0",
-    "scitex-audit>=0.1.0",
+    "scitex-repro>=0.1.3",
+    "scitex-compat>=0.1.4",
+    "scitex-etc>=0.1.4",
+    "scitex-gists>=0.1.3",
+    "scitex-audit>=0.1.3",
     "scitex-logging>=0.1.0",
     "scitex-dict>=0.1.0",
     "scitex-browser>=0.1.0",
@@ -136,7 +136,7 @@ scitex = "scitex"
 # App Module - Unified file storage SDK (local + cloud)
 # Use: pip install scitex[app]
 app = [
-    "scitex-app>=0.1.0",
+    "scitex-app>=0.2.5",
 ]
 
 # AI Module - LLM APIs and ML tools
@@ -177,7 +177,7 @@ audio = [
 
 # Audit Module - Code and security auditing
 # Use: pip install scitex[audit]
-audit = ["scitex-audit>=0.1.2"]
+audit = ["scitex-audit>=0.1.3"]
 
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
@@ -235,7 +235,7 @@ cloud = [
 
 # Compat Module - Compatibility utilities
 # Use: pip install scitex[compat]
-compat = ["scitex-compat>=0.1.1"]
+compat = ["scitex-compat>=0.1.4"]
 
 # Config Module - Configuration management
 # Use: pip install scitex[config]
@@ -353,7 +353,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
-    "scitex-etc>=0.1.1",
+    "scitex-etc>=0.1.4",
 ]
 
 # Events Module - Event system
@@ -362,7 +362,7 @@ events = []
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]
-gists = ["scitex-gists>=0.1.2"]
+gists = ["scitex-gists>=0.1.3"]
 
 # Git Module - Git operations
 # Use: pip install scitex[git]
@@ -542,7 +542,7 @@ repro = [
     # "torch",
     # "jax",
     # "tensorflow",
-    "scitex-repro>=0.1.2"
+    "scitex-repro>=0.1.3"
 ]
 
 # Resource Module - Resource monitoring
@@ -623,7 +623,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar>=1.2.1"
+    "scitex-scholar>=1.2.3"
 ]
 
 # Schema Module - Data schema validation
