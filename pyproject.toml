@@ -65,7 +65,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app>=0.1.0",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.1.0",
+    "scitex-dev>=0.8.0",
     "scitex-io>=0.2.0",
     "scitex-stats>=0.2.0",
     "scitex-audio>=0.1.0",
@@ -864,7 +864,7 @@ dev = [
     # SciTeX ecosystem packages
     "scitex-ssh",
     "scitex-container",
-    "scitex-dev>=0.7.0",
+    "scitex-dev>=0.8.0",
 ]
 
 # All features (everything except dev)
