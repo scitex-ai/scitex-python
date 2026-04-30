@@ -36,15 +36,25 @@ _DEPRECATED_ATTRS = {"INJECTED", "show_install_guide", "Diagram"}
 
 # Lazy loading for all modules
 class _LazyModule:
-    def __init__(self, name):
+    def __init__(self, name, external=None):
         self._name = name
+        # If `external` is given, the lazy module proxies an external top-level
+        # package (e.g. "scitex_io") instead of the in-tree submodule
+        # `scitex.<name>`. This lets the umbrella drop pure re-export shim
+        # directories — no source tree under `src/scitex/<name>/` is required.
+        self._external = external
         self._module = None
 
     def _load_module(self):
         if self._module is None:
             import importlib
 
-            self._module = importlib.import_module(f".{self._name}", package="scitex")
+            if self._external is not None:
+                self._module = importlib.import_module(self._external)
+            else:
+                self._module = importlib.import_module(
+                    f".{self._name}", package="scitex"
+                )
         return self._module
 
     def _warn_missing(self):
@@ -182,6 +192,31 @@ class _CallableModuleWrapper:
         return repr(self._module)
 
 
+# External re-export packages — `scitex.<short>` maps to top-level `scitex_<short>`.
+# Registering eagerly in sys.modules so that internal `from scitex.<short> import X`
+# (and submodule imports like `from scitex.<short>.<sub> import Y`) resolve to the
+# external package without requiring a `src/scitex/<short>/` directory in this repo.
+_EXTERNAL_REEXPORTS = {
+    "etc": "scitex_etc",
+    "gists": "scitex_gists",
+    "audit": "scitex_audit",
+    "compat": "scitex_compat",
+    "repro": "scitex_repro",
+    "app": "scitex_app",
+    "scholar": "scitex_scholar",
+}
+import importlib as _importlib
+import sys as _sys
+
+for _short, _ext in _EXTERNAL_REEXPORTS.items():
+    try:
+        _sys.modules[f"scitex.{_short}"] = _importlib.import_module(_ext)
+    except ImportError:
+        # Optional dep not installed — fall back to the lazy proxy below, which
+        # raises a friendly install hint when first accessed.
+        pass
+
+
 # Create lazy modules
 io = _LazyModule("io")
 gen = _LazyModule("gen")
@@ -198,8 +233,8 @@ nn = _LazyModule("nn")
 torch = _LazyModule("torch")
 web = _LazyModule("web")
 db = _LazyModule("db")
-repro = _LazyModule("repro")
-scholar = _LazyModule("scholar")
+repro = _LazyModule("repro", external="scitex_repro")
+scholar = _LazyModule("scholar", external="scitex_scholar")
 writer = _LazyModule("writer")
 fig = _LazyModule("fig")
 resource = _LazyModule("resource")
@@ -210,10 +245,10 @@ datetime = _LazyModule("datetime")
 dt = datetime  # Shorter alias — same lazy-loaded module instance.
 types = _LazyModule("types")
 utils = _LazyModule("utils")
-etc = _LazyModule("etc")
+etc = _LazyModule("etc", external="scitex_etc")
 context = _LazyModule("context")
 dev = _LazyModule("dev")
-gists = _LazyModule("gists")
+gists = _LazyModule("gists", external="scitex_gists")
 errors = _LazyModule("errors")
 units = _LazyModule("units")
 logging = _LazyModule("logging")
@@ -247,15 +282,17 @@ security = _LazyModule("security")  # Security utilities
 benchmark = _LazyModule("benchmark")  # Benchmarking utilities
 bridge = _LazyModule("bridge")  # Bridge utilities
 browser = _LazyModule("browser")  # Browser automation
-compat = _LazyModule("compat")  # Compatibility utilities
-audit = _LazyModule("audit")  # Security auditing
+compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilities
+audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
 events = _LazyModule("events")  # Event system
 media = _LazyModule("media")  # Media utilities
 cli = _LazyModule("cli")  # Command-line interface
 linter = _LazyModule("linter")  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
 notebook = _LazyModule("notebook")  # Jupyter notebook verification & compilation
-app = _LazyModule("app")  # App SDK — unified file storage for local + cloud
+app = _LazyModule(
+    "app", external="scitex_app"
+)  # App SDK — unified file storage for local + cloud
 usage = _CallableModuleWrapper("usage", main_decorator_name="show")
 usage._setup_persistence("scitex", "usage")
 
