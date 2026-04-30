@@ -12,8 +12,20 @@ Structure:
 - layout: Defines arrangement (rows, cols, panels)
 """
 
+from ._bundle import (
+    FIGURE_SCHEMA_SPEC,
+    load_figure_bundle,
+    save_figure_bundle,
+    validate_figure_spec,
+)
 from ._composite import render_composite
 
-__all__ = ["render_composite"]
+__all__ = [
+    "FIGURE_SCHEMA_SPEC",
+    "load_figure_bundle",
+    "render_composite",
+    "save_figure_bundle",
+    "validate_figure_spec",
+]
 
 # EOF

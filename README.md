@@ -141,12 +141,12 @@ Middle (shared infrastructure — wraps, doesn't replace)
         ▼
 Downstream (standalone apps — own IO/GUI, unit tests)
     figrecipe, scitex-writer, scitex-scholar, scitex-clew, scitex-notebook,
-    scitex-dataset, scitex-tunnel, scitex-container, scitex-browser, scitex-linter,
+    scitex-dataset, scitex-ssh, scitex-container, scitex-browser, scitex-linter,
     openalex-local, crossref-local, socialia, + utility leaves
     (scitex-{path,str,dict,logging,types,db,repro,audit,parallel,compat,gists,etc,core})
 ```
 
-**One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [07_arch-upstream-and-downstream](src/scitex/_skills/general/07_arch-upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [08_arch-dependency-and-version-pinning](src/scitex/_skills/general/08_arch-dependency-and-version-pinning.md) for dep-pinning.
+**One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [07_arch-upstream-and-downstream](src/scitex/_skills/general/01_arch_01_upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [08_arch-dependency-and-version-pinning](src/scitex/_skills/general/01_arch_02_dependency-and-version-pinning.md) for dep-pinning.
 
 ## Quick Start
 
@@ -217,7 +217,7 @@ The injected `CONFIG` is a `DotDict` merging YAML user configs with session-reso
 | `CONFIG.ARGS` | Parsed CLI args |
 | `CONFIG.MODEL.*` | Values from `./config/MODEL.yaml` (one namespace per YAML file) |
 
-Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See [25_session-config](./src/scitex/_skills/general/25_session-config.md) for the full reference.
+Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See [25_session-config](./src/scitex/_skills/general/07_api_01_session-config.md) for the full reference.
 </details>
 
 
@@ -615,28 +615,73 @@ source .env.d/entry.src        # 3. Source in shell
 
 [`scitex-cloud`](https://github.com/ywatanabe1989/scitex-cloud) is a self-hosted web application that serves as a collaborative research workspace — with a built-in Writer, Scholar, and App Store where researchers build custom tools using [`scitex-app`](https://github.com/ywatanabe1989/scitex-app) SDK and [`scitex-ui`](https://github.com/ywatanabe1989/scitex-ui) components, then share them with the community. A live instance is hosted at [scitex.ai](https://scitex.ai).
 
+<!-- hook-bypass: line-limit -->
 <details>
-<summary><strong>Full Ecosystem (17 packages)</strong></summary>
+<summary><strong>Full Ecosystem (37 packages, grouped by primary interface)</strong></summary>
 
-| Package | Module | Description |
-|---------|--------|-------------|
-| [scitex-clew](https://github.com/ywatanabe1989/scitex-clew) | `stx.clew` | SHA-256 hash-chain DAG for provenance |
-| [scitex-io](https://github.com/ywatanabe1989/scitex-io) | `stx.io` | Unified file I/O (30+ formats) |
-| [scitex-stats](https://github.com/ywatanabe1989/scitex-stats) | `stx.stats` | Publication-ready statistics |
-| [figrecipe](https://github.com/ywatanabe1989/figrecipe) | `stx.plt` | Publication-ready matplotlib figures |
-| [scitex-writer](https://github.com/ywatanabe1989/scitex-writer) | `stx.writer` | LaTeX manuscript compilation |
-| [scitex-scholar](https://github.com/ywatanabe1989/scitex-scholar) | `stx.scholar` | Literature management |
-| [scitex-notification](https://github.com/ywatanabe1989/scitex-notification) | `stx.notification` | Multi-backend notifications |
-| [scitex-audio](https://github.com/ywatanabe1989/scitex-audio) | `stx.audio` | Text-to-speech and audio |
-| [scitex-dev](https://github.com/ywatanabe1989/scitex-dev) | `stx.dev` | Developer tools, ecosystem management |
-| [scitex-linter](https://github.com/ywatanabe1989/scitex-linter) | `stx.linter` | AST-based code pattern checking |
-| [scitex-dataset](https://github.com/ywatanabe1989/scitex-dataset) | `stx.dataset` | Scientific datasets |
-| [scitex-cloud](https://github.com/ywatanabe1989/scitex-cloud) | `stx.cloud` | Self-hosted research platform |
-| [scitex-app](https://github.com/ywatanabe1989/scitex-app) | `stx.app` | Runtime SDK for research apps |
-| [scitex-ui](https://github.com/ywatanabe1989/scitex-ui) | `stx.ui` | React/TS frontend components |
-| [crossref-local](https://github.com/ywatanabe1989/crossref-local) | `stx.scholar` | Local CrossRef (167M+ papers) |
-| [openalex-local](https://github.com/ywatanabe1989/openalex-local) | `stx.scholar` | Local OpenAlex (250M+ works) |
-| [socialia](https://github.com/ywatanabe1989/socialia) | `stx.social` | Social media (Twitter, LinkedIn) |
+Each package exposes the ecosystem via up to six interfaces: Python library, CLI, MCP tools, Claude Code skills, hooks, and HTTP. Ratings: ⭐⭐⭐ = primary / canonical surface, ⭐⭐ = strong secondary, ⭐ = thin, — = not provided. Packages are grouped by their *primary* interface — the one users should reach for first.
+
+### Python-first (library API is primary)
+
+| Package | Module | Interfaces | Description |
+|---------|--------|-----------|-------------|
+| [crossref-local](https://github.com/ywatanabe1989/crossref-local) | `stx.scholar` | Py ⭐⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Offline, zero-API-key DOI lookup + full-text search over the CrossRef corpus |
+| [openalex-local](https://github.com/ywatanabe1989/openalex-local) | `stx.scholar` | Py ⭐⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Offline, zero-API-key search over the full OpenAlex academic corpus |
+| [scitex-browser](https://github.com/ywatanabe1989/scitex-browser) | `stx.browser` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Playwright wrappers for scientific web scraping + AI-agent browsing |
+| [scitex-compat](https://github.com/ywatanabe1989/scitex-compat) | `stx.compat` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Backward-compatibility shims for deprecated SciTeX APIs |
+| [scitex-core](https://github.com/ywatanabe1989/scitex-core) | `stx.core` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Foundation layer for the SciTeX ecosystem |
+| [scitex-dataset](https://github.com/ywatanabe1989/scitex-dataset) | `stx.dataset` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified dataset-discovery API across 7 scientific repositories |
+| [scitex-db](https://github.com/ywatanabe1989/scitex-db) | `stx.db` | Py ⭐⭐⭐ · CLI ⭐ · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Relational-DB wrapper for scientific Python |
+| [scitex-dict](https://github.com/ywatanabe1989/scitex-dict) | `stx.dict` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Dictionary utilities for scientific Python |
+| [scitex-etc](https://github.com/ywatanabe1989/scitex-etc) | `stx.etc` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Miscellaneous SciTeX utilities |
+| [scitex-gists](https://github.com/ywatanabe1989/scitex-gists) | `stx.gists` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | SigmaPlot v12 macro snippets as printable Python functions |
+| [scitex-logging](https://github.com/ywatanabe1989/scitex-logging) | `stx.logging` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Enhanced Python logging + warnings + exceptions for SciTeX |
+| [scitex-parallel](https://github.com/ywatanabe1989/scitex-parallel) | `stx.parallel` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Minimal thread-pool parallel execution for scientific Python |
+| [scitex-path](https://github.com/ywatanabe1989/scitex-path) | `stx.path` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Project-aware path utilities for scientific Python |
+| [scitex-plt](https://github.com/ywatanabe1989/scitex-plt) | `stx.plt` | Py ⭐⭐⭐ · CLI — · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Publication-ready plotting (thin wrapper around figrecipe) |
+| [scitex-repro](https://github.com/ywatanabe1989/scitex-repro) | `stx.repro` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Reproducibility helpers for scientific Python experiments |
+| [scitex-stats](https://github.com/ywatanabe1989/scitex-stats) | `stx.stats` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Publication-ready statistical testing for 23 tests |
+| [scitex-str](https://github.com/ywatanabe1989/scitex-str) | `stx.str` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Text-processing utilities for scientific Python |
+| [scitex-types](https://github.com/ywatanabe1989/scitex-types) | `stx.types` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Type aliases and runtime type guards for scientific Python |
+
+### CLI-first
+
+| Package | Module | Interfaces | Description |
+|---------|--------|-----------|-------------|
+| [scitex-agent-container](https://github.com/ywatanabe1989/scitex-agent-container) | `stx.agent_container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Declarative YAML-based AI agent lifecycle management (tmux/screen/SSH) |
+| [scitex-app](https://github.com/ywatanabe1989/scitex-app) | `stx.app` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | App-developer SDK for SciTeX workspace apps |
+| [scitex-audit](https://github.com/ywatanabe1989/scitex-audit) | `stx.audit` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐ · Hook — · HTTP — | Unified repo security scanner for scientific Python projects |
+| [scitex-clew](https://github.com/ywatanabe1989/scitex-clew) | `stx.clew` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Hash-based reproducibility verification for scientific pipelines |
+| [scitex-container](https://github.com/ywatanabe1989/scitex-container) | `stx.container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified container management for Apptainer/Singularity + Docker |
+| [scitex-dev](https://github.com/ywatanabe1989/scitex-dev) | `stx.dev` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Developer utilities for maintaining the whole SciTeX ecosystem |
+| [scitex-notebook](https://github.com/ywatanabe1989/scitex-notebook) | `stx.notebook` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐⭐ · Hook — · HTTP — | Jupyter notebook reproducibility — verify, compile to DAG, convert to script |
+| [scitex-ssh](https://github.com/ywatanabe1989/scitex-ssh) | `stx.tunnel` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | SSH primitives (exec/copy/attach) plus gated, auto-reconnecting reverse tunnels for NAT traversal |
+
+### MCP-first
+
+| Package | Module | Interfaces | Description |
+|---------|--------|-----------|-------------|
+| [scitex-audio](https://github.com/ywatanabe1989/scitex-audio) | `stx.audio` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified text-to-speech with automatic backend fallback |
+| [socialia](https://github.com/ywatanabe1989/socialia) | `stx.social` | Py ⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified posting + analytics client for 6 social platforms |
+
+### Hook-first
+
+| Package | Module | Interfaces | Description |
+|---------|--------|-----------|-------------|
+| [scitex-linter](https://github.com/ywatanabe1989/scitex-linter) | `stx.linter` | Py ⭐ · CLI ⭐⭐ · MCP ⭐ · Skills ⭐⭐ · Hook ⭐⭐⭐ · HTTP — | AST-based linter for reproducible-research Python (pre-commit hook) |
+
+### Mixed (multiple equally-primary interfaces)
+
+| Package | Module | Interfaces | Description |
+|---------|--------|-----------|-------------|
+| [figrecipe](https://github.com/ywatanabe1989/figrecipe) | `stx.plt` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Publication-ready matplotlib figures with mm-precision layouts |
+| [scitex-cloud](https://github.com/ywatanabe1989/scitex-cloud) | `stx.cloud` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | SciTeX Cloud operational surface (55 MCP tools) |
+| [scitex-io](https://github.com/ywatanabe1989/scitex-io) | `stx.io` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐⭐ · Hook — · HTTP — | Universal one-call file I/O for 30+ scientific formats |
+| [scitex-notification](https://github.com/ywatanabe1989/scitex-notification) | `stx.notification` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | One-call alerting across 9 backends (audio/desktop/email/Telegram/...) |
+| [scitex-orochi](https://github.com/ywatanabe1989/scitex-orochi) | `stx.orochi` | Py ⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Agent Communication Hub — real-time WebSocket messaging between agents |
+| [scitex-scholar](https://github.com/ywatanabe1989/scitex-scholar) | `stx.scholar` | Py ⭐⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | End-to-end scientific-literature toolkit |
+| [scitex-ui](https://github.com/ywatanabe1989/scitex-ui) | `stx.ui` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Shared frontend framework for SciTeX web apps |
+| [scitex-writer](https://github.com/ywatanabe1989/scitex-writer) | `stx.writer` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | End-to-end LaTeX manuscript toolchain (45 MCP tools) |
 </details>
 
 >Four Freedoms for Research

@@ -187,7 +187,6 @@ io = _LazyModule("io")
 gen = _LazyModule("gen")
 plt = _LazyModule("plt")
 ai = _LazyModule("ai")
-ml = _LazyModule("ai")  # Alias for machine learning - same as ai
 pd = _LazyModule("pd")
 str = _LazyModule("str")
 stats = _LazyModule("stats")
@@ -200,8 +199,6 @@ torch = _LazyModule("torch")
 web = _LazyModule("web")
 db = _LazyModule("db")
 repro = _LazyModule("repro")
-reproduce = _LazyModule("reproduce")
-rng = _LazyModule("rng")
 scholar = _LazyModule("scholar")
 writer = _LazyModule("writer")
 fig = _LazyModule("fig")
@@ -258,15 +255,33 @@ cli = _LazyModule("cli")  # Command-line interface
 linter = _LazyModule("linter")  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
 notebook = _LazyModule("notebook")  # Jupyter notebook verification & compilation
-verify = _LazyModule("verify")  # Backward compat alias for clew
 app = _LazyModule("app")  # App SDK — unified file storage for local + cloud
 usage = _CallableModuleWrapper("usage", main_decorator_name="show")
 usage._setup_persistence("scitex", "usage")
 
 
+# Deprecated module aliases — kept accessible via __getattr__ so the directory
+# can be deleted. Each access emits a DeprecationWarning and returns the
+# canonical lazy module.
+_DEPRECATED_MODULE_ALIASES = {
+    "ml": "ai",
+    "reproduce": "repro",
+    "rng": "repro",
+    "verify": "clew",
+}
+
+
 # BACKWARD COMPATIBILITY: Module-level __getattr__ for deprecated attributes
 def __getattr__(name):
     """Handle deprecated attributes with warnings."""
+    if name in _DEPRECATED_MODULE_ALIASES:
+        canonical = _DEPRECATED_MODULE_ALIASES[name]
+        warnings.warn(
+            f"scitex.{name} is deprecated, use scitex.{canonical} instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[canonical]
     if name == "INJECTED":
         warnings.warn(
             "scitex.INJECTED is deprecated, use scitex.session.INJECTED instead",
@@ -318,7 +333,6 @@ __all__ = [
     "gen",
     "plt",
     "ai",
-    "ml",
     "pd",
     "str",
     "stats",
@@ -331,7 +345,6 @@ __all__ = [
     "logging",
     "session",
     "module",
-    "rng",
     "capture",
     "template",
     "torch",
@@ -340,7 +353,6 @@ __all__ = [
     "web",
     "db",
     "repro",
-    "reproduce",
     "scholar",
     "writer",
     "fig",

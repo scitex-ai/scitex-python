@@ -10,9 +10,9 @@
       "complexity": "medium"
     },
     {
-      "id": "scitex-tunnel-reverse",
+      "id": "scitex-ssh-reverse",
       "query": "Set up a persistent reverse SSH tunnel through a bastion host so I can reach this NAT-ed lab machine from outside.",
-      "expected_skill": "scitex-tunnel/SKILL.md",
+      "expected_skill": "scitex-ssh/SKILL.md",
       "answer_contains": ["tunnel_setup"],
       "complexity": "medium"
     },

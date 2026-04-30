@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-25 23:40:12 (ywatanabe)"
 # File: ./scitex_repo/src/scitex/gen/_to_even.py
 
@@ -66,9 +65,14 @@ def to_even(n):
     if isinstance(n, str):
         raise TypeError(f"must be real number, not {type(n).__name__}")
 
-    # Convert to float for all other cases
+    # Convert to float for all other cases. Handle 0-d numpy arrays / torch
+    # tensors via .item() before float() — float(ndarray) on numpy 2+ raises
+    # for non-0-dim, masking the underlying type.
     try:
-        n_float = float(n)
+        if hasattr(n, "item"):
+            n_float = float(n.item())
+        else:
+            n_float = float(n)
     except (TypeError, ValueError):
         raise TypeError(f"must be real number, not {type(n).__name__}")
 

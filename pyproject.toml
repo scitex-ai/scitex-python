@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.27.3"
+version = "2.28.4"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -31,7 +31,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -66,7 +65,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app>=0.1.0",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.1.0",
+    "scitex-dev>=0.8.0",
     "scitex-io>=0.2.0",
     "scitex-stats>=0.2.0",
     "scitex-audio>=0.1.0",
@@ -88,6 +87,8 @@ dependencies = [
     "scitex-dict>=0.1.0",
     "scitex-browser>=0.1.0",
     "scitex-str>=0.1.0",
+    "figrecipe>=0.28.0",
+    "scitex-ui>=0.4.0",
 ]
 
 [project.urls]
@@ -102,13 +103,12 @@ scitex = "scitex.__main__:main"
 scitex-pkg = "scitex.cli.pkg:pkg"
 # MCP Server entry points (individual modules)
 # scitex-audio entry point now in standalone scitex-audio package
-scitex-canvas = "scitex.canvas.mcp_server:main"
 scitex-capture = "scitex.capture.mcp_server:main"
 scitex-diagram = "scitex.diagram.mcp_server:main"
 # scitex-plt entry point now in standalone scitex-plt package
 scitex-scholar = "scitex.scholar.mcp_server:main"
 # scitex-stats entry point now in standalone scitex-stats package
-scitex-template = "scitex.template.mcp_server:main"
+scitex-template = "scitex_template.mcp_server:main"
 # scitex-ui entry point now in standalone scitex-ui package
 # Unified MCP Server (all modules in one)
 scitex-mcp-server = "scitex.mcp_server:main"
@@ -212,12 +212,6 @@ capture = [
     "Pillow",
     "playwright>=1.40.0",
     "mcp",
-]
-
-# Canvas Module - High-level figure composition
-# Use: pip install scitex[canvas]
-canvas = [
-    "figrecipe>=0.16.0",
 ]
 
 # CLI Module - Command line interface
@@ -682,8 +676,9 @@ str = [
 
 # Template Module - Project templates
 # Use: pip install scitex[template]
+# Delegates to standalone scitex-template package (per general rule §12).
 template = [
-    "scitex[git]",
+    "scitex-template>=0.1.0",
 ]
 
 # Tex Module - LaTeX utilities
@@ -695,7 +690,7 @@ tex = [
 # Tunnel Module - SSH reverse tunnel for NAT traversal
 # Use: pip install scitex[tunnel]
 tunnel = [
-    "scitex-tunnel",
+    "scitex-ssh",
 ]
 
 # Torch Module - PyTorch support
@@ -867,9 +862,9 @@ dev = [
     "matplotlib",
     "pyyaml",
     # SciTeX ecosystem packages
-    "scitex-tunnel",
+    "scitex-ssh",
     "scitex-container",
-    "scitex-dev>=0.7.0",
+    "scitex-dev>=0.8.0",
 ]
 
 # All features (everything except dev)
@@ -885,7 +880,6 @@ all = [
     "scitex[benchmark]",
     "scitex[bridge]",
     "scitex[browser]",
-    "scitex[canvas]",
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",

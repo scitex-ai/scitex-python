@@ -185,3 +185,4 @@ tests/scitex/ai/_gen_ai/test__Google.py
 tests/scitex/nn/test__FreqGainChanger.py
 tests/scitex/plt/_mcp/test_plt_tool_schemas.py
 tests/scitex/pd/test__melt_cols.py
+src/scitex/io/bundle/kinds/_figure/_bundle.py

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Time-stamp: "2024-11-03 07:24:43 (ywatanabe)"
 # File: ./scitex_repo/src/scitex/dsp/utils/filter.py
 
@@ -24,10 +23,12 @@ def design_filter(sig_len, fs, low_hz=None, high_hz=None, cycle=3, is_bandstop=F
     - cycle (int, optional): Number of cycles to use in determining the filter order. Defaults to 3.
     - is_bandstop (bool, optional): Specifies if the filter should be a bandstop filter. Defaults to False.
 
-    Returns:
+    Returns
+    -------
     - The coefficients of the designed FIR filter.
 
-    Raises:
+    Raises
+    ------
     - FilterParameterError: If the provided parameters are invalid.
     """
 
@@ -76,13 +77,16 @@ def design_filter(sig_len, fs, low_hz=None, high_hz=None, cycle=3, is_bandstop=F
         return low_freq
 
     def determine_order(filter_mode, fs, low_freq, sig_len, cycle):
-        order = cycle * int((fs // low_freq))
+        order = cycle * int(fs // low_freq)
         if 3 * order < sig_len:
             order = (sig_len - 1) // 3
         order = to_even(order)
         return order
 
-    fs = int(fs)
+    # fs may arrive as a torch tensor (when called from PAC.init_bandpass with
+    # a numeric fs that the @signal_fn decorator wraps); int(tensor) only
+    # works for 0-dim. Coerce via .item() when available.
+    fs = int(fs.item()) if hasattr(fs, "item") else int(fs)
     low_hz = float(low_hz) if low_hz is not None else low_hz
     high_hz = float(high_hz) if high_hz is not None else high_hz
     filter_mode = estimate_filter_type(low_hz, high_hz, is_bandstop)
@@ -114,12 +118,14 @@ def plot_filter_responses(filter, fs, worN=8000, title=None):
     """
     Plots the impulse and frequency response of an FIR filter using numpy arrays.
 
-    Parameters:
+    Parameters
+    ----------
     - filter_coeffs (numpy.ndarray): The filter coefficients as a numpy array.
     - fs (int): The sampling frequency in Hz.
     - title (str, optional): The title of the plot. Defaults to None.
 
-    Returns:
+    Returns
+    -------
     - matplotlib.figure.Figure: The figure object containing the impulse and frequency response plots.
     """
     import scitex

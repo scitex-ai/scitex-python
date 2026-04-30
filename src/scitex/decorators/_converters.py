@@ -111,6 +111,28 @@ def to_torch(
     if device is None:
         device = kwargs.get("device", "cuda" if torch.cuda.is_available() else "cpu")
 
+    def _float_dtype_for(arr: _Any):
+        """Pick a torch float dtype that preserves the precision of arr.
+
+        - float64 numpy/pandas/xarray inputs -> torch.float64
+        - float16 inputs -> torch.float16
+        - float32 / integer / unknown -> torch.float32 (current default)
+        """
+        import torch
+
+        np_dtype = getattr(arr, "dtype", None)
+        if np_dtype is not None:
+            try:
+                if np.issubdtype(np_dtype, np.floating):
+                    if np_dtype == np.float64:
+                        return torch.float64
+                    if np_dtype == np.float16:
+                        return torch.float16
+                    return torch.float32
+            except TypeError:
+                pass
+        return torch.float32
+
     def _to_torch(data: _Any) -> _Any:
         """Internal conversion function for various data types."""
         import pandas as pd
@@ -132,8 +154,11 @@ def to_torch(
 
             # Check if it's a numeric array-like structure
             try:
-                # Try to convert to tensor directly
-                new_data = torch.tensor(data).float()
+                # Promote via numpy first so that mixed-precision inputs follow
+                # numpy promotion rules (float64 wins over float32, etc.).
+                np_view = np.asarray(data)
+                target_dtype = _float_dtype_for(np_view)
+                new_data = torch.as_tensor(np_view).to(target_dtype)
                 new_data = _try_device(new_data, device)
                 if device == "cuda":
                     _conversion_warning(data, new_data)
@@ -155,7 +180,9 @@ def to_torch(
 
         # Handle pandas types
         if isinstance(data, (pd.Series, pd.DataFrame)):
-            new_data = torch.tensor(data.to_numpy()).squeeze().float()
+            np_view = data.to_numpy()
+            target_dtype = _float_dtype_for(np_view)
+            new_data = torch.as_tensor(np_view).squeeze().to(target_dtype)
             new_data = _try_device(new_data, device)
             if device == "cuda":
                 _conversion_warning(data, new_data)
@@ -163,21 +190,23 @@ def to_torch(
 
         # Handle arrays
         if isinstance(data, np.ndarray):
-            new_data = torch.tensor(data).float()
+            target_dtype = _float_dtype_for(data)
+            new_data = torch.as_tensor(data).to(target_dtype)
             new_data = _try_device(new_data, device)
             if device == "cuda":
                 _conversion_warning(data, new_data)
             return new_data
 
         # Handle xarray
-        import xarray
 
         if (
             hasattr(data, "__class__")
             and data.__class__.__module__ == "xarray.core.dataarray"
             and data.__class__.__name__ == "DataArray"
         ):
-            new_data = torch.tensor(np.array(data)).float()
+            np_view = np.array(data)
+            target_dtype = _float_dtype_for(np_view)
+            new_data = torch.as_tensor(np_view).to(target_dtype)
             new_data = _try_device(new_data, device)
             if device == "cuda":
                 _conversion_warning(data, new_data)

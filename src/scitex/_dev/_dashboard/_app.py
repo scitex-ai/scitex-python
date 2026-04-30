@@ -158,11 +158,14 @@ def run_background(
     force : bool
         Kill existing process using the port if any.
     """
+    import os
     import subprocess
     import sys
     from pathlib import Path
 
-    cache_dir = Path.home() / ".cache" / "scitex"
+    cache_dir = (
+        Path(os.environ.get("SCITEX_DIR", Path.home() / ".scitex")) / "dev" / "runtime"
+    )
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     log_path = cache_dir / "dashboard.log"
@@ -202,7 +205,12 @@ def stop_dashboard() -> bool:
     import signal
     from pathlib import Path
 
-    pid_path = Path.home() / ".cache" / "scitex" / "dashboard.pid"
+    pid_path = (
+        Path(os.environ.get("SCITEX_DIR", Path.home() / ".scitex"))
+        / "dev"
+        / "runtime"
+        / "dashboard.pid"
+    )
 
     if not pid_path.exists():
         print("No dashboard PID file found. Is the dashboard running in background?")

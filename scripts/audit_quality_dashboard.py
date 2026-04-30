@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.11
 """Aggregate ecosystem health into a single markdown dashboard.
 
-Implements §17 of `src/scitex/_skills/general/99_scitex-quality-checklist.md`.
+Implements §17 of `src/scitex/_skills/general/99_quality_02_checklist.md`.
 
 For each in-scope Python package under ~/proj, collects:
   - CI conclusion of the latest run on `develop`
@@ -145,7 +145,7 @@ def render(rows: list[dict]) -> str:
         f"_Auto-generated {now} by `scripts/audit_quality_dashboard.py`._",
         "",
         "Source: `/speak-and-call` + §17 of",
-        "`scitex-python/src/scitex/_skills/general/99_scitex-quality-checklist.md`.",
+        "`scitex-python/src/scitex/_skills/general/99_quality_02_checklist.md`.",
         "",
         f"Packages in scope: **{len(rows)}**.",
         "",

@@ -30,7 +30,12 @@ from scitex.io.bundle.kinds._stats import Position
 
 # Legacy model imports - may not be available
 try:
-    from scitex.canvas.model import AnnotationModel, AxesModel, FigureModel, TextStyle
+    from scitex.io.bundle.kinds._plot._models import (
+        AnnotationModel,
+        AxesModel,
+        FigureModel,
+        TextStyle,
+    )
 
     VIS_MODEL_AVAILABLE = True
 except ImportError:

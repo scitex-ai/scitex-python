@@ -25,7 +25,7 @@ class TestFigureToVisModel:
     def test_converts_to_figure_model(self, mpl_figure):
         """Test conversion to FigureModel."""
         from scitex.bridge import figure_to_vis_model
-        from scitex.canvas.model import FigureModel
+        from scitex.io.bundle.kinds._plot._models import FigureModel
 
         model = figure_to_vis_model(mpl_figure)
 
@@ -78,7 +78,7 @@ class TestAxesToVisAxes:
     def test_creates_axes_model(self, mpl_axes):
         """Test creation of AxesModel."""
         from scitex.bridge import axes_to_vis_axes
-        from scitex.canvas.model import AxesModel
+        from scitex.io.bundle.kinds._plot._models import AxesModel
 
         model = axes_to_vis_axes(mpl_axes)
 
@@ -205,7 +205,7 @@ if __name__ == "__main__":
 #
 # # Legacy model imports - may not be available (deleted module)
 # try:
-#     from scitex.canvas.model import (
+#     from scitex.io.bundle.kinds._plot._models import (
 #         FigureModel,
 #         AxesModel,
 #         PlotModel,
