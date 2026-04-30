@@ -215,6 +215,14 @@ _EXTERNAL_REEXPORTS = {
     "audio": "scitex_audio",
     "types": "scitex_types",
     "template": "scitex_template",
+    "benchmark": "scitex_benchmark",
+    "context": "scitex_context",
+    "cv": "scitex_cv",
+    "introspect": "scitex_introspect",
+    "msword": "scitex_msword",
+    "os": "scitex_os",
+    "security": "scitex_security",
+    "tex": "scitex_tex",
 }
 import importlib as _importlib
 import sys as _sys
@@ -249,7 +257,7 @@ scholar = _LazyModule("scholar", external="scitex_scholar")
 writer = _LazyModule("writer")
 fig = _LazyModule("fig")
 resource = _LazyModule("resource")
-tex = _LazyModule("tex")
+tex = _LazyModule("tex", external="scitex_tex")
 linalg = _LazyModule("linalg")
 parallel = _LazyModule("parallel", external="scitex_parallel")
 datetime = _LazyModule("datetime")
@@ -257,7 +265,7 @@ dt = datetime  # Shorter alias — same lazy-loaded module instance.
 types = _LazyModule("types", external="scitex_types")
 utils = _LazyModule("utils")
 etc = _LazyModule("etc", external="scitex_etc")
-context = _LazyModule("context")
+context = _LazyModule("context", external="scitex_context")
 dev = _LazyModule("dev")
 gists = _LazyModule("gists", external="scitex_gists")
 errors = _LazyModule("errors")
@@ -273,14 +281,16 @@ cloud = _LazyModule("cloud")
 tunnel = _LazyModule("tunnel")
 config = _LazyModule("config")
 audio = _LazyModule("audio", external="scitex_audio")
-msword = _LazyModule("msword")
+msword = _LazyModule("msword", external="scitex_msword")
 fts = _LazyModule("fts")  # Bundle schemas module
 social = _LazyModule("social")  # Social media integration (socialia wrapper)
 diagram = _LazyModule("diagram")  # Diagram creation (delegates to figrecipe)
-introspect = _LazyModule("introspect")  # Python introspection utilities
+introspect = _LazyModule(
+    "introspect", external="scitex_introspect"
+)  # Python introspection utilities
 sh = _LazyModule("sh")  # Shell command execution
-os = _LazyModule("os")  # OS utilities (file operations)
-cv = _LazyModule("cv")  # Computer vision utilities
+os = _LazyModule("os", external="scitex_os")  # OS utilities (file operations)
+cv = _LazyModule("cv", external="scitex_cv")  # Computer vision utilities
 ui = _LazyModule("ui")  # User interface utilities
 notification = _LazyModule(
     "notification"
@@ -289,8 +299,10 @@ notify = notification  # Backward compat alias
 git = _LazyModule("git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
 canvas = _LazyModule("canvas")  # Canvas utilities for figure composition
-security = _LazyModule("security")  # Security utilities
-benchmark = _LazyModule("benchmark")  # Benchmarking utilities
+security = _LazyModule("security", external="scitex_security")  # Security utilities
+benchmark = _LazyModule(
+    "benchmark", external="scitex_benchmark"
+)  # Benchmarking utilities
 bridge = _LazyModule("bridge")  # Bridge utilities
 browser = _LazyModule("browser", external="scitex_browser")  # Browser automation
 compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilities
