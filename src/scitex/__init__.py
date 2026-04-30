@@ -213,6 +213,8 @@ _EXTERNAL_REEXPORTS = {
     "path": "scitex_path",
     "db": "scitex_db",
     "audio": "scitex_audio",
+    "types": "scitex_types",
+    "template": "scitex_template",
 }
 import importlib as _importlib
 import sys as _sys
@@ -252,7 +254,7 @@ linalg = _LazyModule("linalg")
 parallel = _LazyModule("parallel", external="scitex_parallel")
 datetime = _LazyModule("datetime")
 dt = datetime  # Shorter alias — same lazy-loaded module instance.
-types = _LazyModule("types")
+types = _LazyModule("types", external="scitex_types")
 utils = _LazyModule("utils")
 etc = _LazyModule("etc", external="scitex_etc")
 context = _LazyModule("context")
@@ -266,7 +268,7 @@ session._setup_persistence("scitex", "session")
 module = _CallableModuleWrapper("module", main_decorator_name="module")
 module._setup_persistence("scitex", "module")
 capture = _LazyModule("capture")
-template = _LazyModule("template")
+template = _LazyModule("template", external="scitex_template")
 cloud = _LazyModule("cloud")
 tunnel = _LazyModule("tunnel")
 config = _LazyModule("config")
