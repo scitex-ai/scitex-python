@@ -146,7 +146,7 @@ Downstream (standalone apps — own IO/GUI, unit tests)
     (scitex-{path,str,dict,logging,types,db,repro,audit,parallel,compat,gists,etc,core})
 ```
 
-**One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [07_arch-upstream-and-downstream](src/scitex/_skills/general/01_arch_01_upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [08_arch-dependency-and-version-pinning](src/scitex/_skills/general/01_arch_02_dependency-and-version-pinning.md) for dep-pinning.
+**One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [01_ecosystem_01_upstream-and-downstream.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_01_upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [01_ecosystem_02_dependency-and-version-pinning.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_02_dependency-and-version-pinning.md) for dep-pinning.
 
 ## Quick Start
 
@@ -217,7 +217,7 @@ The injected `CONFIG` is a `DotDict` merging YAML user configs with session-reso
 | `CONFIG.ARGS` | Parsed CLI args |
 | `CONFIG.MODEL.*` | Values from `./config/MODEL.yaml` (one namespace per YAML file) |
 
-Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See [25_session-config](./src/scitex/_skills/general/07_api_01_session-config.md) for the full reference.
+Use `CONFIG.SDIR_RUN / "results.csv"` to re-load a file saved earlier in the same session. A frozen copy of `CONFIG` is persisted to `CONFIG.SDIR_RUN/CONFIGS/{CONFIG.yaml,CONFIG.pkl}` so any run is fully auditable. See the [Session config docs](https://scitex-python.readthedocs.io/en/latest/api/session.html) for the full reference.
 </details>
 
 
@@ -310,8 +310,8 @@ scholar.enrich_papers(bibtex_path="references.bib")
 ```
 
 ```bash
-scitex scholar search "neural oscillations" --n 20
-scitex scholar bibtex references.bib --output enriched.bib
+scitex scholar crossref-scitex search "neural oscillations" --abstracts
+scitex scholar fetch --from-bibtex references.bib --project myproject
 ```
 </details>
 
@@ -562,15 +562,15 @@ See [docs/05_ADDITIONAL_MODULES.md](./docs/05_ADDITIONAL_MODULES.md) for full ex
 
 ```bash
 scitex --help-recursive                  # Show all commands
-scitex scholar search "topic"            # Search literature
+scitex scholar crossref-scitex search "topic"   # Search literature (CrossRef 167M+)
 scitex scholar fetch "10.1038/..."       # Download paper by DOI
 scitex stats recommend                   # Suggest statistical tests
 scitex clew status                       # Project verification overview
 scitex clew dag --claims                 # Verify all manuscript claims
 scitex audio speak "Analysis complete"   # Text-to-speech
-scitex notification alert "Job finished" # Multi-backend notification
+scitex notification send "Job finished"  # Multi-backend notification
 scitex template clone research my_proj   # Scaffold a project
-scitex dev versions                      # Check ecosystem versions
+scitex dev ecosystem list                # Check ecosystem versions
 scitex mcp list-tools                    # List all MCP tools (323)
 ```
 
