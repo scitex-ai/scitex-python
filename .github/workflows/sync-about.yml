@@ -54,7 +54,7 @@ jobs:
                                skip = {'scitex', 'automated-research-demo', \
                                        'singularity-template', 'pip-project-template', \
                                        'scitex-research-template'}; \
-                               print(' '.join(p for p in d['packages'] if p not in skip))")
+                               print(' '.join(p['name'] for p in d['packages'] if p['name'] not in skip))")
           echo "Installing ecosystem: $pkgs"
           uv pip install --system $pkgs || true
 
