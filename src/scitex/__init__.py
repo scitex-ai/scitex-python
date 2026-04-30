@@ -235,6 +235,17 @@ for _short, _ext in _EXTERNAL_REEXPORTS.items():
         # raises a friendly install hint when first accessed.
         pass
 
+# Deprecated module aliases. All four (`ml`, `verify`, `reproduce`, `rng`)
+# are handled by tiny shim directories at `src/scitex/{ml,verify,reproduce,
+# rng}/__init__.py` so:
+#   1. `import scitex.<alias>` keeps working (Python finds the dir).
+#   2. The DeprecationWarning fires only when the deprecated path is
+#      actually used (not on every `import scitex`).
+#   3. We avoid eager in-tree imports here — those can trigger circular
+#      imports when the canonical leaf transitively reaches back into the
+#      umbrella (`scitex.plt`, `scitex.config`, etc.).
+# See also `__getattr__` below — that catches `getattr(scitex, "ml")` too.
+
 
 # Create lazy modules
 io = _LazyModule("io")
