@@ -212,6 +212,7 @@ _EXTERNAL_REEXPORTS = {
     "parallel": "scitex_parallel",
     "path": "scitex_path",
     "db": "scitex_db",
+    "audio": "scitex_audio",
 }
 import importlib as _importlib
 import sys as _sys
@@ -269,7 +270,7 @@ template = _LazyModule("template")
 cloud = _LazyModule("cloud")
 tunnel = _LazyModule("tunnel")
 config = _LazyModule("config")
-audio = _LazyModule("audio")
+audio = _LazyModule("audio", external="scitex_audio")
 msword = _LazyModule("msword")
 fts = _LazyModule("fts")  # Bundle schemas module
 social = _LazyModule("social")  # Social media integration (socialia wrapper)
