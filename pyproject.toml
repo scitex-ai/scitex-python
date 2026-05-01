@@ -873,6 +873,7 @@ dev = [
     "scitex-ssh",
     "scitex-container",
     "scitex-dev>=0.8.0",
+    "newb>=0.1.0",  # agentic-test for verifying packages via skills
 ]
 
 # All features (everything except dev)
