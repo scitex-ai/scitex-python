@@ -13,7 +13,9 @@ def register_io_tools(mcp) -> None:
     try:
         from scitex_io._mcp.server import mcp as io_mcp
 
-        mcp.mount(io_mcp)
+        from ._compat import safe_mount
+
+        safe_mount(mcp, io_mcp, namespace="io")
     except ImportError:
 
         @mcp.tool()

@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.28.13"
+version = "2.28.14"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -873,6 +873,7 @@ dev = [
     "scitex-ssh",
     "scitex-container",
     "scitex-dev>=0.8.0",
+    "newb>=0.1.0",  # agentic-test for verifying packages via skills
 ]
 
 # All features (everything except dev)

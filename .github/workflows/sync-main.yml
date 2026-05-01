@@ -1,0 +1,36 @@
+name: Sync main with release tag
+
+# When a v*.*.* tag is pushed (always created on develop), fast-forward
+# main to that tag so `main` always = "the latest released commit".
+# See _skills/general/05_development_01_version-control.md for cadence.
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  ff-main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync main to tag ${{ github.ref_name }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG="${{ github.ref_name }}"
+          git fetch origin --tags
+          if git merge --ff-only "$TAG"; then
+            echo "Fast-forwarded main to $TAG."
+          else
+            git merge --no-ff "$TAG" -m "merge: sync main with $TAG"
+            echo "Created merge commit for $TAG."
+          fi
+          git push origin main

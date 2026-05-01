@@ -5,6 +5,66 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.28.13] - 2026-04-30
+
+### Changed
+- **Umbrella simplification (Tier 2 batch 6)**: Collapsed 8 leaf-duplicate dirs (`benchmark`, `context`, `cv`, `introspect`, `msword`, `os`, `security`, `tex`) into eager-mounted external pointers. Trimmed ~hundreds of LOC from `src/scitex/`.
+
+### Fixed
+- **Import-path regression**: Re-added 4 tiny shim dirs (`ml`, `reproduce`, `rng`, `verify`) so `import scitex.ml` etc. continue to work alongside the existing `scitex.<aliased>` proxy. Each shim emits a `DeprecationWarning` then re-exports from the canonical location (`scitex.ai`, `scitex.repro`, `scitex.clew`).
+
+## [2.28.5 – 2.28.12] - 2026-04-30
+
+### Changed
+- **Umbrella simplification (Tier 1 + Tier 2 batches 1–5)**: Collapsed 21 pure re-export directories — `dt`, `etc`, `gists`, `audit`, `compat`, `repro`, `app`, `scholar`, `dict`, `notebook`, `str`, `logging`, `browser`, `parallel`, `path`, `db`, `audio`, `types`, `template`, plus 4 deprecated alias dirs — into eager-mounted external pointers in `src/scitex/__init__.py`. ~8,000 lines removed across 8 PyPI releases.
+- **Pin tightening**: Tightened `>=` floors for ~30 standalone packages whose APIs are now load-bearing for the umbrella (one PyPI install pulls a known-compatible matrix).
+
+## [2.28.0 – 2.28.4] - 2026-04-28
+
+### Fixed
+- **License classifier**: Drop legacy `License :: OSI Approved` trove classifier — PEP 639 + setuptools ≥80 reject it (E5C13).
+- **DSP/gen edge cases**: `gen.to_even` handles 0-d numpy/torch arrays via `.item()`; `dsp.design_filter` coerces tensor `fs` to scalar before `int()`; Hilbert + signal_fn cascade preserves `float64` dtype.
+- **Stats compatibility shim**: Register `scitex_stats._utils` at `scitex.stats._utils` sys.modules path so downstream `from scitex.stats._utils import X` keeps working post-extraction.
+
+## [2.27.0 – 2.27.3] - 2026-03-25 — 2026-03-29
+
+### Added
+- **Module-level `_skills/`**: 302 sub-skill files across 70 modules, surfacing per-API guidance to MCP clients.
+- **Skills CLI**: `scitex skills get all` dumps every sub-skill, not just `SKILL.md`.
+- **Notebook**: Unified migration mode for Jupyter → SciTeX conversion.
+- **Template**: `list-code-templates` CLI command.
+
+### Changed
+- **Skills layout**: Cleaned legacy `skills/` directory; module-level `_skills/<short>/` is now the source of truth (later moved to scitex-dev in 2.28.x).
+- **CLI skills export**: Clean `--param` handling, frontmatter normalised.
+
+## [2.26.0] - 2026-03-23
+
+### Added
+- **Browser**: `save-as-pdf` tool with cookie-banner dismissal; playwright-cli runtime detection.
+- **Browser skills**: First-class `_skills/browser/` set.
+
+### Fixed
+- **FastMCP compatibility**: `mount(..., namespace=)` for FastMCP 3.x and `mount(..., prefix=)` for 2.x via `_compat.safe_mount`.
+
+## [2.25.0 – 2.25.10] - 2026-03 (multiple patches)
+
+### Added
+- Lazy-loaded module skeletons for `introspect`, `sh`, `os`, `cv`, `ui`, `git`, `schema`, `canvas`, `security`, `benchmark`, `bridge`, `browser`, `compat`, `cli`.
+- **`scitex-pkg audit`** CLI for venv drift detection + auto-fix.
+
+### Fixed
+- Numerous lazy-loader, optional-dep, and deprecation-warning fixes (see git log between v2.25.0 and v2.26.0 for the full punch list).
+
+## [2.22.0 – 2.24.0] - 2026-03
+
+### Added
+- **First wave of standalone-package extractions** (#51, #206): `etc`, `compat`, `audit`, `parallel`, `types`, `gists`, `path`, `repro`, `db`, `scholar`, `dict`, `logging`, `browser`, `str` and others — umbrella now delegates to dedicated PyPI packages with try/except fallbacks for unpublished ones.
+- **Notebook unified migration mode**, **template list-code-templates**, **scholar `clean_abstract` re-export**.
+
+### Fixed
+- Default `autolayout=False` in plt + session (#214); CLI warns when top-level `--json` is given with a subcommand (#211); session final-message differentiated by `exit_status` (#145); decorators lazy-import `joblib`; io lazy-imports `flask` (#441); LazyGroup tolerant of optional-dep leaks (#279).
+
 ## [2.21.0] - 2026-02-27
 
 ### Added
