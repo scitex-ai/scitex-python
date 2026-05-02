@@ -46,7 +46,7 @@ def register_audio_tools(mcp) -> None:
         - SCITEX_AUDIO_RELAY_URL: Relay server URL for remote playback
         """
         from scitex_audio._mcp.handlers import speak_handler
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev._mcp import async_wrap_as_mcp
 
         return await async_wrap_as_mcp(
             speak_handler,

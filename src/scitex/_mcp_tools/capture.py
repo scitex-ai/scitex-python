@@ -20,7 +20,7 @@ def register_capture_tools(mcp) -> None:
         app: Optional[str] = None,
     ) -> str:
         """Take a JPEG screenshot of a chosen target — a specific monitor (`monitor_id=N`), every monitor at once (`all=True`), a live browser tab (`url=...`), or an X11 application window (`app='emacs'`). Drop-in replacement for `scrot`, `gnome-screenshot`, `maim`, `mss.mss().shot()`, and ad-hoc `playwright.screenshot()`. Use when the user asks to "take a screenshot", "capture my screen", "grab a picture of the browser", "screenshot that app window", "prove visually this is fixed", or is attaching UI evidence to a bug report / review. `return_base64=True` inlines instead of saving."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev._mcp import async_wrap_as_mcp
 
         from scitex.capture._mcp.handlers import capture_screenshot_handler
 

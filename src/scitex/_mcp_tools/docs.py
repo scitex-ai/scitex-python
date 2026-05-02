@@ -11,7 +11,7 @@ def register_docs_tools(mcp) -> None:
     async def docs_list() -> str:
         """Enumerate every installed SciTeX package that ships bundled Sphinx docs — each entry includes version, manifest path, and docs URL. Drop-in replacement for running `scitex-doc list` across every sub-CLI. Use when the user asks "what SciTeX packages are installed?", "which ones have docs?", "what's the ecosystem I have?", or before calling `docs_get` / `docs_search`."""
         from scitex_dev.docs import get_docs
-        from scitex_dev.mcp_utils import wrap_as_mcp
+        from scitex_dev._mcp import wrap_as_mcp
 
         return wrap_as_mcp(
             get_docs,
@@ -32,7 +32,7 @@ def register_docs_tools(mcp) -> None:
             page: Specific documentation page name.
         """
         from scitex_dev.docs import get_docs
-        from scitex_dev.mcp_utils import wrap_as_mcp
+        from scitex_dev._mcp import wrap_as_mcp
 
         return wrap_as_mcp(
             get_docs,
@@ -54,7 +54,7 @@ def register_docs_tools(mcp) -> None:
             formats: List of builders ("html", "json"). Default: ["html"].
         """
         from scitex_dev.docs import build_docs
-        from scitex_dev.mcp_utils import wrap_as_mcp
+        from scitex_dev._mcp import wrap_as_mcp
 
         return wrap_as_mcp(
             build_docs,
@@ -84,7 +84,7 @@ def register_docs_tools(mcp) -> None:
             package: Limit search to a single package.
             max_results: Maximum number of results.
         """
-        from scitex_dev.mcp_utils import wrap_as_mcp
+        from scitex_dev._mcp import wrap_as_mcp
         from scitex_dev.search import search
 
         return wrap_as_mcp(
