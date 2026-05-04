@@ -15,7 +15,7 @@ def register_skills_tools(mcp) -> None:
             package: Filter to a specific package (e.g. "scitex-stats").
                      None returns all packages.
         """
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
         from scitex_dev.skills import list_skills
 
         return wrap_as_mcp(
@@ -36,7 +36,7 @@ def register_skills_tools(mcp) -> None:
             name: Reference name (e.g. "test-selection").
                   None returns the main SKILL.md.
         """
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
         from scitex_dev.skills import get_skill
 
         return wrap_as_mcp(

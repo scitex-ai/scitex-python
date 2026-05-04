@@ -17,7 +17,7 @@ def register_tunnel_tools(mcp) -> None:
         The tunnel forwards a remote port on the bastion server
         back to the local machine's SSH port.
         """
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
 
         from scitex.tunnel import setup
 
@@ -35,7 +35,7 @@ def register_tunnel_tools(mcp) -> None:
 
         Stops and disables the autossh systemd service for the given port.
         """
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
 
         from scitex.tunnel import remove
 
@@ -52,7 +52,7 @@ def register_tunnel_tools(mcp) -> None:
         If port is 0 (default), shows all tunnel services.
         Otherwise shows status for the specific port.
         """
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
 
         from scitex.tunnel import status
 

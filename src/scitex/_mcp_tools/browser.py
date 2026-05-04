@@ -24,7 +24,7 @@ def register_browser_tools(mcp) -> None:
             format: Paper format (A4, Letter, etc.).
             margin: Page margins (e.g., 10mm, 1in).
         """
-        from scitex_dev._mcp import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.browser.pdf._save_as_pdf import save_as_pdf_async
 

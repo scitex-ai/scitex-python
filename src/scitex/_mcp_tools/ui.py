@@ -19,7 +19,7 @@ def register_ui_tools(mcp) -> None:
         timeout: float = 5.0,
     ) -> str:
         """Send a UI-level alert through scitex-notification's multi-backend stack (audio TTS, desktop popup, emacs minibuffer, matplotlib banner, playwright toast, email, webhook, Telegram, Twilio) with automatic fallback. Drop-in replacement for `plyer.notification.notify`, ad-hoc `subprocess.run(['notify-send', ...])`, or browser `Notification` API. Use when the user asks to "notify from the UI", "alert me when this UI task finishes", "send a desktop notification from the scitex shell", or wires an app page to page the user."""
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
         from scitex_notification._mcp.handlers import notify_handler
 
         return await wrap_as_mcp(
@@ -36,7 +36,7 @@ def register_ui_tools(mcp) -> None:
     @mcp.tool()
     async def ui_get_notification_config() -> str:
         """Inspect the active scitex-notification config the UI will hand off to — fallback order, per-level backend routing (info/warning/error/critical), per-backend timeouts, credentials (redacted). Use when the user asks "which backends does ui_notify use?", "show UI notification config", or is debugging a silent `ui_notify` call."""
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
         from scitex_notification._mcp.handlers import get_config_handler
 
         return await wrap_as_mcp(
@@ -65,7 +65,7 @@ def register_ui_tools(mcp) -> None:
         MCP: ui_inspect_element("#ws-worktree-resizer")
         MCP: ui_inspect_element(".stx-shell-sidebar.collapsed")
         """
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
         from scitex_ui._mcp.inspect import inspect_element_handler
 
         return wrap_as_mcp(
@@ -99,7 +99,7 @@ def register_ui_tools(mcp) -> None:
         MCP: ui_inspect_elements(".panel-resizer")
         MCP: ui_inspect_elements(".stx-shell-sidebar", limit=5)
         """
-        from scitex_dev._mcp import wrap_as_mcp
+        from scitex_dev.ecosystem import wrap_as_mcp
         from scitex_ui._mcp.inspect import inspect_elements_handler
 
         return wrap_as_mcp(
