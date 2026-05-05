@@ -1,74 +1,33 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Timestamp: "2025-07-19 10:50:54 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/ai/__init__.py
+# File: src/scitex/ai/__init__.py
 # ----------------------------------------
-import os
+"""SciTeX AI — thin compatibility shim for the standalone ``scitex-ai`` package.
 
-__FILE__ = __file__
-__DIR__ = os.path.dirname(__FILE__)
-# ----------------------------------------
-"""Scitex AI module for machine learning and artificial intelligence utilities."""
+Implementation, tests, and version live in ``scitex-ai`` (PyPI:
+``scitex-ai``, import: ``scitex_ai``). This shim makes ``scitex.ai.X`` and
+``scitex_ai.X`` resolve to the same object, including deep submodule paths
+(``scitex.ai.classification.timeseries.…`` etc.) via ``sys.modules``
+aliasing.
 
-# from . import layer
-# Import submodules to make them accessible
-from . import (
-    activation,
-    classification,
-    clustering,
-    feature_extraction,
-    loss,
-    metrics,
-    optim,
-    plt,
-    sampling,
-    sklearn,
-    training,
-    utils,
-)
+If the standalone is not installed, importing this module raises a clear
+``ImportError`` pointing the user at ``pip install scitex[ai]``.
 
-# Lazy imports to avoid loading heavy dependencies eagerly
-from .classification import ClassificationReporter, Classifier
-from .loss import MultiTaskLoss
-from .optim import get_optimizer, set_optimizer
-from .training._EarlyStopping import EarlyStopping
-from .training._LearningCurveLogger import LearningCurveLogger
+See ``_skills/general/01_ecosystem_05_re-export.md`` for the full re-export
+convention.
+"""
 
+from __future__ import annotations
 
-# Lazy import for GenAI (heavy anthropic dependency)
-def __getattr__(name):
-    if name == "GenAI":
-        from ._gen_ai import GenAI
+import sys as _sys
 
-        return GenAI
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+try:
+    import scitex_ai as _real
+except ImportError as _e:  # pragma: no cover — explicit user-facing error
+    raise ImportError(
+        "scitex.ai requires the 'scitex-ai' package. "
+        "Install with: pip install scitex[ai]"
+    ) from _e
 
-
-__all__ = [
-    # "Classifiers",  # Moved to .old directory
-    "LearningCurveLogger",
-    "ClassificationReporter",
-    "EarlyStopping",
-    "MultiTaskLoss",
-    "GenAI",  # Lazy loaded
-    "Classifier",
-    "get_optimizer",
-    "set_optimizer",
-    # Submodules
-    "activation",
-    "classification",
-    "clustering",
-    "feature_extraction",
-    # "genai",
-    # "layer",
-    "loss",
-    "metrics",
-    "optim",
-    "plt",
-    "sampling",
-    "sklearn",
-    "training",
-    "utils",
-]
-
-# EOF
+# Module-level sys.modules aliasing — preserves deep submodule paths
+# (e.g. scitex.ai.classification.timeseries._TimeSeriesStratifiedSplit).
+_sys.modules[__name__] = _real

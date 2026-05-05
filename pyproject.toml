@@ -149,7 +149,15 @@ app = [
 
 # AI Module - LLM APIs and ML tools
 # Use: pip install scitex[ai]
+# Per _skills/general/01_ecosystem_03_modules-and-standalone-packages.md §8:
+# every standalone scitex-<name> must appear in its matching extra so that
+# `pip install scitex[ai]` actually installs the standalone (not the in-umbrella
+# shim).
 ai = [
+    "scitex-ai>=0.1.0",
+    # Third-party deps below are kept in [ai] so users can `pip install
+    # scitex[ai]` and get a working ML stack even if scitex-ai's own minima
+    # ever drift.
     "openai",
     "anthropic",
     "google-genai",
