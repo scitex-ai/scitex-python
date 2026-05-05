@@ -1,102 +1,46 @@
 #!/usr/bin/env python3
-"""
-SciTeX Dataset CLI - Thin wrapper delegating to scitex-dataset package.
+"""SciTeX Dataset CLI — re-exports the standalone group as ``scitex dataset``.
 
-All commands are delegated to scitex-dataset CLI for maintainability.
+Single source of truth: ``scitex_dataset._cli.main``. We import that
+group directly and re-export it under the umbrella name ``dataset`` so
+help text, grammar, sub-trees, and any future commands stay in one place.
 """
 
-import subprocess
-import sys
+from __future__ import annotations
 
 import click
 
-# Check if scitex-dataset package is available
 try:
-    import scitex_dataset  # noqa: F401
+    from scitex_dataset._cli import main as _ds_main
 
     HAS_DATASET_PKG = True
 except ImportError:
     HAS_DATASET_PKG = False
+    _ds_main = None
 
 
-def _require_dataset_pkg():
-    """Check if scitex-dataset package is available."""
-    if not HAS_DATASET_PKG:
+if HAS_DATASET_PKG:
+    # The standalone CLI is itself a ``click.Group`` (called via the
+    # ``scitex-dataset`` console script). Re-binding it as ``dataset``
+    # makes ``scitex dataset <args>`` behave identically to
+    # ``scitex-dataset <args>``.
+    dataset = _ds_main
+    dataset.name = "dataset"
+else:
+
+    @click.command(
+        "dataset",
+        context_settings={"help_option_names": ["-h", "--help"]},
+    )
+    def dataset():
+        """scitex-dataset is not installed."""
         click.secho(
             "scitex-dataset package not installed. "
             "Install with: pip install scitex-dataset",
             fg="red",
             err=True,
         )
-        sys.exit(1)
-
-
-_DATASET_COMMANDS = {
-    "openneuro": "Fetch datasets from OpenNeuro (BIDS neuroimaging)",
-    "dandi": "Fetch datasets from DANDI Archive (NWB)",
-    "physionet": "Fetch datasets from PhysioNet (EEG/ECG)",
-    "db": "Local database for fast searching",
-    "mcp": "MCP server commands",
-}
-
-
-@click.command(
-    context_settings={
-        "help_option_names": ["-h", "--help"],
-        "ignore_unknown_options": True,
-        "allow_extra_args": True,
-        "allow_interspersed_args": False,
-    },
-)
-@click.argument("args", nargs=-1, type=click.UNPROCESSED)
-@click.pass_context
-def dataset(ctx, args):
-    """
-    Scientific dataset discovery (delegates to scitex-dataset).
-
-    \b
-    Commands (from scitex-dataset):
-      openneuro   Fetch datasets from OpenNeuro (BIDS neuroimaging)
-      dandi       Fetch datasets from DANDI Archive (NWB)
-      physionet   Fetch datasets from PhysioNet (EEG/ECG)
-      db          Local database for fast searching
-      mcp         MCP server commands
-
-    \b
-    Examples:
-      scitex dataset openneuro -n 100 -o datasets.json
-      scitex dataset dandi -v
-      scitex dataset db build
-      scitex dataset db search "alzheimer EEG"
-      scitex dataset mcp list-tools
-
-    \b
-    For full help:
-      scitex dataset --help
-      scitex-dataset --help
-    """
-    args_list = list(args)
-
-    if args_list == ["--json"]:
-        from scitex_dev import Result
-
-        click.echo(
-            Result(
-                success=True,
-                data={"package": "scitex-dataset", "commands": _DATASET_COMMANDS},
-            ).to_json()
-        )
-        return
-
-    if not args_list:
-        click.echo(ctx.get_help())
-        return
-
-    _require_dataset_pkg()
-
-    # Delegate to scitex-dataset CLI
-    cmd = ["scitex-dataset"] + args_list
-    sys.exit(subprocess.call(cmd))
+        raise SystemExit(1)
 
 
 # EOF
