@@ -3,6 +3,7 @@
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/__init__.py
 """FastMCP tool registration for unified server."""
 
+from .agent_container import register_agent_container_tools
 from .audio import register_audio_tools
 from .browser import register_browser_tools
 from .capture import register_capture_tools
@@ -34,6 +35,7 @@ __all__ = ["register_all_tools"]
 
 # Map: env var suffix → registration function
 _TOOL_GROUPS = {
+    "AGENT_CONTAINER": register_agent_container_tools,
     "AUDIO": register_audio_tools,
     "BROWSER": register_browser_tools,
     "CAPTURE": register_capture_tools,
