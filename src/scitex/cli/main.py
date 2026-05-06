@@ -110,7 +110,18 @@ _LAZY_SUBCOMMANDS = {
     "dev": ("scitex.cli.dev", "dev", "Developer tools."),
     "docs": ("scitex.cli.docs", "docs", "Browse and search SciTeX documentation."),
     "event": ("scitex.cli.event", "event", "Event bus for async task results."),
+    "agent-container": (
+        "scitex.cli.agent_container",
+        "agent_container",
+        "Declarative agent container management (sac).",
+    ),
+    "hpc": (
+        "scitex.cli.hpc",
+        "hpc",
+        "Generic SLURM dispatch + persistent reservations.",
+    ),
     "introspect": ("scitex.cli.introspect", "introspect", "Code introspection tools."),
+    "io": ("scitex.cli.io", "io", "Universal file I/O (30+ formats)."),
     "linter": ("scitex.cli.linter", "linter", "SciTeX linter."),
     "mcp": ("scitex.cli.mcp", "mcp", "MCP server management."),
     "notification": (
