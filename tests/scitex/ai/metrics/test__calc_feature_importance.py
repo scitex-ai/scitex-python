@@ -1,18 +1,17 @@
 """Auto-generated smoke test for scitex.ai.metrics._calc_feature_importance.
 
 Replaces the prior placeholder-only stub (audit-project PS206). The
-real test surface should grow from here — the module-import test below
-is the minimum coverage that proves the file at least parses cleanly.
+test imports the target module — if the import fails, the test
+fails. Renames, broken peer deps, or missing optional deps all
+surface here as red, not as a silent skip.
+
+If a module legitimately requires an optional dep, that dep should
+be lazy-imported inside the function bodies — not at module top.
 """
 
 import importlib
 
-import pytest
-
 
 def test_module_imports():
     """Smoke: target module imports without error."""
-    try:
-        importlib.import_module('scitex.ai.metrics._calc_feature_importance')
-    except ImportError as e:
-        pytest.skip(f"scitex.ai.metrics._calc_feature_importance: {e}")
+    importlib.import_module('scitex.ai.metrics._calc_feature_importance')
