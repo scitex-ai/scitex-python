@@ -14,8 +14,6 @@ import glob
 from pathlib import Path
 from typing import Any, Union
 
-from scitex_io._load_cache import cache_data, get_cached_data, load_npy_cached
-
 # Core loaders (from scitex-io, single source of truth)
 from scitex_io._load_modules._bibtex import _load_bibtex
 from scitex_io._load_modules._json import _load_json
@@ -26,6 +24,11 @@ from scitex_io._load_modules._pickle import _load_pickle
 from scitex_io._load_modules._txt import _load_txt
 from scitex_io._load_modules._xml import _load_xml
 from scitex_io._load_modules._yaml import _load_yaml
+from scitex_io._loading._load_cache import (
+    cache_data,
+    get_cached_data,
+    load_npy_cached,
+)
 
 from scitex.decorators import preserve_doc
 
