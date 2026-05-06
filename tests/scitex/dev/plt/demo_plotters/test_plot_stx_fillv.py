@@ -1,44 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.dev.plt.demo_plotters.plot_stx_fillv.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_stx_fillv.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # File: plot_stx_fillv.py - stx_fillv demo
-#
-# """stx_fillv: vertical fill region."""
-#
-# import numpy as np
-#
-#
-# def plot_stx_fillv(plt, rng, ax=None):
-#     """stx_fillv - vertical fill region.
-#
-#     Demonstrates: ax.stx_fillv()
-#     """
-#     if ax is None:
-#         fig, ax = plt.subplots()
-#     else:
-#         fig = ax.get_figure() if hasattr(ax, "get_figure") else ax._fig_scitex
-#
-#     ax.plot(np.sin(np.linspace(0, 4*np.pi, 100)))
-#     ax.stx_fillv([20, 60], [40, 80], alpha=0.3)
-#     ax.set_xyt("X", "Y", "stx_fillv")
-#     if hasattr(ax, 'legend') and ax.get_legend_handles_labels()[0]:
-#         ax.legend()
-#     return fig, ax
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_stx_fillv.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.dev.plt.demo_plotters.plot_stx_fillv')
+    except ImportError as e:
+        pytest.skip(f"scitex.dev.plt.demo_plotters.plot_stx_fillv: {e}")

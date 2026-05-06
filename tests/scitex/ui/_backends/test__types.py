@@ -1,74 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.ui._backends._types.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/ui/_backends/_types.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # Timestamp: "2026-01-13 (ywatanabe)"
-# # File: /home/ywatanabe/proj/scitex-code/src/scitex/ui/_backends/_types.py
-#
-# """Core types for notification backends."""
-#
-# from __future__ import annotations
-#
-# from abc import ABC, abstractmethod
-# from dataclasses import dataclass
-# from enum import Enum
-# from typing import Optional
-#
-#
-# class NotifyLevel(Enum):
-#     """Notification urgency levels."""
-#
-#     INFO = "info"
-#     WARNING = "warning"
-#     ERROR = "error"
-#     CRITICAL = "critical"
-#
-#
-# @dataclass
-# class NotifyResult:
-#     """Result of a notification attempt."""
-#
-#     success: bool
-#     backend: str
-#     message: str
-#     timestamp: str
-#     error: Optional[str] = None
-#     details: Optional[dict] = None
-#
-#
-# class BaseNotifyBackend(ABC):
-#     """Base class for notification backends."""
-#
-#     name: str = "base"
-#
-#     @abstractmethod
-#     async def send(
-#         self,
-#         message: str,
-#         title: Optional[str] = None,
-#         level: NotifyLevel = NotifyLevel.INFO,
-#         **kwargs,
-#     ) -> NotifyResult:
-#         """Send a notification."""
-#         pass
-#
-#     @abstractmethod
-#     def is_available(self) -> bool:
-#         """Check if this backend is available."""
-#         pass
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/ui/_backends/_types.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.ui._backends._types')
+    except ImportError as e:
+        pytest.skip(f"scitex.ui._backends._types: {e}")

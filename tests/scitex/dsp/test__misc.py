@@ -1,46 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.dsp._misc.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dsp/_misc.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Time-stamp: "2024-11-05 01:03:32 (ywatanabe)"
-# # File: ./scitex_repo/src/scitex/dsp/_misc.py
-#
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Time-stamp: "2024-04-05 12:14:08 (ywatanabe)"
-#
-# from scitex.decorators import torch_fn
-#
-#
-# @torch_fn
-# def ensure_3d(x):
-#     if x.ndim == 1:  # assumes (seq_len,)
-#         x = x.unsqueeze(0).unsqueeze(0)
-#     elif x.ndim == 2:  # assumes (batch_siize, seq_len)
-#         x = x.unsqueeze(1)
-#     return x
-#
-#
-# # @torch_fn
-# # def unbias(x, dim=-1, fn="mean"):
-# #     if fn == "mean":
-# #         return x - x.mean(dim=dim, keepdims=True)
-# #     if fn == "min":
-# #         return x - x.min(dim=dim, keepdims=True)[0]
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dsp/_misc.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.dsp._misc')
+    except ImportError as e:
+        pytest.skip(f"scitex.dsp._misc: {e}")

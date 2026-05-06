@@ -1,33 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.gen._wrap.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_wrap.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Time-stamp: "2024-11-04 02:13:22 (ywatanabe)"
-# # File: ./scitex_repo/src/scitex/gen/_wrap.py
-#
-# import functools
-#
-#
-# def wrap(func):
-#     @functools.wraps(func)
-#     def wrapper(*args, **kwargs):
-#         return func(*args, **kwargs)
-#
-#     return wrapper
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/gen/_wrap.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.gen._wrap')
+    except ImportError as e:
+        pytest.skip(f"scitex.gen._wrap: {e}")

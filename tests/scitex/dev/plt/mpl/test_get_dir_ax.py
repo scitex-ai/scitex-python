@@ -1,62 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.dev.plt.mpl.get_dir_ax.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/mpl/get_dir_ax.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Timestamp: "2025-12-21 13:14:04 (ywatanabe)"
-# # File: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/mpl/get_dir_ax.py
-#
-#
-# """Top-level docstring here"""
-#
-# # Imports
-# import scitex as stx
-#
-# # # Parameters
-# # CONFIG = stx.io.load_configs() # For imported files using `./config/*.yaml`
-#
-#
-# # Functions and Classes
-# @stx.session
-# def main(
-#     # arg1,
-#     # kwarg1="value1",
-#     CONFIG=stx.INJECTED,
-#     plt=stx.INJECTED,
-#     COLORS=stx.INJECTED,
-#     rngg=stx.INJECTED,
-#     logger=stx.INJECTED,
-# ):
-#     """Help message for `$ python __file__ --help`"""
-#     import matplotlib.pyplot as plt
-#
-#     fig, ax = plt.subplots()
-#     dir_ax_list = dir(ax)
-#     dir_ax_str = "\n".join(dir_ax_list)
-#
-#     stx.io.save(
-#         dir_ax_str,
-#         "./dir_ax.txt",
-#         symlink_to="./data/dev/plt/mpl",
-#     )
-#
-#     return 0
-#
-#
-# if __name__ == "__main__":
-#     main()
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/mpl/get_dir_ax.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.dev.plt.mpl.get_dir_ax')
+    except ImportError as e:
+        pytest.skip(f"scitex.dev.plt.mpl.get_dir_ax: {e}")

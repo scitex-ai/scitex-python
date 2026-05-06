@@ -1,44 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.dev.plt.plot_sns_heatmap.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/plot_sns_heatmap.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # File: plot_sns_heatmap.py - sns_heatmap demo
-#
-# """sns_heatmap: DataFrame heatmap."""
-#
-# import numpy as np
-# import pandas as pd
-#
-#
-# def plot_sns_heatmap(plt, rng, ax=None):
-#     """sns_heatmap - DataFrame heatmap.
-#
-#     Demonstrates: ax.sns_heatmap(data=df, ...)
-#     """
-#     if ax is None:
-#         fig, ax = plt.subplots()
-#     else:
-#         fig = ax.get_figure() if hasattr(ax, "get_figure") else ax._fig_scitex
-#
-#     n = 100
-#     data = pd.DataFrame(rng.uniform(0, 1, (5, 5)), index=['A', 'B', 'C', 'D', 'E'], columns=['V1', 'V2', 'V3', 'V4', 'V5'])
-#     ax.sns_heatmap(data, annot=True, fmt='.2f')
-#     ax.set_xyt("X", "Y", "sns_heatmap")
-#     return fig, ax
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/plot_sns_heatmap.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.dev.plt.plot_sns_heatmap')
+    except ImportError as e:
+        pytest.skip(f"scitex.dev.plt.plot_sns_heatmap: {e}")

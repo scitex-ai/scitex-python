@@ -1,56 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.io.bundle._dataclasses._DataFormat.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/_dataclasses/_DataFormat.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # Timestamp: 2025-12-20
-# # File: /home/ywatanabe/proj/scitex-code/src/scitex/fsb/_dataclasses/DataFormat.py
-#
-# """DataFormat - Data file format specification."""
-#
-# from dataclasses import dataclass
-# from typing import Any, Dict
-#
-#
-# @dataclass
-# class DataFormat:
-#     """Data file format specification."""
-#
-#     type: str = "csv"  # csv, tsv, parquet, json
-#     encoding: str = "utf-8"
-#     delimiter: str = ","
-#     header_row: int = 0
-#
-#     def to_dict(self) -> Dict[str, Any]:
-#         return {
-#             "type": self.type,
-#             "encoding": self.encoding,
-#             "delimiter": self.delimiter,
-#             "header_row": self.header_row,
-#         }
-#
-#     @classmethod
-#     def from_dict(cls, data: Dict[str, Any]) -> "DataFormat":
-#         return cls(
-#             type=data.get("type", "csv"),
-#             encoding=data.get("encoding", "utf-8"),
-#             delimiter=data.get("delimiter", ","),
-#             header_row=data.get("header_row", 0),
-#         )
-#
-#
-# __all__ = ["DataFormat"]
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/_dataclasses/_DataFormat.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.io.bundle._dataclasses._DataFormat')
+    except ImportError as e:
+        pytest.skip(f"scitex.io.bundle._dataclasses._DataFormat: {e}")

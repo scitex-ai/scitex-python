@@ -1,47 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.dev.plt.demo_plotters.plot_mpl_quiver.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_mpl_quiver.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # File: plot_mpl_quiver.py - mpl_quiver demo
-#
-# """mpl_quiver: vector field."""
-#
-# import numpy as np
-#
-#
-# def plot_mpl_quiver(plt, rng, ax=None):
-#     """mpl_quiver - vector field.
-#
-#     Demonstrates: ax.mpl_quiver() - identical to ax.quiver()
-#     """
-#     if ax is None:
-#         fig, ax = plt.subplots()
-#     else:
-#         fig = ax.get_figure() if hasattr(ax, "get_figure") else ax._fig_scitex
-#
-#     x = np.arange(0, 5, 0.5)
-#     y = np.arange(0, 5, 0.5)
-#     X, Y = np.meshgrid(x, y)
-#     U, V = np.cos(X), np.sin(Y)
-#     ax.mpl_quiver(X, Y, U, V)
-#     ax.set_xyt("X", "Y", "mpl_quiver")
-#     if hasattr(ax, 'legend') and ax.get_legend_handles_labels()[0]:
-#         ax.legend()
-#     return fig, ax
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_mpl_quiver.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.dev.plt.demo_plotters.plot_mpl_quiver')
+    except ImportError as e:
+        pytest.skip(f"scitex.dev.plt.demo_plotters.plot_mpl_quiver: {e}")

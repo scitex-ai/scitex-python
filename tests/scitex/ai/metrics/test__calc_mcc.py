@@ -1,77 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.ai.metrics._calc_mcc.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/ai/metrics/_calc_mcc.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # Timestamp: "2025-10-02 (ywatanabe)"
-# # File: /home/ywatanabe/proj/scitex_repo/src/scitex/ml/metrics/_calc_mcc.py
-#
-# """Calculate Matthews Correlation Coefficient."""
-#
-# __FILE__ = __file__
-#
-# from typing import Any, Dict, List, Optional
-# import numpy as np
-# from sklearn.metrics import matthews_corrcoef
-# from ._normalize_labels import normalize_labels
-#
-#
-# def calc_mcc(
-#     y_true: np.ndarray,
-#     y_pred: np.ndarray,
-#     labels: Optional[List] = None,
-#     fold: Optional[int] = None,
-# ) -> Dict[str, Any]:
-#     """
-#     Calculate Matthews Correlation Coefficient with robust label handling.
-#
-#     Parameters
-#     ----------
-#     y_true : np.ndarray
-#         True labels (can be str or int)
-#     y_pred : np.ndarray
-#         Predicted labels (can be str or int)
-#     labels : List, optional
-#         Expected label list
-#     fold : int, optional
-#         Fold number for tracking
-#
-#     Returns
-#     -------
-#     Dict[str, Any]
-#         {'metric': 'mcc', 'value': float, 'fold': int}
-#     """
-#     try:
-#         y_true_norm, y_pred_norm, label_names, _ = normalize_labels(
-#             y_true, y_pred, labels
-#         )
-#         value = matthews_corrcoef(y_true_norm, y_pred_norm)
-#         return {
-#             "metric": "mcc",
-#             "value": float(value),
-#             "fold": fold,
-#             "labels": label_names,
-#         }
-#     except Exception as e:
-#         return {
-#             "metric": "mcc",
-#             "value": np.nan,
-#             "fold": fold,
-#             "error": str(e),
-#         }
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/ai/metrics/_calc_mcc.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.ai.metrics._calc_mcc')
+    except ImportError as e:
+        pytest.skip(f"scitex.ai.metrics._calc_mcc: {e}")

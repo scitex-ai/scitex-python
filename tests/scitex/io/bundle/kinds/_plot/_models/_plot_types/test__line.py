@@ -1,73 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.io.bundle.kinds._plot._models._plot_types._line.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/kinds/_plot/_models/_plot_types/_line.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # Timestamp: 2025-12-20
-# # File: /home/ywatanabe/proj/scitex-code/src/scitex/fsb/_fig/_models/_plot_types/_line.py
-#
-# """Line plot configurations."""
-#
-# from dataclasses import dataclass
-# from typing import List, Optional
-#
-#
-# @dataclass
-# class LinePlotConfig:
-#     """Line plot configuration."""
-#
-#     x: List[float]
-#     y: List[float]
-#     color: Optional[str] = None
-#     linewidth: Optional[float] = None
-#     linestyle: Optional[str] = "-"
-#     marker: Optional[str] = None
-#     markersize: Optional[float] = None
-#     alpha: Optional[float] = None
-#     label: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class PlotLineConfig:
-#     """Plot line configuration (scitex.plt.ax.stx_line)."""
-#
-#     y: List[float]
-#     x: Optional[List[float]] = None
-#     color: Optional[str] = None
-#     linewidth_mm: Optional[float] = None
-#     linestyle: Optional[str] = "-"
-#     label: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class ShadedLineConfig:
-#     """Shaded line configuration (scitex.plt.ax.stx_shaded_line)."""
-#
-#     x: List[float]
-#     y_lower: List[float]
-#     y_middle: List[float]
-#     y_upper: List[float]
-#     color: Optional[str] = None
-#     alpha: Optional[float] = 0.3
-#     linewidth_mm: Optional[float] = None
-#     label: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# __all__ = ["LinePlotConfig", "PlotLineConfig", "ShadedLineConfig"]
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/kinds/_plot/_models/_plot_types/_line.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.io.bundle.kinds._plot._models._plot_types._line')
+    except ImportError as e:
+        pytest.skip(f"scitex.io.bundle.kinds._plot._models._plot_types._line: {e}")

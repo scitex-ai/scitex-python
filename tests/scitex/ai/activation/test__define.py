@@ -1,27 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.ai.activation._define.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/ai/activation/_define.py
-# --------------------------------------------------------------------------------
-# import torch.nn as nn
-#
-#
-# def define(act_str):
-#     acts_dict = {
-#         "relu": nn.ReLU(),
-#         "swish": nn.SiLU(),
-#         "mish": nn.Mish(),
-#         "lrelu": nn.LeakyReLU(0.1),
-#     }
-#     return acts_dict[act_str]
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/ai/activation/_define.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.ai.activation._define')
+    except ImportError as e:
+        pytest.skip(f"scitex.ai.activation._define: {e}")

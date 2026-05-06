@@ -1,137 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.io.bundle.kinds._plot._models._plot_types._seaborn.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/kinds/_plot/_models/_plot_types/_seaborn.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # Timestamp: 2025-12-20
-# # File: /home/ywatanabe/proj/scitex-code/src/scitex/fsb/_fig/_models/_plot_types/_seaborn.py
-#
-# """Seaborn plot configurations."""
-#
-# from dataclasses import dataclass
-# from typing import Any, Optional, Union
-#
-#
-# @dataclass
-# class SeabornBoxplotConfig:
-#     """Seaborn boxplot configuration."""
-#
-#     x: Optional[str] = None
-#     y: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     palette: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class SeabornViolinplotConfig:
-#     """Seaborn violinplot configuration."""
-#
-#     x: Optional[str] = None
-#     y: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     palette: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class SeabornScatterplotConfig:
-#     """Seaborn scatterplot configuration."""
-#
-#     x: Optional[str] = None
-#     y: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     size: Optional[str] = None
-#     style: Optional[str] = None
-#     palette: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class SeabornLineplotConfig:
-#     """Seaborn lineplot configuration."""
-#
-#     x: Optional[str] = None
-#     y: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     style: Optional[str] = None
-#     palette: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class SeabornHistplotConfig:
-#     """Seaborn histplot configuration."""
-#
-#     x: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     bins: Union[int, str] = "auto"
-#     kde: bool = False
-#     alpha: Optional[float] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class SeabornBarplotConfig:
-#     """Seaborn barplot configuration."""
-#
-#     x: Optional[str] = None
-#     y: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     palette: Optional[str] = None
-#     estimator: str = "mean"
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class SeabornStripplotConfig:
-#     """Seaborn stripplot configuration."""
-#
-#     x: Optional[str] = None
-#     y: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     alpha: Optional[float] = None
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class SeabornKDEplotConfig:
-#     """Seaborn KDE plot configuration."""
-#
-#     x: Optional[str] = None
-#     data: Optional[Any] = None
-#     hue: Optional[str] = None
-#     fill: bool = False
-#
-#
-# __all__ = [
-#     "SeabornBoxplotConfig",
-#     "SeabornViolinplotConfig",
-#     "SeabornScatterplotConfig",
-#     "SeabornLineplotConfig",
-#     "SeabornHistplotConfig",
-#     "SeabornBarplotConfig",
-#     "SeabornStripplotConfig",
-#     "SeabornKDEplotConfig",
-# ]
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/kinds/_plot/_models/_plot_types/_seaborn.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.io.bundle.kinds._plot._models._plot_types._seaborn')
+    except ImportError as e:
+        pytest.skip(f"scitex.io.bundle.kinds._plot._models._plot_types._seaborn: {e}")

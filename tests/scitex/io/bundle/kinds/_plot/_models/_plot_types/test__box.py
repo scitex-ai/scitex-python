@@ -1,54 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.io.bundle.kinds._plot._models._plot_types._box.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/kinds/_plot/_models/_plot_types/_box.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # Timestamp: 2025-12-20
-# # File: /home/ywatanabe/proj/scitex-code/src/scitex/fsb/_fig/_models/_plot_types/_box.py
-#
-# """Box plot configurations."""
-#
-# from dataclasses import dataclass
-# from typing import List, Optional, Union
-#
-#
-# @dataclass
-# class BoxPlotConfig:
-#     """Box plot configuration."""
-#
-#     data: Union[List[List[float]], List[float]]
-#     labels: Optional[List[str]] = None
-#     positions: Optional[List[float]] = None
-#     widths: Optional[float] = None
-#     linewidth_mm: Optional[float] = None
-#     showfliers: bool = True
-#     showmeans: bool = False
-#     id: Optional[str] = None
-#
-#
-# @dataclass
-# class BoxConfig:
-#     """Box plot configuration (scitex.plt.ax.stx_box)."""
-#
-#     data: List[float]
-#     color: Optional[str] = None
-#     linewidth_mm: Optional[float] = None
-#     label: Optional[str] = None
-#     id: Optional[str] = None
-#
-#
-# __all__ = ["BoxPlotConfig", "BoxConfig"]
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/io/bundle/kinds/_plot/_models/_plot_types/_box.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.io.bundle.kinds._plot._models._plot_types._box')
+    except ImportError as e:
+        pytest.skip(f"scitex.io.bundle.kinds._plot._models._plot_types._box: {e}")

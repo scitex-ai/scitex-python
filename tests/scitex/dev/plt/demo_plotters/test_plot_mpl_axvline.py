@@ -1,44 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.dev.plt.demo_plotters.plot_mpl_axvline.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_mpl_axvline.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # File: plot_mpl_axvline.py - mpl_axvline demo
-#
-# """mpl_axvline: vertical line."""
-#
-# import numpy as np
-#
-#
-# def plot_mpl_axvline(plt, rng, ax=None):
-#     """mpl_axvline - vertical line.
-#
-#     Demonstrates: ax.mpl_axvline() - identical to ax.axvline()
-#     """
-#     if ax is None:
-#         fig, ax = plt.subplots()
-#     else:
-#         fig = ax.get_figure() if hasattr(ax, "get_figure") else ax._fig_scitex
-#
-#     ax.plot(rng.uniform(0, 10, 20))
-#     ax.mpl_axvline(x=10, color='r', linestyle='--', label='event')
-#     ax.set_xyt("X", "Y", "mpl_axvline")
-#     if hasattr(ax, 'legend') and ax.get_legend_handles_labels()[0]:
-#         ax.legend()
-#     return fig, ax
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_mpl_axvline.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.dev.plt.demo_plotters.plot_mpl_axvline')
+    except ImportError as e:
+        pytest.skip(f"scitex.dev.plt.demo_plotters.plot_mpl_axvline: {e}")

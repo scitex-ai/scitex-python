@@ -1,45 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex.dev.plt.demo_plotters.plot_sns_kdeplot.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_sns_kdeplot.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # -*- coding: utf-8 -*-
-# # File: plot_sns_kdeplot.py - sns_kdeplot demo
-#
-# """sns_kdeplot: DataFrame KDE."""
-#
-# import numpy as np
-# import pandas as pd
-#
-#
-# def plot_sns_kdeplot(plt, rng, ax=None):
-#     """sns_kdeplot - DataFrame KDE.
-#
-#     Demonstrates: ax.sns_kdeplot(data=df, ...)
-#     """
-#     if ax is None:
-#         fig, ax = plt.subplots()
-#     else:
-#         fig = ax.get_figure() if hasattr(ax, "get_figure") else ax._fig_scitex
-#
-#     n = 100
-#     groups = rng.choice(['A', 'B'], n)
-#     df = pd.DataFrame({'group': groups, 'value': rng.normal(0, 1, n) + np.where(groups == 'A', 0, 2)})
-#     ax.sns_kdeplot(data=df, x='value', hue='group')
-#     ax.set_xyt("X", "Y", "sns_kdeplot")
-#     return fig, ax
-#
-#
-# # EOF
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/dev/plt/demo_plotters/plot_sns_kdeplot.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex.dev.plt.demo_plotters.plot_sns_kdeplot')
+    except ImportError as e:
+        pytest.skip(f"scitex.dev.plt.demo_plotters.plot_sns_kdeplot: {e}")
