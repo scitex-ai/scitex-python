@@ -936,7 +936,7 @@ dev = [
     "scitex-dev>=0.8.0",
     "scitex-etc>=0.1.4",
     "scitex-io>=0.2.0",
-    "scitex-linter>=0.3.5",
+    "scitex-dev>=0.11.0",
     "scitex-notification>=0.1.0",
     "scitex-scholar>=1.2.3",
     "scitex-ssh",
@@ -1070,7 +1070,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-linter>=0.3.5"]
+linter = ["scitex-dev>=0.11.0"]
 core = ["scitex-core>=0.2.2"]
 orochi = ["scitex-orochi>=0.13.0"]
 agent-container = ["scitex-agent-container>=0.7.1"]
