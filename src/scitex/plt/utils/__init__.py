@@ -13,7 +13,7 @@ from ._csv_column_naming import (
     get_csv_column_name,
     get_csv_column_prefix,
     parse_csv_column_name,
-    sanitize_trace_id,
+    sanitize_id,
 )
 from ._dimension_viewer import compare_modes, view_dimensions
 from ._figure_from_axes_mm import (
@@ -108,7 +108,7 @@ __all__ = [
     "pt_to_mm",
     "query_hitmap_neighborhood",
     "quick_caption",
-    "sanitize_trace_id",
+    "sanitize_id",
     "save_hitmap_png",
     "save_with_caption",
     "verify_csv_json_consistency",
