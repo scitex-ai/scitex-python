@@ -81,6 +81,7 @@ dependencies = [
     "scitex-repro>=0.1.3",
     "scitex-compat>=0.1.4",
     "scitex-etc>=0.1.4",
+    "scitex-genai>=0.1.0",
     "scitex-gists>=0.1.3",
     "scitex-audit>=0.1.3",
     "scitex-logging>=0.1.3",
@@ -109,16 +110,14 @@ Repository = "https://github.com/ywatanabe1989/scitex-python"
 scitex = "scitex.__main__:main"
 # Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
 scitex-pkg = "scitex.cli.pkg:pkg"
-# MCP Server entry points (individual modules)
-# scitex-audio entry point now in standalone scitex-audio package
-scitex-capture = "scitex.capture.mcp_server:main"
-scitex-diagram = "scitex.diagram.mcp_server:main"
-# scitex-plt entry point now in standalone scitex-plt package
-scitex-scholar = "scitex.scholar.mcp_server:main"
-# scitex-stats entry point now in standalone scitex-stats package
-scitex-template = "scitex_template.mcp_server:main"
-# scitex-ui entry point now in standalone scitex-ui package
-# Unified MCP Server (all modules in one)
+# Unified MCP Server (all modules in one). Use `scitex serve` (preferred)
+# or `scitex-mcp-server`. Each peer standalone (scitex-scholar, scitex-stats,
+# scitex-capture, scitex-diagram, scitex-template, scitex-audio, scitex-plt,
+# scitex-ui) ships its own per-module MCP entry point — DO NOT re-declare
+# them here, the umbrella's hand-wrap layer (scitex._mcp_tools) re-exposes
+# every tool on the unified server, so legacy `scitex-<module>` shims like
+# `scitex-scholar = scitex.scholar.mcp_server:main` would only collide with
+# the peer's Click CLI and break shell-completion eval.
 scitex-mcp-server = "scitex.mcp_server:main"
 
 [project.entry-points."scitex_dev.docs"]
@@ -126,6 +125,14 @@ scitex = "scitex"
 
 [project.entry-points."scitex_dev.skills"]
 scitex = "scitex"
+
+[project.entry-points."scitex_dev.linter.plugins"]
+scitex = "scitex._linter_plugin:get_plugin"
+
+# Legacy entry-point group (dual-register during scitex-linter
+# deprecation window — will be dropped after the final shim release).
+[project.entry-points."scitex_linter.plugins"]
+scitex = "scitex._linter_plugin:get_plugin"
 
 # ============================================
 # Optional Dependencies - Module-Oriented
@@ -147,42 +154,16 @@ app = [
     "scitex-app>=0.2.5",
 ]
 
-# AI Module - LLM APIs and ML tools
-# Use: pip install scitex[ai]
-# Per _skills/general/01_ecosystem_03_modules-and-standalone-packages.md §8:
-# every standalone scitex-<name> must appear in its matching extra so that
-# `pip install scitex[ai]` actually installs the standalone (not the in-umbrella
-# shim).
-ai = [
-    "scitex-ai>=0.1.0",
-    # Third-party deps below are kept in [ai] so users can `pip install
-    # scitex[ai]` and get a working ML stack even if scitex-ai's own minima
-    # ever drift.
-    "openai",
-    "anthropic",
-    "google-genai",
-    "groq",
-    "scikit-learn",
-    "joblib",
-    "seaborn",
-    "scipy",
-    "matplotlib",
-    "natsort",
-    "pillow",
-    "pyyaml",
-    "requests",
-    "ruamel.yaml",
-    "xarray",
-    "umap-learn",
-    "sktime>=0.21.0",  # >=0.21 has proper build-system deps declared (0.8.1 was broken)
-    "markdown2",
-    "imbalanced-learn",
-    # # Heavy dependencies handled by _AVAILABLE flags
-    # "optuna",
-    # "psutil",
-    # "torch",
-    # "pytorch_pretrained_vit",
-    # "torchvision",
+# ML Module — classical / deep machine-learning utilities
+# Use: pip install scitex[ml]
+# (scitex.ml is a thin shim over the standalone scitex-ml package.)
+# Note: scitex-ai is retired; the [ai] extra has been split into [ml] +
+# [genai] to match the standalone-package split.
+
+# GenAI Module — generative-AI provider abstraction (LLM today; agent /
+# image / audio / video reserved). Use: pip install scitex[genai]
+genai = [
+    "scitex-genai>=0.1.0",
 ]
 
 # Audio Module - Text-to-Speech
@@ -458,7 +439,7 @@ media = []
 # ML Module - Machine learning
 # Use: pip install scitex[ml]
 ml = [
-    "scitex[ai]",
+    "scitex-ml>=0.1.0",
 ]
 
 # Module Module - Module management
@@ -925,7 +906,6 @@ dev = [
     "scikit-learn",
     "scipy",
     "scitex-agent-container>=0.7.1",
-    "scitex-ai>=0.1.0",
     "scitex-audio>=0.2.10",
     "scitex-audit>=0.1.3",
     "scitex-browser>=0.1.14",
@@ -933,10 +913,10 @@ dev = [
     "scitex-cloud>=0.16.1",
     "scitex-container",
     "scitex-dataset",
-    "scitex-dev>=0.8.0",
-    "scitex-etc>=0.1.4",
-    "scitex-io>=0.2.0",
     "scitex-dev>=0.11.0",
+    "scitex-etc>=0.1.4",
+    "scitex-genai>=0.1.0",
+    "scitex-io>=0.2.0",
     "scitex-notification>=0.1.0",
     "scitex-scholar>=1.2.3",
     "scitex-ssh",
@@ -988,7 +968,8 @@ dev = [
 # Auto-aggregates all individual module extras via self-referencing.
 # When adding a new module extras group, add a corresponding entry here.
 all = [
-    "scitex[ai]",
+    "scitex[ml]",
+    "scitex[genai]",
     "scitex[app]",
     "scitex[audio]",
     "scitex[audit]",
