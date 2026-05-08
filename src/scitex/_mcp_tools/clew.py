@@ -1,22 +1,25 @@
-#!/usr/bin/env python3
-"""Clew module tools - thin wrapper delegating to scitex-clew package.
+"""Clew tools for FastMCP unified server.
 
-Single source of truth: scitex-clew MCP tools.
+Programmatically bridges all scitex-clew MCP tools into scitex MCP via
+`safe_mount` — every new scitex-clew tool appears automatically with the
+`clew` namespace, matching the umbrella↔standalone passthrough rule.
 """
 
 
 def register_clew_tools(mcp) -> None:
-    """Register clew tools by delegating to scitex-clew package."""
+    """Mount scitex-clew MCP server with 'clew' namespace."""
     try:
-        from scitex_clew._mcp.tools import register_all_tools
+        from scitex_clew._mcp.server import mcp as clew_mcp
 
-        register_all_tools(mcp)
+        from ._compat import safe_mount
+
+        safe_mount(mcp, clew_mcp, namespace="clew")
     except ImportError:
-        # Fallback when scitex-clew is not installed
+
         @mcp.tool()
-        def clew_status() -> str:
-            """Get clew verification status (not installed)."""
-            return "scitex-clew is required. Install with: pip install scitex-clew"
+        async def clew_not_available() -> str:
+            """scitex-clew not installed."""
+            return "scitex-clew package required. Install with: pip install scitex-clew"
 
 
 # EOF
