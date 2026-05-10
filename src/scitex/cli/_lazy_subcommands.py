@@ -18,7 +18,15 @@ from __future__ import annotations
 import os
 from typing import Dict, Tuple
 
-LazySpec = Tuple[str, str, str]  # (module_path, attr_name, short_help)
+# Spec shape: (module_path_or_candidates, attr_name, short_help).
+# - module_path_or_candidates is either a single dotted module path (str)
+#   OR a tuple of (module_path, attr_name) candidates. The LazyGroup
+#   loader walks the tuple at invocation time and returns the first one
+#   that imports cleanly. Storing candidates instead of probing them at
+#   registration is what keeps the umbrella `scitex` CLI startup fast —
+#   eagerly importing every peer's `_cli._main` at registration time
+#   added ~45 s of cold-start latency across ~60 ecosystem peers.
+LazySpec = Tuple[object, str, str]
 
 _REGISTRY_SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 
@@ -75,25 +83,15 @@ _PEER_CLI_PROBES: tuple[tuple[str, str], ...] = (
 )
 
 
-def _probe_peer_cli(import_name: str) -> tuple[str, str] | None:
-    """Find the peer's main click group.
+def _peer_cli_candidates(import_name: str) -> tuple[tuple[str, str], ...]:
+    """Return candidate ``(module_path, attr_name)`` pairs for the peer's main click group.
 
-    Returns ``(module_path, attr_name)`` or ``None`` if the peer ships no
-    discoverable CLI. Imports the candidate module to verify the attr
-    exists (lazy callers should still wrap loading in try/except since
-    optional deps may be missing).
+    Does NOT import — that's left to the LazyGroup loader at invocation
+    time. Returning the candidate list at registration keeps umbrella
+    startup fast (importing every peer's ``_cli._main`` at registration
+    added ~45 s across ~60 peers).
     """
-    import importlib
-
-    for sub_path, attr in _PEER_CLI_PROBES:
-        full = f"{import_name}.{sub_path}"
-        try:
-            mod = importlib.import_module(full)
-        except ImportError:
-            continue
-        if hasattr(mod, attr):
-            return full, attr
-    return None
+    return tuple((f"{import_name}.{sub}", attr) for sub, attr in _PEER_CLI_PROBES)
 
 
 def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
@@ -130,24 +128,21 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
             continue
         sub = info.get("umbrella_subcommand", pip_name.removeprefix("scitex-"))
         attr = sub.replace("-", "_")
-        # Probe the peer's main click group at one of the conventional
-        # locations; this is the canonical path. An on-disk wrapper file
-        # in scitex/cli/<short>.py is only consulted as a fallback when
-        # the probe doesn't find anything (kept as an escape hatch for
-        # peers that don't yet expose a click group).
-        probe = _probe_peer_cli(imp)
-        if probe is not None:
-            module_path, attr_name = probe
-            help_text = _registry_subcommand_help(imp) or _INTERNAL_HELP.get(sub) or sub
-            out[sub] = (module_path, attr_name, help_text)
-            continue
+        # Register the peer's candidate locations WITHOUT importing.
+        # LazyGroup._load_lazy walks the candidates at invocation time
+        # and returns the first one that resolves. An on-disk wrapper
+        # file in scitex/cli/<short>.py acts as an explicit override.
+        help_text = _registry_subcommand_help(imp) or _INTERNAL_HELP.get(sub) or sub
         if attr in have_wrapper:
-            help_text = _registry_subcommand_help(imp) or _INTERNAL_HELP.get(sub) or sub
             out[sub] = (f"scitex.cli.{attr}", attr, help_text)
+        else:
+            out[sub] = (_peer_cli_candidates(imp), attr, help_text)
 
     # 2. scitex-internal wrappers (no peer in the registry).
     registered_attrs = {
-        spec[1] for spec in out.values() if spec[0].startswith("scitex.cli.")
+        spec[1]
+        for spec in out.values()
+        if isinstance(spec[0], str) and spec[0].startswith("scitex.cli.")
     }
     for attr in have_wrapper:
         if attr in registered_attrs:

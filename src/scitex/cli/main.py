@@ -77,18 +77,35 @@ class LazyGroup(click.Group):
         import importlib
         import logging
 
-        module_path, attr_name, _ = self._lazy_subcommands[cmd_name]
-        try:
-            mod = importlib.import_module(module_path)
-        except ImportError as exc:
+        module_path_or_candidates, attr_name, _ = self._lazy_subcommands[cmd_name]
+        # Two shapes:
+        #   - str: single canonical module path (scitex-internal wrappers)
+        #   - tuple of (module_path, attr_name): peer CLI candidates probed
+        #     lazily on first invocation. Walking the candidates here
+        #     instead of at registration is what keeps `scitex --help`
+        #     fast — see _lazy_subcommands.py.
+        if isinstance(module_path_or_candidates, str):
+            candidates = ((module_path_or_candidates, attr_name),)
+        else:
+            candidates = module_path_or_candidates
+
+        last_exc = None
+        for mod_path, attr in candidates:
+            try:
+                mod = importlib.import_module(mod_path)
+            except ImportError as exc:
+                last_exc = exc
+                continue
+            cmd = getattr(mod, attr, None)
+            if cmd is not None:
+                return cmd
+        if last_exc is not None:
             logging.getLogger(__name__).debug(
-                "Lazy-loaded subcommand %r unavailable (%s): %s",
+                "Lazy-loaded subcommand %r unavailable (no candidate resolved): %s",
                 cmd_name,
-                module_path,
-                exc,
+                last_exc,
             )
-            return None
-        return getattr(mod, attr_name, None)
+        return None
 
 
 # Registry-driven subcommand wiring. See ``_lazy_subcommands.py``.
