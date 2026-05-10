@@ -5,7 +5,20 @@ Requirements
 ------------
 
 - **Python 3.10+**
-- ``pip`` 21+ or ``uv`` (recommended for faster installs)
+- ``uv`` (strongly recommended) — install with ``pip install uv`` or
+  ``curl -LsSf https://astral.sh/uv/install.sh | sh``
+- ``pip`` 21+ also works, but expect 30–90 min for ``scitex[all]``
+  (see warning below)
+
+
+.. warning::
+
+   ``pip install "scitex[all]"`` typically takes **30–90 minutes** because
+   pip's serial resolver walks version histories of the large transitive
+   dependency set (numpy/pandas/torch/jax/playwright/openalex-local/…).
+   Use **uv** instead — it resolves the same set in parallel in **1–3
+   minutes**. Every ``pip install`` line on this page also works as
+   ``uv pip install`` and we recommend the uv form.
 
 
 Core Install
@@ -17,7 +30,8 @@ discovery system.
 
 .. code-block:: bash
 
-   pip install scitex
+   uv pip install scitex          # recommended
+   pip install scitex              # also works, slower for [all]
 
 
 Recommended: Install Everything
@@ -28,7 +42,8 @@ and every other module):
 
 .. code-block:: bash
 
-   pip install "scitex[all]"
+   uv pip install "scitex[all]"   # ~3 min
+   pip install "scitex[all]"       # ~30–90 min (resolver thrash)
 
 
 Research Workflow
@@ -126,7 +141,10 @@ Using uv (recommended)
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 `uv <https://docs.astral.sh/uv/>`_ resolves and installs dependencies
-significantly faster than pip:
+in parallel from a Rust resolver — roughly 10–30× faster than pip on
+``scitex[all]`` (3 min vs. 30–90 min). Install it once with
+``pip install uv`` (or the standalone shell installer), then prefix
+every install command on this page with ``uv``:
 
 .. code-block:: bash
 

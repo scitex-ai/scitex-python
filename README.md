@@ -62,8 +62,21 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 ## Installation
 
 ```bash
-pip install scitex[all]                # Recommended: everything (may take >1 hour on first install — see Installation Tips)
+# Recommended — uv resolver, ~3 min (10–30× faster than pip on scitex[all])
+uv pip install "scitex[all]"
+
+# Plain pip works but expect ~30–90 min — pip's resolver backtracks
+# heavily on the full extras set. See Installation Tips below.
+pip install "scitex[all]"
 ```
+
+> **Why uv?** `scitex[all]` pulls a large transitive set
+> (numpy/pandas/torch/jax/playwright/openalex-local/sphinx-rtd-theme/…).
+> pip's serial resolver walks version histories trying to satisfy
+> every constraint and can spend 30+ min just downloading metadata
+> before installing a single wheel. uv resolves the same set in
+> parallel in 1–3 min. Install uv once with
+> `pip install uv` (or `curl -LsSf https://astral.sh/uv/install.sh | sh`).
 
 <details>
 <summary><strong>Per-module extras</strong></summary>
@@ -83,28 +96,28 @@ pip install scitex[capture]            # Screenshot capture and monitoring
 pip install scitex[cloud]              # Cloud platform integration
 ```
 
-Requires Python 3.10+. We recommend [uv](https://docs.astral.sh/uv/) for fast installs.
+Requires Python 3.10+. Prefix any of the above with `uv ` (e.g. `uv pip install scitex[plt,stats,scholar]`) for a 10–30× faster resolve.
 </details>
 
 <details>
 <summary><strong>Installation Tips — timeouts, mirrors, <code>[all]</code> size</strong></summary>
 
-`pip install scitex[all]` pulls the full 33-package ecosystem plus heavy extras (playwright browsers, torch, jax, pymupdf, Apptainer/Docker integrations, etc.). On a typical connection it can take **30–90 minutes** — more if PyPI is slow. Common fixes:
+`scitex[all]` pulls the full 33-package ecosystem plus heavy extras (playwright browsers, torch, jax, pymupdf, Apptainer/Docker integrations, etc.). With **plain pip** this takes **30–90 minutes** because pip's resolver thrashes on the transitive set; with **uv** it takes ~3 min. Recommended order of preference:
 
 ```bash
-# 1. Extend pip's socket timeout (default 15s) — stops big wheel pulls from aborting mid-stream
-pip install --timeout 600 --retries 5 "scitex[all]"
-
-# 2. Use uv — 10-30× faster resolver, far better retry behaviour
+# 1. uv (recommended) — parallel Rust resolver, 10-30× faster
 pip install uv && uv pip install "scitex[all]"
 
+# 2. pip with extended timeouts (default 15s aborts mid-wheel on slow links)
+pip install --timeout 600 --retries 5 "scitex[all]"
+
 # 3. Install in groups if a single run keeps failing
-pip install scitex[io,stats,plt]         # core analysis layer first
-pip install scitex[scholar,writer]       # research layer
-pip install scitex[audio,browser,dataset,cloud]   # heavy extras last
+uv pip install scitex[io,stats,plt]         # core analysis layer first
+uv pip install scitex[scholar,writer]       # research layer
+uv pip install scitex[audio,browser,dataset,cloud]   # heavy extras last
 
 # 4. Mirror — for networks where pypi.org is unreliable
-pip install -i https://pypi.tuna.tsinghua.edu.cn/simple "scitex[all]"
+uv pip install -i https://pypi.tuna.tsinghua.edu.cn/simple "scitex[all]"
 ```
 
 If a single dep hangs, identify it with `pip install -v` and install that package alone with `--no-deps`, then resume the full install.
@@ -126,7 +139,7 @@ If a single dep hangs, identify it with `pip install -v` and install that packag
 
 </details>
 
-## Packages — 3-Layer Cascade Architecture
+## Architecture — Packages (3-Layer Cascade)
 
 The 33-package ecosystem follows a strict **dependency cascade**: upstream imports middle imports downstream, never the reverse. Downstream apps must work standalone; the umbrella only orchestrates.
 
