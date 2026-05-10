@@ -16,4 +16,4 @@
 
 project-type:
   - pip
-  - special
+  - deferred
