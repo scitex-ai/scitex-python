@@ -5,6 +5,8 @@ pytest.importorskip("zarr")
 # -*- coding: utf-8 -*-
 # Test different flatten approaches for AxesWrapper
 
+pytest.importorskip("matplotlib")
+
 import os
 
 import matplotlib

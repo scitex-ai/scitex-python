@@ -6,6 +6,8 @@ pytest.importorskip("zarr")
 # Timestamp: "2025-05-18 19:14:26 (ywatanabe)"
 # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/tests/custom/test_histogram_bin_alignment.py
 # ----------------------------------------
+pytest.importorskip("matplotlib")
+
 import os
 
 import matplotlib

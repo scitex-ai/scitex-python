@@ -6,13 +6,10 @@ from __future__ import annotations
 import json
 from typing import Optional
 
-try:
-    from fastmcp import FastMCP
+from scitex_dev import try_import_optional
 
-    FASTMCP_AVAILABLE = True
-except ImportError:
-    FASTMCP_AVAILABLE = False
-    FastMCP = None  # type: ignore
+FastMCP = try_import_optional("fastmcp", "FastMCP", pkg="scitex")
+FASTMCP_AVAILABLE = FastMCP is not None
 
 __all__ = ["mcp", "FASTMCP_AVAILABLE"]
 

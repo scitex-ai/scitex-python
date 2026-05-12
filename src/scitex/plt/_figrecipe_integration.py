@@ -5,13 +5,13 @@
 
 from typing import Any, Callable, Dict, Optional, Union
 
-try:
-    import figrecipe as fr
-    from figrecipe._graph import draw_graph as _fr_draw_graph
+from scitex_dev import try_import_optional
 
-    _AVAILABLE = True
-except ImportError:
-    _AVAILABLE = False
+fr = try_import_optional("figrecipe", extra="plt", pkg="scitex")
+_fr_draw_graph = try_import_optional(
+    "figrecipe._graph", "draw_graph", extra="plt", pkg="scitex"
+)
+_AVAILABLE = fr is not None and _fr_draw_graph is not None
 
 
 def draw_graph(

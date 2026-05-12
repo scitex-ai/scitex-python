@@ -29,13 +29,10 @@ from scitex._env_loader import load_scitex_env
 
 load_scitex_env()
 
-try:
-    from fastmcp import FastMCP
+from scitex_dev import try_import_optional
 
-    FASTMCP_AVAILABLE = True
-except ImportError:
-    FASTMCP_AVAILABLE = False
-    FastMCP = None  # type: ignore
+FastMCP = try_import_optional("fastmcp", "FastMCP", pkg="scitex")
+FASTMCP_AVAILABLE = FastMCP is not None
 
 # Suppress httplib2 deprecation warnings from system pyparsing (old API methods)
 # Must be AFTER fastmcp import (fastmcp.__init__ calls simplefilter("default", DeprecationWarning))

@@ -5,6 +5,8 @@ pytest.importorskip("zarr")
 # -*- coding: utf-8 -*-
 # Test for FigWrapper.gca() and add_subplot() functionality
 
+pytest.importorskip("matplotlib")
+
 import os
 
 import matplotlib

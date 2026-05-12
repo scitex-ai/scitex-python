@@ -1120,9 +1120,10 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
-source = ["src/scitex"]
+source = ["scitex"]
 branch = true
 parallel = true
+concurrency = ["multiprocessing", "thread"]
 relative_files = true
 omit = [
     "*/tests/*",

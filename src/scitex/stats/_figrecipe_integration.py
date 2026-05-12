@@ -5,16 +5,23 @@
 
 from typing import Any, Dict, List, Optional, Union
 
-try:
-    from figrecipe._integrations._scitex_stats import (  # not yet in public API
-        load_stats_bundle as _fr_load_bundle,
-    )
-    from figrecipe.utils import annotate_from_stats as _fr_annotate
-    from figrecipe.utils import from_scitex_stats as _fr_convert
+from scitex_dev import try_import_optional
 
-    _AVAILABLE = True
-except ImportError:
-    _AVAILABLE = False
+_fr_load_bundle = try_import_optional(
+    "figrecipe._integrations._scitex_stats", "load_stats_bundle",
+    extra="stats", pkg="scitex",
+)
+_fr_annotate = try_import_optional(
+    "figrecipe.utils", "annotate_from_stats", extra="stats", pkg="scitex"
+)
+_fr_convert = try_import_optional(
+    "figrecipe.utils", "from_scitex_stats", extra="stats", pkg="scitex"
+)
+_AVAILABLE = (
+    _fr_load_bundle is not None
+    and _fr_annotate is not None
+    and _fr_convert is not None
+)
 
 
 def to_figrecipe(

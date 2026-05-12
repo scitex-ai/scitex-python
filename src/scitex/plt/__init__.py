@@ -26,13 +26,10 @@ for _stx_key, _fr_key in _ENV_MAPPINGS:
     _val = os.environ.get(_stx_key) or os.environ.get(_fr_key)
     if _val:
         os.environ[_fr_key] = _val
-try:
-    import figrecipe as _fr
+from scitex_dev import try_import_optional
 
-    _FIGRECIPE_AVAILABLE = True
-except ImportError:
-    _FIGRECIPE_AVAILABLE = False
-    _fr = None
+_fr = try_import_optional("figrecipe", extra="plt", pkg="scitex")
+_FIGRECIPE_AVAILABLE = _fr is not None
 
 # Standard library and matplotlib imports
 import matplotlib.pyplot as _plt  # noqa: E402
