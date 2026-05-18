@@ -1,0 +1,140 @@
+name: quality
+
+# Nightly ecosystem-wide static audit — catches regressions like the missing
+# scitex-config dep that broke 6 PyPI packages on 2026-04-28. Outputs a JSON
+# artifact and creates a GitHub issue if any CRITICAL/HIGH findings surface.
+
+on:
+  schedule:
+    - cron: "0 8 * * *"  # 08:00 UTC, after the 07:00 per-repo Test runs
+  workflow_dispatch:
+  push:
+    branches: [develop]
+    paths:
+      - "scripts/quality/audit_ecosystem.py"
+      - "src/scitex_dev/_ecosystem/_core.py"
+      - "src/scitex_dev/ecosystem.py"
+      - ".github/workflows/quality-audit.yml"
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout scitex-dev
+        uses: actions/checkout@v4
+        with:
+          path: scitex-dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Shallow-clone every ecosystem package
+        run: |
+          set -e
+          mkdir -p proj
+          python3 - <<'PY'
+          import json, re, subprocess, sys
+          from pathlib import Path
+          # 0.11.0 layout: ecosystem.py moved to _ecosystem/_core.py.
+          eco_new = Path("scitex-dev/src/scitex_dev/_ecosystem/_core.py")
+          eco_old = Path("scitex-dev/src/scitex_dev/ecosystem.py")
+          src = (eco_new if eco_new.is_file() else eco_old).read_text()
+          for m in re.finditer(
+              r'^\s*"([\w-]+)"\s*:\s*\{(.*?)\},?\s*$', src,
+              re.MULTILINE | re.DOTALL):
+              name, body = m.group(1), m.group(2)
+              g = re.search(r'"github_repo"\s*:\s*"([^"]+)"', body)
+              cat = re.search(r'"category"\s*:\s*"([^"]+)"', body)
+              category = cat.group(1) if cat else "library"
+              if category not in ("umbrella", "library", "external-lib"):
+                  continue
+              if not g:
+                  continue
+              dest = Path("proj") / name
+              if dest.exists():
+                  continue
+              print(f"clone {g.group(1)} -> {dest}")
+              r = subprocess.run(
+                  ["git", "clone", "--depth", "1", "--no-tags",
+                   f"https://github.com/{g.group(1)}.git", str(dest)],
+                  capture_output=True, text=True)
+              if r.returncode:
+                  print(f"  WARN: {r.stderr.strip()[:200]}", file=sys.stderr)
+          PY
+
+      - name: Run ecosystem audit
+        id: audit
+        run: |
+          python3 scitex-dev/scripts/quality/audit_ecosystem.py \
+            --projects-root proj \
+            --scitex-dev-root scitex-dev \
+            --out audit.json
+          echo "json_path=$(pwd)/audit.json" >> "$GITHUB_OUTPUT"
+          # Surface summary in step output.
+          python3 - <<'PY'
+          import json
+          d = json.load(open("audit.json"))
+          s = d["summary"]
+          print(f"::notice ::Packages audited: {s['packages_audited']}")
+          print(f"::notice ::Findings by severity: {s['by_severity']}")
+          if s["by_severity"].get("CRITICAL", 0):
+              print(f"::error ::{s['by_severity']['CRITICAL']} CRITICAL findings — see audit.json")
+          if s["by_severity"].get("HIGH", 0):
+              print(f"::warning ::{s['by_severity']['HIGH']} HIGH findings — see audit.json")
+          PY
+        continue-on-error: true  # never block the workflow on findings
+
+      - name: Upload audit JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-audit
+          path: audit.json
+          retention-days: 30
+
+      - name: Open / update tracking issue on CRITICAL or HIGH
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          counts=$(python3 -c "import json; d=json.load(open('audit.json')); s=d['summary']['by_severity']; print(s.get('CRITICAL',0), s.get('HIGH',0))")
+          read crit high <<< "$counts"
+          if [[ "$crit" -eq 0 && "$high" -eq 0 ]]; then
+            echo "No CRITICAL/HIGH; skipping issue."
+            exit 0
+          fi
+          # Build a markdown body listing offenders.
+          body=$(python3 - <<'PY'
+          import json
+          d = json.load(open("audit.json"))
+          out = ["# Ecosystem Quality Audit findings", ""]
+          out.append(f"Generated: {d['generated_at']}")
+          out.append(f"Packages: {d['summary']['packages_audited']}")
+          out.append(f"By severity: `{d['summary']['by_severity']}`")
+          out.append("")
+          for sev in ("CRITICAL", "HIGH"):
+              hits = [(p, f) for p in d["packages"] for f in p["findings"] if f["severity"] == sev]
+              if not hits:
+                  continue
+              out.append(f"## {sev}")
+              for p, f in hits:
+                  out.append(f"- **{p['package']}** §{f['section']} ({f['lens']}) — {f['message']}")
+                  if f.get("detail"):
+                      out.append(f"    - {f['detail']}")
+          print("\n".join(out))
+          PY
+          )
+          # Reuse a single rolling issue per day.
+          title="quality-audit: $(date -u +%Y-%m-%d) — CRITICAL=$crit HIGH=$high"
+          existing=$(gh issue list -R "$GITHUB_REPOSITORY" --label quality-audit --state open --json number,title \
+              | python3 -c "import sys,json; d=json.load(sys.stdin); print(next((x['number'] for x in d if x['title'].startswith('quality-audit:')), ''))")
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" -R "$GITHUB_REPOSITORY" --body "$body"
+            gh issue edit "$existing" -R "$GITHUB_REPOSITORY" --title "$title"
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$title" --body "$body" \
+              --label quality-audit
+          fi

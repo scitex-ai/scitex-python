@@ -1,8 +1,10 @@
-name: Sync main with release tag
+name: sync
 
 # When a v*.*.* tag is pushed (always created on develop), fast-forward
 # main to that tag so `main` always = "the latest released commit".
-# See _skills/general/05_development_01_version-control.md for cadence.
+# Removes the easy-to-forget manual `git checkout main && merge develop`
+# step. See _skills/general/05_development_01_version-control.md for
+# the cadence rule.
 
 on:
   push:
@@ -25,6 +27,7 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           TAG="${{ github.ref_name }}"
           git fetch origin --tags
           if git merge --ff-only "$TAG"; then
