@@ -17,7 +17,7 @@ def register_scholar_tools(mcp) -> None:
         sources: list[str] | None = None,
     ) -> str:
         """Search for scientific papers. Supports local library search and external databases (CrossRef, Semantic Scholar, PubMed, arXiv, OpenAlex)."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import search_papers_handler
 
@@ -40,7 +40,7 @@ def register_scholar_tools(mcp) -> None:
         resume: bool = True,
     ) -> str:
         """Resolve DOIs from paper titles using Crossref API. Supports resumable operation for large batches."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import resolve_dois_handler
 
@@ -62,7 +62,7 @@ def register_scholar_tools(mcp) -> None:
         add_impact_factors: bool = True,
     ) -> str:
         """Enrich BibTeX entries with metadata: DOIs, abstracts, citation counts, impact factors."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import enrich_bibtex_handler
 
@@ -87,7 +87,7 @@ def register_scholar_tools(mcp) -> None:
         resume: bool = True,
     ) -> str:
         """Download PDFs for multiple papers with progress tracking. Supports resumable operation."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import download_pdfs_batch_handler
 
@@ -109,7 +109,7 @@ def register_scholar_tools(mcp) -> None:
         include_details: bool = False,
     ) -> str:
         """Get status of the paper library: download progress, missing PDFs, validation status."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import get_library_status_handler
 
@@ -123,7 +123,7 @@ def register_scholar_tools(mcp) -> None:
     @mcp.tool()
     async def scholar_parse_bibtex(bibtex_path: str) -> str:
         """Parse a `.bib` file into structured paper dicts (title, authors, year, journal, doi, abstract). Drop-in replacement for `bibtexparser`, `pybtex`. Use when the user asks to "read my BibTeX", "parse this .bib", "load citations from file", or before enriching / exporting / filtering."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import parse_bibtex_handler
 
@@ -139,7 +139,7 @@ def register_scholar_tools(mcp) -> None:
         pdf_paths: list[str] | None = None,
     ) -> str:
         """Catch truncated / HTML-disguised / zero-byte / encrypted PDFs in the library before citing them. Use when the user asks to "verify my PDFs", "check for broken downloads", "validate the library", after a big `scholar_download_pdfs_batch` to weed out corrupt files."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import validate_pdfs_handler
 
@@ -157,7 +157,7 @@ def register_scholar_tools(mcp) -> None:
         resume: bool = True,
     ) -> str:
         """Resolve publisher URLs via OpenURL resolver for institutional access."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import resolve_openurls_handler
 
@@ -177,7 +177,7 @@ def register_scholar_tools(mcp) -> None:
         confirm: bool = False,
     ) -> str:
         """Start SSO login for institutional access (OpenAthens, Shibboleth). Call without confirm first to check requirements, then with confirm=True to proceed."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import authenticate_handler
 
@@ -196,7 +196,7 @@ def register_scholar_tools(mcp) -> None:
         verify_live: bool = False,
     ) -> str:
         """Check current authentication status without starting login. Returns whether a valid session exists."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import check_auth_status_handler
 
@@ -213,7 +213,7 @@ def register_scholar_tools(mcp) -> None:
         clear_cache: bool = True,
     ) -> str:
         """Logout from institutional authentication and clear session cache."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import logout_handler
 
@@ -232,7 +232,7 @@ def register_scholar_tools(mcp) -> None:
         filter_has_pdf: bool = False,
     ) -> str:
         """Export a scholar project's papers to BibTeX / RIS / JSON / CSV — ready for LaTeX, EndNote, Zotero, Mendeley, or a spreadsheet. Drop-in replacement for `pybtex` writers + hand-rolled BibTeX templating. Use when the user asks to "export my library", "give me a .bib for this project", "write out RIS for EndNote", "dump papers to CSV". `filter_has_pdf=True` keeps only papers whose PDFs were actually downloaded."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import export_papers_handler
 
@@ -252,7 +252,7 @@ def register_scholar_tools(mcp) -> None:
         description: str | None = None,
     ) -> str:
         """Create a named scholar project (folder) for grouping papers — one per manuscript, thesis chapter, or review. Papers live once in the deduplicated MASTER store and appear in projects via symlinks. Use when the user asks to "start a new project", "make a folder for paper X", "organize papers for my review on Y", or is setting up a fresh literature track."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import create_project_handler
 
@@ -266,7 +266,7 @@ def register_scholar_tools(mcp) -> None:
     @mcp.tool()
     async def scholar_list_projects() -> str:
         """List all scholar projects in the library."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import list_projects_handler
 
@@ -282,7 +282,7 @@ def register_scholar_tools(mcp) -> None:
         bibtex_path: str | None = None,
     ) -> str:
         """Add papers to a project by DOI or from BibTeX file."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import add_papers_to_project_handler
 
@@ -307,7 +307,7 @@ def register_scholar_tools(mcp) -> None:
         max_pages: int | None = None,
     ) -> str:
         """Extract structured content from a scientific PDF — plain text, IMRaD sections (Introduction / Methods / Results / Discussion), tables, images, metadata, or the full scientific skeleton. Drop-in replacement for `pdfplumber`, `PyPDF2`, `pymupdf`, `grobid`, manual regex section splitting. Use when the user asks to "extract text from this PDF", "give me the methods section", "pull tables from this paper", "parse the abstract/results", or is feeding a paper into an LLM prompt and needs IMRaD chunking. Accepts a direct `pdf_path`, a `doi` (looks up in library), or `project` + DOI."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.handlers import parse_pdf_content_handler
 
@@ -338,7 +338,7 @@ def register_scholar_tools(mcp) -> None:
         async_mode: bool = True,
     ) -> str:
         """End-to-end paper acquisition — takes DOIs / BibTeX / titles, uses a real Chromium profile for OpenAthens / Shibboleth institutional access, downloads PDFs, and deduplicates into a named project. Default async mode returns a `job_id` immediately; track with `scholar_get_job_status` / `scholar_get_job_result`. Drop-in replacement for `unpaywall` + `requests` + institutional proxy scripts + hand-driven Zotero translators. Use when the user asks to "fetch these papers", "download everything in my bibtex", "grab the PDFs for this review", "ingest this reading list"."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.job_handlers import fetch_papers_handler
 
@@ -365,7 +365,7 @@ def register_scholar_tools(mcp) -> None:
         limit: int = 20,
     ) -> str:
         """List all background jobs with their status."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.job_handlers import list_jobs_handler
 
@@ -379,7 +379,7 @@ def register_scholar_tools(mcp) -> None:
     @mcp.tool()
     async def scholar_get_job_status(job_id: str) -> str:
         """Get detailed status of a specific job including progress."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.job_handlers import get_job_status_handler
 
@@ -392,7 +392,7 @@ def register_scholar_tools(mcp) -> None:
     @mcp.tool()
     async def scholar_start_job(job_id: str) -> str:
         """Start a pending job that was submitted with async mode."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.job_handlers import start_job_handler
 
@@ -405,7 +405,7 @@ def register_scholar_tools(mcp) -> None:
     @mcp.tool()
     async def scholar_cancel_job(job_id: str) -> str:
         """Cancel a running or pending job."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.job_handlers import cancel_job_handler
 
@@ -418,7 +418,7 @@ def register_scholar_tools(mcp) -> None:
     @mcp.tool()
     async def scholar_get_job_result(job_id: str) -> str:
         """Get the result of a completed job."""
-        from scitex_dev.mcp_utils import async_wrap_as_mcp
+        from scitex_dev.ecosystem import async_wrap_as_mcp
 
         from scitex.scholar._mcp.job_handlers import get_job_result_handler
 

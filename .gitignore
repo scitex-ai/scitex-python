@@ -948,3 +948,5 @@ docs/sphinx/_build/
 src/*/_sphinx_html/
 .playwright-cli/
 .venv/
+# Claude worktree symlink
+/feat-enhance-interface_04_skills

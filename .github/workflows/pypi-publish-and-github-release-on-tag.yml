@@ -1,0 +1,108 @@
+name: pypi
+
+# Fires automatically on every `git push origin <v-tag>` AND can be
+# invoked manually with `gh workflow run pypi-publish-and-github-release-on-tag.yml -f version=vX.Y.Z`
+# (e.g. to re-publish after a transient failure). The `version` input
+# is required for manual dispatch; the tag-push path takes the ref.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag to publish (e.g. v0.10.19) — must already exist on the repo'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+    steps:
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            v="${GITHUB_REF#refs/tags/}"
+          else
+            v="${{ inputs.version }}"
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ver.outputs.version }}
+          fetch-depth: 0   # tags are needed for setuptools-scm
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install build tools
+        run: pip install build
+      - name: Build distribution
+        run: python -m build
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/scitex
+    permissions:
+      id-token: write   # OIDC for trusted publisher
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Publish to PyPI (trusted publisher / OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  release:
+    # Sync a GitHub Release with every PyPI publish. Notes come from
+    # CHANGELOG.md (section heading "## [VERSION]"); wheel + sdist
+    # attach as release assets so users can audit what shipped without
+    # cloning.
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # gh release create
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.version }}
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Extract release notes from CHANGELOG.md
+        id: notes
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          VERSION="${VERSION#v}"
+          # Capture lines from "## [VERSION]" up to (but not including)
+          # the next "## [" heading. Falls back to a one-liner if the
+          # section is missing so the release is still created.
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" {p=1; next}
+            p && /^## \[/ {exit}
+            p
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "Release v${VERSION}. See CHANGELOG.md for details." > release-notes.md
+          fi
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ needs.build.outputs.version }}" \
+            --title "${{ needs.build.outputs.version }}" \
+            --notes-file release-notes.md \
+            dist/*
