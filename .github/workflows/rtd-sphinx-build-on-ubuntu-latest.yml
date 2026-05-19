@@ -1,0 +1,58 @@
+name: docs
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  sphinx:
+    # Skip when HEAD is the bot's own previous docs auto-commit — breaks
+    # the infinite loop without using `[skip ci]`, which would also
+    # suppress the tag-push and release workflows when the auto-commit
+    # is the most recent commit on develop at release time.
+    if: "!contains(github.event.head_commit.message, 'docs(sphinx_html): refresh from CI build')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package + docs deps
+        run: pip install -e ".[docs]"
+
+      - name: Build Sphinx HTML (warnings fail PRs only)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            sphinx-build -W -b html docs/sphinx docs/sphinx/_build/html
+          else
+            sphinx-build -b html docs/sphinx docs/sphinx/_build/html
+          fi
+
+      - name: Refresh src/scitex/_sphinx_html/ (develop push only)
+        # main is PR-only — its _sphinx_html/ bundle arrives via the
+        # develop -> main PR. Direct bot-pushes to main are inhibited
+        # so the branch history stays linear-via-PR.
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        run: |
+          rm -rf src/scitex/_sphinx_html
+          cp -rf docs/sphinx/_build/html src/scitex/_sphinx_html
+          touch src/scitex/_sphinx_html/.nojekyll
+
+      - name: Commit refreshed HTML if it changed (develop push only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        run: |
+          if [ -n "$(git status --porcelain src/scitex/_sphinx_html)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/scitex/_sphinx_html
+            git commit -m "docs(sphinx_html): refresh from CI build"
+            git push
+          fi

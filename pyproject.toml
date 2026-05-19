@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.28.14"
+version = "2.29.2"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -51,10 +51,11 @@ classifiers = [
 #   pip install scitex[audio,scholar]  # multiple modules
 #   pip install scitex[all]            # everything
 dependencies = [
-    # Essential Scientific Computing
+    # ============================================
+    # Essential 3rd-party deps (always required)
+    # ============================================
     "numpy",
     "pandas",
-    # Essential Utilities
     "PyYAML",
     "tqdm",
     "packaging",
