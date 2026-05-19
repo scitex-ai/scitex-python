@@ -5,6 +5,8 @@ pytest.importorskip("zarr")
 # -*- coding: utf-8 -*-
 # Test for AxesWrapper numpy array conversion
 
+pytest.importorskip("matplotlib")
+
 import os
 
 import matplotlib

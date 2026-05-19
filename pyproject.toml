@@ -59,57 +59,46 @@ dependencies = [
     "PyYAML",
     "tqdm",
     "packaging",
-    "natsort",
-    "beautifulsoup4>=4.12.0",
-    # ============================================
-    # Hard-pinned scitex-* leaf packages (small,
-    # always installed). Each is pinned at the
-    # exact PyPI-latest version at v2.29.0 cut
-    # time. The umbrella CI runs
-    #   scitex-dev ecosystem audit-umbrella-pins
-    # which fails red if any pin lags PyPI latest.
-    # ============================================
-    "scitex-app==0.2.7",
-    "scitex-audit==0.1.6",
-    "scitex-benchmark==0.1.4",
-    "scitex-bridge==0.1.9",
-    "scitex-capture==0.1.2",
-    "scitex-clew==0.2.8",
-    "scitex-compat==0.1.7",
-    "scitex-config==0.3.3",
-    "scitex-context==0.1.3",
-    "scitex-datetime==0.1.3",
-    "scitex-db==0.1.9",
-    "scitex-decorators==0.1.10",
-    "scitex-dev==0.11.19",
-    "scitex-dict==0.1.5",
-    "scitex-etc==0.1.6",
-    "scitex-events==0.1.3",
-    "scitex-gen==0.1.7",
-    "scitex-gists==0.1.6",
-    "scitex-git==0.3.1",
-    "scitex-introspect==0.1.6",
-    "scitex-io==0.2.14",
-    "scitex-linalg==0.1.3",
-    "scitex-logging==0.1.6",
-    "scitex-msword==0.1.3",
-    "scitex-notebook==0.1.2",
-    "scitex-notification==0.2.5",
-    "scitex-os==0.1.5",
-    "scitex-parallel==0.1.7",
-    "scitex-path==0.1.6",
-    "scitex-pd==0.1.4",
-    "scitex-repro==0.1.5",
-    "scitex-resource==0.4.1",
-    "scitex-security==0.1.3",
-    "scitex-session==0.1.6",
-    "scitex-sh==0.1.3",
-    "scitex-stats==0.2.19",
-    "scitex-str==0.1.9",
-    "scitex-template==0.6.6",
-    "scitex-tex==0.1.6",
-    "scitex-types==0.1.5",
-    "scitex-web==0.1.4",
+    "natsort",  # Natural sorting - used by many modules
+    "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
+    # Reproducibility Verification
+    "scitex-clew>=0.1.0",
+    # App SDK — unified file storage for local + cloud
+    "scitex-app>=0.2.5",
+    # Delegated core modules (thin re-exports)
+    "scitex-dev>=0.11.7",
+    "scitex-io>=0.2.0",
+    "scitex-stats>=0.2.0",
+    "scitex-audio>=0.2.10",
+    "scitex-notification>=0.1.0",
+    "scitex-notebook>=0.1.1",
+    # Delegated modules from #51 standalonization
+    "scitex-core>=0.2.0",
+    "scitex-db>=0.1.7",
+    "scitex-scholar>=1.2.3",
+    "scitex-parallel>=0.1.4",
+    "scitex-types>=0.1.3",
+    "scitex-path>=0.1.3",
+    "scitex-repro>=0.1.3",
+    "scitex-compat>=0.1.4",
+    "scitex-etc>=0.1.4",
+    "scitex-genai>=0.1.0",
+    "scitex-gists>=0.1.3",
+    "scitex-audit>=0.1.3",
+    "scitex-logging>=0.1.3",
+    "scitex-dict>=0.1.3",
+    "scitex-browser>=0.1.14",
+    "scitex-str>=0.1.7",
+    "scitex-benchmark>=0.1.3",
+    "scitex-context>=0.1.1",
+    "scitex-cv>=0.1.2",
+    "scitex-introspect>=0.1.4",
+    "scitex-msword>=0.1.1",
+    "scitex-os>=0.1.1",
+    "scitex-security>=0.1.1",
+    "scitex-tex>=0.1.3",
+    "figrecipe>=0.28.0",
+    "scitex-ui>=0.4.0",
 ]
 
 [project.urls]
@@ -122,16 +111,14 @@ Repository = "https://github.com/ywatanabe1989/scitex-python"
 scitex = "scitex.__main__:main"
 # Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
 scitex-pkg = "scitex.cli.pkg:pkg"
-# MCP Server entry points (individual modules)
-# scitex-audio entry point now in standalone scitex-audio package
-scitex-capture = "scitex.capture.mcp_server:main"
-scitex-diagram = "scitex.diagram.mcp_server:main"
-# scitex-plt entry point now in standalone scitex-plt package
-scitex-scholar = "scitex.scholar.mcp_server:main"
-# scitex-stats entry point now in standalone scitex-stats package
-scitex-template = "scitex_template.mcp_server:main"
-# scitex-ui entry point now in standalone scitex-ui package
-# Unified MCP Server (all modules in one)
+# Unified MCP Server (all modules in one). Use `scitex serve` (preferred)
+# or `scitex-mcp-server`. Each peer standalone (scitex-scholar, scitex-stats,
+# scitex-capture, scitex-diagram, scitex-template, scitex-audio, scitex-plt,
+# scitex-ui) ships its own per-module MCP entry point — DO NOT re-declare
+# them here, the umbrella's hand-wrap layer (scitex._mcp_tools) re-exposes
+# every tool on the unified server, so legacy `scitex-<module>` shims like
+# `scitex-scholar = scitex.scholar.mcp_server:main` would only collide with
+# the peer's Click CLI and break shell-completion eval.
 scitex-mcp-server = "scitex.mcp_server:main"
 
 [project.entry-points."scitex_dev.docs"]
@@ -139,6 +126,14 @@ scitex = "scitex"
 
 [project.entry-points."scitex_dev.skills"]
 scitex = "scitex"
+
+[project.entry-points."scitex_dev.linter.plugins"]
+scitex = "scitex._linter_plugin:get_plugin"
+
+# Legacy entry-point group (dual-register during scitex-linter
+# deprecation window — will be dropped after the final shim release).
+[project.entry-points."scitex_linter.plugins"]
+scitex = "scitex._linter_plugin:get_plugin"
 
 # ============================================
 # Optional Dependencies - Module-Oriented
@@ -148,84 +143,919 @@ scitex = "scitex"
 # Install all: pip install scitex[all]
 
 [project.optional-dependencies]
-# ============================================
-# Optional extras (opt-in heavy packages)
-# Each leaf pinned at the PyPI-latest version
-# at v2.29.0 cut time; audit-umbrella-pins
-# blocks merges if any pin lags.
-#
-# Install with:
-#   pip install "scitex[browser]"
-#   pip install "scitex[ml,scholar]"
-#   pip install "scitex[all]"   # everything
-# ============================================
 
-# --- Heavy single-package extras (each opt-in) ---
-audio = ["scitex-audio==0.2.11"]
-browser = ["scitex-browser==0.1.14"]
-cloud = ["scitex-cloud==0.17.5"]
-container = ["scitex-container==0.1.10"]
-cv = ["scitex-cv==0.1.3"]
-dataset = ["scitex-dataset==0.3.8"]
-dsp = ["scitex-dsp==0.1.7"]
-genai = ["scitex-genai==0.1.0"]
-hpc = ["scitex-hpc==0.8.1"]
-ml = ["scitex-ml==0.1.0"]
-nn = ["scitex-nn==0.1.10"]
-plt = ["scitex-plt==0.24.4", "figrecipe==0.28.9"]
-scholar = ["scitex-scholar==1.3.1"]
-seizure-metrics = ["scitex-seizure-metrics==0.1.1"]
-ssh = ["scitex-ssh==1.0.0"]
-ui = ["scitex-ui==0.4.8"]
-writer = ["scitex-writer==2.17.0"]
+# --------------------------------------------
+# Module-Specific Dependencies
+# Each module can be installed independently
+# --------------------------------------------
 
-# --- Operational extras (admin/infrastructure) ---
-agent-container = ["scitex-agent-container==0.17.0"]
-orochi = ["scitex-orochi==0.16.2"]
-
-# --- External-lib extras (non scitex-* prefix) ---
-newb = ["newb==0.26.6"]
-socialia = ["socialia==0.5.9"]
-
-# --- Aggregated extras ---
-# Install everything in one shot. Mirrors the union of all extras above.
-all = [
-    "scitex-audio==0.2.11",
-    "scitex-browser==0.1.14",
-    "scitex-cloud==0.17.5",
-    "scitex-container==0.1.10",
-    "scitex-cv==0.1.3",
-    "scitex-dataset==0.3.8",
-    "scitex-dsp==0.1.7",
-    "scitex-genai==0.1.0",
-    "scitex-hpc==0.8.1",
-    "scitex-ml==0.1.0",
-    "scitex-nn==0.1.10",
-    "scitex-plt==0.24.4",
-    "figrecipe==0.28.9",
-    "scitex-scholar==1.3.1",
-    "scitex-seizure-metrics==0.1.1",
-    "scitex-ssh==1.0.0",
-    "scitex-ui==0.4.8",
-    "scitex-writer==2.17.0",
-    "scitex-agent-container==0.17.0",
-    "scitex-orochi==0.16.2",
-    "newb==0.26.6",
-    "socialia==0.5.9",
+# App Module - Unified file storage SDK (local + cloud)
+# Use: pip install scitex[app]
+app = [
+    "scitex-app>=0.2.5",
 ]
 
-# --- Development extras (test tooling, audits) ---
-dev = [
-    "pytest>=8.0",
-    "pytest-cov>=4.0",
+# ML Module — classical / deep machine-learning utilities
+# Use: pip install scitex[ml]
+# (scitex.ml is a thin shim over the standalone scitex-ml package.)
+# Note: scitex-ai is retired; the [ai] extra has been split into [ml] +
+# [genai] to match the standalone-package split.
+
+# GenAI Module — generative-AI provider abstraction (LLM today; agent /
+# image / audio / video reserved). Use: pip install scitex[genai]
+genai = [
+    "scitex-genai>=0.1.0",
+]
+
+# Audio Module - Text-to-Speech
+# Use: pip install scitex[audio]
+audio = [
+    "scitex-audio>=0.2.10",
+]
+
+# Audit Module - Code and security auditing
+# Use: pip install scitex[audit]
+audit = ["scitex-audit>=0.1.3"]
+
+# Benchmark Module - Performance monitoring
+# Use: pip install scitex[benchmark]
+benchmark = [
+    "psutil",
+]
+
+# Bridge Module - External system integration
+# Use: pip install scitex[bridge]
+bridge = [
+    "matplotlib",
+    "scipy",
+]
+
+# Container Module - Unified container management (Apptainer + Docker)
+# Use: pip install scitex[container]
+container = ["scitex-container"]
+
+# Browser Module - Web automation
+# Use: pip install scitex[browser]
+browser = [
+    "playwright>=1.40.0",
+    "aiohttp",
+    "matplotlib",
+    "scitex-browser>=0.1.14",
+]
+
+# Capture Module - Screenshot capture
+# Use: pip install scitex[capture]
+capture = [
+    "mss",
+    "Pillow",
+    "playwright>=1.40.0",
+    "mcp",
+]
+
+# CLI Module - Command line interface
+# Use: pip install scitex[cli]
+cli = [
+    "click",
+    "requests",
+    "playwright",
+    "pyyaml",
+    "aiohttp",
+    "beautifulsoup4",
+    "GitPython",
+]
+
+# Cloud Module - Cloud service integration
+# Use: pip install scitex[cloud]
+cloud = [
+    "matplotlib",
+    "scitex-cloud>=0.16.1",
+]
+
+# Compat Module - Compatibility utilities
+# Use: pip install scitex[compat]
+compat = ["scitex-compat>=0.1.4"]
+
+# Config Module - Configuration management
+# Use: pip install scitex[config]
+config = [
+    "PyYAML",
+]
+
+# Context Module - Context managers
+# Use: pip install scitex[context]
+context = []
+
+# CV Module - Computer vision
+# Use: pip install scitex[cv]
+cv = [
+    "opencv-python",
+    "Pillow",
+]
+
+# DB Module - Database operations
+# Use: pip install scitex[db]
+db = [
+    "sqlalchemy",
+    "psycopg2-binary",
+    "scitex-db>=0.1.3",
+]
+
+# Dataset Module - Dataset management
+# Use: pip install scitex[dataset]
+dataset = ["scitex-dataset"]
+
+# Datetime Module - Date and time utilities
+# Use: pip install scitex[datetime]
+datetime = []
+
+# Decorators Module - Caching and utilities
+# Use: pip install scitex[decorators]
+decorators = [
+    "joblib",
+    "tqdm",
+    "xarray",
     "pytest-asyncio",
-    "pytest-mock",
-    "pytest-xdist",
-    "mypy",
-    "ruff",
-    "black",
-    "scitex-dev[dev]==0.11.19",
+    "matplotlib",
+    "scipy",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
 ]
+
+# Diagram Module - Diagram generation
+# Use: pip install scitex[diagram]
+diagram = [
+    "PyYAML",
+]
+
+# Dict Module - Dictionary utilities
+# Use: pip install scitex[dict]
+dict = ["scitex-dict>=0.1.3"]
+
+# DSP Module - Digital Signal Processing
+# Use: pip install scitex[dsp]
+dsp = [
+    "scipy",
+    "sounddevice",
+    "matplotlib",
+    "joblib",
+    "tensorpac",
+    "ruamel.yaml",
+    "h5py",
+    "readchar",
+    "xarray",
+    "seaborn",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "mne",
+    # "torch",
+    # "ripple_detection",
+    # "torchsummary",
+    # "julius",
+    # "torchaudio",
+]
+
+# DevTools Module - scitex.dev code analysis and development tools
+# Use: pip install scitex[devtools]
+# Note: Named "devtools" to avoid conflict with "dev" (testing deps)
+devtools = [
+    "matplotlib",
+    "joblib",
+    "ruamel.yaml",
+    "xarray",
+    "seaborn",
+    "scipy",
+]
+
+# DT Module - Date/time utilities
+# Use: pip install scitex[dt]
+dt = [
+    "matplotlib",
+]
+
+# Gen Module - General utilities
+# Use: pip install scitex[gen]
+gen = [
+    "ipython",
+    "h5py",
+    "pyperclip",
+    "readchar",
+    "scipy",
+    "matplotlib",
+    "xarray",
+    "requests",
+    "joblib",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+]
+
+# Etc Module - Miscellaneous utilities
+# Use: pip install scitex[etc]
+etc = [
+    "readchar",
+    "scitex-etc>=0.1.4",
+]
+
+# Events Module - Event system
+# Use: pip install scitex[events]
+events = []
+
+# Gists Module - Code snippet management
+# Use: pip install scitex[gists]
+gists = ["scitex-gists>=0.1.3"]
+
+# Git Module - Git operations
+# Use: pip install scitex[git]
+git = [
+    "GitPython",
+    "matplotlib",
+]
+
+# IO Module - File I/O operations
+# Use: pip install scitex[io]
+io = [
+    "scitex-io>=0.2.0",
+    "h5py",
+    "openpyxl",
+    "xlrd",
+    "ruamel.yaml",
+    "lxml",
+    "lxml_html_clean",
+    "xarray",
+    "zarr",
+    "numcodecs",
+    "Pillow",
+    "piexif",
+    "pypdf",
+    "qrcode[pil]",
+    "PyMuPDF",
+    "pdfplumber",
+    "python-docx",
+    "html2text",
+    "markdown",
+    "joblib",
+    "plotly",
+    "pymatreader",
+    "natsort",
+    "GitPython",
+    "scipy",
+    "matplotlib",
+    "pyarrow",
+    "pyyaml",
+    "tqdm",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "mne",
+    # "optuna",
+    # "catboost",
+    # "psutil",
+    # "torch",
+]
+
+# Introspect Module - Code introspection
+# Use: pip install scitex[introspect]
+introspect = []
+
+# Linalg Module - Linear algebra
+# Use: pip install scitex[linalg]
+linalg = [
+    "scipy",
+    "sympy",
+    "geom_median",
+    "matplotlib",
+    "joblib",
+    "xarray",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+]
+
+# Logging Module - Enhanced logging
+# Use: pip install scitex[logging]
+logging = [
+    "matplotlib",
+    "scitex-logging>=0.1.3",
+]
+
+# Media Module - Media display utilities
+# Use: pip install scitex[media]
+media = []
+
+# ML Module - Machine learning
+# Use: pip install scitex[ml]
+ml = [
+    "scitex-ml>=0.1.0",
+]
+
+# Module Module - Module management
+# Use: pip install scitex[module]
+module = []
+
+# MSWord Module - MS Word document handling
+# Use: pip install scitex[msword]
+msword = [
+    "python-docx",
+    "pypandoc",
+]
+
+# NN Module - Neural Networks
+# Use: pip install scitex[nn]
+nn = [
+    "seaborn",
+    "ipdb",
+    "matplotlib",
+    "joblib",
+    "tensorpac",
+    "ruamel.yaml",
+    "h5py",
+    "readchar",
+    "xarray",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+    # "torchaudio",
+    # "torchsummary",
+    # "julius",
+    # "mne",
+    # "ripple_detection",
+]
+
+# Notebook Module - Jupyter notebook utilities
+# Use: pip install scitex[notebook]
+notebook = [
+    "scitex-notebook>=0.1.1",
+]
+
+# Notification Module - Phone call, SMS, and other notifications
+# Use: pip install scitex[notification]
+notification = [
+    "scitex-notification>=0.1.0",
+]
+
+# OS Module - OS utilities
+# Use: pip install scitex[os]
+os = []
+
+# Parallel Module - Parallel processing
+# Use: pip install scitex[parallel]
+parallel = [
+    "tqdm",
+    "scitex-parallel>=0.1.4",
+]
+
+# Path Module - Path utilities
+# Use: pip install scitex[path]
+path = [
+    "GitPython",
+    "matplotlib",
+    "scitex-path>=0.1.3",
+]
+
+# Pd Module - Pandas utilities
+# Use: pip install scitex[pd]
+pd = [
+    "xarray",
+]
+
+# PLT Module - Plotting utilities
+# Use: pip install scitex[plt]
+plt = [
+    "matplotlib",
+    "seaborn",
+    "Pillow",
+    "piexif",
+    "termplotlib",
+    "scipy",
+    "xarray",
+    "pyyaml",
+    "joblib",
+    "ruamel.yaml",
+    "figrecipe>=0.16.0",
+]
+
+# Project Module - Project management
+# Use: pip install scitex[project]
+project = []
+
+# Repro Module - Reproducibility tools
+# Use: pip install scitex[repro]
+repro = [
+    "matplotlib",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+    # "jax",
+    # "tensorflow",
+    "scitex-repro>=0.1.3"
+]
+
+# Resource Module - Resource monitoring
+# Use: pip install scitex[resource]
+resource = [
+    "psutil",
+    "matplotlib",
+    "pyyaml",
+    "joblib",
+    "ruamel.yaml",
+    "h5py",
+    "scipy",
+    "readchar",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+]
+
+# Reproduce Module - Reproducibility tools
+# Use: pip install scitex[reproduce]
+reproduce = [
+    "scitex[repro]",
+]
+
+# RNG Module - Random number generation
+# Use: pip install scitex[rng]
+rng = [
+    "scitex[repro]",
+]
+
+# Scholar GUI - Minimal deps for Flask citation graph viewer
+# Use: pip install scitex[scholar-gui]
+scholar-gui = [
+    "flask>=2.0.0",
+    "click",
+    "crossref-local",
+    "openalex-local",
+]
+
+# Scholar Module - Paper management & browser
+# Use: pip install scitex[scholar]
+scholar = [
+    "selenium",
+    "webdriver-manager",
+    "beautifulsoup4",
+    "html2text",
+    "crawl4ai",
+    "scholarly",
+    "pymed",
+    "python-docx",
+    "pypdf",
+    "pdfplumber",
+    "PyMuPDF",
+    "pytesseract",
+    "bibtexparser",
+    "playwright>=1.40.0",
+    "feedparser",
+    "httpx",
+    "tenacity",
+    "pydantic",
+    "watchdog",
+    "natsort",
+    "aiohttp",
+    "openpyxl",
+    "sqlalchemy",
+    "nest-asyncio",
+    "seaborn",
+    "scikit-learn",
+    "Pillow",
+    "requests",
+    "matplotlib",
+    "pyyaml",
+    "tqdm",
+    "sql-manager",
+    "ruamel.yaml",
+    # Standalone packages
+    "crossref-local",
+    "openalex-local",
+    "connectedpapers-py",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+    "scitex-scholar>=1.2.3"
+]
+
+# Schema Module - Data schema validation
+# Use: pip install scitex[schema]
+schema = []
+
+# Security Module - Security utilities
+# Use: pip install scitex[security]
+security = []
+
+# Session Module - Session management
+# Use: pip install scitex[session]
+session = [
+    "matplotlib",
+    "PyYAML",
+]
+
+# Sh Module - Shell utilities
+# Use: pip install scitex[sh]
+sh = [
+    "matplotlib",
+]
+
+# Social Module - Social media integration
+# Use: pip install scitex[social]
+social = [
+    "socialia>=0.3.1",
+]
+
+# Stats Module - Statistical analysis
+# Use: pip install scitex[stats]
+stats = [
+    "scitex-stats>=0.2.0",
+    "scipy",
+    "statsmodels",
+    "matplotlib",
+    "tabulate",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+]
+
+# Str Module - String utilities
+# Use: pip install scitex[str]
+str = [
+    "natsort",
+    "matplotlib",
+    "xarray",
+    "scitex-str>=0.1.7",
+]
+
+# Template Module - Project templates
+# Use: pip install scitex[template]
+# Delegates to standalone scitex-template package (per general rule §12).
+template = [
+    "scitex-template>=0.6.3",
+]
+
+# Tex Module - LaTeX utilities
+# Use: pip install scitex[tex]
+tex = [
+    "matplotlib",
+]
+
+# Tunnel Module - SSH reverse tunnel for NAT traversal
+# Use: pip install scitex[tunnel]
+tunnel = [
+    "scitex-ssh",
+]
+
+# Torch Module - PyTorch support
+# Use: pip install scitex[torch]
+torch = [
+    "torch",
+]
+
+# Types Module - Type utilities
+# Use: pip install scitex[types]
+types = [
+    "xarray",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+    "scitex-types>=0.1.2"
+]
+
+# UI Module - User interface utilities
+# Use: pip install scitex[ui]
+ui = ["scitex-ui>=0.4.7"]
+
+# Utils Module - General utilities
+# Use: pip install scitex[utils]
+utils = [
+    "h5py",
+    "natsort",
+    "matplotlib",
+    "xarray",
+    "tqdm",
+]
+
+# Verify Module - Verification utilities
+# Use: pip install scitex[verify]
+verify = [
+    "scitex[clew]",
+]
+
+# Web Module - Web utilities
+# Use: pip install scitex[web]
+web = [
+    "aiohttp",
+    "beautifulsoup4",
+    "readability-lxml",
+    "requests",
+    "Pillow",
+    "matplotlib",
+    "tqdm",
+    "joblib",
+    "scikit-learn",
+    "pytest-asyncio",
+    "ruamel.yaml",
+    "xarray",
+    "seaborn",
+    "scipy",
+    "markdown2",
+    "anthropic",
+    "openai",
+    "google-genai",
+    "groq",
+    # # Heavy dependencies handled by _AVAILABLE flags
+    # "torch",
+    # "umap-learn",
+]
+
+# Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
+# Use: pip install scitex[clew]
+# Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
+clew = ["scitex-clew>=0.2.5"]
+
+# Writer Module - Academic paper writing
+# Use: pip install scitex[writer]
+writer = [
+    "scitex-writer",  # Core writer package (single source of truth)
+    "yq",
+    "xlsx2csv",
+    "csv2latex",
+    "matplotlib",
+    "GitPython",
+    "pytest-asyncio",
+]
+
+# --------------------------------------------
+# Heavy Dependencies (Optional)
+# --------------------------------------------
+# Use: pip install scitex[heavy]
+# Or combine: pip install scitex[io,heavy]
+heavy = [
+    # PyTorch ecosystem
+    "torch",
+    "torchvision",
+    "torchaudio",
+    "torchsummary",
+    "julius",
+    "pytorch_pretrained_vit",
+    # Neuroscience
+    "mne",
+    "ripple_detection",
+    # ML/Optimization
+    "optuna",
+    "catboost",
+    # Other ML frameworks
+    "jax",
+    "tensorflow",
+    # Visualization
+    "umap-learn",
+    # System
+    "psutil",
+]
+
+# --------------------------------------------
+# Development Tools
+# --------------------------------------------
+
+# Documentation
+# Use: pip install scitex[docs]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "myst-parser>=2.0",
+    "sphinx-copybutton>=0.5",
+    "sphinx-autodoc-typehints>=1.25",
+]
+
+# Development Tools
+# Use: pip install scitex[dev]
+dev = [
+    "aiohttp",
+    "anthropic",
+    "beautifulsoup4",
+    "bibtexparser",
+    "build",
+    "catboost",
+    "click",
+    "connectedpapers-py",
+    "crawl4ai",
+    "crossref-local",
+    "csv2latex",
+    "feedparser",
+    "figrecipe>=0.16.0",
+    "flask>=2.0.0",
+    "geom_median",
+    "GitPython",
+    "google-genai",
+    "groq",
+    "h5py",
+    "html2text",
+    "httpx",
+    "imbalanced-learn",
+    "ipdb",
+    "ipython",
+    "jax",
+    "jedi",
+    "joblib",
+    "julius",
+    "line-profiler",
+    "lxml",
+    "lxml_html_clean",
+    "markdown",
+    "markdown2",
+    "matplotlib",
+    "mcp",
+    "memory-profiler",
+    "mne",
+    "mss",
+    "mypy",
+    "myst-parser",
+    "natsort",
+    "nest-asyncio",
+    "newb>=0.1.0",
+    "numcodecs",
+    "openai",
+    "openalex-local",
+    "openpyxl",
+    "optuna",
+    "pdfplumber",
+    "piexif",
+    "pillow",
+    "Pillow",
+    "playwright",
+    "playwright>=1.40.0",
+    "plotly",
+    "pre-commit",
+    "psutil",
+    "pyarrow",
+    "pydantic",
+    "pygments",
+    "pymatreader",
+    "pymed",
+    "PyMuPDF",
+    "pypdf",
+    "pyperclip",
+    "pyright",
+    "pytesseract",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-env",
+    "pytest-json-report",
+    "pytest-mock",
+    "pytest-testmon",
+    "pytest-timeout",
+    "pytest-xdist",
+    "python-docx",
+    "python-lsp-server",
+    "pytorch_pretrained_vit",
+    "pyyaml",
+    "qrcode[pil]",
+    "readability-lxml",
+    "readchar",
+    "requests",
+    "ripple_detection",
+    "rope",
+    "ruamel.yaml",
+    "ruff",
+    "scholarly",
+    "scikit-learn",
+    "scipy",
+    "scitex-agent-container>=0.7.1",
+    "scitex-audio>=0.2.10",
+    "scitex-audit>=0.1.3",
+    "scitex-browser>=0.1.14",
+    "scitex-clew>=0.2.5",
+    "scitex-cloud>=0.16.1",
+    "scitex-container",
+    "scitex-dataset",
+    "scitex-dev>=0.11.7",
+    "scitex-etc>=0.1.4",
+    "scitex-genai>=0.1.0",
+    "scitex-io>=0.2.0",
+    "scitex-notification>=0.1.0",
+    "scitex-scholar>=1.2.3",
+    "scitex-ssh",
+    "scitex-stats>=0.2.0",
+    "scitex-ui>=0.4.7",
+    "scitex-writer",
+    "seaborn",
+    "selenium",
+    "setuptools",
+    "sktime>=0.21.0",
+    "sounddevice",
+    "sphinx",
+    "sphinx-autobuild",
+    "sphinx-autodoc-typehints",
+    "sphinx-rtd-theme",
+    "sql-manager",
+    "sqlalchemy",
+    "statsmodels",
+    "stdlib-list",
+    "sympy",
+    "tabulate",
+    "tenacity",
+    "tensorflow",
+    "tensorpac",
+    "termplotlib",
+    "tomlkit",
+    "torch",
+    "torchaudio",
+    "torchsummary",
+    "torchvision",
+    "tqdm",
+    "twine",
+    "types-PyYAML",
+    "types-requests",
+    "types-setuptools",
+    "umap-learn",
+    "watchdog",
+    "webdriver-manager",
+    "wheel",
+    "xarray",
+    "xlrd",
+    "xlsx2csv",
+    "yq",
+    "zarr",
+]
+
+# All features (everything except dev)
+# Use: pip install scitex[all]
+# Auto-aggregates all individual module extras via self-referencing.
+# When adding a new module extras group, add a corresponding entry here.
+all = [
+    "scitex[ml]",
+    "scitex[genai]",
+    "scitex[app]",
+    "scitex[audio]",
+    "scitex[audit]",
+    "scitex[docs]",
+    "scitex[benchmark]",
+    "scitex[bridge]",
+    "scitex[browser]",
+    "scitex[capture]",
+    "scitex[clew]",
+    "scitex[cli]",
+    "scitex[cloud]",
+    "scitex[compat]",
+    "scitex[config]",
+    "scitex[container]",
+    "scitex[context]",
+    "scitex[cv]",
+    "scitex[dataset]",
+    "scitex[db]",
+    "scitex[datetime]",
+    "scitex[decorators]",
+    "scitex[devtools]",
+    "scitex[diagram]",
+    "scitex[dict]",
+    "scitex[dsp]",
+    "scitex[dt]",
+    "scitex[etc]",
+    "scitex[events]",
+    "scitex[gen]",
+    "scitex[gists]",
+    "scitex[git]",
+    "scitex[heavy]",
+    "scitex[introspect]",
+    "scitex[io]",
+    "scitex[linalg]",
+    "scitex[logging]",
+    "scitex[media]",
+    "scitex[ml]",
+    "scitex[module]",
+    "scitex[msword]",
+    "scitex[nn]",
+    "scitex[notebook]",
+    "scitex[notification]",
+    "scitex[os]",
+    "scitex[parallel]",
+    "scitex[path]",
+    "scitex[pd]",
+    "scitex[plt]",
+    "scitex[project]",
+    "scitex[repro]",
+    "scitex[reproduce]",
+    "scitex[resource]",
+    "scitex[rng]",
+    "scitex[schema]",
+    "scitex[scholar]",
+    "scitex[scholar-gui]",
+    "scitex[security]",
+    "scitex[session]",
+    "scitex[sh]",
+    "scitex[social]",
+    "scitex[stats]",
+    "scitex[str]",
+    "scitex[template]",
+    "scitex[tex]",
+    "scitex[torch]",
+    "scitex[tunnel]",
+    "scitex[types]",
+    "scitex[ui]",
+    "scitex[utils]",
+    "scitex[verify]",
+    "scitex[web]",
+    "scitex[writer]",
+    "scitex[linter]",
+    "scitex[core]",
+    "scitex[orochi]",
+    "scitex[agent-container]",
+    "scitex[dev]",
+]
+
+# ============================================
+# Tool Configurations
+# ============================================
+linter = ["scitex-dev>=0.11.7"]
+core = ["scitex-core>=0.2.2"]
+orochi = ["scitex-orochi>=0.13.0"]
+agent-container = ["scitex-agent-container>=0.7.1"]
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"
@@ -291,9 +1121,10 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
-source = ["src/scitex"]
+source = ["scitex"]
 branch = true
 parallel = true
+concurrency = ["multiprocessing", "thread"]
 relative_files = true
 omit = [
     "*/tests/*",

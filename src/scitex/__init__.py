@@ -26,6 +26,15 @@ _stdlib_logging.getLogger("sqlalchemy.pool").setLevel(_stdlib_logging.WARNING)
 # Show deprecation warnings from scitex modules (educational for migration)
 warnings.filterwarnings("default", category=DeprecationWarning, module="scitex.*")
 
+# Install the registry-driven alias finder so `import scitex.<short>`
+# resolves to the peer standalone (`scitex_<short>` or branded peer like
+# `figrecipe`) when no in-tree `scitex/<short>/` directory exists. The
+# umbrella ships NO duplicate impl — peers are the single source of
+# truth (see _aggregator.py for the full contract).
+from ._aggregator import install_alias_finder as _install_alias_finder
+
+_install_alias_finder(__path__)
+
 # Version
 from .__version__ import __version__
 
@@ -197,6 +206,7 @@ class _CallableModuleWrapper:
 # (and submodule imports like `from scitex.<short>.<sub> import Y`) resolve to the
 # external package without requiring a `src/scitex/<short>/` directory in this repo.
 _EXTERNAL_REEXPORTS = {
+    "ai": "scitex_ai",
     "etc": "scitex_etc",
     "gists": "scitex_gists",
     "audit": "scitex_audit",
@@ -269,7 +279,7 @@ for _short, _ext in _EXTERNAL_REEXPORTS.items():
 io = _LazyModule("io")
 gen = _LazyModule("gen")
 plt = _LazyModule("plt")
-ai = _LazyModule("ai")
+ai = _LazyModule("ai", external="scitex_ai")
 pd = _LazyModule("pd")
 str = _LazyModule("str", external="scitex_str")
 stats = _LazyModule("stats")

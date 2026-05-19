@@ -1,26 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Timestamp: "2025-04-30 21:18:45 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex_repo/src/scitex/plt/_mk_patches.py
-# ----------------------------------------
-import os
+"""Re-export shim — implementation moved to figrecipe._utils.
 
-__FILE__ = "./src/scitex/plt/_mk_patches.py"
-__DIR__ = os.path.dirname(__FILE__)
-# ----------------------------------------
-
-import matplotlib.patches as mpatches
-
-
-def mk_patches(colors, labels):
-    """
-    colors = ["red", "blue"]
-    labels = ["label_1", "label_2"]
-    ax.legend(handles=scitex.plt.mk_patches(colors, labels))
-    """
-
-    patches = [mpatches.Patch(color=c, label=l) for c, l in zip(colors, labels)]
-    return patches
-
-
-# EOF
+Phase 1 of the figrecipe-owns-plt rebalance (2026-05-08). Implementation
+lives in `figrecipe._utils._mk_patches`; this module re-exports the public
+API for backward compatibility with existing
+`from scitex.plt.utils._mk_patches import …` callers.
+"""
+from figrecipe._utils._mk_patches import *  # noqa: F401, F403

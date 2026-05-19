@@ -12,6 +12,8 @@ integration (bundle interop, figrecipe annotations).
 # Core re-export from standalone scitex-stats
 # =============================================================================
 
+# Check if torch is available for GPU acceleration (internal flag)
+from scitex_dev import try_import_optional
 from scitex_stats import *  # noqa: F401,F403
 
 # Explicit re-exports for IDE support and backward compatibility
@@ -66,12 +68,9 @@ from scitex_stats.auto import format_test_line as _format_test_line  # noqa: F40
 from scitex_stats.auto import get_menu_items as _get_menu_items  # noqa: F401
 
 # Check if torch is available for GPU acceleration (internal flag)
-try:
-    import torch  # noqa: F401
-
-    _TORCH_AVAILABLE = True
-except ImportError:
-    _TORCH_AVAILABLE = False
+_torch = try_import_optional("torch", extra="nn", pkg="scitex")
+_TORCH_AVAILABLE = _torch is not None
+del _torch
 
 # =============================================================================
 # SciTeX-specific integration (bundle, figrecipe)

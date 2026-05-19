@@ -1,0 +1,19 @@
+# scitex-dev project-type config
+# scitex (umbrella) ships a facade re-exporting peer packages.
+# Root layout carries umbrella-specific scaffolding:
+#
+#   packages/scitex-python-redirect/   PyPI alias distribution
+#   containers/                        Docker recipes (dev only)
+#   config/                            example YAML + requirements (dev)
+#   lib/                               vendored JS libs (dev only)
+#   scitex/                            stale orphan dir (clew.db inside;
+#                                      candidate for cleanup — flagged
+#                                      by PS-102 too)
+#
+# deferred-cleanup: containers/, lib/, scitex/ are clear cleanup
+# candidates (move to .dev/ or delete) but require careful review of
+# the umbrella's release pipeline before touching.
+
+project-type:
+  - pip
+  - deferred

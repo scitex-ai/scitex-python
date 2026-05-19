@@ -2,6 +2,10 @@
 # Timestamp: "2025-05-18 03:11:10 (ywatanabe)"
 # File: /data/gpfs/projects/punim2354/ywatanabe/scitex_repo/tests/custom/test_scitex_io_consistency.py
 # ----------------------------------------
+import pytest
+
+pytest.importorskip("torch")
+
 import os
 import shutil
 import tempfile

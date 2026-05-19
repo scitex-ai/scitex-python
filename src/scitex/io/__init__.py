@@ -15,6 +15,12 @@ Bundle I/O is scitex-specific:
 # Core utilities from scitex-io (single source of truth)
 # =============================================================================
 
+# Bulk re-export everything scitex_io publishes via its __all__ — keeps the
+# umbrella contract that every scitex_io public name is reachable via
+# scitex.io. Explicit imports below retain backward-compat aliases (e.g.
+# H5Explorer also bound as _H5Explorer) and add umbrella-only integration.
+from scitex_io import *  # noqa: F401,F403
+
 # Registry API (from scitex-io)
 from scitex_io import (
     cache,

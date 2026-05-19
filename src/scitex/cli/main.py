@@ -77,69 +77,41 @@ class LazyGroup(click.Group):
         import importlib
         import logging
 
-        module_path, attr_name, _ = self._lazy_subcommands[cmd_name]
-        try:
-            mod = importlib.import_module(module_path)
-        except ImportError as exc:
+        module_path_or_candidates, attr_name, _ = self._lazy_subcommands[cmd_name]
+        # Two shapes:
+        #   - str: single canonical module path (scitex-internal wrappers)
+        #   - tuple of (module_path, attr_name): peer CLI candidates probed
+        #     lazily on first invocation. Walking the candidates here
+        #     instead of at registration is what keeps `scitex --help`
+        #     fast — see _lazy_subcommands.py.
+        if isinstance(module_path_or_candidates, str):
+            candidates = ((module_path_or_candidates, attr_name),)
+        else:
+            candidates = module_path_or_candidates
+
+        last_exc = None
+        for mod_path, attr in candidates:
+            try:
+                mod = importlib.import_module(mod_path)
+            except ImportError as exc:
+                last_exc = exc
+                continue
+            cmd = getattr(mod, attr, None)
+            if cmd is not None:
+                return cmd
+        if last_exc is not None:
             logging.getLogger(__name__).debug(
-                "Lazy-loaded subcommand %r unavailable (%s): %s",
+                "Lazy-loaded subcommand %r unavailable (no candidate resolved): %s",
                 cmd_name,
-                module_path,
-                exc,
+                last_exc,
             )
-            return None
-        return getattr(mod, attr_name, None)
+        return None
 
 
-_LAZY_SUBCOMMANDS = {
-    "app": ("scitex_app._cli._app", "app", "Create and manage SciTeX apps."),
-    "audio": ("scitex.cli.audio", "audio", "Audio tools and text-to-speech."),
-    "audit": ("scitex.cli.audit", "audit", "Security auditing tools."),
-    "browser": ("scitex.cli.browser", "browser", "Browser automation tools."),
-    "capture": ("scitex.cli.capture", "capture", "Screenshot capture tools."),
-    "clew": ("scitex.cli.clew", "clew", "Verification and reproducibility."),
-    "cloud": ("scitex.cli.cloud", "cloud", "Cloud storage operations."),
-    "config": ("scitex.cli.config", "config", "Configuration management."),
-    "container": (
-        "scitex.cli.container",
-        "container",
-        "Container management (Apptainer/Singularity).",
-    ),
-    "convert": ("scitex.cli.convert", "convert", "File format conversion."),
-    "dataset": ("scitex.cli.dataset", "dataset", "Dataset discovery and management."),
-    "dev": ("scitex.cli.dev", "dev", "Developer tools."),
-    "docs": ("scitex.cli.docs", "docs", "Browse and search SciTeX documentation."),
-    "event": ("scitex.cli.event", "event", "Event bus for async task results."),
-    "introspect": ("scitex.cli.introspect", "introspect", "Code introspection tools."),
-    "linter": ("scitex.cli.linter", "linter", "SciTeX linter."),
-    "mcp": ("scitex.cli.mcp", "mcp", "MCP server management."),
-    "notification": (
-        "scitex.cli.notification",
-        "notification",
-        "Notification and alerting tools.",
-    ),
-    "notify": (
-        "scitex.cli.notification",
-        "notification",
-        "Notification and alerting tools.",
-    ),  # backward compat alias
-    "notebook": ("scitex.cli.notebook", "notebook", "Jupyter notebook tools."),
-    "pkg": ("scitex.cli.pkg", "pkg", "Package management (venv drift audit)."),
-    "plt": ("scitex.cli.plt", "plt", "Plotting tools."),
-    "repro": ("scitex.cli.repro", "repro", "Reproducibility tools."),
-    "resource": ("scitex.cli.resource", "resource", "Resource management."),
-    "scholar": ("scitex.cli.scholar", "scholar", "Scholar CLI commands."),
-    "security": ("scitex.cli.security", "security", "Security scanning tools."),
-    "skills": ("scitex.cli.skills", "skills", "Browse skills across the ecosystem."),
-    "social": ("scitex.cli.social", "social", "Social media tools."),
-    "stats": ("scitex.cli.stats", "stats", "Statistical analysis tools."),
-    "template": ("scitex.cli.template", "template", "Project templates."),
-    "tex": ("scitex.cli.tex", "tex", "LaTeX tools."),
-    "tunnel": ("scitex.cli.tunnel", "tunnel", "SSH reverse tunnel for NAT traversal."),
-    "verify": ("scitex.cli.clew", "clew", "Verification (alias for clew)."),
-    "web": ("scitex.cli.web", "web", "Web utilities."),
-    "writer": ("scitex.cli.writer", "writer", "Manuscript writing tools."),
-}
+# Registry-driven subcommand wiring. See ``_lazy_subcommands.py``.
+from ._lazy_subcommands import build_lazy_subcommands
+
+_LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 
 
 @click.group(

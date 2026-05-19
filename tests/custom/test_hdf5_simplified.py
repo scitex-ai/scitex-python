@@ -6,6 +6,8 @@ pytest.importorskip("zarr")
 # Timestamp: "2025-07-01 21:18:00 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/tests/custom/test_hdf5_simplified.py
 # ----------------------------------------
+pytest.importorskip("h5py")
+
 import os
 
 __FILE__ = "./tests/custom/test_hdf5_simplified.py"

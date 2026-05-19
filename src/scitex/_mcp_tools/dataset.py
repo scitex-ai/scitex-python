@@ -1,22 +1,31 @@
 #!/usr/bin/env python3
-"""Dataset module tools - thin wrapper delegating to scitex-dataset package.
+# Timestamp: 2026-05-06
+# File: src/scitex/_mcp_tools/dataset.py
+"""Dataset tools for FastMCP unified server.
 
-Single source of truth: scitex-dataset MCP tools.
+Mounts scitex-dataset MCP server with the ``dataset`` namespace —
+same pattern as cloud, io, stats, clew. Tools become
+``dataset_openneuro_fetch``, ``dataset_db_build``, etc.
+
+Standalone scitex-dataset users see the bare names
+(``openneuro_fetch``, ``db_build``); the umbrella adds the prefix at
+mount time so the umbrella tool surface stays scoped per-package.
 """
 
 
 def register_dataset_tools(mcp) -> None:
-    """Register dataset tools by delegating to scitex-dataset package."""
+    """Mount scitex-dataset MCP server with 'dataset' prefix."""
     try:
-        from scitex_dataset._mcp.tools import register_all_tools
+        from scitex_dataset._mcp.server import mcp as dataset_mcp
 
-        # Delegate all MCP tools to scitex-dataset
-        register_all_tools(mcp)
+        from ._compat import safe_mount
+
+        safe_mount(mcp, dataset_mcp, namespace="dataset")
     except ImportError:
-        # Fallback when scitex-dataset is not installed
+
         @mcp.tool()
-        def dataset_usage() -> str:
-            """Get usage guide for SciTeX Dataset (not installed)."""
+        def dataset_not_available() -> str:
+            """scitex-dataset not installed."""
             return (
                 "scitex-dataset is required. Install with: pip install scitex-dataset"
             )

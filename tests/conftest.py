@@ -40,7 +40,9 @@ _ensure_subprocess_coverage_shim()
 # Timestamp: "2025-07-14 16:55:30 (ywatanabe)"
 # File: tests/conftest.py
 # ----------------------------------------
+import os
 import sys
+import sysconfig
 from pathlib import Path
 
 import pytest
@@ -54,6 +56,40 @@ _SRC_PATH = _REPO_ROOT / "src"
 if str(_SRC_PATH) in sys.path:
     sys.path.remove(str(_SRC_PATH))
 sys.path.insert(0, str(_SRC_PATH))
+
+# ----------------------------------------
+# Module-import-time coverage wiring (parallel + subprocess support).
+#
+# `os.environ.setdefault` would be a no-op here because pytest-cov has
+# already set COVERAGE_FILE to a tmp dir by the time conftest is loaded.
+# See _skills/general/05_development_06_subprocess-coverage.md.
+# ----------------------------------------
+os.environ["COVERAGE_PROCESS_START"] = str(_REPO_ROOT / "pyproject.toml")
+os.environ["COVERAGE_FILE"] = str(_REPO_ROOT / ".coverage")
+
+
+def _ensure_subprocess_coverage_shim() -> None:
+    """Drop an idempotent `.pth` file in site-packages that auto-starts
+    coverage in every child Python interpreter via
+    `coverage.process_startup()`.
+    """
+    purelib = Path(sysconfig.get_paths()["purelib"])
+    pth = purelib / "_scitex_subprocess_coverage.pth"
+    shim = (
+        "import os, coverage\n"
+        "if os.environ.get('COVERAGE_PROCESS_START'):\n"
+        "    coverage.process_startup()\n"
+    )
+    try:
+        if not pth.exists() or pth.read_text() != shim:
+            pth.write_text(shim)
+    except OSError:
+        # site-packages may be read-only (e.g. system Python); silently
+        # skip — local dev venvs are writable and that's where this matters.
+        pass
+
+
+_ensure_subprocess_coverage_shim()
 
 # Clear cached scitex imports to force reload from local source
 _modules_to_clear = [k for k in sys.modules.keys() if k.startswith("scitex")]

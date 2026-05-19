@@ -25,13 +25,10 @@ from scitex import logging
 logger = logging.getLogger(__name__)
 
 # Check if figrecipe is available
-try:
-    import figrecipe as fr
+from scitex_dev import try_import_optional
 
-    FIGRECIPE_AVAILABLE = True
-except ImportError:
-    FIGRECIPE_AVAILABLE = False
-    fr = None
+fr = try_import_optional("figrecipe", extra="plt", pkg="scitex")
+FIGRECIPE_AVAILABLE = fr is not None
 
 
 def check_figrecipe_available() -> bool:

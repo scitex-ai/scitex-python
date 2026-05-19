@@ -1,25 +1,25 @@
-#!/usr/bin/env python3
-# Timestamp: 2026-01-27
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/writer.py
-"""Writer module tools - thin wrapper delegating to scitex-writer package.
+"""Writer tools for FastMCP unified server.
 
-Single source of truth: scitex-writer MCP tools.
+Programmatically bridges all scitex-writer MCP tools into scitex MCP via
+`safe_mount` — every new scitex-writer tool appears automatically with the
+`writer` namespace, matching the umbrella↔standalone passthrough rule.
 """
 
 
 def register_writer_tools(mcp) -> None:
-    """Register writer tools by delegating to scitex-writer package."""
+    """Mount scitex-writer MCP server with 'writer' namespace."""
     try:
-        from scitex_writer._mcp.tools import register_all_tools
+        from scitex_writer._mcp_server import mcp as writer_mcp
 
-        # Delegate all MCP tools to scitex-writer
-        register_all_tools(mcp)
+        from ._compat import safe_mount
+
+        safe_mount(mcp, writer_mcp, namespace="writer")
     except ImportError:
-        # Fallback when scitex-writer is not installed
+
         @mcp.tool()
-        def writer_usage() -> str:
-            """Get usage guide for SciTeX Writer (not installed)."""
-            return "scitex-writer is required. Install with: pip install scitex-writer"
+        async def writer_not_available() -> str:
+            """scitex-writer not installed."""
+            return "scitex-writer package required. Install with: pip install scitex-writer"
 
 
 # EOF
