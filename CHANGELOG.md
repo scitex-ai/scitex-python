@@ -5,6 +5,11 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.29.3] - 2026-05-23
+
+### Fixed
+- **Dependency pins**: Restore `>=` minima for sibling `scitex-*` deps (was exact `==`, which referenced unpublished versions like `scitex-config==0.3.3` and broke `pip install scitex` with ResolutionImpossible). Fixes #282. The 2.29.0 and 2.29.1 PyPI releases shipped the broken `==` pins; 2.29.3 is the corrected release.
+
 ## [2.28.13] - 2026-04-30
 
 ### Changed
