@@ -47,6 +47,13 @@ jobs:
           touch src/scitex/_sphinx_html/.nojekyll
 
       - name: Commit refreshed HTML if it changed (develop push only)
+        # Best-effort: develop is a protected branch, so the bot push is
+        # declined with GH006 ("protected branch hook declined"). The bundle
+        # only needs to be current for production serving, which is refreshed
+        # at release time via the develop -> main PR. The Sphinx BUILD step
+        # above remains strict/required; only this commit-back is non-fatal so
+        # the docs workflow stops going red on every develop push.
+        continue-on-error: true
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: |
           if [ -n "$(git status --porcelain src/scitex/_sphinx_html)" ]; then
