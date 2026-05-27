@@ -184,9 +184,6 @@ SKIP_MODULES = {
     "scitex.ml",  # Optional ML dependencies
     "scitex.nn",  # torch docstring compatibility issue
     "scitex.session.template",  # Module object not callable issue
-    "scitex.ai.optim.Ranger_Deep_Learning_Optimizer.setup",  # noqa: E501
-    "scitex.ai.sk",  # Deprecated/missing module
-    "scitex.ai.sklearn.clf",  # Deprecated/missing module
 }
 
 # Module patterns to skip

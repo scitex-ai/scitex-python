@@ -206,7 +206,8 @@ class _CallableModuleWrapper:
 # (and submodule imports like `from scitex.<short>.<sub> import Y`) resolve to the
 # external package without requiring a `src/scitex/<short>/` directory in this repo.
 _EXTERNAL_REEXPORTS = {
-    "ai": "scitex_ai",
+    "ml": "scitex_ml",
+    "genai": "scitex_genai",
     "etc": "scitex_etc",
     "gists": "scitex_gists",
     "audit": "scitex_audit",
@@ -263,23 +264,22 @@ for _short, _ext in _EXTERNAL_REEXPORTS.items():
         # Hard-missing — friendly install hint via the __getattr__ proxy below.
         pass
 
-# Deprecated module aliases. All four (`ml`, `verify`, `reproduce`, `rng`)
-# are handled by tiny shim directories at `src/scitex/{ml,verify,reproduce,
-# rng}/__init__.py` so:
-#   1. `import scitex.<alias>` keeps working (Python finds the dir).
-#   2. The DeprecationWarning fires only when the deprecated path is
-#      actually used (not on every `import scitex`).
-#   3. We avoid eager in-tree imports here — those can trigger circular
-#      imports when the canonical leaf transitively reaches back into the
-#      umbrella (`scitex.plt`, `scitex.config`, etc.).
-# See also `__getattr__` below — that catches `getattr(scitex, "ml")` too.
+# Deprecated module aliases (`ai`, `verify`, `reproduce`, `rng`) are resolved
+# lazily via `__getattr__` below: the DeprecationWarning fires only when the
+# deprecated path is actually accessed (not on every `import scitex`), and we
+# avoid eager in-tree imports that could trigger circular imports.
+#
+# `ai` is the legacy name for what is now split into the canonical `ml`
+# (classical/deep ML — scitex_ml) and `genai` (generative-AI providers —
+# scitex_genai). `scitex.ai` redirects to `scitex.ml`.
 
 
 # Create lazy modules
 io = _LazyModule("io")
 gen = _LazyModule("gen")
 plt = _LazyModule("plt")
-ai = _LazyModule("ai", external="scitex_ai")
+ml = _LazyModule("ml", external="scitex_ml")
+genai = _LazyModule("genai", external="scitex_genai")
 pd = _LazyModule("pd")
 str = _LazyModule("str", external="scitex_str")
 stats = _LazyModule("stats")
@@ -365,7 +365,7 @@ usage._setup_persistence("scitex", "usage")
 # can be deleted. Each access emits a DeprecationWarning and returns the
 # canonical lazy module.
 _DEPRECATED_MODULE_ALIASES = {
-    "ml": "ai",
+    "ai": "ml",
     "reproduce": "repro",
     "rng": "repro",
     "verify": "clew",
@@ -433,7 +433,8 @@ __all__ = [
     "io",
     "gen",
     "plt",
-    "ai",
+    "ml",
+    "genai",
     "pd",
     "str",
     "stats",

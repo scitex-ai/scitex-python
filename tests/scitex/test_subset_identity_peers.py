@@ -40,7 +40,6 @@ PEERS: list = [  # list[tuple[str, str] | pytest.ParameterSet]
     ("scitex_logging", "scitex.logging"),
     ("scitex_datetime", "scitex.dt"),
     ("scitex_ml", "scitex.ml"),
-    ("scitex_ai", "scitex.ai"),
     ("scitex_writer", "scitex.writer"),
     ("scitex_repro", "scitex.repro"),
     ("scitex_session", "scitex.session"),
