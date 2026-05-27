@@ -153,7 +153,7 @@ def list_tools(
     # Suppress DeprecationWarnings from third-party libraries (httplib2, etc.)
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     # Suppress INFO messages from env loader during import
-    logging.getLogger("scitex._env_loader").setLevel(logging.WARNING)
+    logging.getLogger("scitex.helpers._env_loader").setLevel(logging.WARNING)
     try:
         from scitex.mcp_server import FASTMCP_AVAILABLE
         from scitex.mcp_server import mcp as mcp_server
