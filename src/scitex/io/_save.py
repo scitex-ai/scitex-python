@@ -16,7 +16,6 @@ from typing import Any, Union
 
 from scitex import logging
 from scitex.path import clean, getsize
-from scitex.sh import sh
 from scitex.str import clean_path, color_text, readable_bytes
 
 # Import save functions from the modular structure
@@ -45,6 +44,7 @@ from ._save_modules import (
     symlink,
     symlink_to,
 )
+from ._sh import sh
 
 logger = logging.getLogger()
 

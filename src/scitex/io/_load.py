@@ -14,6 +14,11 @@ import glob
 from pathlib import Path
 from typing import Any, Union
 
+# Optional synergy: real preserve_doc lives in scitex-decorators. When that
+# peer is installed, loaders carry through their original docstrings; when it
+# is absent, fall back to a no-op so scitex.io works on a minimal install.
+from scitex_dev import try_import_optional
+
 # Core loaders (from scitex-io, single source of truth)
 from scitex_io._load_modules._bibtex import _load_bibtex
 from scitex_io._load_modules._json import _load_json
@@ -30,7 +35,13 @@ from scitex_io._loading._load_cache import (
     load_npy_cached,
 )
 
-from scitex.decorators import preserve_doc
+preserve_doc = try_import_optional(
+    "scitex_decorators", "preserve_doc", extra="decorators", pkg="scitex"
+)
+if preserve_doc is None:
+
+    def preserve_doc(func):  # noqa: E306 — graceful no-op fallback
+        return func
 
 
 # Optional loaders - wrapped for missing dependencies

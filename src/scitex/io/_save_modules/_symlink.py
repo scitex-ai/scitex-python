@@ -12,8 +12,9 @@ from pathlib import Path
 
 from scitex import logging
 from scitex.path import clean
-from scitex.sh import sh
 from scitex.str import color_text
+
+from .._sh import sh
 
 logger = logging.getLogger()
 
