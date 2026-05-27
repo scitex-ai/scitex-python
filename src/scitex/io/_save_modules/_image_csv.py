@@ -134,9 +134,11 @@ def _collect_metadata(obj, kwargs, verbose, json_schema, metadata_extra):  # noq
 
                 try:
                     if json_schema == "editable":
-                        from scitex.plt.utils.metadata import export_editable_figure
+                        # Editable JSON is figrecipe-native (figrecipe owns the
+                        # editor); delegate instead of the umbrella's own exporter.
+                        from figrecipe import export_editable
 
-                        auto_metadata = export_editable_figure(fig_mpl)
+                        auto_metadata = export_editable(fig_mpl)
                     elif json_schema == "recipe":
                         from scitex.plt.utils import collect_recipe_metadata
 
