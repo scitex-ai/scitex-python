@@ -26,12 +26,23 @@ _stdlib_logging.getLogger("sqlalchemy.pool").setLevel(_stdlib_logging.WARNING)
 # Show deprecation warnings from scitex modules (educational for migration)
 warnings.filterwarnings("default", category=DeprecationWarning, module="scitex.*")
 
-# Install the registry-driven alias finder so `import scitex.<short>`
-# resolves to the peer standalone (`scitex_<short>` or branded peer like
-# `figrecipe`) when no in-tree `scitex/<short>/` directory exists. The
-# umbrella ships NO duplicate impl — peers are the single source of
-# truth (see _aggregator.py for the full contract).
-from ._aggregator import install_alias_finder as _install_alias_finder
+# All re-export machinery lives in one place: `scitex.re_export`. It owns the
+# lazy proxies, the curated external map, the eager lazy pre-registration, and
+# the registry-driven alias finder so `import scitex.<short>` resolves to the
+# peer standalone (`scitex_<short>` or a branded peer like `figrecipe`) when no
+# in-tree `scitex/<short>/` directory exists. The umbrella ships NO duplicate
+# impl — peers are the single source of truth (see re_export.py for the full
+# contract).
+from .re_export import (
+    _CallableModuleWrapper,
+    _LazyModule,
+)
+from .re_export import (
+    install_alias_finder as _install_alias_finder,
+)
+from .re_export import (
+    register_external_lazy_modules as _register_external_lazy_modules,
+)
 
 _install_alias_finder(__path__)
 
@@ -43,225 +54,10 @@ from .__version__ import __version__
 _DEPRECATED_ATTRS = {"INJECTED", "show_install_guide", "Diagram"}
 
 
-# Lazy loading for all modules
-class _LazyModule:
-    def __init__(self, name, external=None):
-        self._name = name
-        # If `external` is given, the lazy module proxies an external top-level
-        # package (e.g. "scitex_io") instead of the in-tree submodule
-        # `scitex.<name>`. This lets the umbrella drop pure re-export shim
-        # directories — no source tree under `src/scitex/<name>/` is required.
-        self._external = external
-        self._module = None
-
-    def _load_module(self):
-        if self._module is None:
-            import importlib
-
-            if self._external is not None:
-                self._module = importlib.import_module(self._external)
-            else:
-                self._module = importlib.import_module(
-                    f".{self._name}", package="scitex"
-                )
-        return self._module
-
-    def _warn_missing(self):
-        warnings.warn(
-            f"scitex.{self._name} requires additional dependencies. "
-            f"Install with: pip install scitex[{self._name}]",
-            UserWarning,
-            stacklevel=3,
-        )
-
-    def __getattr__(self, attr):
-        # Return sensible defaults for dunder attrs without triggering import
-        # (prevents Sphinx autodoc crashes when optional deps are missing)
-        if attr == "__name__":
-            return f"scitex.{self._name}"
-        if attr == "__module__":
-            return "scitex"
-        if attr == "__qualname__":
-            return self._name
-        if attr == "__path__":
-            return []
-        if attr == "__file__":
-            return None
-        if attr == "__loader__":
-            return None
-        if attr == "__spec__":
-            return None
-        try:
-            return getattr(self._load_module(), attr)
-        except (ImportError, ModuleNotFoundError):
-            self._module = None  # Reset so next attempt retries
-            raise ImportError(
-                f"scitex.{self._name} requires additional dependencies. "
-                f"Install with: pip install scitex[{self._name}]"
-            ) from None
-
-    def __dir__(self):
-        """Return dir of the actual module for tab completion."""
-        try:
-            members = dir(self._load_module())
-        except (ImportError, ModuleNotFoundError):
-            self._module = None  # Reset so next attempt retries
-            self._warn_missing()
-            return []
-        # Detect broken modules stuck in sys.modules (only have dunder attrs)
-        public = [m for m in members if not m.startswith("_")]
-        if not public:
-            self._module = None
-            self._warn_missing()
-            return []
-        return members
-
-    def __repr__(self):
-        if self._module is None:
-            return f"<LazyModule(scitex.{self._name}) - not loaded>"
-        return repr(self._module)
-
-
-class _CallableModuleWrapper:
-    """Callable module wrapper that acts as both a decorator and a module.
-
-    This allows:
-    - @scitex.session (new clean API)
-    - @scitex.session.session (old API for backwards compatibility)
-    - scitex.session.start() and other module functions
-
-    Example:
-        import scitex
-
-        @scitex.session  # Clean! Calls __call__()
-        def main(): pass
-
-        @scitex.session.session  # Backwards compatible
-        def main(): pass
-
-        scitex.session.start(...)  # Access other functions
-    """
-
-    def __init__(self, module_name, main_decorator_name="session"):
-        self._module_name = module_name
-        self._main_decorator_name = main_decorator_name
-        self._module = None
-        self._parent_name = None
-        self._attr_name = None
-
-    def _setup_persistence(self, parent_name, attr_name):
-        """Set up persistence information to prevent replacement."""
-        self._parent_name = parent_name
-        self._attr_name = attr_name
-
-    def _load_module(self):
-        """Lazy load the actual module."""
-        if self._module is None:
-            import importlib
-            import sys
-
-            # Import the module
-            self._module = importlib.import_module(
-                f".{self._module_name}", package="scitex"
-            )
-
-            # Restore ourselves in the parent module's __dict__ to prevent replacement
-            if self._parent_name and self._attr_name:
-                parent_module = sys.modules.get(self._parent_name)
-                if parent_module is not None:
-                    setattr(parent_module, self._attr_name, self)
-
-        return self._module
-
-    def __call__(self, *args, **kwargs):
-        """When used as @scitex.session"""
-        module = self._load_module()
-        main_decorator = getattr(module, self._main_decorator_name)
-        return main_decorator(*args, **kwargs)
-
-    def __getattr__(self, name):
-        """When accessed as scitex.session.session or scitex.session.start"""
-        if name == self._main_decorator_name:
-            # Return self so @scitex.session.session works
-            return self
-
-        # Otherwise, delegate to the actual module
-        module = self._load_module()
-        return getattr(module, name)
-
-    def __dir__(self):
-        """Return dir of the actual module for tab completion."""
-        module = self._load_module()
-        return dir(module)
-
-    def __repr__(self):
-        """Show module representation."""
-        if self._module is None:
-            return f"<LazyModule(scitex.{self._module_name}) - not loaded>"
-        return repr(self._module)
-
-
-# External re-export packages — `scitex.<short>` maps to top-level `scitex_<short>`.
-# Registering eagerly in sys.modules so that internal `from scitex.<short> import X`
-# (and submodule imports like `from scitex.<short>.<sub> import Y`) resolve to the
-# external package without requiring a `src/scitex/<short>/` directory in this repo.
-_EXTERNAL_REEXPORTS = {
-    "ai": "scitex_ai",
-    "etc": "scitex_etc",
-    "gists": "scitex_gists",
-    "audit": "scitex_audit",
-    "compat": "scitex_compat",
-    "repro": "scitex_repro",
-    "app": "scitex_app",
-    "scholar": "scitex_scholar",
-    "dict": "scitex_dict",
-    "notebook": "scitex_notebook",
-    "str": "scitex_str",
-    "logging": "scitex_logging",
-    "browser": "scitex_browser",
-    "parallel": "scitex_parallel",
-    "path": "scitex_path",
-    "db": "scitex_db",
-    "audio": "scitex_audio",
-    "types": "scitex_types",
-    "template": "scitex_template",
-    "benchmark": "scitex_benchmark",
-    "context": "scitex_context",
-    "cv": "scitex_cv",
-    "introspect": "scitex_introspect",
-    "msword": "scitex_msword",
-    "os": "scitex_os",
-    "security": "scitex_security",
-    "tex": "scitex_tex",
-}
-import importlib as _importlib
-import importlib.util as _importlib_util
-import sys as _sys
-
-# Register every external standalone LAZILY in sys.modules. `import scitex.io`
-# resolves immediately (returns the lazy proxy), but the actual `scitex_io`
-# module body — and its transitive cv2 / docx / torch imports — only runs on
-# first attribute access. This keeps `import scitex` < 0.5s instead of 8s+.
-#
-# Mechanism: importlib.util.LazyLoader wraps the real loader; module_from_spec
-# returns a proxy that delegates __getattr__ to a deferred exec_module().
-for _short, _ext in _EXTERNAL_REEXPORTS.items():
-    if _ext in _sys.modules:
-        # Already imported (e.g. by user code earlier in this process); reuse.
-        _sys.modules[f"scitex.{_short}"] = _sys.modules[_ext]
-        continue
-    try:
-        _spec = _importlib_util.find_spec(_ext)
-        if _spec is None or _spec.loader is None:
-            continue  # missing optional dep — handled by __getattr__ proxy below
-        _spec.loader = _importlib_util.LazyLoader(_spec.loader)
-        _mod = _importlib_util.module_from_spec(_spec)
-        _sys.modules[_ext] = _mod
-        _sys.modules[f"scitex.{_short}"] = _mod
-        _spec.loader.exec_module(_mod)  # records spec; defers body
-    except ImportError:
-        # Hard-missing — friendly install hint via the __getattr__ proxy below.
-        pass
+# Eagerly (but lazily) pre-register every external standalone in sys.modules.
+# All machinery — the `_LazyModule` / `_CallableModuleWrapper` proxies and the
+# `EXTERNAL_REEXPORTS` map — lives in `scitex.re_export` (imported above).
+_register_external_lazy_modules()
 
 # Deprecated module aliases. All four (`ml`, `verify`, `reproduce`, `rng`)
 # are handled by tiny shim directories at `src/scitex/{ml,verify,reproduce,
@@ -279,7 +75,8 @@ for _short, _ext in _EXTERNAL_REEXPORTS.items():
 io = _LazyModule("io")
 gen = _LazyModule("gen")
 plt = _LazyModule("plt")
-ai = _LazyModule("ai", external="scitex_ai")
+ml = _LazyModule("ml", external="scitex_ml")
+genai = _LazyModule("genai", external="scitex_genai")
 pd = _LazyModule("pd")
 str = _LazyModule("str", external="scitex_str")
 stats = _LazyModule("stats")
@@ -365,7 +162,7 @@ usage._setup_persistence("scitex", "usage")
 # can be deleted. Each access emits a DeprecationWarning and returns the
 # canonical lazy module.
 _DEPRECATED_MODULE_ALIASES = {
-    "ml": "ai",
+    "ai": "ml",  # scitex.ai split into scitex.ml + scitex.genai
     "reproduce": "repro",
     "rng": "repro",
     "verify": "clew",
@@ -433,7 +230,8 @@ __all__ = [
     "io",
     "gen",
     "plt",
-    "ai",
+    "ml",
+    "genai",
     "pd",
     "str",
     "stats",

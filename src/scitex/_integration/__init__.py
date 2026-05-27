@@ -1,7 +1,7 @@
 """scitex._integration — cross-peer glue code that lives in the umbrella.
 
 Most umbrella imports of the form ``scitex.<short>`` resolve via the
-alias finder (see ``scitex._aggregator``) to the corresponding peer
+alias finder (see ``scitex.re_export``) to the corresponding peer
 standalone (``scitex_<short>``). The umbrella ships no duplicate impl;
 peers are the single source of truth.
 
