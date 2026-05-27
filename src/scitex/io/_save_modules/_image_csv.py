@@ -42,6 +42,11 @@ def handle_image_with_csv(
     collected_metadata = _collect_metadata(
         obj, kwargs, verbose, json_schema, metadata_extra
     )
+    # figrecipe RecordingFigures persist their data via the recipe save. Use a
+    # SINGLE combined CSV (scitex default) so we don't also emit a separate
+    # plot_data/ — save_image forwards csv_format only for RecordingFigures.
+    if not no_csv:
+        kwargs.setdefault("csv_format", "single")
     save_image(obj, spath, verbose=verbose, **kwargs)
     _auto_crop_image(
         spath, auto_crop, crop_margin_mm, collected_metadata, kwargs, verbose
@@ -63,12 +68,14 @@ def handle_image_with_csv(
         **kwargs,
     )
 
-    # Export CSV data
+    # CSV data is already written by the figrecipe recipe save above (single
+    # combined plot.csv). Do NOT re-export it — that produced a duplicate of the
+    # recipe's data. Just point metadata at the recipe-written CSV if present.
     csv_path = None
     if not no_csv:
-        csv_path = _export_csv_data(
-            obj, spath, collected_metadata, symlink_from_cwd, symlink_to_path, dry_run
-        )
+        _candidate_csv = os.path.splitext(spath)[0] + ".csv"
+        if os.path.exists(_candidate_csv):
+            csv_path = _candidate_csv
 
     # Save metadata as JSON
     if collected_metadata is not None and not dry_run:
