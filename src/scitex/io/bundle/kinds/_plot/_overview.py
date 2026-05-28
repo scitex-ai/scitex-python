@@ -39,9 +39,8 @@ def generate_bundle_overview(
     """
     import matplotlib.gridspec as gridspec
     import matplotlib.pyplot as plt
+    from figrecipe.presets import get_preview_dpi
     from PIL import Image
-
-    from scitex.plt.styles import get_preview_dpi
 
     fig = plt.figure(figsize=(16, 10), facecolor="white")
     gs = gridspec.GridSpec(

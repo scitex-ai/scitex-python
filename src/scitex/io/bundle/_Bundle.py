@@ -36,7 +36,8 @@ if TYPE_CHECKING:
 class Bundle:
     """Scitex Bundle - Self-contained figure/plot/stats package.
 
-    Attributes:
+    Attributes
+    ----------
         spec: Spec metadata (kind, children, layout, payload_schema, etc.)
         encoding: Encoding specification (traces, channels)
         theme: Theme specification (colors, fonts)
@@ -315,7 +316,7 @@ class Bundle:
 
     def _render_composite(self) -> Optional["MplFigure"]:
         """Render composite figure with children."""
-        import scitex.plt as splt
+        import figrecipe as splt
 
         size_mm = (
             self._spec.size_mm.to_dict()
@@ -356,7 +357,7 @@ class Bundle:
         if self._encoding is None:
             return None
 
-        import scitex.plt as splt
+        import figrecipe as splt
 
         size_mm = (
             self._spec.size_mm.to_dict()
@@ -408,7 +409,7 @@ class Bundle:
 
     def _render_annotation(self) -> Optional["MplFigure"]:
         """Render annotation (text/shape) from spec parameters."""
-        import scitex.plt as splt
+        import figrecipe as splt
 
         size_mm = (
             self._spec.size_mm.to_dict()
@@ -466,9 +467,8 @@ class Bundle:
 
     def _render_image(self) -> Optional["MplFigure"]:
         """Render image from payload."""
+        import figrecipe as splt
         import numpy as np
-
-        import scitex.plt as splt
 
         size_mm = (
             self._spec.size_mm.to_dict()
@@ -500,7 +500,8 @@ class Bundle:
     def _validate_manifest(self) -> tuple:
         """Validate manifest.json existence and structure.
 
-        Returns:
+        Returns
+        -------
             Tuple of (errors: List[str], warnings: List[str])
         """
         import json
@@ -559,7 +560,8 @@ class Bundle:
         Args:
             level: Validation level - "schema", "semantic", or "strict"
 
-        Returns:
+        Returns
+        -------
             ValidationResult with is_valid property and errors list
         """
         result = ValidationResult(level=level)
