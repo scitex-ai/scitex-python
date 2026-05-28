@@ -8,7 +8,6 @@ import os
 
 from scitex import logging
 
-from ._figure_utils import get_figure_with_data
 from ._legends import save_separate_legends
 
 # save_image from standalone scitex-io package
@@ -132,34 +131,20 @@ def _collect_metadata(obj, kwargs, verbose, json_schema, metadata_extra):  # noq
                     else:
                         ax = mpl_ax
 
+                # The editable JSON sidecar is figrecipe-native (figrecipe owns
+                # the figure editor and the reproducible recipe). The umbrella
+                # only delegates; it no longer carries its own metadata schemas.
                 try:
-                    if json_schema == "editable":
-                        # Editable JSON is figrecipe-native (figrecipe owns the
-                        # editor); delegate instead of the umbrella's own exporter.
-                        from figrecipe import export_editable
+                    from figrecipe import export_editable
 
-                        auto_metadata = export_editable(fig_mpl)
-                    elif json_schema == "recipe":
-                        from scitex.plt.utils import collect_recipe_metadata
-
-                        auto_metadata = collect_recipe_metadata(fig_mpl, ax)
-                    else:
-                        from scitex.plt.utils import collect_figure_metadata
-
-                        auto_metadata = collect_figure_metadata(fig_mpl, ax)
+                    auto_metadata = export_editable(fig_mpl)
 
                     if auto_metadata:
                         kwargs["metadata"] = auto_metadata
                         collected_metadata = auto_metadata
                         if verbose:
-                            schema_names = {
-                                "editable": "editable v0.3",
-                                "recipe": "recipe",
-                                "verbose": "verbose",
-                            }
-                            schema_name = schema_names.get(json_schema, json_schema)
                             logger.info(
-                                f"  • Auto-collected metadata ({schema_name} schema)"
+                                "  • Auto-collected metadata (editable v0.3 schema)"
                             )
                 except ImportError:
                     pass
@@ -253,118 +238,6 @@ def _adjust_metadata_for_crop(collected_metadata, crop_offset):
             ]
 
 
-def _export_csv_data(
-    obj, spath, collected_metadata, symlink_from_cwd, symlink_to_path, dry_run
-):
-    """Export CSV data from figure."""
-    image_extensions = ["png", "jpg", "jpeg", "gif", "tiff", "tif", "svg", "pdf"]
-    parent_dir = os.path.dirname(spath)
-    parent_name = os.path.basename(parent_dir)
-    filename_without_ext = os.path.splitext(os.path.basename(spath))[0]
-
-    csv_path = None
-    try:
-        fig_obj = get_figure_with_data(obj, spath=spath)
-
-        if fig_obj is not None and hasattr(fig_obj, "export_as_csv"):
-            csv_data = fig_obj.export_as_csv()
-            if csv_data is not None and not csv_data.empty:
-                if parent_name.lower() in image_extensions:
-                    grandparent_dir = os.path.dirname(parent_dir)
-                    csv_dir = os.path.join(grandparent_dir, "csv")
-                    csv_path = os.path.join(csv_dir, filename_without_ext + ".csv")
-                else:
-                    csv_path = os.path.splitext(spath)[0] + ".csv"
-
-                os.makedirs(os.path.dirname(csv_path), exist_ok=True)
-                from . import save_csv
-
-                save_csv(csv_data, csv_path)
-
-                if collected_metadata is not None:
-                    _update_metadata_with_csv(collected_metadata, csv_data, csv_path)
-
-                _create_csv_symlinks(
-                    csv_path, spath, symlink_from_cwd, symlink_to_path, image_extensions
-                )
-
-    except Exception as e:
-        logger.warning(f"CSV export failed: {e}")
-
-    return csv_path
-
-
-def _update_metadata_with_csv(collected_metadata, csv_data, csv_path):
-    """Update metadata with actual CSV info."""
-    try:
-        from scitex.plt.utils._collect_figure_metadata import _compute_csv_hash
-
-        if "data" not in collected_metadata:
-            collected_metadata["data"] = {}
-
-        actual_columns = list(csv_data.columns)
-        collected_metadata["data"]["csv_path"] = os.path.basename(csv_path)
-        collected_metadata["data"]["columns_actual"] = actual_columns
-        collected_metadata["data"]["csv_hash"] = _compute_csv_hash(csv_data)
-    except Exception:
-        pass
-
-
-def _create_csv_symlinks(
-    csv_path, spath, symlink_from_cwd, symlink_to_path, image_extensions
-):
-    """Create symlinks for CSV file."""
-    if symlink_to_path:
-        symlink_parent_dir = os.path.dirname(symlink_to_path)
-        symlink_parent_name = os.path.basename(symlink_parent_dir)
-        symlink_filename_without_ext = os.path.splitext(
-            os.path.basename(symlink_to_path)
-        )[0]
-
-        if symlink_parent_name.lower() in image_extensions:
-            symlink_grandparent_dir = os.path.dirname(symlink_parent_dir)
-            csv_symlink_to = os.path.join(
-                symlink_grandparent_dir, "csv", symlink_filename_without_ext + ".csv"
-            )
-        else:
-            csv_symlink_to = os.path.splitext(symlink_to_path)[0] + ".csv"
-
-        symlink_to(csv_path, csv_symlink_to, True)
-
-    if symlink_from_cwd:
-        import inspect
-
-        frame_info = inspect.stack()
-        for frame in frame_info:
-            if "specified_path" in frame.frame.f_locals:
-                original_path = frame.frame.f_locals["specified_path"]
-                if isinstance(original_path, str):
-                    orig_parent_dir = os.path.dirname(original_path)
-                    orig_parent_name = os.path.basename(orig_parent_dir)
-                    orig_filename_without_ext = os.path.splitext(
-                        os.path.basename(original_path)
-                    )[0]
-
-                    if orig_parent_name.lower() in image_extensions:
-                        orig_grandparent_dir = os.path.dirname(orig_parent_dir)
-                        csv_relative = os.path.join(
-                            orig_grandparent_dir,
-                            "csv",
-                            orig_filename_without_ext + ".csv",
-                        )
-                    else:
-                        csv_relative = original_path.replace(
-                            os.path.splitext(original_path)[1], ".csv"
-                        )
-
-                    csv_cwd = os.path.join(os.getcwd(), csv_relative)
-                    symlink(csv_path, csv_cwd, True, True)
-                    break
-        else:
-            csv_cwd = os.getcwd() + "/" + os.path.basename(csv_path)
-            symlink(csv_path, csv_cwd, True, True)
-
-
 def _save_metadata_json(
     spath,
     collected_metadata,
@@ -393,14 +266,6 @@ def _save_metadata_json(
         from . import save_json
 
         save_json(collected_metadata, json_path)
-
-        # Verify CSV/JSON consistency for verbose schema
-        if csv_path and not dry_run and json_schema == "verbose":
-            from scitex.plt.utils._collect_figure_metadata import (
-                assert_csv_json_consistency,
-            )
-
-            assert_csv_json_consistency(csv_path, json_path)
 
         # Create symlinks for JSON
         _create_json_symlinks(
