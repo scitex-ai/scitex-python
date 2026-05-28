@@ -446,7 +446,7 @@ class Bundle:
 
         elif self._spec.kind == "shape":
             # Render shape annotation
-            from .kinds._shape import render_shape
+            from scitex_io.bundle.kinds._shape import render_shape
 
             shape_obj = self._spec.shape
             if shape_obj:
