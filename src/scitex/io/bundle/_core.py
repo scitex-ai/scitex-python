@@ -297,9 +297,12 @@ def validate_spec(
 
         errors.extend(validate_figure_spec(spec))
     elif bundle_type == BundleType.PLOT:
-        from scitex.plt.io._bundle import validate_plot_spec
-
-        errors.extend(validate_plot_spec(spec))
+        # validate_plot_spec was a 16-line stub in scitex.plt.io._bundle. Inlined
+        # here so the umbrella bundle dispatcher doesn't reach back into plt/io
+        # while we retire that subpackage (figrecipe owns figure I/O via Pltz/Figz;
+        # see GITIGNORED/tasks/RESUME.md).
+        if "axes" in spec and not isinstance(spec["axes"], (dict, list)):
+            errors.append("'axes' must be a dictionary or list")
     elif bundle_type == BundleType.STATS:
         from scitex.stats.io._bundle import validate_stats_spec
 
