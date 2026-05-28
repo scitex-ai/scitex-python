@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
-"""Integration contract for the umbrella-only ``scitex.io.bundle`` namespace.
+"""Integration contract for the umbrella ``scitex.io.bundle`` re-export.
 
-``scitex.io.bundle`` is the umbrella's bundle-dispatcher facade — it
-routes ``load`` / ``save`` / ``validate`` between umbrella-internal
-plot, figure, stats, and image bundle kinds. figrecipe owns
-``.plt.zip`` / ``.fig.zip`` directly; the umbrella surface is the
-multi-kind front door layered on top.
-
-These tests pin the contract callers depend on: the public dispatch
-symbols are importable, the bundle-kind subpackage exists, and the
-legacy ``.plot`` dict-API still routes through the umbrella's
-internal kinds/_plot location (it was relocated in Step C of the
-plt-deletion migration).
+After the full bundle-subpackage migration, ``scitex.io.bundle`` is a
+thin re-export of ``scitex_io.bundle``. The umbrella's contract is that
+its dispatch facade (``load``, ``save``, ``validate``, ``Bundle``,
+``BundleType``, …) and the kind handlers (image, text, shape, table
+out of the box; figure / plot / stats when their domain packages are
+installed) remain reachable through the historical import path.
 """
 
 import pytest
@@ -38,41 +33,33 @@ def test_bundle_public_symbol_exposed(name):
     assert attr is not None
 
 
+def test_bundle_resolves_to_scitex_io_implementation():
+    """``scitex.io.bundle`` is a re-export of ``scitex_io.bundle``."""
+    # Arrange
+    import scitex_io.bundle as standalone
+
+    # Act
+    same_bundle_class = bundle.Bundle is standalone.Bundle
+    # Assert
+    assert same_bundle_class is True
+
+
+def test_bundle_load_is_re_export_from_scitex_io():
+    """``scitex.io.bundle.load`` is the standalone's dispatcher."""
+    # Arrange
+    import scitex_io.bundle as standalone
+
+    # Act
+    same = bundle.load is standalone.load
+    # Assert
+    assert same is True
+
+
 def test_kinds_subpackage_importable():
-    """``scitex.io.bundle.kinds`` is a real subpackage, not a placeholder."""
+    """``scitex_io.bundle.kinds`` is a real subpackage."""
     # Arrange
     # Act
-    from scitex.io.bundle import kinds
+    from scitex_io.bundle import kinds
 
     # Assert
     assert hasattr(kinds, "__path__")
-
-
-def test_legacy_plot_dict_api_lives_in_umbrella_kinds_plot():
-    """Step-C move: ``load_plot_bundle`` resolves at the umbrella-internal location."""
-    # Arrange
-    # Act
-    from scitex.io.bundle.kinds._plot._legacy import load_plot_bundle
-
-    # Assert
-    assert callable(load_plot_bundle)
-
-
-def test_legacy_plot_save_lives_in_umbrella_kinds_plot():
-    """Step-C move: ``save_plot_bundle`` resolves at the umbrella-internal location."""
-    # Arrange
-    # Act
-    from scitex.io.bundle.kinds._plot._legacy import save_plot_bundle
-
-    # Assert
-    assert callable(save_plot_bundle)
-
-
-def test_overview_renderer_lives_in_umbrella_kinds_plot():
-    """``generate_bundle_overview`` is umbrella-only (figrecipe has no overview)."""
-    # Arrange
-    # Act
-    from scitex.io.bundle.kinds._plot._overview import generate_bundle_overview
-
-    # Assert
-    assert callable(generate_bundle_overview)
