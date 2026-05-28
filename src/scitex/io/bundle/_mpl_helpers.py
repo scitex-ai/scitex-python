@@ -43,7 +43,7 @@ def _build_encoding_from_csv_columns(csv_df: "Any") -> "Encoding":
     if csv_df is None or csv_df.empty:
         return Encoding(traces=[])
 
-    from scitex.plt.utils._csv_column_naming import parse_csv_column_name
+    from figrecipe._utils._csv_column_naming import parse_csv_column_name
 
     # Group columns by trace (for verbose format)
     trace_columns = {}  # {(ax_row, ax_col, trace_id): {variable: column_name}}
@@ -200,7 +200,7 @@ def _build_encoding_from_history(
     Encoding
         Encoding object with traces referencing CSV column names.
     """
-    from scitex.plt.utils._csv_column_naming import get_csv_column_name, sanitize_id
+    from figrecipe._utils._csv_column_naming import get_csv_column_name, sanitize_id
 
     from .kinds._plot._dataclasses import ChannelEncoding, Encoding, TraceEncoding
 
