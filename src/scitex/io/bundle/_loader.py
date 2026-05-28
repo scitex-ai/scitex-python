@@ -21,7 +21,7 @@ from typing import TYPE_CHECKING, Optional, Tuple
 from ._storage import get_storage
 
 if TYPE_CHECKING:
-    from ._dataclasses import DataInfo, Spec
+    from scitex_io.bundle._dataclasses import DataInfo, Spec
     from .kinds._plot._dataclasses import Encoding, Theme
     from scitex_stats._dataclasses import Stats
 
@@ -45,7 +45,7 @@ def load_bundle_components(
     Returns:
         Tuple of (spec, encoding, theme, stats, data_info)
     """
-    from ._dataclasses import DataInfo, Spec
+    from scitex_io.bundle._dataclasses import DataInfo, Spec
     from .kinds._plot._dataclasses import Encoding, Theme
     from scitex_stats._dataclasses import Stats
 

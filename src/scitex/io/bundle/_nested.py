@@ -31,7 +31,7 @@ import zipfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from ._types import NestedBundleNotFoundError
+from scitex_io.bundle._types import NestedBundleNotFoundError
 
 __all__ = [
     "resolve",

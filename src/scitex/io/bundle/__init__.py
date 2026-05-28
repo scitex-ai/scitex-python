@@ -58,7 +58,7 @@ from ._core import (
 )
 
 # Dataclasses
-from ._dataclasses import BBox, DataInfo, SizeMM, Spec, SpecRefs
+from scitex_io.bundle._dataclasses import BBox, DataInfo, SizeMM, Spec, SpecRefs
 
 # Manifest functions for bundle identification
 from ._manifest import (
@@ -68,7 +68,7 @@ from ._manifest import (
     read_manifest,
     write_manifest,
 )
-from ._types import (
+from scitex_io.bundle._types import (
     DIR_EXTENSIONS,
     EXTENSIONS,
     FIGURE,

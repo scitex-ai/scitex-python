@@ -18,7 +18,7 @@ import zipfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from ._types import EXTENSIONS, BundleNotFoundError, BundleType, BundleValidationError
+from scitex_io.bundle._types import EXTENSIONS, BundleNotFoundError, BundleType, BundleValidationError
 
 __all__ = [
     "load",
@@ -81,7 +81,7 @@ def _get_type_from_manifest(path: Path) -> Optional[str]:
     """
     import json
 
-    from ._types import EXTENSIONS
+    from scitex_io.bundle._types import EXTENSIONS
 
     if path.is_dir():
         # Directory bundle - read manifest.json directly
@@ -120,7 +120,7 @@ def _get_type_from_extension(path: Path) -> Optional[str]:
     -------
         Bundle type from extension or None.
     """
-    from ._types import DIR_EXTENSIONS, EXTENSIONS
+    from scitex_io.bundle._types import DIR_EXTENSIONS, EXTENSIONS
 
     name = path.name.lower()
 
@@ -498,7 +498,7 @@ def save(
             raise ValueError(f"Cannot determine bundle type from path: {path}")
 
     # Determine if saving as directory or ZIP
-    from ._types import DIR_EXTENSIONS
+    from scitex_io.bundle._types import DIR_EXTENSIONS
 
     path_str = str(p).lower()
     is_zip_path = any(path_str.endswith(ext) for ext in EXTENSIONS)
@@ -608,7 +608,7 @@ def copy(
         >>> copy("gallery/line/plot.plot", "my_project/A.plot")
         >>> copy("template.plot.zip", "output/panel.plot")
     """
-    from ._types import DIR_EXTENSIONS
+    from scitex_io.bundle._types import DIR_EXTENSIONS
 
     src_path = Path(src)
     dst_path = Path(dst)

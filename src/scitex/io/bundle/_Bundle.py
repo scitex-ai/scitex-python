@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ._children import ValidationError, embed_child, load_embedded_children
-from ._dataclasses import DataInfo, SizeMM, Spec
+from scitex_io.bundle._dataclasses import DataInfo, SizeMM, Spec
 from ._loader import load_bundle_components
 from ._saver import (
     compute_canonical_hash,
@@ -537,7 +537,7 @@ class Bundle:
                 manifest_type = scitex.get("type")
                 if manifest_type and self._spec:
                     # Normalize both to compare
-                    from ._types import BundleType
+                    from scitex_io.bundle._types import BundleType
 
                     normalized_manifest = BundleType.normalize(manifest_type)
                     normalized_node = BundleType.normalize(self._spec.kind)

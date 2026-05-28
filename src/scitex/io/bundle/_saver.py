@@ -38,7 +38,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 from ._storage import Storage, get_storage
 
 if TYPE_CHECKING:
-    from ._dataclasses import DataInfo, Spec
+    from scitex_io.bundle._dataclasses import DataInfo, Spec
     from .kinds._plot._dataclasses import Encoding, Theme
     from scitex_stats._dataclasses import Stats
 
