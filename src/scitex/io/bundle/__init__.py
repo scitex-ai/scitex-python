@@ -61,7 +61,7 @@ from ._core import (
 from scitex_io.bundle._dataclasses import BBox, DataInfo, SizeMM, Spec, SpecRefs
 
 # Manifest functions for bundle identification
-from ._manifest import (
+from scitex_io.bundle._manifest import (
     MANIFEST_FILENAME,
     create_manifest,
     get_type_from_manifest,
@@ -82,10 +82,10 @@ from scitex_io.bundle._types import (
 )
 
 # ZipBundle class and functions
-from ._zip import ZipBundle
-from ._zip import create as create_zip
-from ._zip import open as open_zip
-from ._zip import zip_directory
+from scitex_io.bundle._zip import ZipBundle
+from scitex_io.bundle._zip import create as create_zip
+from scitex_io.bundle._zip import open as open_zip
+from scitex_io.bundle._zip import zip_directory
 
 __all__ = [
     # Types

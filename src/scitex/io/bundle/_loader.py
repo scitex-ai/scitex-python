@@ -18,7 +18,7 @@ New structure:
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Tuple
 
-from ._storage import get_storage
+from scitex_io.bundle._storage import get_storage
 
 if TYPE_CHECKING:
     from scitex_io.bundle._dataclasses import DataInfo, Spec

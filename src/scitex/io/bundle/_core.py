@@ -419,7 +419,7 @@ def load(path: Union[str, Path], in_memory: bool = True) -> Dict[str, Any]:
         result["is_zip"] = True
 
         if in_memory:
-            from ._zip import ZipBundle
+            from scitex_io.bundle._zip import ZipBundle
 
             with ZipBundle(p, mode="r") as zb:
                 result["_zip_bundle"] = zb
@@ -520,8 +520,8 @@ def save(
 
     # For direct ZIP saving with atomic writes
     if save_as_zip and atomic and bundle_type != BundleType.FIGURE:
-        from ._manifest import create_manifest
-        from ._zip import ZipBundle
+        from scitex_io.bundle._manifest import create_manifest
+        from scitex_io.bundle._zip import ZipBundle
 
         with ZipBundle(zip_path, mode="w") as zb:
             # Write manifest.json first
@@ -567,7 +567,7 @@ def save(
         raise ValueError(f"Unknown bundle type: {bundle_type}")
 
     # Write manifest.json for directory bundles
-    from ._manifest import write_manifest
+    from scitex_io.bundle._manifest import write_manifest
 
     write_manifest(dir_path, manifest_type)
 

@@ -35,7 +35,7 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from ._storage import Storage, get_storage
+from scitex_io.bundle._storage import Storage, get_storage
 
 if TYPE_CHECKING:
     from scitex_io.bundle._dataclasses import DataInfo, Spec

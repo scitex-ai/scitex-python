@@ -20,7 +20,7 @@ import zipfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, Tuple, Union
 
-from ._storage import Storage, get_storage
+from scitex_io.bundle._storage import Storage, get_storage
 
 if TYPE_CHECKING:
     from ._Bundle import Bundle

@@ -24,8 +24,8 @@ from ._saver import (
     save_bundle_components,
     save_render_outputs,
 )
-from ._storage import Storage, get_storage
-from ._validation import ValidationResult
+from scitex_io.bundle._storage import Storage, get_storage
+from scitex_io.bundle._validation import ValidationResult
 from .kinds._plot import Encoding, Theme
 from scitex_stats._dataclasses import Stats
 
