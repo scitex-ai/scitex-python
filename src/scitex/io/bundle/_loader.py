@@ -23,7 +23,7 @@ from ._storage import get_storage
 if TYPE_CHECKING:
     from ._dataclasses import DataInfo, Spec
     from .kinds._plot._dataclasses import Encoding, Theme
-    from .kinds._stats._dataclasses import Stats
+    from scitex_stats._dataclasses import Stats
 
 
 def load_bundle_components(
@@ -47,7 +47,7 @@ def load_bundle_components(
     """
     from ._dataclasses import DataInfo, Spec
     from .kinds._plot._dataclasses import Encoding, Theme
-    from .kinds._stats._dataclasses import Stats
+    from scitex_stats._dataclasses import Stats
 
     storage = get_storage(path)
 

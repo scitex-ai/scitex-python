@@ -12,8 +12,8 @@ Structure:
 - analyses: List of statistical tests and their results
 """
 
-# Public dataclasses
-from ._dataclasses import (  # Type aliases; GUI classes; Core classes
+# Public dataclasses: scitex_stats owns the schema (single source of truth).
+from scitex_stats._dataclasses import (  # noqa: F401
     STATS_VERSION,
     Analysis,
     DataRef,

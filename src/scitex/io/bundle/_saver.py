@@ -40,7 +40,7 @@ from ._storage import Storage, get_storage
 if TYPE_CHECKING:
     from ._dataclasses import DataInfo, Spec
     from .kinds._plot._dataclasses import Encoding, Theme
-    from .kinds._stats._dataclasses import Stats
+    from scitex_stats._dataclasses import Stats
 
 
 def save_bundle_components(

@@ -27,7 +27,7 @@ from ._saver import (
 from ._storage import Storage, get_storage
 from ._validation import ValidationResult
 from .kinds._plot import Encoding, Theme
-from .kinds._stats import Stats
+from scitex_stats._dataclasses import Stats
 
 if TYPE_CHECKING:
     from matplotlib.figure import Figure as MplFigure
