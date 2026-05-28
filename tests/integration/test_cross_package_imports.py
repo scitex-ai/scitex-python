@@ -116,7 +116,7 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.stats._mcp.server",
     "scitex.stats._utils",
     "scitex.stats._utils._normalizers",
-    "scitex.stats.io._bundle",
+    "scitex.stats.io",
     "scitex.stats.mcp_server",
     "scitex.str",
     "scitex.template",
