@@ -271,7 +271,7 @@ def register_external_lazy_modules() -> None:
 # explicit entries; the rest follow the `scitex_<short>` convention by default,
 # which the registry-driven map fills in automatically.
 _DEFAULT_BRANDED = {
-    "plt": "figrecipe",
+    "plt": "figrecipe.pyplot",
     "social": "socialia",
     "ai": "scitex_ml",  # ai split into ml + genai; default to ml
     "reproduce": "scitex_repro",  # umbrella name vs standalone short

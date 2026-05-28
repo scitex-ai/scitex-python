@@ -18,7 +18,7 @@ matplotlib.use("Agg")  # Use non-interactive backend
 
 import scitex
 import scitex.plt as mplt
-from scitex.plt.utils import histogram_bin_manager
+from figrecipe._utils._histogram_utils import histogram_bin_manager
 
 # Set up output dirs
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
