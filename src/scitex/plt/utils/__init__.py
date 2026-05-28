@@ -54,16 +54,9 @@ from ._scientific_captions import (
     quick_caption,
     save_with_caption,
 )
-from .metadata import (
-    assert_csv_json_consistency,
-    collect_figure_metadata,
-    collect_recipe_metadata,
-    verify_csv_json_consistency,
-)
 
 __all__ = [
     "HistogramBinManager",
-    "assert_csv_json_consistency",
     "ScientificCaption",
     "_escape_latex",
     "_format_caption_for_md",
@@ -78,8 +71,6 @@ __all__ = [
     "calc_nice_ticks",
     "caption_manager",
     "close",
-    "collect_figure_metadata",
-    "collect_recipe_metadata",
     "colorbar",
     "compare_modes",
     "configure_mpl",
@@ -111,6 +102,5 @@ __all__ = [
     "sanitize_id",
     "save_hitmap_png",
     "save_with_caption",
-    "verify_csv_json_consistency",
     "view_dimensions",
 ]
