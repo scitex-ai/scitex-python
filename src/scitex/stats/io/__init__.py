@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
-# Timestamp: "2025-12-13 (ywatanabe)"
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/stats/io/__init__.py
+"""Re-export shim for ``scitex.stats.io``.
 
-"""
-I/O operations for scitex.stats - Statistical results bundles (.stats).
-
-This module handles:
-    - .stats bundle load/save operations
-    - Statistical comparison metadata
-    - P-value and effect size validation
+Stats bundle I/O lives in the ``scitex_stats`` standalone package
+(``scitex_stats.io``); this umbrella module re-exports the public
+surface so legacy ``from scitex.stats.io import …`` callers continue
+to work. ``scitex_io.save("results.stats.zip", …)`` consumes the same
+implementation via the optional provider registered in
+``scitex_io._optional_providers``.
 """
 
-from ._bundle import (
+from scitex_stats.io import (  # noqa: F401
     STATS_SCHEMA_SPEC,
     load_stats_bundle,
     save_stats_bundle,
@@ -19,10 +17,8 @@ from ._bundle import (
 )
 
 __all__ = [
-    "validate_stats_spec",
+    "STATS_SCHEMA_SPEC",
     "load_stats_bundle",
     "save_stats_bundle",
-    "STATS_SCHEMA_SPEC",
+    "validate_stats_spec",
 ]
-
-# EOF
