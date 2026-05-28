@@ -2,9 +2,18 @@
 # Timestamp: 2025-12-19
 # File: /home/ywatanabe/proj/scitex-code/src/scitex/io/_save_modules/_plot_bundle.py
 
-"""Save matplotlib figures as .plot bundles."""
+"""Save matplotlib figures as .plot bundles.
+
+.. deprecated:: The ``.plot`` directory format (and its ``.plot.zip`` cousin)
+   is being phased out. figrecipe owns figure I/O via ``.plt.zip`` (Pltz)
+   and ``.fig.zip`` (Figz). For new code, save figures created with
+   ``figrecipe.subplots()`` (or ``scitex.plt.subplots`` after Phase D) to a
+   ``.plt.zip`` path — ``scitex.io.save`` will route through figrecipe's
+   optional provider.
+"""
 
 import tempfile
+import warnings
 from pathlib import Path
 
 from scitex import logging
@@ -38,6 +47,15 @@ def save_plot_bundle(obj, spath, as_zip=False, data=None, layered=True, **kwargs
     **kwargs
         Additional arguments passed to savefig.
     """
+    warnings.warn(
+        "scitex.io.save(fig, '*.plot' | '*.plot.zip') is deprecated and will "
+        "be removed in a future release. figrecipe owns figure I/O now — save "
+        "a figrecipe-recorded figure (figrecipe.subplots / scitex.plt.subplots "
+        "post-Phase-D) to '*.plt.zip' or '*.fig.zip' instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
     import shutil
 
     import matplotlib.figure
