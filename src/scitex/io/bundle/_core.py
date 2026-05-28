@@ -455,7 +455,7 @@ def load(path: Union[str, Path], in_memory: bool = True) -> Dict[str, Any]:
 
         result.update(load_figure_bundle(bundle_dir))
     elif bundle_type == BundleType.PLOT:
-        from scitex.plt.io._bundle import load_plot_bundle
+        from scitex.io.bundle.kinds._plot._legacy import load_plot_bundle
 
         result.update(load_plot_bundle(bundle_dir))
     elif bundle_type == BundleType.STATS:
@@ -556,7 +556,7 @@ def save(
 
         save_figure_bundle(data, dir_path)
     elif bundle_type == BundleType.PLOT:
-        from scitex.plt.io._bundle import save_plot_bundle
+        from scitex.io.bundle.kinds._plot._legacy import save_plot_bundle
 
         save_plot_bundle(data, dir_path)
     elif bundle_type == BundleType.STATS:
