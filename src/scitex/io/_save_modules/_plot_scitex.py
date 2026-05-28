@@ -341,60 +341,9 @@ def save_plot_as_scitex(obj, spath, as_zip=True, basename=None, **kwargs):
             json.dump(meta, f, indent=2)
 
     # Save cache/geometry_px.json and hitmap images for GUI hit areas
-    try:
-        from scitex.plt.utils._hitmap import (
-            HITMAP_AXES_COLOR,
-            HITMAP_BACKGROUND_COLOR,
-            apply_hitmap_colors,
-            extract_path_data,
-            extract_selectable_regions,
-            restore_original_colors,
-        )
+    from ._plot_scitex_hitmap import save_hitmap_geometry_and_images
 
-        geometry = {
-            "path_data": extract_path_data(fig),
-            "selectable_regions": extract_selectable_regions(fig),
-        }
-        with open(cache_dir / "geometry_px.json", "w") as f:
-            json.dump(geometry, f, indent=2)
-
-        # Generate hitmap images
-        axes_list = list(fig.axes) if hasattr(fig.axes, "__iter__") else [fig.axes]
-        original_props, color_map, groups = apply_hitmap_colors(fig)
-
-        # Store and set hitmap colors
-        saved_fig_facecolor = fig.patch.get_facecolor()
-        saved_ax_facecolors = []
-        for ax in axes_list:
-            saved_ax_facecolors.append(ax.get_facecolor())
-            ax.set_facecolor(HITMAP_BACKGROUND_COLOR)
-            for spine in ax.spines.values():
-                spine.set_color(HITMAP_AXES_COLOR)
-        fig.patch.set_facecolor(HITMAP_BACKGROUND_COLOR)
-
-        # Save hitmap PNG
-        fig.savefig(
-            cache_dir / "hitmap.png",
-            dpi=dpi,
-            format="png",
-            facecolor=HITMAP_BACKGROUND_COLOR,
-        )
-
-        # Save hitmap SVG
-        fig.savefig(
-            cache_dir / "hitmap.svg",
-            format="svg",
-            facecolor=HITMAP_BACKGROUND_COLOR,
-        )
-
-        # Restore colors
-        restore_original_colors(original_props)
-        fig.patch.set_facecolor(saved_fig_facecolor)
-        for i, ax in enumerate(axes_list):
-            ax.set_facecolor(saved_ax_facecolors[i])
-
-    except Exception:
-        pass  # Skip if hitmap extraction fails
+    save_hitmap_geometry_and_images(fig, cache_dir, dpi)
 
     # Save cache/render_manifest.json
     render_manifest = {

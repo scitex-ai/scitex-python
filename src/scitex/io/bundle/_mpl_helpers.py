@@ -154,9 +154,14 @@ def extract_data_from_mpl_figure(fig: "MplFigure") -> Optional[Any]:
             pass
 
     # Fallback: extract from rendered figure (limited plot types)
+    from figrecipe._hitmap import as_mpl_figure
+
     from ._extractors import extract_bar_data, extract_line_data, extract_scatter_data
 
     extracted_data = {}
+    # Normalise figrecipe RecordingFigure -> matplotlib Figure so fig.axes is a
+    # flat list of Axes (a RecordingFigure exposes a nested [[ax], ...] grid).
+    fig = as_mpl_figure(fig)
     axes_list = list(fig.axes) if hasattr(fig.axes, "__iter__") else [fig.axes]
 
     for ax_idx, ax in enumerate(axes_list):
@@ -258,9 +263,13 @@ def build_encoding_from_mpl_figure(fig: "MplFigure") -> "Encoding":
             return encoding
 
     # Fallback: detect from rendered figure
+    from figrecipe._hitmap import as_mpl_figure
+
     from ._extractors import build_bar_traces, build_line_traces, build_scatter_traces
 
     traces = []
+    # Normalise figrecipe RecordingFigure -> matplotlib Figure (flat axes).
+    fig = as_mpl_figure(fig)
     axes_list = list(fig.axes) if hasattr(fig.axes, "__iter__") else [fig.axes]
 
     for ax_idx, ax in enumerate(axes_list):
@@ -281,7 +290,7 @@ def build_theme_from_mpl_figure(fig: "MplFigure") -> "Theme":
 def extract_geometry_from_mpl_figure(fig: "MplFigure") -> dict:
     """Extract geometry data from matplotlib figure for hit testing."""
     try:
-        from scitex.plt.utils._hitmap import (
+        from figrecipe._hitmap import (
             extract_path_data,
             extract_selectable_regions,
         )
@@ -299,13 +308,16 @@ def generate_hitmap_from_mpl_figure(fig: "MplFigure", dpi: int = 300) -> tuple:
     try:
         import io
 
-        from scitex.plt.utils._hitmap import (
+        from figrecipe._hitmap import (
             HITMAP_AXES_COLOR,
             HITMAP_BACKGROUND_COLOR,
             apply_hitmap_colors,
+            as_mpl_figure,
             restore_original_colors,
         )
 
+        # Normalise figrecipe RecordingFigure -> matplotlib Figure (flat axes).
+        fig = as_mpl_figure(fig)
         axes_list = list(fig.axes) if hasattr(fig.axes, "__iter__") else [fig.axes]
         original_props, color_map, groups = apply_hitmap_colors(fig)
 
