@@ -21,6 +21,38 @@ from scitex_dev import try_import_optional
 
 # Core loaders (from scitex-io, single source of truth)
 from scitex_io._load_modules._bibtex import _load_bibtex
+
+# Sentinel returned by _try_scitex_io_provider_load when no optional
+# provider matched (so callers can fall back to the local loader table).
+_PROVIDER_MISS = object()
+
+
+def _try_scitex_io_provider_load(lpath, **kwargs):
+    """Delegate to scitex_io's registry for compound extensions.
+
+    Returns the loaded object on success, or the ``_PROVIDER_MISS``
+    sentinel when no provider matched (so the caller falls back to the
+    umbrella's own loader table).
+    """
+    try:
+        from scitex_io._optional_providers import OPTIONAL_COMPOUND_EXTS
+        from scitex_io._registry import get_loader
+    except Exception:
+        return _PROVIDER_MISS
+    lpath_lower = str(lpath).lower()
+    matched = None
+    for compound in OPTIONAL_COMPOUND_EXTS:
+        if lpath_lower.endswith(compound):
+            matched = compound
+            break
+    if matched is None:
+        return _PROVIDER_MISS
+    loader = get_loader(matched)
+    if loader is None:
+        return _PROVIDER_MISS
+    return loader(lpath, **kwargs)
+
+
 from scitex_io._load_modules._json import _load_json
 from scitex_io._load_modules._markdown import _load_markdown
 from scitex_io._load_modules._numpy import _load_npy
@@ -309,7 +341,16 @@ def load(
         if verbose:
             print(f"[DEBUG] After Path conversion: {lpath}")
 
-    # Handle bundle formats (.plot, .figure, .stats and their ZIP variants)
+    # Compound extensions contributed by ecosystem optional providers
+    # (figrecipe → .plt.zip/.fig.zip, scitex_stats → .stats.zip). These
+    # take precedence over the umbrella's legacy ``_load_bundle`` fast
+    # path so that domain packages own their I/O end-to-end.
+    _provider_result = _try_scitex_io_provider_load(lpath, **kwargs)
+    if _provider_result is not _PROVIDER_MISS:
+        return _provider_result
+
+    # Handle legacy bundle formats (.plot, .figure, .stats directories
+    # and any compound ext not covered by an optional provider above).
     bundle_extensions = (".figure", ".plot", ".stats")
     for bext in bundle_extensions:
         if lpath.endswith(bext) or lpath.endswith(f"{bext}.zip"):
@@ -439,6 +480,13 @@ def load(
     # Special handling for numpy files with caching
     if cache and detected_ext in ["npy", "npz"]:
         return load_npy_cached(lpath, **kwargs)
+
+    # Compound-extension fallthrough — figrecipe → .plt.zip/.fig.zip,
+    # scitex_stats → .stats.zip, etc. The umbrella inherits whatever
+    # scitex_io's optional-provider registry knows about.
+    _provider_result = _try_scitex_io_provider_load(lpath, **kwargs)
+    if _provider_result is not _PROVIDER_MISS:
+        return _provider_result
 
     loader = preserve_doc(loaders_dict.get(detected_ext, _load_txt))
 

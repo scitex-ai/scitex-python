@@ -164,6 +164,40 @@ def save(
         return False
 
 
+def _try_scitex_io_provider(obj, spath, **kwargs) -> bool:
+    """Delegate to scitex_io's registry (which knows about optional providers).
+
+    Returns ``True`` when an ecosystem provider handled the save (e.g.
+    figrecipe for ``.plt.zip`` / ``.fig.zip``, scitex_stats for
+    ``.stats.zip``), ``False`` when no provider matched and the caller
+    should surface "Unsupported file format" itself.
+    """
+    try:
+        import scitex_io
+        from scitex_io._optional_providers import OPTIONAL_COMPOUND_EXTS
+        from scitex_io._registry import get_saver
+    except Exception:
+        return False
+
+    # Match against the declared compound extensions (e.g. ".plt.zip"),
+    # not just the trailing ".zip" splitext gives us.
+    matched_ext = None
+    spath_lower = str(spath).lower()
+    for compound in OPTIONAL_COMPOUND_EXTS:
+        if spath_lower.endswith(compound):
+            matched_ext = compound
+            break
+    if matched_ext is None:
+        return False
+
+    saver = get_saver(matched_ext)
+    if saver is None:
+        return False
+
+    saver(obj, spath, **kwargs)
+    return True
+
+
 def _parse_fstring_path(specified_path):
     """Parse f-string expressions in path."""
     if not (specified_path.startswith('f"') or specified_path.startswith("f'")):
@@ -314,6 +348,12 @@ def _save(
         save_csv(obj, spath, **kwargs)
     elif not is_file_like and spath.endswith(".pkl.gz"):
         save_pickle_compressed(obj, spath, **kwargs)
+    elif not is_file_like and _try_scitex_io_provider(obj, spath, **kwargs):
+        # Compound extensions contributed by ecosystem optional providers
+        # (figrecipe → .plt.zip/.fig.zip, scitex_stats → .stats.zip, …).
+        # Delegate to scitex_io's registry so the umbrella inherits every
+        # provider the standalone package knows about.
+        pass
     else:
         logger.warning(f"Unsupported file format. {spath} was not saved.")
         return
