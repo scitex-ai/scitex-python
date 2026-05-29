@@ -67,7 +67,7 @@ dependencies = [
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
     "scitex-dev==0.14.1",
-    "scitex-io==0.2.15",
+    "scitex-io @ git+https://github.com/ywatanabe1989/scitex-io.git@develop",
     "scitex-stats==0.2.21",
     "scitex-audio==0.2.13",
     "scitex-notification==0.2.7",
@@ -372,7 +372,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io==0.2.15",
+    "scitex-io @ git+https://github.com/ywatanabe1989/scitex-io.git@develop",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -918,7 +918,7 @@ dev = [
     "scitex-dev==0.14.1",
     "scitex-etc==0.1.9",
     "scitex-genai==0.1.0",
-    "scitex-io==0.2.15",
+    "scitex-io @ git+https://github.com/ywatanabe1989/scitex-io.git@develop",
     "scitex-notification==0.2.7",
     "scitex-scholar==1.4.1",
     "scitex-ssh==1.0.1",
@@ -1057,6 +1057,12 @@ linter = ["scitex-dev==0.14.1"]
 core = ["scitex-core==0.2.8"]
 orochi = ["scitex-orochi==0.16.3"]
 agent-container = ["scitex-agent-container==0.21.3"]
+
+[tool.hatch.metadata]
+# Allow git+https direct refs in [project.dependencies]. scitex-io develop
+# has the bundle subpackage that PyPI 0.2.15 lacks; pin via git+https until
+# the next scitex-io release lands on PyPI.
+allow-direct-references = true
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"
