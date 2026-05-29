@@ -105,7 +105,6 @@ context = _LazyModule("context", external="scitex_context")
 dev = _LazyModule("dev")
 gists = _LazyModule("gists", external="scitex_gists")
 errors = _LazyModule("errors")
-units = _LazyModule("units")
 logging = _LazyModule("logging", external="scitex_logging")
 session = _CallableModuleWrapper("session", main_decorator_name="session")
 session._setup_persistence("scitex", "session")
@@ -240,7 +239,6 @@ __all__ = [
     "decorators",
     "sh",
     "errors",
-    "units",
     "logging",
     "session",
     "module",
