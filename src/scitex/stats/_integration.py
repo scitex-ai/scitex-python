@@ -222,7 +222,7 @@ def load_stats(path):
 # Figrecipe Integration
 # =============================================================================
 
-from ._figrecipe_integration import (  # noqa: E402
+from scitex_stats._figrecipe_integration import (  # noqa: E402
     annotate,
     load_and_annotate,
     to_figrecipe,
