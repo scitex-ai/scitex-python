@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 # Timestamp: 2026-03-11
 # File: src/scitex/io/__init__.py
-"""SciTeX IO module — delegates core I/O to scitex-io, adds scitex-specific integration.
+"""SciTeX IO module — thin re-export of scitex-io.
 
-Core format handlers come from scitex-io (single source of truth).
-save() and load() stay here because they integrate with scitex.clew,
-scitex.path, scitex.session, and figure CSV export.
+`save()` and `load()` are re-exported directly from `scitex_io` per
+SOC.md R5/R6. Observer wiring (clew session tracking) is layered
+**below** the umbrella: `scitex-clew` self-registers with
+`scitex_io`'s neutral post-save / post-load hook registry on its own
+import, so any `scitex.io.save(...)` / `scitex.io.load(...)` call
+automatically triggers clew tracking when clew is installed. No
+umbrella glue needed.
 
-Bundle I/O is scitex-specific:
+Bundle I/O is now also re-exported from scitex-io:
+
     from scitex.io.bundle import Bundle
 """
 
