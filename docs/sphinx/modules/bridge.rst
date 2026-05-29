@@ -1,7 +1,4 @@
 bridge Module (``stx.bridge``)
 ==============================
 
-.. automodule:: scitex.bridge
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.bridge` for the auto-generated Python API.

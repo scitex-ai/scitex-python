@@ -158,6 +158,4 @@ See the :doc:`/gallery` for visual examples.
 API Reference
 -------------
 
-.. automodule:: scitex.plt
-   :members: subplots
-   :show-inheritance:
+See :doc:`/api/scitex.plt` for the auto-generated Python API.

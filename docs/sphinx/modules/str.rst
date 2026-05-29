@@ -1,7 +1,4 @@
 str Module (``stx.str``)
 ========================
 
-.. automodule:: scitex.str
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.str` for the auto-generated Python API.

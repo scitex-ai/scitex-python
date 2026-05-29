@@ -71,5 +71,4 @@ Available Functions
 API Reference
 -------------
 
-.. automodule:: scitex.dsp
-   :members:
+See :doc:`/api/scitex.dsp` for the auto-generated Python API.

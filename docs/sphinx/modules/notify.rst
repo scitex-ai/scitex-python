@@ -1,7 +1,4 @@
 notify Module (``stx.notify``)
 ==============================
 
-.. automodule:: scitex.notify
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.notify` for the auto-generated Python API.

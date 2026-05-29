@@ -1,7 +1,4 @@
 git Module (``stx.git``)
 ========================
 
-.. automodule:: scitex.git
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.git` for the auto-generated Python API.

@@ -1,7 +1,4 @@
 audit Module (``stx.audit``)
 ============================
 
-.. automodule:: scitex.audit
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.audit` for the auto-generated Python API.

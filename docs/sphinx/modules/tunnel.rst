@@ -1,7 +1,4 @@
 tunnel Module (``stx.tunnel``)
 ==============================
 
-.. automodule:: scitex.tunnel
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.tunnel` for the auto-generated Python API.

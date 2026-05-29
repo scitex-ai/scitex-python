@@ -1,7 +1,4 @@
 dataset Module (``stx.dataset``)
 ================================
 
-.. automodule:: scitex.dataset
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.dataset` for the auto-generated Python API.

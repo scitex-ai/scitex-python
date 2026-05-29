@@ -1,7 +1,4 @@
 path Module (``stx.path``)
 ==========================
 
-.. automodule:: scitex.path
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.path` for the auto-generated Python API.

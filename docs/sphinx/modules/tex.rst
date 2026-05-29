@@ -1,7 +1,4 @@
 tex Module (``stx.tex``)
 ========================
 
-.. automodule:: scitex.tex
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.tex` for the auto-generated Python API.

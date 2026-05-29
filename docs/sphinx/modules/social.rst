@@ -1,7 +1,4 @@
 social Module (``stx.social``)
 ==============================
 
-.. automodule:: scitex.social
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.social` for the auto-generated Python API.

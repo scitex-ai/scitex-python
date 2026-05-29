@@ -1,7 +1,4 @@
 media Module (``stx.media``)
 ============================
 
-.. automodule:: scitex.media
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.media` for the auto-generated Python API.

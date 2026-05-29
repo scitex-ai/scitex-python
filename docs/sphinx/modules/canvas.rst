@@ -1,7 +1,4 @@
 canvas Module (``stx.canvas``)
 ==============================
 
-.. automodule:: scitex.canvas
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.canvas` for the auto-generated Python API.

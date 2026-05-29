@@ -1,7 +1,4 @@
 dict Module (``stx.dict``)
 ==========================
 
-.. automodule:: scitex.dict
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.dict` for the auto-generated Python API.

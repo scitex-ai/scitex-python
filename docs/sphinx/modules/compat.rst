@@ -1,7 +1,4 @@
 compat Module (``stx.compat``)
 ==============================
 
-.. automodule:: scitex.compat
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.compat` for the auto-generated Python API.

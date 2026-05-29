@@ -1,7 +1,4 @@
 types Module (``stx.types``)
 ============================
 
-.. automodule:: scitex.types
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.types` for the auto-generated Python API.

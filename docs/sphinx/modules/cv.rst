@@ -1,7 +1,4 @@
 cv Module (``stx.cv``)
 ======================
 
-.. automodule:: scitex.cv
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.cv` for the auto-generated Python API.

@@ -1,7 +1,4 @@
 context Module (``stx.context``)
 ================================
 
-.. automodule:: scitex.context
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.context` for the auto-generated Python API.
