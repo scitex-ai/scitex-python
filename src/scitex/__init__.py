@@ -85,7 +85,9 @@ dict = _LazyModule("dict", external="scitex_dict")
 decorators = _LazyModule("decorators", external="scitex_decorators")
 dsp = _LazyModule("dsp", external="scitex_dsp")
 nn = _LazyModule("nn", external="scitex_nn")
-torch = _LazyModule("torch")
+torch = _LazyModule(
+    "torch", external="scitex_linalg"
+)  # torch numerics live in scitex-linalg (>=0.1.5)
 web = _LazyModule("web", external="scitex_web")
 db = _LazyModule("db", external="scitex_db")
 repro = _LazyModule("repro", external="scitex_repro")
