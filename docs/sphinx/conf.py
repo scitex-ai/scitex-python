@@ -51,6 +51,11 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_autodoc_typehints",
     "nbsphinx",  # For including Jupyter notebooks
+    # matplotlib registers `:mpltype:` / `:rc:` roles and the `.. plot::`
+    # directive that appear in matplotlib (and figrecipe/scitex-plt) docstrings.
+    # Without these, sphinx-build -W errors on those autodoc'd docstrings.
+    "matplotlib.sphinxext.roles",
+    "matplotlib.sphinxext.plot_directive",
 ]
 
 # Autodoc settings
