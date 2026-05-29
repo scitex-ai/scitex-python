@@ -296,6 +296,7 @@ _DEFAULT_BRANDED = {
     "ai": "scitex_ml",  # ai split into ml + genai; default to ml
     "reproduce": "scitex_repro",  # umbrella name vs standalone short
     "rng": "scitex_repro",  # rng helpers ship from scitex_repro
+    "verify": "scitex_clew",  # verify renamed to clew; in-tree dir removed
     "dt": "scitex_datetime",  # legacy short for scitex_core.dt → standalone
 }
 
