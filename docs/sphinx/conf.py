@@ -51,11 +51,16 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_autodoc_typehints",
     "nbsphinx",  # For including Jupyter notebooks
-    # matplotlib registers `:mpltype:` / `:rc:` roles and the `.. plot::`
-    # directive that appear in matplotlib (and figrecipe/scitex-plt) docstrings.
-    # Without these, sphinx-build -W errors on those autodoc'd docstrings.
+    # matplotlib registers the `:mpltype:` / `:rc:` roles that appear in
+    # matplotlib (and figrecipe/scitex-plt) docstrings. The companion
+    # `plot_directive` extension would normally provide the `.. plot::`
+    # directive but it enforces strict file-existence checks on the
+    # script-or-example references inside matplotlib's own docstrings —
+    # those paths only exist in matplotlib's own docs tree, so loading the
+    # extension here turns `Errno 2: No such file or directory` errors
+    # into PR-blocking warnings. We register a no-op `plot::` directive
+    # in setup() instead.
     "matplotlib.sphinxext.roles",
-    "matplotlib.sphinxext.plot_directive",
 ]
 
 # Autodoc settings
@@ -228,7 +233,27 @@ def autodoc_process_bases(app, name, obj, options, bases):
     return [b for b in bases if not getattr(b, "__name__", "").startswith("_")]
 
 
+class _NoopPlotDirective(__import__("docutils").parsers.rst.Directive):
+    """No-op replacement for matplotlib's `plot::` directive.
+
+    Matplotlib's docstrings frequently use `.. plot:: <script_path>`. We
+    don't want to evaluate those plots during docs build (they reference
+    files inside matplotlib's own repo), but we DO need the directive
+    registered or sphinx-build -W errors on the unknown directive.
+    """
+
+    has_content = True
+    required_arguments = 0
+    optional_arguments = 99
+    final_argument_whitespace = True
+    option_spec = {}
+
+    def run(self):  # noqa: D401
+        return []
+
+
 def setup(app):
     """Register Sphinx event hooks for filtering private members."""
     app.connect("autodoc-skip-member", autodoc_skip_member)
     app.connect("autodoc-process-bases", autodoc_process_bases)
+    app.add_directive("plot", _NoopPlotDirective)
