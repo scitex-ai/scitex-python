@@ -61,6 +61,8 @@ dependencies = [
     "packaging",
     "natsort",  # Natural sorting - used by many modules
     "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
+    # Config + env loading (scitex.helpers.load_scitex_env delegates here)
+    "scitex-config>=0.3.6",
     # Reproducibility Verification
     "scitex-clew==0.2.14",
     # App SDK — unified file storage for local + cloud
