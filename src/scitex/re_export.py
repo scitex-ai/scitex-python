@@ -200,6 +200,7 @@ class _CallableModuleWrapper:
 # imports like `from scitex.<short>.<sub> import Y`) resolve to the external
 # package without requiring a `src/scitex/<short>/` directory in this repo.
 EXTERNAL_REEXPORTS = {
+    "dev": "scitex_dev",
     "bridge": "scitex_bridge",
     "capture": "scitex_capture",
     "config": "scitex_config",
