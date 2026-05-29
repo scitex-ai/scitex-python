@@ -104,7 +104,9 @@ etc = _LazyModule("etc", external="scitex_etc")
 context = _LazyModule("context", external="scitex_context")
 dev = _LazyModule("dev")
 gists = _LazyModule("gists", external="scitex_gists")
-errors = _LazyModule("errors")
+errors = _LazyModule(
+    "errors", external="scitex_logging"
+)  # errors live in scitex-logging
 logging = _LazyModule("logging", external="scitex_logging")
 session = _CallableModuleWrapper("session", main_decorator_name="session")
 session._setup_persistence("scitex", "session")

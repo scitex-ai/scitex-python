@@ -298,6 +298,7 @@ _DEFAULT_BRANDED = {
     "rng": "scitex_repro",  # rng helpers ship from scitex_repro
     "verify": "scitex_clew",  # verify renamed to clew; in-tree dir removed
     "tunnel": "scitex_ssh",  # scitex-tunnel merged into scitex-ssh; in-tree dir removed
+    "errors": "scitex_logging",  # error taxonomy lives in scitex-logging; in-tree shim removed
     "dt": "scitex_datetime",  # legacy short for scitex_core.dt → standalone
 }
 
