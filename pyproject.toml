@@ -62,43 +62,43 @@ dependencies = [
     "natsort",  # Natural sorting - used by many modules
     "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
     # Reproducibility Verification
-    "scitex-clew>=0.1.0",
+    "scitex-clew==0.2.12",
     # App SDK — unified file storage for local + cloud
-    "scitex-app>=0.2.5",
+    "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.11.7",
-    "scitex-io>=0.2.0",
-    "scitex-stats>=0.2.0",
-    "scitex-audio>=0.2.10",
-    "scitex-notification>=0.1.0",
-    "scitex-notebook>=0.1.1",
+    "scitex-dev==0.14.1",
+    "scitex-io==0.2.15",
+    "scitex-stats==0.2.21",
+    "scitex-audio==0.2.13",
+    "scitex-notification==0.2.7",
+    "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
-    "scitex-core>=0.2.0",
-    "scitex-db>=0.1.7",
-    "scitex-scholar>=1.2.3",
-    "scitex-parallel>=0.1.4",
-    "scitex-types>=0.1.3",
-    "scitex-path>=0.1.3",
-    "scitex-repro>=0.1.3",
-    "scitex-compat>=0.1.4",
-    "scitex-etc>=0.1.4",
-    "scitex-genai>=0.1.0",
-    "scitex-gists>=0.1.3",
-    "scitex-audit>=0.1.3",
-    "scitex-logging>=0.1.3",
-    "scitex-dict>=0.1.3",
-    "scitex-browser>=0.1.14",
-    "scitex-str>=0.1.7",
-    "scitex-benchmark>=0.1.3",
-    "scitex-context>=0.1.1",
-    "scitex-cv>=0.1.2",
-    "scitex-introspect>=0.1.4",
-    "scitex-msword>=0.1.1",
-    "scitex-os>=0.1.1",
-    "scitex-security>=0.1.1",
-    "scitex-tex>=0.1.3",
-    "figrecipe>=0.28.0",
-    "scitex-ui>=0.4.0",
+    "scitex-core==0.2.8",
+    "scitex-db==0.1.11",
+    "scitex-scholar==1.4.1",
+    "scitex-parallel==0.1.8",
+    "scitex-types==0.1.6",
+    "scitex-path==0.1.7",
+    "scitex-repro==0.1.6",
+    "scitex-compat==0.1.8",
+    "scitex-etc==0.1.9",
+    "scitex-genai==0.1.0",
+    "scitex-gists==0.1.7",
+    "scitex-audit==0.1.7",
+    "scitex-logging==0.1.7",
+    "scitex-dict==0.1.7",
+    "scitex-browser==0.1.15",
+    "scitex-str==0.1.12",
+    "scitex-benchmark==0.1.5",
+    "scitex-context==0.1.4",
+    "scitex-cv==0.1.5",
+    "scitex-introspect==0.1.7",
+    "scitex-msword==0.1.4",
+    "scitex-os==0.1.7",
+    "scitex-security==0.1.4",
+    "scitex-tex==0.1.7",
+    "figrecipe==0.28.12",
+    "scitex-ui==0.5.1",
 ]
 
 [project.urls]
@@ -152,7 +152,7 @@ scitex = "scitex._linter_plugin:get_plugin"
 # App Module - Unified file storage SDK (local + cloud)
 # Use: pip install scitex[app]
 app = [
-    "scitex-app>=0.2.5",
+    "scitex-app==0.2.8",
 ]
 
 # ML Module — classical / deep machine-learning utilities
@@ -164,18 +164,18 @@ app = [
 # GenAI Module — generative-AI provider abstraction (LLM today; agent /
 # image / audio / video reserved). Use: pip install scitex[genai]
 genai = [
-    "scitex-genai>=0.1.0",
+    "scitex-genai==0.1.0",
 ]
 
 # Audio Module - Text-to-Speech
 # Use: pip install scitex[audio]
 audio = [
-    "scitex-audio>=0.2.10",
+    "scitex-audio==0.2.13",
 ]
 
 # Audit Module - Code and security auditing
 # Use: pip install scitex[audit]
-audit = ["scitex-audit>=0.1.3"]
+audit = ["scitex-audit==0.1.7"]
 
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
@@ -192,7 +192,7 @@ bridge = [
 
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
-container = ["scitex-container"]
+container = ["scitex-container==0.2.1"]
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -200,7 +200,7 @@ browser = [
     "playwright>=1.40.0",
     "aiohttp",
     "matplotlib",
-    "scitex-browser>=0.1.14",
+    "scitex-browser==0.1.15",
 ]
 
 # Capture Module - Screenshot capture
@@ -228,12 +228,12 @@ cli = [
 # Use: pip install scitex[cloud]
 cloud = [
     "matplotlib",
-    "scitex-cloud>=0.16.1",
+    "scitex-cloud==0.17.0",
 ]
 
 # Compat Module - Compatibility utilities
 # Use: pip install scitex[compat]
-compat = ["scitex-compat>=0.1.4"]
+compat = ["scitex-compat==0.1.8"]
 
 # Config Module - Configuration management
 # Use: pip install scitex[config]
@@ -257,12 +257,12 @@ cv = [
 db = [
     "sqlalchemy",
     "psycopg2-binary",
-    "scitex-db>=0.1.3",
+    "scitex-db==0.1.11",
 ]
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = ["scitex-dataset"]
+dataset = ["scitex-dataset==0.3.10"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -289,7 +289,7 @@ diagram = [
 
 # Dict Module - Dictionary utilities
 # Use: pip install scitex[dict]
-dict = ["scitex-dict>=0.1.3"]
+dict = ["scitex-dict==0.1.7"]
 
 # DSP Module - Digital Signal Processing
 # Use: pip install scitex[dsp]
@@ -351,7 +351,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
-    "scitex-etc>=0.1.4",
+    "scitex-etc==0.1.9",
 ]
 
 # Events Module - Event system
@@ -360,7 +360,7 @@ events = []
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]
-gists = ["scitex-gists>=0.1.3"]
+gists = ["scitex-gists==0.1.7"]
 
 # Git Module - Git operations
 # Use: pip install scitex[git]
@@ -372,7 +372,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io>=0.2.0",
+    "scitex-io==0.2.15",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -430,7 +430,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
-    "scitex-logging>=0.1.3",
+    "scitex-logging==0.1.7",
 ]
 
 # Media Module - Media display utilities
@@ -440,7 +440,7 @@ media = []
 # ML Module - Machine learning
 # Use: pip install scitex[ml]
 ml = [
-    "scitex-ml>=0.1.0",
+    "scitex-ml==0.2.0",
 ]
 
 # Module Module - Module management
@@ -478,13 +478,13 @@ nn = [
 # Notebook Module - Jupyter notebook utilities
 # Use: pip install scitex[notebook]
 notebook = [
-    "scitex-notebook>=0.1.1",
+    "scitex-notebook==0.1.2",
 ]
 
 # Notification Module - Phone call, SMS, and other notifications
 # Use: pip install scitex[notification]
 notification = [
-    "scitex-notification>=0.1.0",
+    "scitex-notification==0.2.7",
 ]
 
 # OS Module - OS utilities
@@ -495,7 +495,7 @@ os = []
 # Use: pip install scitex[parallel]
 parallel = [
     "tqdm",
-    "scitex-parallel>=0.1.4",
+    "scitex-parallel==0.1.8",
 ]
 
 # Path Module - Path utilities
@@ -503,7 +503,7 @@ parallel = [
 path = [
     "GitPython",
     "matplotlib",
-    "scitex-path>=0.1.3",
+    "scitex-path==0.1.7",
 ]
 
 # Pd Module - Pandas utilities
@@ -525,7 +525,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe>=0.16.0",
+    "figrecipe==0.28.12",
 ]
 
 # Project Module - Project management
@@ -540,7 +540,7 @@ repro = [
     # "torch",
     # "jax",
     # "tensorflow",
-    "scitex-repro>=0.1.3"
+    "scitex-repro==0.1.6"
 ]
 
 # Resource Module - Resource monitoring
@@ -621,7 +621,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar>=1.2.3"
+    "scitex-scholar==1.4.1"
 ]
 
 # Schema Module - Data schema validation
@@ -648,13 +648,13 @@ sh = [
 # Social Module - Social media integration
 # Use: pip install scitex[social]
 social = [
-    "socialia>=0.3.1",
+    "socialia==0.5.14",
 ]
 
 # Stats Module - Statistical analysis
 # Use: pip install scitex[stats]
 stats = [
-    "scitex-stats>=0.2.0",
+    "scitex-stats==0.2.21",
     "scipy",
     "statsmodels",
     "matplotlib",
@@ -669,14 +669,14 @@ str = [
     "natsort",
     "matplotlib",
     "xarray",
-    "scitex-str>=0.1.7",
+    "scitex-str==0.1.12",
 ]
 
 # Template Module - Project templates
 # Use: pip install scitex[template]
 # Delegates to standalone scitex-template package (per general rule §12).
 template = [
-    "scitex-template>=0.6.3",
+    "scitex-template==0.6.7",
 ]
 
 # Tex Module - LaTeX utilities
@@ -688,7 +688,7 @@ tex = [
 # Tunnel Module - SSH reverse tunnel for NAT traversal
 # Use: pip install scitex[tunnel]
 tunnel = [
-    "scitex-ssh",
+    "scitex-ssh==1.0.1",
 ]
 
 # Torch Module - PyTorch support
@@ -703,12 +703,12 @@ types = [
     "xarray",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-types>=0.1.2"
+    "scitex-types==0.1.6"
 ]
 
 # UI Module - User interface utilities
 # Use: pip install scitex[ui]
-ui = ["scitex-ui>=0.4.7"]
+ui = ["scitex-ui==0.5.1"]
 
 # Utils Module - General utilities
 # Use: pip install scitex[utils]
@@ -756,12 +756,12 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = ["scitex-clew>=0.2.5"]
+clew = ["scitex-clew==0.2.12"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer",  # Core writer package (single source of truth)
+    "scitex-writer==2.17.2",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -828,7 +828,7 @@ dev = [
     "crossref-local",
     "csv2latex",
     "feedparser",
-    "figrecipe>=0.16.0",
+    "figrecipe==0.28.12",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -858,7 +858,7 @@ dev = [
     "myst-parser",
     "natsort",
     "nest-asyncio",
-    "newb>=0.1.0",
+    "newb==0.26.7",
     "numcodecs",
     "openai",
     "openalex-local",
@@ -907,24 +907,24 @@ dev = [
     "scholarly",
     "scikit-learn",
     "scipy",
-    "scitex-agent-container>=0.7.1",
-    "scitex-audio>=0.2.10",
-    "scitex-audit>=0.1.3",
-    "scitex-browser>=0.1.14",
-    "scitex-clew>=0.2.5",
-    "scitex-cloud>=0.16.1",
-    "scitex-container",
-    "scitex-dataset",
-    "scitex-dev>=0.11.7",
-    "scitex-etc>=0.1.4",
-    "scitex-genai>=0.1.0",
-    "scitex-io>=0.2.0",
-    "scitex-notification>=0.1.0",
-    "scitex-scholar>=1.2.3",
-    "scitex-ssh",
-    "scitex-stats>=0.2.0",
-    "scitex-ui>=0.4.7",
-    "scitex-writer",
+    "scitex-agent-container==0.21.3",
+    "scitex-audio==0.2.13",
+    "scitex-audit==0.1.7",
+    "scitex-browser==0.1.15",
+    "scitex-clew==0.2.12",
+    "scitex-cloud==0.17.0",
+    "scitex-container==0.2.1",
+    "scitex-dataset==0.3.10",
+    "scitex-dev==0.14.1",
+    "scitex-etc==0.1.9",
+    "scitex-genai==0.1.0",
+    "scitex-io==0.2.15",
+    "scitex-notification==0.2.7",
+    "scitex-scholar==1.4.1",
+    "scitex-ssh==1.0.1",
+    "scitex-stats==0.2.21",
+    "scitex-ui==0.5.1",
+    "scitex-writer==2.17.2",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1053,10 +1053,10 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev>=0.11.7"]
-core = ["scitex-core>=0.2.2"]
-orochi = ["scitex-orochi>=0.13.0"]
-agent-container = ["scitex-agent-container>=0.7.1"]
+linter = ["scitex-dev==0.14.1"]
+core = ["scitex-core==0.2.8"]
+orochi = ["scitex-orochi==0.16.3"]
+agent-container = ["scitex-agent-container==0.21.3"]
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"
