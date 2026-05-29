@@ -53,21 +53,6 @@ extensions = [
     "nbsphinx",  # For including Jupyter notebooks
 ]
 
-# Suppress non-actionable warnings. The umbrella `__init__.py`s wildcard-
-# re-export from standalone peers (e.g. `from scitex_clew import *`); when
-# the standalones grow their public API (e.g. the scitex-clew==0.2.12 pin
-# bump on this PR), autodoc surfaces each name once via the umbrella RST
-# and again via the standalone's own RST. The duplicate descriptions are
-# cosmetic (different qualnames; both render); suppress so
-# `sphinx-build -W` stays usable on PRs.
-suppress_warnings = [
-    "autosummary",
-    "autosectionlabel.*",
-    "ref.python",
-    "docutils",
-    "image.not_readable",
-]
-
 # Autodoc settings
 autodoc_default_options = {
     "members": True,
