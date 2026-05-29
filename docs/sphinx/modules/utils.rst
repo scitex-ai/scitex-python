@@ -1,7 +1,4 @@
 utils Module (``stx.utils``)
 ============================
 
-.. automodule:: scitex.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.utils` for the auto-generated Python API.

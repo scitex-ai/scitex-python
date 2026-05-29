@@ -1,7 +1,4 @@
 gists Module (``stx.gists``)
 ============================
 
-.. automodule:: scitex.gists
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.gists` for the auto-generated Python API.

@@ -1,7 +1,4 @@
 audio Module (``stx.audio``)
 ============================
 
-.. automodule:: scitex.audio
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.audio` for the auto-generated Python API.

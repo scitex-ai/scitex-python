@@ -1,7 +1,4 @@
 benchmark Module (``stx.benchmark``)
 ====================================
 
-.. automodule:: scitex.benchmark
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.benchmark` for the auto-generated Python API.

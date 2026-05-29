@@ -1,7 +1,4 @@
 capture Module (``stx.capture``)
 ================================
 
-.. automodule:: scitex.capture
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.capture` for the auto-generated Python API.

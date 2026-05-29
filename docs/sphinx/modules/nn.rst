@@ -76,5 +76,4 @@ Architectures
 API Reference
 -------------
 
-.. automodule:: scitex.nn
-   :members:
+See :doc:`/api/scitex.nn` for the auto-generated Python API.

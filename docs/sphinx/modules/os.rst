@@ -1,7 +1,4 @@
 os Module (``stx.os``)
 ======================
 
-.. automodule:: scitex.os
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.os` for the auto-generated Python API.

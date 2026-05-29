@@ -67,5 +67,4 @@ API Tree
 API Reference
 -------------
 
-.. automodule:: scitex.introspect
-   :members:
+See :doc:`/api/scitex.introspect` for the auto-generated Python API.

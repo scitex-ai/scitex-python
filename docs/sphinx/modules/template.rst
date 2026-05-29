@@ -82,5 +82,4 @@ Python API
 API Reference
 -------------
 
-.. automodule:: scitex.template
-   :members:
+See :doc:`/api/scitex.template` for the auto-generated Python API.

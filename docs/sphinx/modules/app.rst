@@ -1,7 +1,4 @@
 app Module (``stx.app``)
 ========================
 
-.. automodule:: scitex.app
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.app` for the auto-generated Python API.

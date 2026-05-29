@@ -33,6 +33,4 @@ Quick Reference
 API Reference
 -------------
 
-.. automodule:: scitex.gen
-   :members:
-   :show-inheritance:
+See :doc:`/api/scitex.gen` for the auto-generated Python API.

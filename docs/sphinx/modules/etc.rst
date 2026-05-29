@@ -1,7 +1,4 @@
 etc Module (``stx.etc``)
 ========================
 
-.. automodule:: scitex.etc
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.etc` for the auto-generated Python API.

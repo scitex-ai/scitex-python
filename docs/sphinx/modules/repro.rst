@@ -67,5 +67,4 @@ Available Functions
 API Reference
 -------------
 
-.. automodule:: scitex.repro
-   :members:
+See :doc:`/api/scitex.repro` for the auto-generated Python API.

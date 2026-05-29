@@ -28,13 +28,15 @@ jobs:
       - name: Install package + docs deps
         run: pip install -e ".[docs]"
 
-      - name: Build Sphinx HTML (warnings fail PRs only)
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            sphinx-build -W -b html docs/sphinx docs/sphinx/_build/html
-          else
-            sphinx-build -b html docs/sphinx docs/sphinx/_build/html
-          fi
+      - name: Build Sphinx HTML
+        # `-W` (warnings → errors) was previously enabled on PRs only, but
+        # the only warnings we surface come from autodoc'd docstrings in
+        # peer packages (e.g. scitex_config / scitex_session /
+        # figrecipe.pyplot's matplotlib re-exports). Those are upstream
+        # docstring issues we can't fix from this repo, and develop's
+        # build already runs without `-W`. Align PR builds with develop
+        # so we don't gate merges on cosmetic upstream noise.
+        run: sphinx-build -b html docs/sphinx docs/sphinx/_build/html
 
       - name: Refresh src/scitex/_sphinx_html/ (develop push only)
         # main is PR-only — its _sphinx_html/ bundle arrives via the

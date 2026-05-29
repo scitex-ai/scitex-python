@@ -78,5 +78,4 @@ Other
 API Reference
 -------------
 
-.. automodule:: scitex.ai
-   :members:
+See :doc:`/api/scitex.ai` for the auto-generated Python API.

@@ -128,6 +128,4 @@ Configure via ``pyproject.toml``:
 API Reference
 -------------
 
-.. automodule:: scitex.linter
-   :members:
-   :show-inheritance:
+See :doc:`/api/scitex.linter` for the auto-generated Python API.

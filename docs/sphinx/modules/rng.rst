@@ -1,7 +1,4 @@
 rng Module (``stx.rng``)
 ========================
 
-.. automodule:: scitex.rng
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.rng` for the auto-generated Python API.

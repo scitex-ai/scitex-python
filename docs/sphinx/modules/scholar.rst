@@ -128,6 +128,4 @@ Storage Architecture
 API Reference
 -------------
 
-.. automodule:: scitex.scholar
-   :members:
-   :show-inheritance:
+See :doc:`/api/scitex.scholar` for the auto-generated Python API.

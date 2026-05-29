@@ -1,7 +1,4 @@
 resource Module (``stx.resource``)
 ==================================
 
-.. automodule:: scitex.resource
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.resource` for the auto-generated Python API.

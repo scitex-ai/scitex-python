@@ -95,5 +95,4 @@ Backends
 API Reference
 -------------
 
-.. automodule:: scitex.diagram
-   :members:
+See :doc:`/api/scitex.diagram` for the auto-generated Python API.

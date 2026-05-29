@@ -1,7 +1,4 @@
 events Module (``stx.events``)
 ==============================
 
-.. automodule:: scitex.events
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.events` for the auto-generated Python API.

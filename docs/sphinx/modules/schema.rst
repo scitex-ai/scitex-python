@@ -1,7 +1,4 @@
 schema Module (``stx.schema``)
 ==============================
 
-.. automodule:: scitex.schema
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.schema` for the auto-generated Python API.

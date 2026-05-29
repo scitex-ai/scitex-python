@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 # Timestamp: 2026-03-11
 # File: src/scitex/io/__init__.py
-"""SciTeX IO module — delegates core I/O to scitex-io, adds scitex-specific integration.
+"""SciTeX IO module — thin re-export of scitex-io.
 
-Core format handlers come from scitex-io (single source of truth).
-save() and load() stay here because they integrate with scitex.clew,
-scitex.path, scitex.session, and figure CSV export.
+`save()` and `load()` are re-exported directly from `scitex_io` per
+SOC.md R5/R6. Observer wiring (clew session tracking) is layered
+**below** the umbrella: `scitex-clew` self-registers with
+`scitex_io`'s neutral post-save / post-load hook registry on its own
+import, so any `scitex.io.save(...)` / `scitex.io.load(...)` call
+automatically triggers clew tracking when clew is installed. No
+umbrella glue needed.
 
-Bundle I/O is scitex-specific:
+Bundle I/O is now also re-exported from scitex-io:
+
     from scitex.io.bundle import Bundle
 """
 
@@ -86,15 +91,15 @@ except (ImportError, TypeError):
     migrate_h5_to_zarr_batch = None
 
 # =============================================================================
-# SciTeX-specific: save/load with clew hooks + session integration
+# Core save/load — pure re-export of scitex_io. Observer wiring (clew
+# session tracking) is handled by scitex-clew self-registering with
+# scitex_io's post-save/post-load hook registry on its own import,
+# per SOC.md R6. No umbrella glue needed.
 # =============================================================================
 
-# SciTeX-specific: bundle I/O
-from scitex_io import load_configs
+from scitex_io import load, load_configs, save  # noqa: F401
 
 from . import bundle  # noqa: F401
-from ._load import load
-from ._save import save
 
 # Metadata embedding (from scitex-io)
 try:

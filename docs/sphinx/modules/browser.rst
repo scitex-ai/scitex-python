@@ -1,7 +1,4 @@
 browser Module (``stx.browser``)
 ================================
 
-.. automodule:: scitex.browser
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.browser` for the auto-generated Python API.

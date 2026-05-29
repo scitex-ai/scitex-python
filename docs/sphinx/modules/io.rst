@@ -112,5 +112,4 @@ Other Functions
 API Reference
 -------------
 
-.. automodule:: scitex.io
-   :members: save, load
+See :doc:`/api/scitex.io` for the auto-generated Python API.

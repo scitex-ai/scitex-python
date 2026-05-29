@@ -1,7 +1,4 @@
 dev Module (``stx.dev``)
 ========================
 
-.. automodule:: scitex.dev
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.dev` for the auto-generated Python API.

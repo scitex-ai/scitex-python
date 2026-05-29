@@ -42,5 +42,4 @@ Available Functions
 API Reference
 -------------
 
-.. automodule:: scitex.pd
-   :members:
+See :doc:`/api/scitex.pd` for the auto-generated Python API.

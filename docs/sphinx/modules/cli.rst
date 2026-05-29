@@ -1,7 +1,4 @@
 cli Module (``stx.cli``)
 ========================
 
-.. automodule:: scitex.cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.cli` for the auto-generated Python API.

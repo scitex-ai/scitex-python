@@ -1,7 +1,4 @@
 torch Module (``stx.torch``)
 ============================
 
-.. automodule:: scitex.torch
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.torch` for the auto-generated Python API.

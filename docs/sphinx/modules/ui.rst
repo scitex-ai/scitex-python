@@ -1,7 +1,4 @@
 ui Module (``stx.ui``)
 ======================
 
-.. automodule:: scitex.ui
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.ui` for the auto-generated Python API.
