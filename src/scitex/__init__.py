@@ -113,7 +113,7 @@ module._setup_persistence("scitex", "module")
 capture = _LazyModule("capture", external="scitex_capture")
 template = _LazyModule("template", external="scitex_template")
 cloud = _LazyModule("cloud")
-tunnel = _LazyModule("tunnel")
+tunnel = _LazyModule("tunnel", external="scitex_ssh")  # tunnel merged into scitex-ssh
 config = _LazyModule("config", external="scitex_config")
 audio = _LazyModule("audio", external="scitex_audio")
 msword = _LazyModule("msword", external="scitex_msword")
@@ -127,7 +127,9 @@ sh = _LazyModule("sh", external="scitex_sh")  # Shell command execution
 os = _LazyModule("os", external="scitex_os")  # OS utilities (file operations)
 cv = _LazyModule("cv", external="scitex_cv")  # Computer vision utilities
 ui = _LazyModule("ui", external="scitex_ui")  # User interface utilities
-notification = _LazyModule("notification", external="scitex_notification")  # Multi-backend notifications (scitex-notification)
+notification = _LazyModule(
+    "notification", external="scitex_notification"
+)  # Multi-backend notifications (scitex-notification)
 notify = notification  # Backward compat alias
 git = _LazyModule("git", external="scitex_git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
@@ -143,7 +145,9 @@ audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
 events = _LazyModule("events", external="scitex_events")  # Event system
 media = _LazyModule("media")  # Media utilities
 cli = _LazyModule("cli")  # Command-line interface
-linter = _LazyModule("linter", external="scitex_linter")  # AST-based linter (delegates to scitex-linter)
+linter = _LazyModule(
+    "linter", external="scitex_linter"
+)  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
 notebook = _LazyModule(
     "notebook", external="scitex_notebook"
