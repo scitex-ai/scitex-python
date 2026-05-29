@@ -349,7 +349,6 @@ scitex.io/
 ├── _glob.py              # Pattern matching
 ├── _reload.py            # Module reloading
 ├── _flush.py             # Output flushing
-├── _load_modules/        # Format-specific loaders
 │   ├── _H5Explorer.py    # HDF5 exploration
 │   ├── _ZarrExplorer.py  # Zarr exploration
 │   ├── _bibtex.py        # BibTeX loader
