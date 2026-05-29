@@ -150,7 +150,9 @@ cli = _LazyModule("cli")  # Command-line interface
 linter = _LazyModule(
     "linter", external="scitex_linter"
 )  # AST-based linter (delegates to scitex-linter)
-clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
+clew = _LazyModule(
+    "clew", external="scitex_clew"
+)  # Hash-based verification (in-tree dir removed; pure re-export of scitex_clew)
 notebook = _LazyModule(
     "notebook", external="scitex_notebook"
 )  # Jupyter notebook verification & compilation

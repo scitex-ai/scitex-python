@@ -62,7 +62,7 @@ dependencies = [
     "natsort",  # Natural sorting - used by many modules
     "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
     # Reproducibility Verification
-    "scitex-clew==0.2.12",
+    "scitex-clew==0.2.14",
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
@@ -756,7 +756,7 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = ["scitex-clew==0.2.12"]
+clew = ["scitex-clew==0.2.14"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
@@ -911,7 +911,7 @@ dev = [
     "scitex-audio==0.2.13",
     "scitex-audit==0.1.7",
     "scitex-browser==0.1.15",
-    "scitex-clew==0.2.12",
+    "scitex-clew==0.2.14",
     "scitex-cloud==0.17.0",
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
