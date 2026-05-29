@@ -67,7 +67,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.decorators._wrap",
     "scitex.dev._analyze_code_flow",
     "scitex.diagram",
-    "scitex.diagram._schema",
     "scitex.dict",
     "scitex.dsp.utils",
     "scitex.dsp.utils._ensure_3d",

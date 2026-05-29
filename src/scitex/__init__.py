@@ -215,15 +215,6 @@ from .config import ScitexPaths as _ScitexPaths
 
 PATHS = _ScitexPaths()
 
-# Auto-load cloud hooks if in cloud environment
-import os as _os
-
-if _os.environ.get("SCITEX_CLOUD_CODE_WORKSPACE") == "true":
-    try:
-        from .cloud import _matplotlib_hook
-    except Exception:
-        pass  # Silently fail if matplotlib not available
-
 __all__ = [
     # Core modules
     "io",
