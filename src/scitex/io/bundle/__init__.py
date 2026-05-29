@@ -1,76 +1,16 @@
 #!/usr/bin/env python3
 """``scitex.io.bundle`` — thin re-export of ``scitex_io.bundle``.
 
-The bundle dispatcher, plumbing, dataclasses, and kind handlers now live
-in the ``scitex_io.bundle`` standalone package. This module preserves
-the historical ``scitex.io.bundle.{Bundle, load, save, …}`` import path
-for downstream code so the migration to the standalone is invisible at
-the call site.
+The bundle dispatcher, plumbing, dataclasses, and kind handlers live in
+the ``scitex_io.bundle`` standalone package. This module preserves the
+``scitex.io.bundle.{Bundle, load, save, …}`` import path for downstream
+code so the standalone migration is invisible at the call site.
+
+The public surface is delegated to ``scitex_io.bundle.__all__`` so it
+stays in sync automatically — no hand-maintained name list to drift.
 """
 
-from scitex_io.bundle import *  # noqa: F401, F403
-from scitex_io.bundle import (  # noqa: F401  (explicit for clarity / linting)
-    DATA_INFO_VERSION,
-    DIR_EXTENSIONS,
-    EXTENSIONS,
-    FIGURE,
-    MANIFEST_FILENAME,
-    PLOT,
-    SCHEMA_DIR,
-    SCHEMA_VERSION,
-    STATS,
-    Axes,
-    BBox,
-    Bundle,
-    BundleError,
-    BundleNotFoundError,
-    BundleType,
-    BundleValidationError,
-    ColumnDef,
-    DataFormat,
-    DataInfo,
-    DataSource,
-    DirStorage,
-    NestedBundleNotFoundError,
-    ShapeParams,
-    SizeMM,
-    Spec,
-    SpecRefs,
-    Storage,
-    TextContent,
-    ValidationResult,
-    ZipBundle,
-    ZipStorage,
-    copy,
-    create_bundle,
-    create_manifest,
-    create_zip,
-    dir_to_zip_path,
-    from_matplotlib,
-    get_storage,
-    get_type,
-    get_type_from_manifest,
-    is_bundle,
-    load,
-    load_bundle,
-    load_schema,
-    nested,
-    open_zip,
-    pack,
-    read_manifest,
-    save,
-    unpack,
-    validate,
-    validate_bundle,
-    validate_data_info,
-    validate_encoding,
-    validate_schema,
-    validate_semantic,
-    validate_spec,
-    validate_stats,
-    validate_strict,
-    validate_theme,
-    write_manifest,
-    zip_directory,
-    zip_to_dir_path,
-)
+import scitex_io.bundle as _bundle
+from scitex_io.bundle import *  # noqa: F401,F403
+
+__all__ = list(_bundle.__all__)
