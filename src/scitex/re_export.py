@@ -221,6 +221,7 @@ EXTERNAL_REEXPORTS = {
     "writer": "scitex_writer",
     "io": "scitex_io",  # in-tree dir removed (#289); pure re-export of scitex_io
     "clew": "scitex_clew",  # in-tree dir removed; session hooks moved into scitex_clew (>=0.2.14)
+    "stats": "scitex_stats",  # in-tree dir removed; integration glue moved into scitex_stats (>=0.2.23)
     # `scitex.ai` was split into the `ml` + `genai` standalones; `ai` is now a
     # deprecated alias handled in __init__.__getattr__ (no `scitex_ai` package).
     "ml": "scitex_ml",

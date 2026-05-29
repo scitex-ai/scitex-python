@@ -70,7 +70,7 @@ dependencies = [
     # Delegated core modules (thin re-exports)
     "scitex-dev==0.14.1",
     "scitex-io==0.2.16",
-    "scitex-stats==0.2.21",
+    "scitex-stats==0.2.23",
     "scitex-audio==0.2.13",
     "scitex-notification==0.2.7",
     "scitex-notebook==0.1.2",
@@ -656,7 +656,7 @@ social = [
 # Stats Module - Statistical analysis
 # Use: pip install scitex[stats]
 stats = [
-    "scitex-stats==0.2.21",
+    "scitex-stats==0.2.23",
     "scipy",
     "statsmodels",
     "matplotlib",
@@ -924,7 +924,7 @@ dev = [
     "scitex-notification==0.2.7",
     "scitex-scholar==1.4.1",
     "scitex-ssh==1.0.1",
-    "scitex-stats==0.2.21",
+    "scitex-stats==0.2.23",
     "scitex-ui==0.5.1",
     "scitex-writer==2.17.2",
     "seaborn",

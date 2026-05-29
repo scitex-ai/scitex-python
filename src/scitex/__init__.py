@@ -79,7 +79,9 @@ ml = _LazyModule("ml", external="scitex_ml")
 genai = _LazyModule("genai", external="scitex_genai")
 pd = _LazyModule("pd", external="scitex_pd")
 str = _LazyModule("str", external="scitex_str")
-stats = _LazyModule("stats")
+stats = _LazyModule(
+    "stats", external="scitex_stats"
+)  # in-tree dir removed; integration glue moved into scitex_stats (>=0.2.23)
 path = _LazyModule("path", external="scitex_path")
 dict = _LazyModule("dict", external="scitex_dict")
 decorators = _LazyModule("decorators", external="scitex_decorators")
