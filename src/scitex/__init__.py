@@ -73,30 +73,30 @@ _register_external_lazy_modules()
 
 # Create lazy modules
 io = _LazyModule("io", external="scitex_io")
-gen = _LazyModule("gen")
+gen = _LazyModule("gen", external="scitex_gen")
 plt = _LazyModule("plt")
 ml = _LazyModule("ml", external="scitex_ml")
 genai = _LazyModule("genai", external="scitex_genai")
-pd = _LazyModule("pd")
+pd = _LazyModule("pd", external="scitex_pd")
 str = _LazyModule("str", external="scitex_str")
 stats = _LazyModule("stats")
 path = _LazyModule("path", external="scitex_path")
 dict = _LazyModule("dict", external="scitex_dict")
-decorators = _LazyModule("decorators")
-dsp = _LazyModule("dsp")
-nn = _LazyModule("nn")
+decorators = _LazyModule("decorators", external="scitex_decorators")
+dsp = _LazyModule("dsp", external="scitex_dsp")
+nn = _LazyModule("nn", external="scitex_nn")
 torch = _LazyModule("torch")
-web = _LazyModule("web")
+web = _LazyModule("web", external="scitex_web")
 db = _LazyModule("db", external="scitex_db")
 repro = _LazyModule("repro", external="scitex_repro")
 scholar = _LazyModule("scholar", external="scitex_scholar")
-writer = _LazyModule("writer")
+writer = _LazyModule("writer", external="scitex_writer")
 fig = _LazyModule("fig")
-resource = _LazyModule("resource")
+resource = _LazyModule("resource", external="scitex_resource")
 tex = _LazyModule("tex", external="scitex_tex")
-linalg = _LazyModule("linalg")
+linalg = _LazyModule("linalg", external="scitex_linalg")
 parallel = _LazyModule("parallel", external="scitex_parallel")
-datetime = _LazyModule("datetime")
+datetime = _LazyModule("datetime", external="scitex_datetime")
 dt = datetime  # Shorter alias — same lazy-loaded module instance.
 types = _LazyModule("types", external="scitex_types")
 utils = _LazyModule("utils")
@@ -110,11 +110,11 @@ session = _CallableModuleWrapper("session", main_decorator_name="session")
 session._setup_persistence("scitex", "session")
 module = _CallableModuleWrapper("module", main_decorator_name="module")
 module._setup_persistence("scitex", "module")
-capture = _LazyModule("capture")
+capture = _LazyModule("capture", external="scitex_capture")
 template = _LazyModule("template", external="scitex_template")
 cloud = _LazyModule("cloud")
 tunnel = _LazyModule("tunnel")
-config = _LazyModule("config")
+config = _LazyModule("config", external="scitex_config")
 audio = _LazyModule("audio", external="scitex_audio")
 msword = _LazyModule("msword", external="scitex_msword")
 fts = _LazyModule("fts")  # Bundle schemas module
@@ -123,29 +123,27 @@ diagram = _LazyModule("diagram")  # Diagram creation (delegates to figrecipe)
 introspect = _LazyModule(
     "introspect", external="scitex_introspect"
 )  # Python introspection utilities
-sh = _LazyModule("sh")  # Shell command execution
+sh = _LazyModule("sh", external="scitex_sh")  # Shell command execution
 os = _LazyModule("os", external="scitex_os")  # OS utilities (file operations)
 cv = _LazyModule("cv", external="scitex_cv")  # Computer vision utilities
-ui = _LazyModule("ui")  # User interface utilities
-notification = _LazyModule(
-    "notification"
-)  # Multi-backend notifications (scitex-notification)
+ui = _LazyModule("ui", external="scitex_ui")  # User interface utilities
+notification = _LazyModule("notification", external="scitex_notification")  # Multi-backend notifications (scitex-notification)
 notify = notification  # Backward compat alias
-git = _LazyModule("git")  # Git operations
+git = _LazyModule("git", external="scitex_git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
 canvas = _LazyModule("canvas")  # Canvas utilities for figure composition
 security = _LazyModule("security", external="scitex_security")  # Security utilities
 benchmark = _LazyModule(
     "benchmark", external="scitex_benchmark"
 )  # Benchmarking utilities
-bridge = _LazyModule("bridge")  # Bridge utilities
+bridge = _LazyModule("bridge", external="scitex_bridge")  # Bridge utilities
 browser = _LazyModule("browser", external="scitex_browser")  # Browser automation
 compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilities
 audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
-events = _LazyModule("events")  # Event system
+events = _LazyModule("events", external="scitex_events")  # Event system
 media = _LazyModule("media")  # Media utilities
 cli = _LazyModule("cli")  # Command-line interface
-linter = _LazyModule("linter")  # AST-based linter (delegates to scitex-linter)
+linter = _LazyModule("linter", external="scitex_linter")  # AST-based linter (delegates to scitex-linter)
 clew = _LazyModule("clew")  # Hash-based verification (Ariadne's thread)
 notebook = _LazyModule(
     "notebook", external="scitex_notebook"
