@@ -86,15 +86,15 @@ except (ImportError, TypeError):
     migrate_h5_to_zarr_batch = None
 
 # =============================================================================
-# SciTeX-specific: save/load with clew hooks + session integration
+# Core save/load — pure re-export of scitex_io. Observer wiring (clew
+# session tracking) is handled by scitex-clew self-registering with
+# scitex_io's post-save/post-load hook registry on its own import,
+# per SOC.md R6. No umbrella glue needed.
 # =============================================================================
 
-# SciTeX-specific: bundle I/O
-from scitex_io import load_configs
+from scitex_io import load, load_configs, save  # noqa: F401
 
 from . import bundle  # noqa: F401
-from ._load import load
-from ._save import save
 
 # Metadata embedding (from scitex-io)
 try:

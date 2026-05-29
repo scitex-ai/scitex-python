@@ -83,11 +83,16 @@ from scitex_clew import (  # noqa: F401
 # Integration hooks (scitex-specific glue, NOT in standalone package)
 # ---------------------------------------------------------------------------
 from ._integration import (  # noqa: F401
-    on_io_load,
-    on_io_save,
     on_session_close,
     on_session_start,
 )
+
+# on_io_save / on_io_load are no longer surfaced here. Per SOC.md R6,
+# scitex-clew self-registers post-save / post-load hooks with
+# scitex_io's neutral hook registry on import, so any scitex_io.save()
+# / scitex_io.load() call already triggers clew tracking automatically.
+# The umbrella need not (and must not) expose duplicate observer entry
+# points.
 
 
 # EOF
