@@ -72,7 +72,7 @@ _register_external_lazy_modules()
 
 
 # Create lazy modules
-io = _LazyModule("io")
+io = _LazyModule("io", external="scitex_io")
 gen = _LazyModule("gen")
 plt = _LazyModule("plt")
 ml = _LazyModule("ml", external="scitex_ml")
