@@ -200,6 +200,7 @@ class _CallableModuleWrapper:
 # imports like `from scitex.<short>.<sub> import Y`) resolve to the external
 # package without requiring a `src/scitex/<short>/` directory in this repo.
 EXTERNAL_REEXPORTS = {
+    "io": "scitex_io",  # in-tree dir removed (#289); pure re-export of scitex_io
     # `scitex.ai` was split into the `ml` + `genai` standalones; `ai` is now a
     # deprecated alias handled in __init__.__getattr__ (no `scitex_ai` package).
     "ml": "scitex_ml",
