@@ -294,6 +294,7 @@ def register_external_lazy_modules() -> None:
 # which the registry-driven map fills in automatically.
 _DEFAULT_BRANDED = {
     "plt": "figrecipe.pyplot",
+    "diagram": "figrecipe.diagram",  # in-tree dir removed; public figrecipe.diagram (>=0.28.13)
     "social": "socialia",
     "ai": "scitex_ml",  # ai split into ml + genai; default to ml
     "reproduce": "scitex_repro",  # umbrella name vs standalone short

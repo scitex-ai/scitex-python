@@ -125,7 +125,9 @@ audio = _LazyModule("audio", external="scitex_audio")
 msword = _LazyModule("msword", external="scitex_msword")
 fts = _LazyModule("fts")  # Bundle schemas module
 social = _LazyModule("social")  # Social media integration (socialia wrapper)
-diagram = _LazyModule("diagram")  # Diagram creation (delegates to figrecipe)
+diagram = _LazyModule(
+    "diagram", external="figrecipe.diagram"
+)  # in-tree dir removed; public figrecipe.diagram (>=0.28.13)
 introspect = _LazyModule(
     "introspect", external="scitex_introspect"
 )  # Python introspection utilities
