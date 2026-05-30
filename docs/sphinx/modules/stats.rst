@@ -149,5 +149,4 @@ Post-hoc Tests
 API Reference
 -------------
 
-.. automodule:: scitex.stats
-   :members:
+See :doc:`/api/scitex.stats` for the auto-generated Python API.

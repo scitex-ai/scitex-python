@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""SciTeX Linter CLI - Thin wrapper delegating to scitex-linter package."""
+"""SciTeX Linter CLI — thin wrapper delegating to `scitex-dev linter`.
+
+The engine moved from the (archived) scitex-linter package into
+`scitex_dev.linter`; this command shells out to `scitex-dev linter`
+so users keep the `scitex linter <subcommand>` entry point.
+"""
 
 import subprocess
 import sys
@@ -7,7 +12,7 @@ import sys
 import click
 
 try:
-    import scitex_linter
+    import scitex_dev.linter  # noqa: F401
 
     HAS_LINTER_PKG = True
 except ImportError:
@@ -15,11 +20,11 @@ except ImportError:
 
 
 def _require_linter_pkg():
-    """Check if scitex-linter package is available."""
+    """Check if scitex-dev[lint] is available."""
     if not HAS_LINTER_PKG:
         click.secho(
-            "scitex-linter package not installed. "
-            "Install with: pip install scitex-linter",
+            "scitex-dev is not installed (or scitex_dev.linter missing). "
+            "Install with: pip install scitex-dev",
             fg="red",
             err=True,
         )
@@ -27,9 +32,11 @@ def _require_linter_pkg():
 
 
 _LINTER_COMMANDS = {
-    "lint": "Lint Python files for SciTeX pattern compliance",
-    "python": "Lint then execute a Python script",
-    "list-rules": "List all lint rules",
+    "check-files": "Check Python files for SciTeX pattern compliance",
+    "format-files": "Auto-fix style-override anti-patterns (P006-P009 etc.)",
+    "lint-and-run": "Lint then execute a Python script",
+    "list-rules-all": "List all lint rules (engine + plugins)",
+    "sweep": "Lint README + key docs across the SciTeX ecosystem",
     "mcp": "MCP server commands",
 }
 
@@ -46,26 +53,29 @@ _LINTER_COMMANDS = {
 @click.pass_context
 def linter(ctx, args):
     """
-    AST-based linter for SciTeX patterns (delegates to scitex-linter)
+    AST-based linter for SciTeX patterns (delegates to `scitex-dev linter`)
 
     \b
-    Commands (from scitex-linter):
-      lint        Lint Python files for SciTeX pattern compliance
-      python      Lint then execute a Python script
-      list-rules  List all lint rules
-      mcp         MCP server commands
+    Commands (from scitex-dev linter):
+      check-files     Lint Python / .ipynb / .md / .rst files
+      format-files    Auto-fix style-override anti-patterns
+      lint-and-run    Lint then execute a Python script
+      list-rules-all  List engine + plugin rules
+      sweep           Lint README + docs across the ecosystem
+      mcp             MCP server commands
 
     \b
     Examples:
-      scitex linter lint script.py
-      scitex linter lint ./src/ --severity error
-      scitex linter python experiment.py --strict
-      scitex linter list-rules --category path
+      scitex linter check-files script.py
+      scitex linter check-files ./src/ --severity error
+      scitex linter lint-and-run experiment.py --strict
+      scitex linter list-rules-all --category path
+      scitex linter sweep --strict
 
     \b
     For full help:
       scitex linter --help-recursive
-      scitex-linter --help-recursive
+      scitex-dev linter --help-recursive
     """
     args_list = list(args)
 
@@ -75,7 +85,7 @@ def linter(ctx, args):
         click.echo(
             Result(
                 success=True,
-                data={"package": "scitex-linter", "commands": _LINTER_COMMANDS},
+                data={"package": "scitex-dev[lint]", "commands": _LINTER_COMMANDS},
             ).to_json()
         )
         return
@@ -86,7 +96,7 @@ def linter(ctx, args):
 
     _require_linter_pkg()
 
-    cmd = ["scitex-linter"] + args_list
+    cmd = ["scitex-dev", "linter"] + args_list
     sys.exit(subprocess.call(cmd))
 
 

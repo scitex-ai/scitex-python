@@ -1,7 +1,4 @@
 cloud Module (``stx.cloud``)
 ============================
 
-.. automodule:: scitex.cloud
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.cloud` for the auto-generated Python API.

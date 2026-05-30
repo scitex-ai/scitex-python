@@ -1,0 +1,77 @@
+name: Newb
+
+# Doc-quality verification — fresh Claude agent reads only the package's
+# docs in a hard-isolated container, then tries to install + import +
+# use the package. If a docs-only consumer can't follow them, neither
+# can a real user.
+#
+# Cost-aware schedule: weekly cron + manual dispatch only. Per-PR runs
+# are intentionally NOT enabled here (LLM API cost + run time).
+on:
+  schedule:
+    - cron: "0 4 * * 1"        # weekly Monday 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  newb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: read       # pull ghcr.io/ywatanabe1989/newb-runner
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Login to ghcr.io (so docker can pull the runner image)
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" \
+            | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Install newb (pinned)
+        # Pinned for reproducibility. Bump in a coordinated PR across
+        # the ecosystem so all packages exercise the same newb version.
+        run: pip install 'newb==0.25.0'
+
+      - name: Show newb version + resolved image
+        run: |
+          newb --version
+          python -c "from newb._container_runner import _default_image; print('image:', _default_image())"
+
+      - name: Run newb (verbose so the log shows per-prompt timing)
+        env:
+          NEWB_ANTHROPIC_API_KEY: ${{ secrets.NEWB_ANTHROPIC_API_KEY }}
+          # Resource caps so an attacker who hijacked the docs-reading
+          # agent can't DoS via memory/pid exhaustion. Generous enough
+          # for pip wheel-building (~1-2 GB transient peak).
+          NEWB_HARDEN_MEMORY: 4g
+          NEWB_HARDEN_PIDS_LIMIT: 512
+          NEWB_HARDEN_CPUS: "2"
+        run: |
+          if [ -z "${NEWB_ANTHROPIC_API_KEY}" ]; then
+            echo "::error::secrets.NEWB_ANTHROPIC_API_KEY is not set on this repo." >&2
+            exit 1
+          fi
+          newb . --json -vv > newb-report.json
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newb-report
+          path: newb-report.json
+          if-no-files-found: warn
+
+      - name: Render markdown summary into the run summary
+        if: success()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, newb
+          with open("newb-report.json") as f:
+              report = json.load(f)
+          print(newb.render_markdown(report))
+          PY

@@ -3,6 +3,10 @@
 # Timestamp: "2025-05-18 20:52:33 (ywatanabe)"
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/tests/custom/test_export_as_csv_all.py
 # ----------------------------------------
+import pytest
+
+pytest.importorskip("matplotlib")
+
 import os
 
 __FILE__ = "./tests/custom/test_export_as_csv_all.py"

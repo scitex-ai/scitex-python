@@ -104,5 +104,4 @@ The ``@stx.session`` decorator handles this automatically.
 API Reference
 -------------
 
-.. automodule:: scitex.logging
-   :members:
+See :doc:`/api/scitex.logging` for the auto-generated Python API.

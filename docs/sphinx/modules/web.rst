@@ -1,7 +1,4 @@
 web Module (``stx.web``)
 ========================
 
-.. automodule:: scitex.web
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.web` for the auto-generated Python API.

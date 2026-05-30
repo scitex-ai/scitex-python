@@ -1,7 +1,4 @@
 security Module (``stx.security``)
 ==================================
 
-.. automodule:: scitex.security
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.security` for the auto-generated Python API.

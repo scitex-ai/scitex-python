@@ -3,6 +3,10 @@
 # Timestamp: "2025-04-29 19:37:24 (ywatanabe)"
 # File: /home/ywatanabe/proj/scitex_repo/tests/custom/test_matplotlib_compatibility.py
 # ----------------------------------------
+import pytest
+
+pytest.importorskip("matplotlib")
+
 import os
 
 __FILE__ = "./tests/custom/test_matplotlib_compatibility.py"

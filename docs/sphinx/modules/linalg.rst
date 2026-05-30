@@ -1,7 +1,4 @@
 linalg Module (``stx.linalg``)
 ==============================
 
-.. automodule:: scitex.linalg
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.linalg` for the auto-generated Python API.

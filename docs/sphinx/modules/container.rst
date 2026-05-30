@@ -1,7 +1,4 @@
 container Module (``stx.container``)
 ====================================
 
-.. automodule:: scitex.container
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.container` for the auto-generated Python API.

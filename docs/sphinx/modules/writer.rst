@@ -161,6 +161,4 @@ Compilation Options
 API Reference
 -------------
 
-.. automodule:: scitex.writer
-   :members:
-   :show-inheritance:
+See :doc:`/api/scitex.writer` for the auto-generated Python API.

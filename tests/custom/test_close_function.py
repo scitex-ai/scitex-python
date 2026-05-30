@@ -5,6 +5,8 @@ pytest.importorskip("zarr")
 # -*- coding: utf-8 -*-
 # Test for scitex.plt.utils.close() function
 
+pytest.importorskip("matplotlib")
+
 import matplotlib  # noqa: E402
 
 matplotlib.use("Agg")  # Use non-interactive backend

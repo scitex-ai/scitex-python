@@ -5,6 +5,26 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.30.0] - 2026-05-31
+
+### Changed
+- **Umbrella decomposition campaign**: `scitex.<x>` modules are now thin branded aliases to their owning standalone packages instead of in-tree shim directories. Dropped the in-tree shim dirs for `errors` (→ `scitex_logging`), `torch` (→ `scitex_linalg`), `stats` (→ `scitex_stats`), `diagram` (→ `figrecipe.diagram`), `clew` (→ `scitex_clew`), `tunnel` (→ `scitex_ssh`), `rng`/`verify`. `scitex.utils` is now a thin re-export aggregator that distributes implementations to their owning packages. Env-loading delegates to `scitex-config`.
+- **Linter**: `scitex.linter` (and the more-consistent `scitex.dev.linter`) now resolve to the real engine `scitex_dev.linter`. Two stale registrations that kept routing to the archived `scitex_linter` distribution were removed (#306).
+
+### Removed
+- **`scitex-core` dependency**: dropped from `pyproject.toml`; all former `scitex-core` contents are standalonized. Enables public-archiving of `scitex-core`. (#299)
+- **`scitex.utils.verify_scitex_format`**: removed; superseded by the `scitex-dev` linter. (#300)
+- Dropped 10 redundant legacy MCP bridge files now covered by registry auto-mount.
+
+### Fixed
+- **CI test matrix**: greened the chronic-red umbrella matrix — switched to `uv` resolver, CPU-only torch, dropped coverage-triggered segfaults, and added a retry-on-incomplete-report guard for the non-deterministic C-extension shutdown segfault. (#303, #304, #305)
+- Bumped sibling pins for PS-170 freshness (`scitex-dev` 0.15.0, et al.).
+
+## [2.29.3] - 2026-05-23
+
+### Fixed
+- **Dependency pins**: Restore `>=` minima for sibling `scitex-*` deps (was exact `==`, which referenced unpublished versions like `scitex-config==0.3.3` and broke `pip install scitex` with ResolutionImpossible). Fixes #282. The 2.29.0 and 2.29.1 PyPI releases shipped the broken `==` pins; 2.29.3 is the corrected release.
+
 ## [2.28.13] - 2026-04-30
 
 ### Changed

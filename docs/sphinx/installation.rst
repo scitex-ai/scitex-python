@@ -4,210 +4,163 @@ Installation
 Requirements
 ------------
 
-- Python 3.10 or higher
-- pip package manager
+- **Python 3.10+**
+- ``uv`` (strongly recommended) — install with ``pip install uv`` or
+  ``curl -LsSf https://astral.sh/uv/install.sh | sh``
+- ``pip`` 21+ also works, but expect 30–90 min for ``scitex[all]``
+  (see warning below)
 
-Installing SciTeX
------------------
 
-From PyPI (Recommended)
-~~~~~~~~~~~~~~~~~~~~~~~
+.. warning::
 
-.. code-block:: bash
+   ``pip install "scitex[all]"`` typically takes **30–90 minutes** because
+   pip's serial resolver walks version histories of the large transitive
+   dependency set (numpy/pandas/torch/jax/playwright/openalex-local/…).
+   Use **uv** instead — it resolves the same set in parallel in **1–3
+   minutes**. Every ``pip install`` line on this page also works as
+   ``uv pip install`` and we recommend the uv form.
 
-    pip install scitex
 
-With optional extras (plotting, statistics, scholar, etc.):
-
-.. code-block:: bash
-
-    pip install scitex[all]
-
-From Source
-~~~~~~~~~~~
-
-Clone the repository and install in development mode:
-
-.. code-block:: bash
-
-    git clone https://github.com/ywatanabe1989/scitex-python.git
-    cd scitex-python
-    pip install -e ".[all]"
-
-Dependencies
+Core Install
 ------------
 
-Core Dependencies
-~~~~~~~~~~~~~~~~~
-
-These are installed automatically with ``pip install scitex``:
-
-- numpy
-- pandas
-- PyYAML
-- tqdm
-- packaging
-- natsort
-
-Optional Dependencies
-~~~~~~~~~~~~~~~~~~~~~
-
-SciTeX uses optional extras to keep the base install lightweight.
-Install what you need:
+The base package pulls in only lightweight dependencies and gives you access
+to session management, path utilities, string helpers, and the module
+discovery system.
 
 .. code-block:: bash
 
-    pip install scitex[plt]       # Matplotlib + figure tools
-    pip install scitex[stats]     # Statistical testing
-    pip install scitex[scholar]   # Literature management
-    pip install scitex[all]       # Everything
+   uv pip install scitex          # recommended
+   pip install scitex              # also works, slower for [all]
 
-All available extras:
+
+Recommended: Install Everything
+-------------------------------
+
+If you want the full experience (plotting, statistics, I/O, scholar, writer,
+and every other module):
+
+.. code-block:: bash
+
+   uv pip install "scitex[all]"   # ~3 min
+   pip install "scitex[all]"       # ~30–90 min (resolver thrash)
+
+
+Research Workflow
+-----------------
+
+For a typical research project you need figures, statistics, and literature
+search but not audio, browser automation, or cloud tools:
+
+.. code-block:: bash
+
+   pip install "scitex[plt,stats,scholar]"
+
+
+Per-Module Extras
+-----------------
+
+Install only what you need. Each extra maps to a self-contained capability.
 
 .. list-table::
    :header-rows: 1
-   :widths: 15 15 70
+   :widths: 15 55
 
    * - Extra
-     - Category
      - Description
-   * - ``session``
-     - Core
-     - Session management dependencies
-   * - ``io``
-     - Core
-     - Extended file I/O (HDF5, MATLAB, Parquet, etc.)
-   * - ``config``
-     - Core
-     - YAML configuration
-   * - ``logging``
-     - Core
-     - Logging infrastructure
-   * - ``repro``
-     - Core
-     - Reproducibility (seed fixing, timestamps)
-   * - ``clew``
-     - Core
-     - Provenance tracking
-   * - ``stats``
-     - Science
-     - Statistical testing (scipy, statsmodels, pingouin)
    * - ``plt``
-     - Science
-     - Publication figures (matplotlib, figrecipe)
-   * - ``dsp``
-     - Science
-     - Signal processing (scipy, MNE)
-   * - ``diagram``
-     - Science
-     - Mermaid / Graphviz diagram generation
+     - Publication-ready figures via figrecipe (matplotlib, seaborn, Pillow)
+   * - ``stats``
+     - Hypothesis testing, effect sizes, power analysis (scitex-stats, scipy, statsmodels)
+   * - ``io``
+     - Unified I/O for 40+ formats (HDF5, Excel, YAML, PDF, images, ...)
    * - ``scholar``
-     - Literature
-     - Paper search, PDF download, BibTeX enrichment
+     - Literature search and PDF management (CrossRef, OpenAlex, Semantic Scholar)
    * - ``writer``
-     - Literature
-     - LaTeX manuscript compilation
-   * - ``ai``
-     - ML
-     - LLM APIs (OpenAI, Anthropic, Google), scikit-learn
-   * - ``nn``
-     - ML
-     - PyTorch neural network layers
-   * - ``torch``
-     - ML
-     - PyTorch core
+     - LaTeX manuscript compilation, BibTeX management, Overleaf export
    * - ``audio``
-     - Utilities
-     - Text-to-speech (gTTS, pyttsx3, ElevenLabs)
+     - Text-to-speech and audio utilities (scitex-audio)
+   * - ``ai``
+     - LLM APIs (OpenAI, Anthropic, Google, Groq) and ML tools (scikit-learn)
    * - ``browser``
-     - Utilities
-     - Web automation (Playwright)
+     - Web automation via Playwright
    * - ``capture``
-     - Utilities
-     - Screenshot capture
-   * - ``db``
-     - Utilities
-     - SQLite / PostgreSQL wrappers
-   * - ``pd``
-     - Utilities
-     - Pandas helpers
-   * - ``web``
-     - Utilities
-     - Web crawling and URL extraction
+     - Screenshot capture (mss, Playwright)
+   * - ``dataset``
+     - Scientific dataset access (DANDI, OpenNeuro, PhysioNet)
    * - ``cloud``
-     - Utilities
-     - Cloud service integration
-   * - ``cli``
-     - Utilities
-     - Command-line interface
-   * - ``gen``
-     - Utilities
-     - General utilities (clipboard, shell commands)
-   * - ``linalg``
-     - Utilities
-     - Linear algebra extensions
-   * - ``parallel``
-     - Utilities
-     - Parallel processing
-   * - ``resource``
-     - Utilities
-     - System resource monitoring
-   * - ``dev``
-     - Meta
-     - Development tools (pytest, black, ruff, mypy)
-   * - ``heavy``
-     - Meta
-     - All heavy dependencies (torch, optuna, etc.)
+     - Cloud integration utilities
+   * - ``app``
+     - Unified file storage SDK (scitex-app)
+   * - ``session``
+     - Session decorator with reproducibility logging
+   * - ``diagram``
+     - Diagram generation (Mermaid, Graphviz)
+   * - ``db``
+     - Database access (SQLAlchemy, PostgreSQL)
+   * - ``cv``
+     - Computer vision (OpenCV, Pillow)
+   * - ``dsp``
+     - Digital signal processing (scipy, tensorpac)
+   * - ``social``
+     - Social media posting (socialia)
+   * - ``tunnel``
+     - SSH tunnel management (scitex-tunnel)
    * - ``all``
-     - Meta
-     - Everything combined
+     - Everything above
 
-Multiple extras can be combined:
+
+Example combinations:
 
 .. code-block:: bash
 
-    pip install scitex[plt,stats,scholar]
+   # Neuroscience analysis
+   pip install "scitex[plt,stats,dsp,dataset]"
 
-Verifying Installation
-----------------------
+   # Paper writing
+   pip install "scitex[writer,scholar,plt]"
+
+   # AI agent development
+   pip install "scitex[ai,browser,capture]"
+
+
+Development Install
+-------------------
+
+Clone the repository and install in editable mode with development tools:
+
+.. code-block:: bash
+
+   git clone https://github.com/ywatanabe1989/scitex-python.git
+   cd scitex-python
+   pip install -e ".[dev]"
+
+The ``dev`` extra includes pytest, ruff, mypy, Sphinx, and build tools.
+
+Using uv (recommended)
+^^^^^^^^^^^^^^^^^^^^^^^
+
+`uv <https://docs.astral.sh/uv/>`_ resolves and installs dependencies
+in parallel from a Rust resolver — roughly 10–30× faster than pip on
+``scitex[all]`` (3 min vs. 30–90 min). Install it once with
+``pip install uv`` (or the standalone shell installer), then prefix
+every install command on this page with ``uv``:
+
+.. code-block:: bash
+
+   uv pip install -e ".[dev]"
+
+
+Verifying the Installation
+--------------------------
 
 .. code-block:: python
 
-    import scitex as stx
-    print(stx.__version__)
+   import scitex as stx
+   print(stx.__version__)
 
-    # Quick smoke test
-    fig, ax = stx.plt.subplots()
-    ax.plot_line([1, 2, 3], [1, 4, 9])
-    stx.io.save(fig, "/tmp/test.png")
-    print("SciTeX is working.")
+To check which optional modules are available:
 
-Troubleshooting
----------------
+.. code-block:: python
 
-Common Issues
-~~~~~~~~~~~~~
-
-1. **Import Error**: Ensure core dependencies are installed:
-
-   .. code-block:: bash
-
-       pip install scitex --force-reinstall
-
-2. **Missing optional module**: If a specific module raises ``ImportError``, install its extras:
-
-   .. code-block:: bash
-
-       pip install scitex[plt,stats]
-
-3. **GPU Support**: For PyTorch GPU acceleration:
-
-   .. code-block:: bash
-
-       pip install torch --index-url https://download.pytorch.org/whl/cu121
-
-Getting Help
-~~~~~~~~~~~~
-
-- Search existing `GitHub issues <https://github.com/ywatanabe1989/scitex-python/issues>`_
-- Create a new issue with a minimal reproducible example
+   stx.usage.list()

@@ -1,7 +1,4 @@
 notebook Module (``stx.notebook``)
 ==================================
 
-.. automodule:: scitex.notebook
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.notebook` for the auto-generated Python API.

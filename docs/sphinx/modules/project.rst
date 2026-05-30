@@ -1,7 +1,4 @@
 project Module (``stx.project``)
 ================================
 
-.. automodule:: scitex.project
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.project` for the auto-generated Python API.

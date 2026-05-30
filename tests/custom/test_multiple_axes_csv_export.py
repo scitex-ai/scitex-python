@@ -1,82 +1,17 @@
-#!/usr/bin/env python3
-import pytest
+"""Auto-generated smoke test for scitex.custom.multiple_axes_csv_export.
 
-pytest.importorskip("zarr")
-pytest.skip("export_as_csv not yet implemented on FigWrapper", allow_module_level=True)
-# -*- coding: utf-8 -*-
-# Timestamp: "2025-05-18 20:30:00"
-# File: test_multiple_axes_csv_export.py
+Replaces the prior placeholder-only stub (audit-project PS206). The
+test imports the target module — if the import fails, the test
+fails. Renames, broken peer deps, or missing optional deps all
+surface here as red, not as a silent skip.
 
-"""Test script to demonstrate the issue with export_as_csv for multiple axes."""
+If a module legitimately requires an optional dep, that dep should
+be lazy-imported inside the function bodies — not at module top.
+"""
 
-import os  # noqa: E402
+import importlib
 
-import matplotlib.pyplot as plt  # noqa: E402, F401
-import numpy as np  # noqa: E402
-import pandas as pd  # noqa: E402, F401
 
-import scitex.io  # noqa: E402
-import scitex.plt as mplt  # noqa: E402
-
-# Create output directory relative to test file
-output_dir = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "test_multiple_axes_csv_export_out"
-)
-os.makedirs(output_dir, exist_ok=True)
-
-# Case 1: Single axis case (should work fine)
-print("Testing single axis case...")
-fig, ax = mplt.subplots(figsize=(8, 6))
-ax.plot(np.arange(5), np.random.rand(5), id="line1")
-ax.scatter(np.arange(5), np.random.rand(5), id="scatter1")
-ax.bar(np.arange(3), np.random.rand(3), id="bar1")
-
-# Save figure and CSV
-scitex.io.save(fig, f"{output_dir}/single_axis.png")
-csv_df = fig.export_as_csv()
-print(f"Single axis CSV shape: {csv_df.shape}")
-print(f"Single axis CSV columns: {csv_df.columns.tolist()}")
-csv_df.to_csv(f"{output_dir}/single_axis.csv", index=False)
-
-# Case 2: Multiple axes in grid (2x2)
-print("\nTesting multiple axes case (2x2 grid)...")
-fig, axes = mplt.subplots(2, 2, figsize=(12, 10))
-
-# Plot different things on each axis
-axes[0, 0].plot(np.arange(5), np.random.rand(5), id="line_00")
-axes[0, 1].scatter(np.arange(5), np.random.rand(5), id="scatter_01")
-axes[1, 0].bar(np.arange(3), np.random.rand(3), id="bar_10")
-axes[1, 1].hist(np.random.randn(100), bins=10, id="hist_11")
-
-# Save figure and CSV
-scitex.io.save(fig, f"{output_dir}/multiple_axes_grid.png")
-csv_df = fig.export_as_csv()
-print(f"Multiple axes CSV shape: {csv_df.shape}")
-if not csv_df.empty:
-    print(f"Multiple axes CSV columns: {csv_df.columns.tolist()}")
-    csv_df.to_csv(f"{output_dir}/multiple_axes_grid.csv", index=False)
-else:
-    print("Multiple axes CSV is empty!")
-
-# Case 3: Different types of plots in a 1x3 grid
-print("\nTesting different plot types in 1x3 grid...")
-fig, axes = mplt.subplots(1, 3, figsize=(15, 5))
-
-# Different data lengths to test handling variable sized arrays
-axes[0].plot(np.arange(5), np.sin(np.arange(5)), id="sin_plot")
-axes[1].bar(["A", "B", "C", "D"], np.random.rand(4), id="categories")
-axes[2].boxplot(
-    [np.random.randn(10), np.random.randn(15), np.random.randn(20)], id="boxplots"
-)
-
-# Save figure and CSV
-scitex.io.save(fig, f"{output_dir}/three_different_plots.png")
-csv_df = fig.export_as_csv()
-print(f"Different plots CSV shape: {csv_df.shape}")
-if not csv_df.empty:
-    print(f"Different plots CSV columns: {csv_df.columns.tolist()}")
-    csv_df.to_csv(f"{output_dir}/three_different_plots.csv", index=False)
-else:
-    print("Different plots CSV is empty!")
-
-print("\nDone! Check the output in:", output_dir)
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    importlib.import_module('scitex.custom.multiple_axes_csv_export')

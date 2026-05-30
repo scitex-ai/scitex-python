@@ -1,7 +1,4 @@
 datetime Module (``stx.datetime``)
 ==================================
 
-.. automodule:: scitex.datetime
-   :members:
-   :undoc-members:
-   :show-inheritance:
+See :doc:`/api/scitex.datetime` for the auto-generated Python API.
