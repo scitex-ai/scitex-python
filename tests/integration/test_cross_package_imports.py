@@ -267,6 +267,35 @@ def _import_or_skip_if_snapshot_drifted(module_name: str):
                 f"sibling test (not an umbrella import bug): {exc}"
             )
         raise
+    except ImportError as exc:
+        # The umbrella's lazy modules raise a *helpful* ImportError when an
+        # OPTIONAL backing peer isn't installed (e.g. `scitex.web...: scitex_web
+        # is required for scitex.web. Install with: pip install scitex[web]`).
+        # That's the umbrella working as designed — an absent optional peer,
+        # same category as ModuleNotFoundError — not a rename/missing-symbol
+        # regression. Skip on the install-hint signature; propagate anything
+        # else (a genuine broken import of a module that *should* resolve).
+        msg = str(exc)
+        if (
+            "pip install scitex[" in msg
+            or "is required for" in msg
+            or "Install with" in msg
+        ):
+            pytest.skip(
+                f"{module_name}: optional backing peer absent in this "
+                f"environment (umbrella raised its install hint): {exc}"
+            )
+        raise
+    except ValueError as exc:
+        # Some C-extensions (numba-backed peers) raise this at import on certain
+        # CPython builds: a binding-vs-interpreter quirk, environmental — not an
+        # umbrella import bug.
+        if "METH_CLASS or METH_STATIC" in str(exc):
+            pytest.skip(
+                f"{module_name}: C-extension METH_CLASS/STATIC quirk on this "
+                f"Python build (environmental): {exc}"
+            )
+        raise
 
 
 @pytest.mark.parametrize("module_name", CROSS_PACKAGE_IMPORTS)
