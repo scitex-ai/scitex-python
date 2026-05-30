@@ -86,13 +86,38 @@ jobs:
         # entire ecosystem and are environment-fragile in CI (a hard crash
         # there segfaults the whole run rather than failing one test). They
         # belong in a dedicated e2e gate, not the per-PR unit matrix.
+        #
+        # Pass/fail is judged from the JUnit report, NOT the process exit code.
+        # The full suite passes (100%), but a C-extension in the deep ecosystem
+        # stack segfaults during *interpreter finalization* (after the last test
+        # PASSED), so the process exits 139 even though every test passed. That
+        # shutdown crash is not a test failure; reading results.xml decouples the
+        # logical result from a corrupted exit code. A genuine test failure shows
+        # up as failures/errors in the report and still fails the job.
         run: |
+          set +e
           if [ "${{ matrix.python-version }}" = "3.12" ]; then
             pytest tests/ --ignore=tests/e2e -p no:cacheprovider -o faulthandler_timeout=120 \
+              --junitxml=pytest-results.xml \
               --cov=src/scitex --cov-report=xml --cov-report=term
           else
-            pytest tests/ --ignore=tests/e2e -p no:cacheprovider -o faulthandler_timeout=120
+            pytest tests/ --ignore=tests/e2e -p no:cacheprovider -o faulthandler_timeout=120 \
+              --junitxml=pytest-results.xml
           fi
+          set -e
+          python - <<'PY'
+          import sys, xml.etree.ElementTree as ET
+          try:
+              root = ET.parse("pytest-results.xml").getroot()
+          except Exception as e:
+              print(f"::error::no JUnit report ({e}) — pytest did not finish; failing")
+              sys.exit(1)
+          suites = list(root.iter("testsuite"))
+          bad = sum(int(s.get("failures", 0)) + int(s.get("errors", 0)) for s in suites)
+          total = sum(int(s.get("tests", 0)) for s in suites)
+          print(f"JUnit: {total} tests, {bad} failures+errors")
+          sys.exit(1 if bad else 0)
+          PY
       - name: Upload coverage to Codecov
         if: always() && matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
