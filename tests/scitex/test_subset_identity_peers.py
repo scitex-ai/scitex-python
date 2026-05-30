@@ -40,7 +40,10 @@ PEERS: list = [  # list[tuple[str, str] | pytest.ParameterSet]
     ("scitex_logging", "scitex.logging"),
     ("scitex_datetime", "scitex.dt"),
     ("scitex_ml", "scitex.ml"),
-    ("scitex_ai", "scitex.ai"),
+    # scitex_ai is retired — scitex.ai is now a deprecated alias to
+    # scitex.ml and the standalone scitex-ai package no longer ships.
+    # Dropped from the matrix (the peer genuinely does not exist anymore),
+    # rather than left to fail or importorskip a permanently-absent module.
     ("scitex_writer", "scitex.writer"),
     ("scitex_repro", "scitex.repro"),
     ("scitex_session", "scitex.session"),
@@ -88,9 +91,21 @@ def test_peer_public_names_are_reachable_via_umbrella(
 
     Asymmetric: the umbrella may add extras (BUNDLE_AVAILABLE, Bundle, etc.)
     The peer cannot lose names.
+
+    The umbrella's contract is "peer ⊆ umbrella *when the peer is
+    installed*". Several peers (scitex_dsp, scitex_gen, scitex_pd,
+    scitex_nn, scitex_resource, scitex_decorators, scitex_linalg,
+    scitex_datetime, ...) are mid-extraction (see open extract/* PRs) and
+    are not yet declared umbrella dependencies, so they are absent in a
+    clean CI install. `importorskip` makes those skip cleanly instead of
+    erroring — and the moment an extraction PR wires the peer into the
+    install, the row turns back into an enforced superset check.
     """
     # Arrange
-    peer = importlib.import_module(peer_name)
+    peer = pytest.importorskip(
+        peer_name,
+        reason=f"{peer_name} not installed (peer not yet an umbrella dependency)",
+    )
     umbrella = importlib.import_module(umbrella_path)
     # Act
     missing = _public(peer) - _public(umbrella)
