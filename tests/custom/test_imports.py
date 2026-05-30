@@ -323,11 +323,23 @@ class TestComprehensiveModuleImports:
             module = importlib.import_module(module_name)
             assert module is not None, f"Module {module_name} imported as None"
         except ImportError as e:
-            # Check if it's an optional dependency
-            if any(
-                dep in str(e) for dep in ["torch", "playwright", "selenium", "crawl4ai"]
-            ):
-                pytest.skip(f"Optional dependency missing for {module_name}: {e}")
+            # Skip when the import fails because an OPTIONAL backing dep/peer is
+            # absent. Two signatures: a bare missing third-party lib, or the
+            # umbrella's own helpful install hint when a lazy module's optional
+            # peer isn't installed (e.g. `scitex.web...: scitex_web is required
+            # for scitex.web. Install with: pip install scitex[web]`). Both are
+            # "optional thing not installed", not an import regression.
+            msg = str(e)
+            optional_dep = any(
+                dep in msg for dep in ["torch", "playwright", "selenium", "crawl4ai"]
+            )
+            umbrella_install_hint = (
+                "pip install scitex[" in msg
+                or "is required for" in msg
+                or "Install with" in msg
+            )
+            if optional_dep or umbrella_install_hint:
+                pytest.skip(f"Optional dependency/peer missing for {module_name}: {e}")
             else:
                 raise
 

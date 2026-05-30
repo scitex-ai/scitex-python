@@ -2,10 +2,10 @@
 """Integration contract for ``scitex.io`` as a thin umbrella over ``scitex_io``.
 
 The umbrella delegates core I/O to the standalone ``scitex_io`` package.
-These tests pin the boundary: registry-level helpers are re-exports
-(same identity as the standalone), while ``save`` and ``load`` are
-deliberately *umbrella wrappers* (different identity — they add the
-clew/path/session integration that doesn't belong in standalone).
+These tests pin the boundary: after the bundle decomposition the umbrella
+is a *pure thin re-export* — registry-level helpers AND ``save`` / ``load``
+share object identity with the standalone (the clew/path/session
+integration now lives inside ``scitex_io`` itself).
 """
 
 import pytest
@@ -49,21 +49,25 @@ def test_load_configs_is_re_export_from_scitex_io():
     assert umbrella is standalone
 
 
-def test_save_is_not_the_scitex_io_save():
-    """``scitex.io.save`` is the umbrella's clew/path/session-integrated wrapper."""
+def test_save_is_the_scitex_io_save():
+    """``scitex.io.save`` is a pure re-export of ``scitex_io.save``.
+
+    Post-decomposition the clew/path/session integration lives inside
+    ``scitex_io``, so the umbrella shares object identity with it.
+    """
     # Arrange
-    standalone_save = getattr(scitex_io, "save", None)
+    standalone_save = scitex_io.save
     # Act
     umbrella_save = sio.save
     # Assert
-    assert umbrella_save is not standalone_save
+    assert umbrella_save is standalone_save
 
 
-def test_load_is_not_the_scitex_io_load():
-    """``scitex.io.load`` is the umbrella's wrapper, with its own added behaviour."""
+def test_load_is_the_scitex_io_load():
+    """``scitex.io.load`` is a pure re-export of ``scitex_io.load``."""
     # Arrange
-    standalone_load = getattr(scitex_io, "load", None)
+    standalone_load = scitex_io.load
     # Act
     umbrella_load = sio.load
     # Assert
-    assert umbrella_load is not standalone_load
+    assert umbrella_load is standalone_load
