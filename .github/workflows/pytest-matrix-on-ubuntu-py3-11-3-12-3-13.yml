@@ -13,6 +13,11 @@ jobs:
   test:
     name: pytest-matrix-on-ubuntu-py${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    # Hard ceiling: the suite finishes in single-digit minutes locally, so a
+    # run that drags on is a hang (a wedged subprocess, a network wait) — not
+    # honest work. Cap the job so a hang fails fast and diagnosably instead of
+    # burning the GitHub-Actions 6h maximum (the chronic "tests" red was this).
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -30,6 +35,19 @@ jobs:
           # (yaml, fastmcp, textual) get exercised. Falls back to [dev] then
           # plain editable so a packaging hiccup doesn't strand CI.
           pip install -e ".[all,dev]" || pip install -e ".[dev]" || pip install -e .
+      - name: Install peer standalones aliased by the umbrella
+        # The umbrella aliases scitex.<x> -> scitex_<x> for several peers that
+        # are mid-extraction and not yet declared as hard dependencies (open
+        # extract/* PRs do that wiring). Install them here, unpinned, so the
+        # peer-identity gate (tests/scitex/test_subset_identity_peers.py)
+        # actually exercises them instead of importorskip-ing. Unpinned and
+        # best-effort: a peer that isn't on PyPI yet must not strand CI, and
+        # the identity test importorskips anything still absent.
+        run: |
+          pip install \
+            scitex-dsp scitex-gen scitex-pd scitex-nn scitex-resource \
+            scitex-linalg scitex-datetime scitex-decorators \
+          || echo "peer standalones partially unavailable; identity test will importorskip the rest"
       - name: Audit umbrella pin freshness (PS-170)
         # Fails CI if any pin in pyproject.toml lags PyPI latest.
         # See scitex-dev v0.11.19+ for the rule. Runs once per matrix
@@ -37,8 +55,19 @@ jobs:
         run: |
           scitex-dev ecosystem audit-umbrella-pins . || exit 1
       - name: Run tests
+        # Coverage is only uploaded for py3.12 (see the Codecov step), so only
+        # pay the instrumentation cost there. 3.11/3.13 run plain pytest, which
+        # is faster and side-steps the subprocess-coverage shim entirely.
+        # faulthandler dumps every thread's traceback if a single test wedges,
+        # turning a future hang into an actionable log instead of a silent
+        # timeout.
         run: |
-          pytest tests/ --cov=src/scitex --cov-report=xml --cov-report=term
+          if [ "${{ matrix.python-version }}" = "3.12" ]; then
+            pytest tests/ -p no:cacheprovider -o faulthandler_timeout=120 \
+              --cov=src/scitex --cov-report=xml --cov-report=term
+          else
+            pytest tests/ -p no:cacheprovider -o faulthandler_timeout=120
+          fi
       - name: Upload coverage to Codecov
         if: always() && matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
