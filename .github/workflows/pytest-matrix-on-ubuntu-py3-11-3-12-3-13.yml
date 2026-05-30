@@ -31,18 +31,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          # Cache pip's wheel downloads (torch + the 60+ scitex-* deps) keyed on
-          # pyproject — the cold install is the matrix's long pole; this makes
-          # repeat runs install in minutes instead of cancelling at the cap.
-          cache: 'pip'
-          cache-dependency-path: pyproject.toml
+      - name: Install uv
+        # uv's resolver is what makes this matrix viable: pip backtracks through
+        # dozens of `wrapt` candidates (deprecated->numcodecs->scitex) at ~13s
+        # each, turning the install into a ~50min resolver-thrash that hit the
+        # job cap. uv resolves the same graph in seconds and caches wheels.
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           # Fallback chain: prefer [all,dev] so optional-dep code paths
           # (yaml, fastmcp, textual) get exercised. Falls back to [dev] then
           # plain editable so a packaging hiccup doesn't strand CI.
-          pip install -e ".[all,dev]" || pip install -e ".[dev]" || pip install -e .
+          uv pip install --system -e ".[all,dev]" \
+            || uv pip install --system -e ".[dev]" \
+            || uv pip install --system -e .
       - name: Install peer standalones aliased by the umbrella
         # The umbrella aliases scitex.<x> -> scitex_<x> for several peers that
         # are mid-extraction and not yet declared as hard dependencies (open
@@ -52,7 +56,7 @@ jobs:
         # best-effort: a peer that isn't on PyPI yet must not strand CI, and
         # the identity test importorskips anything still absent.
         run: |
-          pip install \
+          uv pip install --system \
             scitex-dsp scitex-gen scitex-pd scitex-nn scitex-resource \
             scitex-linalg scitex-datetime scitex-decorators \
           || echo "peer standalones partially unavailable; identity test will importorskip the rest"
