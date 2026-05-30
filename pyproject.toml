@@ -1046,7 +1046,6 @@ all = [
     "scitex[web]",
     "scitex[writer]",
     "scitex[linter]",
-    "scitex[core]",
     "scitex[orochi]",
     "scitex[agent-container]",
     "scitex[dev]",
