@@ -94,16 +94,16 @@ jobs:
         # shutdown crash is not a test failure; reading results.xml decouples the
         # logical result from a corrupted exit code. A genuine test failure shows
         # up as failures/errors in the report and still fails the job.
+        #
+        # No coverage: --cov instrumentation triggers the C-extension segfault
+        # MID-run (not just at shutdown), killing pytest before the JUnit report
+        # is written, on the coverage row only. Coverage is advisory (codecov is
+        # non-blocking), so run plain pytest on every row for a stable matrix;
+        # reinstate coverage in a dedicated isolated job if it's wanted.
         run: |
           set +e
-          if [ "${{ matrix.python-version }}" = "3.12" ]; then
-            pytest tests/ --ignore=tests/e2e -p no:cacheprovider -o faulthandler_timeout=120 \
-              --junitxml=pytest-results.xml \
-              --cov=src/scitex --cov-report=xml --cov-report=term
-          else
-            pytest tests/ --ignore=tests/e2e -p no:cacheprovider -o faulthandler_timeout=120 \
-              --junitxml=pytest-results.xml
-          fi
+          pytest tests/ --ignore=tests/e2e -p no:cacheprovider -o faulthandler_timeout=120 \
+            --junitxml=pytest-results.xml
           set -e
           python - <<'PY'
           import sys, xml.etree.ElementTree as ET
@@ -118,10 +118,3 @@ jobs:
           print(f"JUnit: {total} tests, {bad} failures+errors")
           sys.exit(1 if bad else 0)
           PY
-      - name: Upload coverage to Codecov
-        if: always() && matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: false
