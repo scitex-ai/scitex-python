@@ -303,7 +303,7 @@ _DEFAULT_BRANDED = {
     "tunnel": "scitex_ssh",  # scitex-tunnel merged into scitex-ssh; in-tree dir removed
     "errors": "scitex_logging",  # error taxonomy lives in scitex-logging; in-tree shim removed
     "torch": "scitex_linalg",  # torch numerics (apply_to + nan reductions) live in scitex-linalg
-    "dt": "scitex_datetime",  # legacy short for scitex_core.dt → standalone
+    "dt": "scitex_datetime",  # legacy short for the dt module → standalone scitex-datetime
 }
 
 
