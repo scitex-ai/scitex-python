@@ -13,11 +13,14 @@ jobs:
   test:
     name: pytest-matrix-on-ubuntu-py${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    # Hard ceiling: the suite finishes in single-digit minutes locally, so a
-    # run that drags on is a hang (a wedged subprocess, a network wait) — not
-    # honest work. Cap the job so a hang fails fast and diagnosably instead of
-    # burning the GitHub-Actions 6h maximum (the chronic "tests" red was this).
-    timeout-minutes: 45
+    # Ceiling well below the GitHub-Actions 6h maximum so a genuine hang
+    # (wedged subprocess / coverage deadlock — the old chronic "tests" red)
+    # fails fast and diagnosably. The suite itself is single-digit minutes
+    # locally; in CI the long pole is the cold install of the whole ecosystem
+    # (`.[all,dev]` pulls 60+ scitex-* wheels + torch/scientific stack), which
+    # alone can approach 40min uncached — hence pip caching below + a generous
+    # cap so the first (cache-priming) run still completes.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +31,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          # Cache pip's wheel downloads (torch + the 60+ scitex-* deps) keyed on
+          # pyproject — the cold install is the matrix's long pole; this makes
+          # repeat runs install in minutes instead of cancelling at the cap.
+          cache: 'pip'
+          cache-dependency-path: pyproject.toml
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
