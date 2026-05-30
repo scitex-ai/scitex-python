@@ -75,7 +75,6 @@ dependencies = [
     "scitex-notification==0.2.8",
     "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
-    "scitex-core==0.2.8",
     "scitex-db==0.1.11",
     "scitex-scholar==1.4.1",
     "scitex-parallel==0.1.8",
@@ -1056,7 +1055,6 @@ all = [
 # Tool Configurations
 # ============================================
 linter = ["scitex-dev==0.15.0"]
-core = ["scitex-core==0.2.8"]
 orochi = ["scitex-orochi==0.16.3"]
 agent-container = ["scitex-agent-container==0.21.3"]
 
