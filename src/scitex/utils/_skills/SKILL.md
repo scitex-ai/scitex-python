@@ -27,4 +27,3 @@ stx.utils.search(...)          # Regex string search
 | [grid-search.md](grid-search.md) | Enumerate parameter combinations | `yield_grids`, `count_grids` |
 | [notify.md](notify.md) | Send email notifications from scripts | `notify` |
 | [search.md](search.md) | Regex search over string collections | `search` |
-| [verify-scitex-format.md](verify-scitex-format.md) | Audit Python files for template compliance (CLI only) | `_verify_scitex_format` |

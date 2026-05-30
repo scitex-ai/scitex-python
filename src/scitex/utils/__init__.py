@@ -10,8 +10,7 @@ backward compatibility (``stx.utils.<name>`` keeps working):
 - ``notify`` (+ ``_send_gmail`` / ``_gen_footer`` / host helpers) → scitex-notification
 
 New code should import from the owning package directly. The in-tree
-implementations were removed (the migration moved them to the standalones);
-``_verify_scitex_format`` remains here pending its move to scitex-dev.
+implementations were removed (the migration moved them to the standalones).
 """
 
 from scitex_etc import count_grids, search, yield_grids
