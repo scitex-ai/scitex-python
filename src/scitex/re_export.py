@@ -210,7 +210,6 @@ EXTERNAL_REEXPORTS = {
     "gen": "scitex_gen",
     "git": "scitex_git",
     "linalg": "scitex_linalg",
-    "linter": "scitex_linter",
     "nn": "scitex_nn",
     "notification": "scitex_notification",
     "pd": "scitex_pd",

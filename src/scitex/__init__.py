@@ -154,8 +154,10 @@ events = _LazyModule("events", external="scitex_events")  # Event system
 media = _LazyModule("media")  # Media utilities
 cli = _LazyModule("cli")  # Command-line interface
 linter = _LazyModule(
-    "linter", external="scitex_linter"
-)  # AST-based linter (delegates to scitex-linter)
+    "linter"
+)  # AST-based linter; in-tree linter.py shim delegates to scitex_dev.linter
+# (the `scitex_linter` distribution is an archived re-export shim). The
+# more-consistent scitex.dev.linter resolves to the same engine via dev→scitex_dev.
 clew = _LazyModule(
     "clew", external="scitex_clew"
 )  # Hash-based verification (in-tree dir removed; pure re-export of scitex_clew)
