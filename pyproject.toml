@@ -69,10 +69,10 @@ dependencies = [
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
     "scitex-dev==0.14.1",
-    "scitex-io==0.2.16",
+    "scitex-io==0.2.18",
     "scitex-stats==0.2.23",
     "scitex-audio==0.2.13",
-    "scitex-notification==0.2.7",
+    "scitex-notification==0.2.8",
     "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
     "scitex-core==0.2.8",
@@ -83,7 +83,7 @@ dependencies = [
     "scitex-path==0.1.7",
     "scitex-repro==0.1.6",
     "scitex-compat==0.1.8",
-    "scitex-etc==0.1.9",
+    "scitex-etc==0.1.10",
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
     "scitex-audit==0.1.7",
@@ -99,7 +99,7 @@ dependencies = [
     "scitex-os==0.1.7",
     "scitex-security==0.1.4",
     "scitex-tex==0.1.7",
-    "figrecipe==0.28.12",
+    "figrecipe==0.28.13",
     "scitex-ui==0.5.1",
 ]
 
@@ -353,7 +353,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
-    "scitex-etc==0.1.9",
+    "scitex-etc==0.1.10",
 ]
 
 # Events Module - Event system
@@ -374,7 +374,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io==0.2.16",
+    "scitex-io==0.2.18",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -486,7 +486,7 @@ notebook = [
 # Notification Module - Phone call, SMS, and other notifications
 # Use: pip install scitex[notification]
 notification = [
-    "scitex-notification==0.2.7",
+    "scitex-notification==0.2.8",
 ]
 
 # OS Module - OS utilities
@@ -527,7 +527,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.28.12",
+    "figrecipe==0.28.13",
 ]
 
 # Project Module - Project management
@@ -830,7 +830,7 @@ dev = [
     "crossref-local",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.28.12",
+    "figrecipe==0.28.13",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -918,10 +918,10 @@ dev = [
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
     "scitex-dev==0.14.1",
-    "scitex-etc==0.1.9",
+    "scitex-etc==0.1.10",
     "scitex-genai==0.1.0",
-    "scitex-io==0.2.16",
-    "scitex-notification==0.2.7",
+    "scitex-io==0.2.18",
+    "scitex-notification==0.2.8",
     "scitex-scholar==1.4.1",
     "scitex-ssh==1.0.1",
     "scitex-stats==0.2.23",
