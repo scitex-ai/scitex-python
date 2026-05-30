@@ -637,6 +637,7 @@ security = []
 # Session Module - Session management
 # Use: pip install scitex[session]
 session = [
+    "scitex-session==0.2.1",
     "matplotlib",
     "PyYAML",
 ]
