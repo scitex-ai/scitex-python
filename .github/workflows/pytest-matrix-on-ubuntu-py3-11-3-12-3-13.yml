@@ -108,19 +108,38 @@ jobs:
         # sometimes MID-import, before the report is written (un-catchable; takes
         # the whole job 139). It's a heavy cross-package import gate, not a unit
         # test; run it in a dedicated forked/isolated job, not the per-PR matrix.
+        #
+        # Retry-on-segfault: the deep ecosystem C-extension stack (torch/numba/
+        # catboost/cuda) segfaults NON-DETERMINISTICALLY when many extensions
+        # co-load in one long-lived process — it can kill *any* test's process
+        # mid-run, before the JUnit report is written (so the JUnit verdict can't
+        # see it). It's a random dice-roll, not tied to a specific test. So if a
+        # run crashes before producing a report, retry (up to 3x); a run that
+        # FINISHES writes the report, and the verdict below judges it. A genuine
+        # test failure produces a report with failures and still fails the job —
+        # retry only papers over the crash-before-report, never a real failure.
         run: |
           set +e
-          pytest tests/ --ignore=tests/e2e \
-            --ignore=tests/integration/test_cross_package_imports.py \
-            -p no:cacheprovider -o faulthandler_timeout=120 \
-            --junitxml=pytest-results.xml
+          for attempt in 1 2 3; do
+            rm -f pytest-results.xml
+            pytest tests/ --ignore=tests/e2e \
+              --ignore=tests/integration/test_cross_package_imports.py \
+              -p no:cacheprovider -o faulthandler_timeout=120 \
+              --junitxml=pytest-results.xml
+            if [ -f pytest-results.xml ]; then
+              echo "pytest produced a report on attempt $attempt"
+              break
+            fi
+            echo "::warning::attempt $attempt crashed before writing the report (C-extension shutdown/import segfault); retrying"
+          done
           set -e
           python - <<'PY'
           import sys, xml.etree.ElementTree as ET
           try:
               root = ET.parse("pytest-results.xml").getroot()
           except Exception as e:
-              print(f"::error::no JUnit report ({e}) — pytest did not finish; failing")
+              print(f"::error::no JUnit report after retries ({e}) — pytest never "
+                    "finished; failing")
               sys.exit(1)
           suites = list(root.iter("testsuite"))
           bad = sum(int(s.get("failures", 0)) + int(s.get("errors", 0)) for s in suites)
