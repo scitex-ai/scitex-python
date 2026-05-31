@@ -919,7 +919,10 @@ dev = [
     "scitex-audit==0.1.7",
     "scitex-browser==0.1.15",
     "scitex-clew==0.2.14",
-    "scitex-hub>=0.19.0",  # optional peer (powers cloud/module/project); formerly scitex-cloud
+    # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
+    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
+    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
+    # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
     "scitex-dev>=0.16.0",
