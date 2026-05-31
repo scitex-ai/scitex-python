@@ -90,7 +90,7 @@ def _estimate_tokens(text: str) -> int:
 
 def _get_all_tools(mcp_server) -> dict:
     """Get ALL tools including mounted sub-servers (crossref, openalex)."""
-    from scitex._mcp_tools._compat import get_tools_sync
+    from scitex._mcp import get_tools_sync
 
     return get_tools_sync(mcp_server)
 
@@ -155,8 +155,8 @@ def list_tools(
     # Suppress INFO messages from env loader during import
     logging.getLogger("scitex.helpers._env_loader").setLevel(logging.WARNING)
     try:
-        from scitex.mcp_server import FASTMCP_AVAILABLE
-        from scitex.mcp_server import mcp as mcp_server
+        from scitex._mcp import FASTMCP_AVAILABLE
+        from scitex._mcp import mcp as mcp_server
     except ImportError:
         click.secho("ERROR: Could not import MCP server", fg="red", err=True)
         raise SystemExit(1) from None
@@ -308,8 +308,8 @@ def doctor(verbose: bool):
     # Check 2: MCP server import
     click.echo("Checking MCP server module... ", nl=False)
     try:
-        from scitex.mcp_server import FASTMCP_AVAILABLE
-        from scitex.mcp_server import mcp as mcp_server
+        from scitex._mcp import FASTMCP_AVAILABLE
+        from scitex._mcp import mcp as mcp_server
 
         if FASTMCP_AVAILABLE and mcp_server:
             click.secho("OK", fg="green")
@@ -320,58 +320,62 @@ def doctor(verbose: bool):
         click.secho("FAIL", fg="red")
         issues.append(f"Could not import MCP server: {e}")
 
-    # Check 3: _mcp_tools subpackage
-    click.echo("Checking _mcp_tools subpackage... ", nl=False)
+    # Check 3: unified MCP entrypoint
+    click.echo("Checking _mcp entrypoint... ", nl=False)
     try:
-        from scitex._mcp_tools import register_all_tools  # noqa: F401
+        from scitex._mcp import register_all_tools  # noqa: F401
 
         click.secho("OK", fg="green")
     except ImportError as e:
         click.secho("FAIL", fg="red")
-        issues.append(f"Could not import _mcp_tools: {e}")
+        issues.append(f"Could not import _mcp: {e}")
 
-    # Check 4: Individual module imports
-    modules = [
-        "audio",
-        "canvas",
-        "capture",
-        "diagram",
-        "plt",
-        "scholar",
-        "stats",
-        "template",
-        "ui",
-        "writer",
-    ]
+    # Check 4: peer namespaces mounted via the registry.
+    # Peer tools resolve lazily, so probe the mounted-server namespaces
+    # directly rather than the (local-only) tool list.
+    click.echo("Checking peer namespaces mounted... ", nl=False)
+    try:
+        from scitex._mcp import mcp as _probe_mcp
+        from scitex._mcp import mounted_namespaces
 
-    click.echo("Checking module registrations... ", nl=False)
-    failed_modules = []
-    for mod in modules:
-        try:
-            exec(f"from scitex._mcp_tools.{mod} import register_{mod}_tools")
-        except ImportError as e:
-            failed_modules.append((mod, str(e)))
+        prefixes = mounted_namespaces(_probe_mcp)
+        expected = {"io", "stats", "scholar"}
+        missing = expected - prefixes
+        if missing:
+            click.secho(f"FAIL (missing: {', '.join(sorted(missing))})", fg="red")
+            issues.append(f"Peer namespaces missing: {', '.join(sorted(missing))}")
+        else:
+            click.secho(f"OK ({len(prefixes)} namespaces)", fg="green")
+    except Exception as e:  # noqa: BLE001
+        click.secho("FAIL", fg="red")
+        issues.append(f"Could not probe peer namespaces: {e}")
 
-    if failed_modules:
-        click.secho(f"FAIL ({len(failed_modules)} modules)", fg="red")
-        for mod, err in failed_modules:
-            issues.append(f"Module {mod}: {err}")
-    else:
-        click.secho("OK", fg="green")
-
-    # Check 5: Tool count (including mounted sub-servers)
+    # Check 5: Umbrella-local tools + registry-mounted peer namespaces.
+    # On FastMCP 2.x peer tools resolve lazily; on 3.x they fold into the
+    # tool list. `mounted_namespaces` is robust across both, so the health
+    # signal is "umbrella locals present AND several peer namespaces present".
     click.echo("Checking tool registration... ", nl=False)
     try:
-        from scitex.mcp_server import mcp as mcp_server
+        from scitex._mcp import mcp as mcp_server
+        from scitex._mcp import mounted_namespaces
 
         if mcp_server:
-            all_tools = _get_all_tools(mcp_server)
-            n = len(all_tools)
-            if n >= 80:
-                click.secho(f"OK ({n} tools)", fg="green")
+            n_local = len(_get_all_tools(mcp_server))
+            n_ns = len(mounted_namespaces(mcp_server))
+            if n_local >= 20 and n_ns >= 5:
+                click.secho(
+                    f"OK ({n_local} local tools, {n_ns} namespaces)",
+                    fg="green",
+                )
             else:
-                click.secho(f"WARN ({n} tools, expected 80+)", fg="yellow")
-                warnings.append(f"Only {n} tools registered, expected 80+")
+                click.secho(
+                    f"WARN ({n_local} local, {n_ns} namespaces)",
+                    fg="yellow",
+                )
+                warnings.append(
+                    f"{n_local} local tools / {n_ns} namespaces "
+                    "(expected >=20 local and >=5 namespaces)"
+                )
         else:
             click.secho("SKIP", fg="yellow")
     except Exception as e:
@@ -453,7 +457,7 @@ def _print_help_recursive(ctx):
 def start(transport: str, host: str, port: int):
     """Start the unified MCP server."""
     try:
-        from scitex.mcp_server import run_server
+        from scitex._mcp import run_server
     except ImportError:
         click.secho("ERROR: Could not import MCP server", fg="red", err=True)
         click.echo("Run: pip install fastmcp")

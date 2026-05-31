@@ -115,20 +115,20 @@ from socialia import Twitter, LinkedIn, Reddit, YouTube, GoogleAnalytics, BasePo
 
 **MCP Tools:**
 ```python
-# scitex/_mcp_tools/writer.py
-def register_writer_tools(mcp):
-    from scitex_writer._mcp.tools import register_all_tools
-    register_all_tools(mcp)  # Delegate to downstream
-
-# scitex/_mcp_tools/social.py
-def register_social_tools(mcp):
-    from socialia._mcp.tools import register_all_tools
-    register_all_tools(mcp)  # Delegate to downstream
+# scitex/_mcp/__init__.py — ONE registry-mounting entrypoint.
+# Each peer's FastMCP server is auto-mounted under a brand-prefixed
+# namespace by iterating scitex_dev._ecosystem.ECOSYSTEM. No per-package
+# "register_<pkg>_tools" bridge files; new peer tools appear automatically.
+def register_all_tools(mcp):
+    for _pip, import_name, namespace in _iter_registry():
+        peer_mcp = _resolve_peer_mcp(import_name)   # e.g. scitex_writer._mcp.server
+        if peer_mcp is not None:
+            safe_mount(mcp, peer_mcp, namespace=namespace)  # -> writer_*, socialia_*
 ```
 
-- Single source of truth: downstream package
+- Single source of truth: the ecosystem registry + each downstream package
 - API parity: `scitex.writer` ≈ `scitex_writer`, `scitex.social` ≈ `socialia`
-- MCP tools delegated to downstream's `register_all_tools(mcp)`
+- MCP tools auto-mounted from each peer's `_mcp_server` — no umbrella maintenance
 - Use `scitex introspect api` to verify consistency
 
 ### Enhanced Wrapper (scitex.plt, scitex.scholar)
