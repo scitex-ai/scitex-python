@@ -32,14 +32,11 @@ def _entrypoint():
     return _mcp
 
 
-def _mounted_prefixes(mcp) -> set:
-    """Namespaces of every sub-server mounted on the umbrella FastMCP."""
-    prefixes = set()
-    for srv in getattr(mcp, "_mounted_servers", []) or []:
-        ns = getattr(srv, "prefix", None) or getattr(srv, "namespace", None)
-        if ns:
-            prefixes.add(ns)
-    return prefixes
+def _mounted_prefixes(mcp_server) -> set:
+    """Namespaces of mounted peers — robust across FastMCP 2.x / 3.x."""
+    from scitex._mcp import mounted_namespaces
+
+    return mounted_namespaces(mcp_server)
 
 
 def test_server_name_is_scitex():

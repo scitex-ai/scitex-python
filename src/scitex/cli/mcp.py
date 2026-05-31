@@ -336,12 +336,9 @@ def doctor(verbose: bool):
     click.echo("Checking peer namespaces mounted... ", nl=False)
     try:
         from scitex._mcp import mcp as _probe_mcp
+        from scitex._mcp import mounted_namespaces
 
-        prefixes = set()
-        for srv in getattr(_probe_mcp, "_mounted_servers", []) or []:
-            ns = getattr(srv, "prefix", None) or getattr(srv, "namespace", None)
-            if ns:
-                prefixes.add(ns)
+        prefixes = mounted_namespaces(_probe_mcp)
         expected = {"io", "stats", "scholar"}
         missing = expected - prefixes
         if missing:
@@ -353,31 +350,31 @@ def doctor(verbose: bool):
         click.secho("FAIL", fg="red")
         issues.append(f"Could not probe peer namespaces: {e}")
 
-    # Check 5: Umbrella-local tools + registry-mounted peer servers.
-    # Peer tools are resolved lazily by FastMCP at request time, so the
-    # meaningful health signal is "umbrella locals present AND several
-    # peer servers mounted", not a flat local tool count.
+    # Check 5: Umbrella-local tools + registry-mounted peer namespaces.
+    # On FastMCP 2.x peer tools resolve lazily; on 3.x they fold into the
+    # tool list. `mounted_namespaces` is robust across both, so the health
+    # signal is "umbrella locals present AND several peer namespaces present".
     click.echo("Checking tool registration... ", nl=False)
     try:
         from scitex._mcp import mcp as mcp_server
+        from scitex._mcp import mounted_namespaces
 
         if mcp_server:
             n_local = len(_get_all_tools(mcp_server))
-            mounted = getattr(mcp_server, "_mounted_servers", []) or []
-            n_mounted = len(mounted)
-            if n_local >= 20 and n_mounted >= 5:
+            n_ns = len(mounted_namespaces(mcp_server))
+            if n_local >= 20 and n_ns >= 5:
                 click.secho(
-                    f"OK ({n_local} local tools, {n_mounted} peers mounted)",
+                    f"OK ({n_local} local tools, {n_ns} namespaces)",
                     fg="green",
                 )
             else:
                 click.secho(
-                    f"WARN ({n_local} local, {n_mounted} peers mounted)",
+                    f"WARN ({n_local} local, {n_ns} namespaces)",
                     fg="yellow",
                 )
                 warnings.append(
-                    f"{n_local} local tools / {n_mounted} peer mounts "
-                    "(expected >=20 local and >=5 peers)"
+                    f"{n_local} local tools / {n_ns} namespaces "
+                    "(expected >=20 local and >=5 namespaces)"
                 )
         else:
             click.secho("SKIP", fg="yellow")

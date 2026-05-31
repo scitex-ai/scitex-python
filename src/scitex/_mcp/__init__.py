@@ -40,7 +40,7 @@ load_scitex_env()
 
 from scitex_dev import try_import_optional
 
-from ._compat import get_tools_sync, safe_mount
+from ._compat import get_tools_sync, mounted_namespaces, safe_mount
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +61,7 @@ __all__ = [
     "register_all_tools",
     "safe_mount",
     "get_tools_sync",
+    "mounted_namespaces",
     "FASTMCP_AVAILABLE",
 ]
 
