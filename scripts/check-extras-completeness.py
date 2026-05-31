@@ -17,8 +17,7 @@ import tomllib
 SKIP_DIRS = {
     "__pycache__",
     "_dev",
-    "_mcp_resources",
-    "_mcp_tools",
+    "_mcp",
     "skills",
 }
 

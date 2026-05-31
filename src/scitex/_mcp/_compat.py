@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Timestamp: 2026-02-23
-# File: /home/ywatanabe/proj/scitex-code/src/scitex/_mcp_tools/_compat.py
+# Timestamp: 2026-05-31
+# File: src/scitex/_mcp/_compat.py
 """FastMCP 2.x/3.x compatibility layer.
 
 FastMCP 3.0 removed `_tool_manager` from the FastMCP object and renamed
@@ -9,6 +9,8 @@ This module provides a unified interface that works with both versions.
 """
 
 import asyncio
+
+__all__ = ["get_tools_sync", "safe_mount"]
 
 
 def get_tools_sync(mcp_server, include_mounted: bool = True) -> dict:

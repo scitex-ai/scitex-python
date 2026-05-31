@@ -113,14 +113,13 @@ scitex = "scitex.__main__:main"
 # Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
 scitex-pkg = "scitex.cli.pkg:pkg"
 # Unified MCP Server (all modules in one). Use `scitex serve` (preferred)
-# or `scitex-mcp-server`. Each peer standalone (scitex-scholar, scitex-stats,
-# scitex-capture, scitex-diagram, scitex-template, scitex-audio, scitex-plt,
-# scitex-ui) ships its own per-module MCP entry point — DO NOT re-declare
-# them here, the umbrella's hand-wrap layer (scitex._mcp_tools) re-exposes
-# every tool on the unified server, so legacy `scitex-<module>` shims like
-# `scitex-scholar = scitex.scholar.mcp_server:main` would only collide with
-# the peer's Click CLI and break shell-completion eval.
-scitex-mcp-server = "scitex.mcp_server:main"
+# or `scitex-mcp-server`. The umbrella's single MCP entrypoint
+# (scitex._mcp) registry-mounts every peer's FastMCP server, so peer
+# standalone packages (scitex-scholar, scitex-stats, scitex-capture, ...)
+# need NOT re-declare per-module MCP scripts here — declaring legacy
+# `scitex-<module>` shims would only collide with each peer's Click CLI
+# and break shell-completion eval.
+scitex-mcp-server = "scitex._mcp:main"
 
 [project.entry-points."scitex_dev.docs"]
 scitex = "scitex"

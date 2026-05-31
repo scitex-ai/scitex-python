@@ -27,8 +27,7 @@ MODULE_TEMPLATE = """{title}
 SKIP_MODULES = {
     "_dev",
     "_sphinx_html",
-    "_mcp_resources",
-    "_mcp_tools",
+    "_mcp",
     "__pycache__",
     ".claude",
     "fig",  # alias for plt
@@ -183,10 +182,10 @@ def generate_index(modules_dir: Path, all_modules: list[str]):
         if not existing:
             continue
 
-        lines.append(f".. toctree::")
-        lines.append(f"   :maxdepth: 2")
+        lines.append(".. toctree::")
+        lines.append("   :maxdepth: 2")
         lines.append(f"   :caption: {category}")
-        lines.append(f"")
+        lines.append("")
         for m in existing:
             lines.append(f"   {m}")
         lines.append("")
@@ -234,7 +233,7 @@ def main():
 
     # Generate index
     generate_index(modules_dir, all_modules)
-    print(f"  Updated: index.rst")
+    print("  Updated: index.rst")
 
     print(f"\nDone: {created} created, {skipped} existing (skipped)")
     print(f"Total modules documented: {len(all_modules)}")
