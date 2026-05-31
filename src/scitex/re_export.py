@@ -136,9 +136,15 @@ class _CallableModuleWrapper:
         scitex.session.start(...)  # Access other functions
     """
 
-    def __init__(self, module_name, main_decorator_name="session"):
+    def __init__(self, module_name, main_decorator_name="session", external=None):
         self._module_name = module_name
         self._main_decorator_name = main_decorator_name
+        # If `external` is given, the wrapper proxies an external package (e.g.
+        # "scitex_hub.module") instead of the in-tree `scitex.<name>` submodule.
+        # Used for optional peers (scitex-hub) so callability (`scitex.module(...)`)
+        # is preserved while the in-tree dir is deleted. A missing peer raises a
+        # friendly ImportError on first access/call rather than at `import scitex`.
+        self._external = external
         self._module = None
         self._parent_name = None
         self._attr_name = None
@@ -151,10 +157,23 @@ class _CallableModuleWrapper:
     def _load_module(self):
         """Lazy load the actual module."""
         if self._module is None:
-            # Import the module
-            self._module = importlib.import_module(
-                f".{self._module_name}", package="scitex"
-            )
+            # Import the module (external peer or in-tree submodule)
+            if self._external is not None:
+                try:
+                    self._module = importlib.import_module(self._external)
+                except ImportError as exc:
+                    # Optional peer missing → friendly install hint, mirroring
+                    # the `_make_missing_peer_stub` contract used elsewhere.
+                    peer = self._external.split(".", 1)[0]
+                    raise ImportError(
+                        f"scitex.{self._module_name} requires `{peer}`. "
+                        f"Install with: pip install 'scitex[{self._module_name}]' "
+                        f"(or: pip install {peer.replace('_', '-')})"
+                    ) from exc
+            else:
+                self._module = importlib.import_module(
+                    f".{self._module_name}", package="scitex"
+                )
 
             # Restore ourselves in the parent module's __dict__ to prevent replacement
             if self._parent_name and self._attr_name:
@@ -226,6 +245,7 @@ EXTERNAL_REEXPORTS = {
     "ml": "scitex_ml",
     "genai": "scitex_genai",
     "etc": "scitex_etc",
+    "media": "scitex_etc.media",  # in-tree dir removed; shipped in scitex-etc (>=0.2.0)
     "gists": "scitex_gists",
     "audit": "scitex_audit",
     "compat": "scitex_compat",
@@ -303,6 +323,13 @@ _DEFAULT_BRANDED = {
     "errors": "scitex_logging",  # error taxonomy lives in scitex-logging; in-tree shim removed
     "torch": "scitex_linalg",  # torch numerics (apply_to + nan reductions) live in scitex-linalg
     "dt": "scitex_datetime",  # legacy short for the dt module → standalone scitex-datetime
+    # OPTIONAL peers — scitex-hub is NOT a hard dep (kept out of `[all]`). When
+    # absent, the alias finder returns a `_make_missing_peer_stub` so
+    # `import scitex.cloud` (and `.module` / `.project`) raise a friendly
+    # install hint instead of crashing `import scitex`.
+    "cloud": "scitex_hub",
+    "module": "scitex_hub.module",
+    "project": "scitex_hub.project",
 }
 
 
