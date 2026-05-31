@@ -103,7 +103,6 @@ parallel = _LazyModule("parallel", external="scitex_parallel")
 datetime = _LazyModule("datetime", external="scitex_datetime")
 dt = datetime  # Shorter alias — same lazy-loaded module instance.
 types = _LazyModule("types", external="scitex_types")
-utils = _LazyModule("utils")
 etc = _LazyModule("etc", external="scitex_etc")
 context = _LazyModule("context", external="scitex_context")
 dev = _LazyModule("dev")
@@ -114,11 +113,19 @@ errors = _LazyModule(
 logging = _LazyModule("logging", external="scitex_logging")
 session = _CallableModuleWrapper("session", main_decorator_name="session")
 session._setup_persistence("scitex", "session")
-module = _CallableModuleWrapper("module", main_decorator_name="module")
+# `module` is an OPTIONAL peer: it proxies the `module` callable from
+# scitex_hub.module (scitex-hub is NOT a hard dep). Callability
+# (`@scitex.module(...)`) is preserved; a missing scitex-hub raises a friendly
+# ImportError on first use rather than at `import scitex`.
+module = _CallableModuleWrapper(
+    "module", main_decorator_name="module", external="scitex_hub.module"
+)
 module._setup_persistence("scitex", "module")
 capture = _LazyModule("capture", external="scitex_capture")
 template = _LazyModule("template", external="scitex_template")
-cloud = _LazyModule("cloud")
+# `cloud`/`project` are OPTIONAL peers proxying scitex-hub (NOT a hard dep).
+# When scitex-hub is absent, attribute access raises a friendly install hint.
+cloud = _LazyModule("cloud", external="scitex_hub")
 tunnel = _LazyModule("tunnel", external="scitex_ssh")  # tunnel merged into scitex-ssh
 config = _LazyModule("config", external="scitex_config")
 audio = _LazyModule("audio", external="scitex_audio")
@@ -151,13 +158,16 @@ browser = _LazyModule("browser", external="scitex_browser")  # Browser automatio
 compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilities
 audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
 events = _LazyModule("events", external="scitex_events")  # Event system
-media = _LazyModule("media")  # Media utilities
+media = _LazyModule(
+    "media", external="scitex_etc.media"
+)  # in-tree dir removed; shipped in scitex-etc (>=0.2.0)
+# `project` is an OPTIONAL peer proxying scitex_hub.project (scitex-hub is NOT a
+# hard dep). A missing scitex-hub raises a friendly install hint on first access.
+project = _LazyModule("project", external="scitex_hub.project")
 cli = _LazyModule("cli")  # Command-line interface
-linter = _LazyModule(
-    "linter"
-)  # AST-based linter; in-tree linter.py shim delegates to scitex_dev.linter
-# (the `scitex_linter` distribution is an archived re-export shim). The
-# more-consistent scitex.dev.linter resolves to the same engine via dev→scitex_dev.
+# scitex.linter — the umbrella ships no linter module; the AST linter engine
+# lives in scitex-dev (>=0.16.0). Use `scitex.dev.linter` (resolves to
+# scitex_dev.linter via the dev→scitex_dev alias) or the `scitex-dev linter` CLI.
 clew = _LazyModule(
     "clew", external="scitex_clew"
 )  # Hash-based verification (in-tree dir removed; pure re-export of scitex_clew)
@@ -265,12 +275,12 @@ __all__ = [
     "datetime",
     "dt",
     "types",
-    "utils",
     "etc",
     "context",
     "dev",
     "gists",
     "cloud",
+    "project",
     "tunnel",
     "config",
     "audio",
@@ -298,7 +308,6 @@ __all__ = [
     "notification",
     "clew",
     "notebook",
-    "linter",
     "PATHS",
     "__version__",
 ]

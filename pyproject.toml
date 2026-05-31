@@ -68,7 +68,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.15.0",
+    "scitex-dev>=0.16.0",
     "scitex-io==0.2.19",
     "scitex-stats==0.2.23",
     "scitex-audio==0.2.13",
@@ -82,7 +82,7 @@ dependencies = [
     "scitex-path==0.1.7",
     "scitex-repro==0.1.6",
     "scitex-compat==0.1.8",
-    "scitex-etc==0.1.10",
+    "scitex-etc>=0.2.0",  # media shipped here (>=0.2.0); scitex.media re-exports scitex_etc.media
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
     "scitex-audit==0.1.7",
@@ -128,13 +128,10 @@ scitex = "scitex"
 [project.entry-points."scitex_dev.skills"]
 scitex = "scitex"
 
-[project.entry-points."scitex_dev.linter.plugins"]
-scitex = "scitex._linter_plugin:get_plugin"
-
-# Legacy entry-point group (dual-register during scitex-linter
-# deprecation window — will be dropped after the final shim release).
-[project.entry-points."scitex_linter.plugins"]
-scitex = "scitex._linter_plugin:get_plugin"
+# NOTE: the umbrella no longer ships linter rules. STX-I/STX-S rules now live
+# in scitex-dev (>=0.16.0, `scitex_dev.linter._rules`); the in-tree
+# `_linter_plugin.py` + its `scitex_dev.linter.plugins` / `scitex_linter.plugins`
+# entry points were dropped (Phase B).
 
 # ============================================
 # Optional Dependencies - Module-Oriented
@@ -225,11 +222,20 @@ cli = [
     "GitPython",
 ]
 
-# Cloud Module - Cloud service integration
-# Use: pip install scitex[cloud]
+# Cloud Module - Cloud service integration (OPTIONAL peer: scitex-hub)
+# Use: pip install scitex[cloud]  (alias of scitex[hub])
+# Kept OUT of [all] so CI's matrix skips cloud/module/project when scitex-hub
+# (not yet released) is absent. scitex.cloud/.module/.project degrade with a
+# friendly install hint when scitex-hub is missing.
 cloud = [
     "matplotlib",
-    "scitex-cloud==0.17.0",
+    "scitex-hub>=0.19.0",
+]
+
+# Hub Module - scitex-hub (formerly scitex-cloud) optional peer.
+# Powers scitex.cloud / scitex.module / scitex.project.
+hub = [
+    "scitex-hub>=0.19.0",
 ]
 
 # Compat Module - Compatibility utilities
@@ -352,7 +358,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
-    "scitex-etc==0.1.10",
+    "scitex-etc>=0.2.0",
 ]
 
 # Events Module - Event system
@@ -434,8 +440,8 @@ logging = [
     "scitex-logging==0.1.7",
 ]
 
-# Media Module - Media display utilities
-# Use: pip install scitex[media]
+# Media Module - Media display utilities (always available: scitex-etc is a
+# core dep). scitex.media re-exports scitex_etc.media (shipped in >=0.2.0).
 media = []
 
 # ML Module - Machine learning
@@ -444,9 +450,11 @@ ml = [
     "scitex-ml==0.2.0",
 ]
 
-# Module Module - Module management
+# Module Module - Module management (OPTIONAL peer: scitex-hub.module)
 # Use: pip install scitex[module]
-module = []
+module = [
+    "scitex-hub>=0.19.0",
+]
 
 # MSWord Module - MS Word document handling
 # Use: pip install scitex[msword]
@@ -529,9 +537,11 @@ plt = [
     "figrecipe==0.28.13",
 ]
 
-# Project Module - Project management
+# Project Module - Project management (OPTIONAL peer: scitex-hub.project)
 # Use: pip install scitex[project]
-project = []
+project = [
+    "scitex-hub>=0.19.0",
+]
 
 # Repro Module - Reproducibility tools
 # Use: pip install scitex[repro]
@@ -712,15 +722,10 @@ types = [
 # Use: pip install scitex[ui]
 ui = ["scitex-ui==0.5.1"]
 
-# Utils Module - General utilities
-# Use: pip install scitex[utils]
-utils = [
-    "h5py",
-    "natsort",
-    "matplotlib",
-    "xarray",
-    "tqdm",
-]
+# Utils Module - REMOVED (Phase B). The in-tree scitex.utils grab-bag was
+# deleted; its public helpers live in their SoC owners (compress_hdf5 →
+# scitex-io, count_grids/yield_grids/search → scitex-etc, notify →
+# scitex-notification), all already core deps. Import from the owning package.
 
 # Verify Module - Verification utilities
 # Use: pip install scitex[verify]
@@ -914,11 +919,14 @@ dev = [
     "scitex-audit==0.1.7",
     "scitex-browser==0.1.15",
     "scitex-clew==0.2.14",
-    "scitex-cloud==0.17.0",
+    # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
+    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
+    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
+    # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
-    "scitex-dev==0.15.0",
-    "scitex-etc==0.1.10",
+    "scitex-dev>=0.16.0",
+    "scitex-etc>=0.2.0",
     "scitex-genai==0.1.0",
     "scitex-io==0.2.19",
     "scitex-notification==0.2.8",
@@ -984,7 +992,9 @@ all = [
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    "scitex[cloud]",
+    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
+    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
+    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
@@ -1011,7 +1021,6 @@ all = [
     "scitex[logging]",
     "scitex[media]",
     "scitex[ml]",
-    "scitex[module]",
     "scitex[msword]",
     "scitex[nn]",
     "scitex[notebook]",
@@ -1021,7 +1030,6 @@ all = [
     "scitex[path]",
     "scitex[pd]",
     "scitex[plt]",
-    "scitex[project]",
     "scitex[repro]",
     "scitex[reproduce]",
     "scitex[resource]",
@@ -1041,7 +1049,6 @@ all = [
     "scitex[tunnel]",
     "scitex[types]",
     "scitex[ui]",
-    "scitex[utils]",
     "scitex[verify]",
     "scitex[web]",
     "scitex[writer]",
@@ -1054,7 +1061,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.15.0"]
+linter = ["scitex-dev>=0.16.0"]
 orochi = ["scitex-orochi==0.16.3"]
 agent-container = ["scitex-agent-container==0.21.3"]
 
