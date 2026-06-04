@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.0"
+version = "2.30.1"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -62,13 +62,13 @@ dependencies = [
     "natsort",  # Natural sorting - used by many modules
     "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
-    "scitex-config>=0.3.6",
+    "scitex-config==0.3.6",
     # Reproducibility Verification
     "scitex-clew==0.2.14",
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.16.0",
+    "scitex-dev==0.17.4",
     "scitex-io==0.2.19",
     "scitex-stats==0.2.23",
     "scitex-audio==0.2.13",
@@ -82,7 +82,7 @@ dependencies = [
     "scitex-path==0.1.7",
     "scitex-repro==0.1.6",
     "scitex-compat==0.1.8",
-    "scitex-etc>=0.2.0",  # media shipped here (>=0.2.0); scitex.media re-exports scitex_etc.media
+    "scitex-etc==0.2.0",  # media shipped here; scitex.media re-exports scitex_etc.media
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
     "scitex-audit==0.1.7",
@@ -98,7 +98,7 @@ dependencies = [
     "scitex-os==0.1.7",
     "scitex-security==0.1.4",
     "scitex-tex==0.1.7",
-    "figrecipe==0.28.13",
+    "figrecipe==0.28.20",
     "scitex-ui==0.5.1",
 ]
 
@@ -357,7 +357,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
-    "scitex-etc>=0.2.0",
+    "scitex-etc==0.2.0",
 ]
 
 # Events Module - Event system
@@ -533,7 +533,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.28.13",
+    "figrecipe==0.28.20",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
@@ -834,7 +834,7 @@ dev = [
     "crossref-local",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.28.13",
+    "figrecipe==0.28.20",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -924,8 +924,8 @@ dev = [
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
-    "scitex-dev>=0.16.0",
-    "scitex-etc>=0.2.0",
+    "scitex-dev==0.17.4",
+    "scitex-etc==0.2.0",
     "scitex-genai==0.1.0",
     "scitex-io==0.2.19",
     "scitex-notification==0.2.8",
@@ -1060,7 +1060,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev>=0.16.0"]
+linter = ["scitex-dev==0.17.4"]
 orochi = ["scitex-orochi==0.16.3"]
 agent-container = ["scitex-agent-container==0.21.3"]
 
