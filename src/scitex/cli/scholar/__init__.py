@@ -160,7 +160,7 @@ def start(transport, host, port):
     import sys
 
     try:
-        from scitex.mcp_server import run_server
+        from scitex._mcp import run_server
 
         if transport != "stdio":
             click.secho(f"Starting unified scitex MCP server ({transport})", fg="cyan")

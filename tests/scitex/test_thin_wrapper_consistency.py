@@ -30,17 +30,35 @@ _MCP_CLI_TIMEOUT = 180
 
 
 def _umbrella_tool_names() -> set:
-    """All umbrella MCP tool names, enumerated in-process (no subprocess)."""
+    """All umbrella MCP tool names, enumerated in-process (no subprocess).
+
+    Includes both the umbrella's own local tools AND every registry-mounted
+    peer's tools under their mount namespace. FastMCP 2.x resolves mounted
+    sub-server tools lazily (they are absent from the parent ``get_tools``),
+    so we enumerate each mounted server directly and re-apply its prefix.
+    """
     fastmcp = pytest.importorskip("fastmcp")  # noqa: F841
     try:
-        from scitex._mcp_tools._compat import get_tools_sync
-        from scitex.mcp_server import FASTMCP_AVAILABLE
-        from scitex.mcp_server import mcp as mcp_server
+        from scitex._mcp import FASTMCP_AVAILABLE, get_tools_sync
+        from scitex._mcp import mcp as mcp_server
     except ImportError as exc:
         pytest.skip(f"umbrella MCP server unavailable: {exc}")
     if not FASTMCP_AVAILABLE or mcp_server is None:
         pytest.skip("umbrella MCP server not initialized")
-    return set(get_tools_sync(mcp_server).keys())
+
+    names = set(get_tools_sync(mcp_server).keys())
+    for srv in getattr(mcp_server, "_mounted_servers", []) or []:
+        prefix = getattr(srv, "prefix", None) or getattr(srv, "namespace", None)
+        sub = getattr(srv, "server", None) or getattr(srv, "_server", None)
+        if sub is None:
+            continue
+        try:
+            sub_names = get_tools_sync(sub, include_mounted=False).keys()
+        except Exception:
+            continue
+        for n in sub_names:
+            names.add(f"{prefix}_{n}" if prefix else n)
+    return names
 
 
 def _standalone_cli_tool_names(argv: list, prefixes: tuple) -> set:

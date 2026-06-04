@@ -234,3 +234,10 @@ jobs:
           fi
           gh pr merge "$EXISTING" --merge --admin \
             || echo "Admin merge unavailable; PR left open for manual merge."
+          # The repo has delete_branch_on_merge=true, so merging the
+          # develop→main PR DELETES the develop branch (its head). develop is
+          # an unprotected permanent branch; losing it breaks `git pull` on
+          # every dev machine ("no such ref develop was fetched"). Recreate it
+          # at the just-synced commit. Idempotent: a no-op if develop survived.
+          git push origin "HEAD:refs/heads/develop" \
+            || echo "develop already present or push skipped."

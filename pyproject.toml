@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.0"
+version = "2.30.1"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -62,14 +62,14 @@ dependencies = [
     "natsort",  # Natural sorting - used by many modules
     "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
-    "scitex-config>=0.3.6",
+    "scitex-config==0.3.6",
     # Reproducibility Verification
-    "scitex-clew==0.2.14",
+    "scitex-clew==0.2.15",
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.15.0",
-    "scitex-io==0.2.19",
+    "scitex-dev==0.17.4",
+    "scitex-io==0.2.20",
     "scitex-stats==0.2.23",
     "scitex-audio==0.2.13",
     "scitex-notification==0.2.8",
@@ -82,7 +82,7 @@ dependencies = [
     "scitex-path==0.1.7",
     "scitex-repro==0.1.6",
     "scitex-compat==0.1.8",
-    "scitex-etc==0.1.10",
+    "scitex-etc==0.2.0",  # media shipped here; scitex.media re-exports scitex_etc.media
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
     "scitex-audit==0.1.7",
@@ -94,11 +94,11 @@ dependencies = [
     "scitex-context==0.1.4",
     "scitex-cv==0.1.5",
     "scitex-introspect==0.1.7",
-    "scitex-msword==0.1.4",
+    "scitex-msword==0.2.0",
     "scitex-os==0.1.7",
     "scitex-security==0.1.4",
     "scitex-tex==0.1.7",
-    "figrecipe==0.28.13",
+    "figrecipe==0.28.20",
     "scitex-ui==0.5.1",
 ]
 
@@ -113,14 +113,13 @@ scitex = "scitex.__main__:main"
 # Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
 scitex-pkg = "scitex.cli.pkg:pkg"
 # Unified MCP Server (all modules in one). Use `scitex serve` (preferred)
-# or `scitex-mcp-server`. Each peer standalone (scitex-scholar, scitex-stats,
-# scitex-capture, scitex-diagram, scitex-template, scitex-audio, scitex-plt,
-# scitex-ui) ships its own per-module MCP entry point — DO NOT re-declare
-# them here, the umbrella's hand-wrap layer (scitex._mcp_tools) re-exposes
-# every tool on the unified server, so legacy `scitex-<module>` shims like
-# `scitex-scholar = scitex.scholar.mcp_server:main` would only collide with
-# the peer's Click CLI and break shell-completion eval.
-scitex-mcp-server = "scitex.mcp_server:main"
+# or `scitex-mcp-server`. The umbrella's single MCP entrypoint
+# (scitex._mcp) registry-mounts every peer's FastMCP server, so peer
+# standalone packages (scitex-scholar, scitex-stats, scitex-capture, ...)
+# need NOT re-declare per-module MCP scripts here — declaring legacy
+# `scitex-<module>` shims would only collide with each peer's Click CLI
+# and break shell-completion eval.
+scitex-mcp-server = "scitex._mcp:main"
 
 [project.entry-points."scitex_dev.docs"]
 scitex = "scitex"
@@ -128,13 +127,10 @@ scitex = "scitex"
 [project.entry-points."scitex_dev.skills"]
 scitex = "scitex"
 
-[project.entry-points."scitex_dev.linter.plugins"]
-scitex = "scitex._linter_plugin:get_plugin"
-
-# Legacy entry-point group (dual-register during scitex-linter
-# deprecation window — will be dropped after the final shim release).
-[project.entry-points."scitex_linter.plugins"]
-scitex = "scitex._linter_plugin:get_plugin"
+# NOTE: the umbrella no longer ships linter rules. STX-I/STX-S rules now live
+# in scitex-dev (>=0.16.0, `scitex_dev.linter._rules`); the in-tree
+# `_linter_plugin.py` + its `scitex_dev.linter.plugins` / `scitex_linter.plugins`
+# entry points were dropped (Phase B).
 
 # ============================================
 # Optional Dependencies - Module-Oriented
@@ -225,11 +221,20 @@ cli = [
     "GitPython",
 ]
 
-# Cloud Module - Cloud service integration
-# Use: pip install scitex[cloud]
+# Cloud Module - Cloud service integration (OPTIONAL peer: scitex-hub)
+# Use: pip install scitex[cloud]  (alias of scitex[hub])
+# Kept OUT of [all] so CI's matrix skips cloud/module/project when scitex-hub
+# (not yet released) is absent. scitex.cloud/.module/.project degrade with a
+# friendly install hint when scitex-hub is missing.
 cloud = [
     "matplotlib",
-    "scitex-cloud==0.17.0",
+    "scitex-hub>=0.19.0",
+]
+
+# Hub Module - scitex-hub (formerly scitex-cloud) optional peer.
+# Powers scitex.cloud / scitex.module / scitex.project.
+hub = [
+    "scitex-hub>=0.19.0",
 ]
 
 # Compat Module - Compatibility utilities
@@ -352,7 +357,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
-    "scitex-etc==0.1.10",
+    "scitex-etc==0.2.0",
 ]
 
 # Events Module - Event system
@@ -373,7 +378,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io==0.2.19",
+    "scitex-io==0.2.20",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -434,8 +439,8 @@ logging = [
     "scitex-logging==0.1.7",
 ]
 
-# Media Module - Media display utilities
-# Use: pip install scitex[media]
+# Media Module - Media display utilities (always available: scitex-etc is a
+# core dep). scitex.media re-exports scitex_etc.media (shipped in >=0.2.0).
 media = []
 
 # ML Module - Machine learning
@@ -444,9 +449,11 @@ ml = [
     "scitex-ml==0.2.0",
 ]
 
-# Module Module - Module management
+# Module Module - Module management (OPTIONAL peer: scitex-hub.module)
 # Use: pip install scitex[module]
-module = []
+module = [
+    "scitex-hub>=0.19.0",
+]
 
 # MSWord Module - MS Word document handling
 # Use: pip install scitex[msword]
@@ -526,12 +533,14 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.28.13",
+    "figrecipe==0.28.20",
 ]
 
-# Project Module - Project management
+# Project Module - Project management (OPTIONAL peer: scitex-hub.project)
 # Use: pip install scitex[project]
-project = []
+project = [
+    "scitex-hub>=0.19.0",
+]
 
 # Repro Module - Reproducibility tools
 # Use: pip install scitex[repro]
@@ -712,15 +721,10 @@ types = [
 # Use: pip install scitex[ui]
 ui = ["scitex-ui==0.5.1"]
 
-# Utils Module - General utilities
-# Use: pip install scitex[utils]
-utils = [
-    "h5py",
-    "natsort",
-    "matplotlib",
-    "xarray",
-    "tqdm",
-]
+# Utils Module - REMOVED (Phase B). The in-tree scitex.utils grab-bag was
+# deleted; its public helpers live in their SoC owners (compress_hdf5 →
+# scitex-io, count_grids/yield_grids/search → scitex-etc, notify →
+# scitex-notification), all already core deps. Import from the owning package.
 
 # Verify Module - Verification utilities
 # Use: pip install scitex[verify]
@@ -758,12 +762,12 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = ["scitex-clew==0.2.14"]
+clew = ["scitex-clew==0.2.15"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer==2.17.2",  # Core writer package (single source of truth)
+    "scitex-writer==2.17.3",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -830,7 +834,7 @@ dev = [
     "crossref-local",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.28.13",
+    "figrecipe==0.28.20",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -909,24 +913,27 @@ dev = [
     "scholarly",
     "scikit-learn",
     "scipy",
-    "scitex-agent-container==0.21.3",
+    "scitex-agent-container==0.21.9",
     "scitex-audio==0.2.13",
     "scitex-audit==0.1.7",
     "scitex-browser==0.1.15",
-    "scitex-clew==0.2.14",
-    "scitex-cloud==0.17.0",
+    "scitex-clew==0.2.15",
+    # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
+    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
+    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
+    # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
-    "scitex-dev==0.15.0",
-    "scitex-etc==0.1.10",
+    "scitex-dev==0.17.4",
+    "scitex-etc==0.2.0",
     "scitex-genai==0.1.0",
-    "scitex-io==0.2.19",
+    "scitex-io==0.2.20",
     "scitex-notification==0.2.8",
     "scitex-scholar==1.4.1",
     "scitex-ssh==1.0.1",
     "scitex-stats==0.2.23",
     "scitex-ui==0.5.1",
-    "scitex-writer==2.17.2",
+    "scitex-writer==2.17.3",
     "seaborn",
     "selenium",
     "setuptools",
@@ -984,7 +991,9 @@ all = [
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    "scitex[cloud]",
+    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
+    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
+    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
@@ -1011,7 +1020,6 @@ all = [
     "scitex[logging]",
     "scitex[media]",
     "scitex[ml]",
-    "scitex[module]",
     "scitex[msword]",
     "scitex[nn]",
     "scitex[notebook]",
@@ -1021,7 +1029,6 @@ all = [
     "scitex[path]",
     "scitex[pd]",
     "scitex[plt]",
-    "scitex[project]",
     "scitex[repro]",
     "scitex[reproduce]",
     "scitex[resource]",
@@ -1041,7 +1048,6 @@ all = [
     "scitex[tunnel]",
     "scitex[types]",
     "scitex[ui]",
-    "scitex[utils]",
     "scitex[verify]",
     "scitex[web]",
     "scitex[writer]",
@@ -1054,9 +1060,9 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.15.0"]
-orochi = ["scitex-orochi==0.16.3"]
-agent-container = ["scitex-agent-container==0.21.3"]
+linter = ["scitex-dev==0.17.4"]
+orochi = ["scitex-orochi==0.16.4"]
+agent-container = ["scitex-agent-container==0.21.9"]
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"
