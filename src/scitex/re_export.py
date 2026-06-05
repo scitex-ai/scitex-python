@@ -270,6 +270,7 @@ EXTERNAL_REEXPORTS = {
     "msword": "scitex_msword",
     "os": "scitex_os",
     "security": "scitex_security",
+    "session": "scitex_session",  # @scitex.session decorator + INJECTED sentinel
     "tex": "scitex_tex",
 }
 

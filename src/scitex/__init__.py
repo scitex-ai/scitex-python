@@ -111,7 +111,9 @@ errors = _LazyModule(
     "errors", external="scitex_logging"
 )  # errors live in scitex-logging
 logging = _LazyModule("logging", external="scitex_logging")
-session = _CallableModuleWrapper("session", main_decorator_name="session")
+session = _CallableModuleWrapper(
+    "session", main_decorator_name="session", external="scitex_session"
+)
 session._setup_persistence("scitex", "session")
 # `module` is an OPTIONAL peer: it proxies the `module` callable from
 # scitex_hub.module (scitex-hub is NOT a hard dep). Callability
