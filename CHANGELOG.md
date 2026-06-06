@@ -8,19 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- **scitex.media re-export rerouted to `figrecipe.media`** (Phase B of the
-  scitex-gen full retirement wave; operator-confirmed). This reneges
-  ADR-0001, which had scheduled media for scitex-etc. Operator's view: media
-  belongs with figure rendering, not with the etc catch-all. `scitex-etc`
-  retains only `count_grids` / `yield_grids` / `search`.
-  - `figrecipe>=0.29.0` is required (was `==0.28.20`); bumped at all three
-    pin sites (top-level core deps, the `[plt]` extra group, the `[dev]`
-    group).
-  - `scitex-etc==0.2.0` is kept; the package shipped media in `0.2.0` but
-    the scitex-etc develop branch will retarget 0.2.0 to drop media + wait_key
-    (moving to figrecipe and scitex-parallel respectively).
-  - `_DEFAULT_BRANDED` and the lazy-module loader both now point `media` at
-    `figrecipe.media`.
+- **scitex.media re-export points at `scitex_etc.media`** — ADR-0001
+  executed. `scitex.media` is media-reference detection/display for
+  chat-pane / terminal / markdown targets (`render.classify` /
+  `render.detect` / `render.show`, plus a CLI and an MCP server); it ships
+  in `scitex-etc >=0.3.0` alongside `count_grids` / `yield_grids` /
+  `search`.
+  - `scitex-etc>=0.3.0` is required at all three pin sites (top-level core
+    deps, the `[etc]` extra, the `[all,dev]` aggregate).
+  - Reverts a brief detour through `figrecipe.media` (PR #317 first draft +
+    figrecipe PR #161) — semantically wrong: figrecipe is figure-recipe /
+    scientific plotting, not chat/terminal media handling.
+  - `_DEFAULT_BRANDED` and the lazy-module loader both now point `media`
+    at `scitex_etc.media`.
 
 ## [2.30.0] - 2026-05-31
 

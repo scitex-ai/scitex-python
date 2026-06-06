@@ -1,14 +1,22 @@
-# 0001 — Relocate `scitex.media` out of the umbrella (future work)
+# 0001 — Relocate `scitex.media` out of the umbrella
 
 ## Status
 
-**Superseded by operator decision (2026-06-07)** — Phase B of the
-scitex-gen full retirement wave. Operator characterized `scitex-etc` as the
-catch-all bin and routed `media` to **figrecipe** instead (`scitex.media`
-→ `figrecipe.media`, shipped in figrecipe 0.29.0). `scitex-etc` retains
-only `count_grids` / `yield_grids` / `search`.
+**Executed — 2026-06-07.** `scitex.media` now re-exports
+`scitex_etc.media` (shipped in scitex-etc >=0.3.0). The in-tree
+`src/scitex/media/` directory was deleted in an earlier umbrella-thinning
+pass; the umbrella holds only the lazy alias.
+
+A short-lived alternative routing to **figrecipe** was attempted in PR
+[#317][orig] / figrecipe PR #161, but reverted before merge: `scitex.media`
+is media-reference detection/display for chat-pane / terminal / markdown
+targets, **not** figure rendering — semantically it does not belong with
+figrecipe's figure-recipe domain. Re-routed to scitex-etc per this ADR's
+original conclusion.
 
 Original status: Proposed (deferred) — 2026-05-30.
+
+[orig]: https://github.com/ywatanabe1989/scitex-python/pull/317
 
 ## Context
 

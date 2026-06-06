@@ -245,7 +245,7 @@ EXTERNAL_REEXPORTS = {
     "ml": "scitex_ml",
     "genai": "scitex_genai",
     "etc": "scitex_etc",
-    "media": "figrecipe.media",  # in-tree dir removed; shipped in figrecipe (>=0.29.0) — operator-confirmed Phase B reroute, replaces ADR-0001 (-> scitex-etc).
+    "media": "scitex_etc.media",  # in-tree dir removed; shipped in scitex-etc (>=0.3.0) — ADR-0001 executed.
     "gists": "scitex_gists",
     "audit": "scitex_audit",
     "compat": "scitex_compat",

@@ -82,9 +82,9 @@ dependencies = [
     "scitex-path==0.1.7",
     "scitex-repro==0.1.6",
     "scitex-compat==0.1.8",
-    # media now lives in figrecipe (>=0.29.0); scitex-etc retains only count_grids/yield_grids/search.
-    # See the figrecipe pin below — needs bumping to 0.29.0 to bring in the media submodule.
-    "scitex-etc==0.2.0",
+    # scitex-etc owns count_grids/yield_grids/search and the media submodule
+    # (ADR-0001 executed): scitex.media re-exports scitex_etc.media.
+    "scitex-etc>=0.3.0",
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
     "scitex-audit==0.1.7",
@@ -100,7 +100,6 @@ dependencies = [
     "scitex-os==0.1.7",
     "scitex-security==0.1.4",
     "scitex-tex==0.1.7",
-    "figrecipe>=0.29.0",  # scitex.media re-exports figrecipe.media (Phase B reroute).
     "scitex-ui==0.5.1",
 ]
 
@@ -355,11 +354,10 @@ gen = [
     # "torch",
 ]
 
-# Etc Module - Miscellaneous utilities
+# Etc Module - Miscellaneous utilities (count_grids, yield_grids, search, media)
 # Use: pip install scitex[etc]
 etc = [
-    "readchar",
-    "scitex-etc==0.2.0",
+    "scitex-etc>=0.3.0",
 ]
 
 # Events Module - Event system
@@ -442,9 +440,8 @@ logging = [
 ]
 
 # Media Module - Media display utilities. scitex.media re-exports
-# figrecipe.media (shipped in figrecipe >=0.29.0) — Phase B reroute
-# per operator decision, replaces scitex-python ADR-0001 (-> scitex-etc).
-# figrecipe is already a core dep so this extra is a no-op shortcut.
+# scitex_etc.media (shipped in scitex-etc >=0.3.0) — ADR-0001 executed.
+# scitex-etc is already a core dep so this extra is a no-op shortcut.
 media = []
 
 # ML Module - Machine learning
@@ -537,7 +534,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe>=0.29.0",  # scitex.media re-exports figrecipe.media (Phase B reroute).
+    "figrecipe>=0.16.0",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
@@ -838,7 +835,7 @@ dev = [
     "crossref-local",
     "csv2latex",
     "feedparser",
-    "figrecipe>=0.29.0",  # scitex.media re-exports figrecipe.media (Phase B reroute).
+    "figrecipe>=0.16.0",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -929,7 +926,7 @@ dev = [
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
     "scitex-dev==0.17.4",
-    "scitex-etc==0.2.0",
+    "scitex-etc>=0.3.0",
     "scitex-genai==0.1.0",
     "scitex-io==0.2.20",
     "scitex-notification==0.2.8",
