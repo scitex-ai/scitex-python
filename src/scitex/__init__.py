@@ -161,8 +161,8 @@ compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilit
 audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
 events = _LazyModule("events", external="scitex_events")  # Event system
 media = _LazyModule(
-    "media", external="scitex_etc.media"
-)  # in-tree dir removed; shipped in scitex-etc (>=0.2.0)
+    "media", external="figrecipe.media"
+)  # in-tree dir removed; shipped in figrecipe (>=0.29.0) — operator-confirmed Phase B reroute, replaces ADR-0001 (-> scitex-etc).
 # `project` is an OPTIONAL peer proxying scitex_hub.project (scitex-hub is NOT a
 # hard dep). A missing scitex-hub raises a friendly install hint on first access.
 project = _LazyModule("project", external="scitex_hub.project")

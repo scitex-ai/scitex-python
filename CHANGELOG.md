@@ -5,6 +5,23 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **scitex.media re-export rerouted to `figrecipe.media`** (Phase B of the
+  scitex-gen full retirement wave; operator-confirmed). This reneges
+  ADR-0001, which had scheduled media for scitex-etc. Operator's view: media
+  belongs with figure rendering, not with the etc catch-all. `scitex-etc`
+  retains only `count_grids` / `yield_grids` / `search`.
+  - `figrecipe>=0.29.0` is required (was `==0.28.20`); bumped at all three
+    pin sites (top-level core deps, the `[plt]` extra group, the `[dev]`
+    group).
+  - `scitex-etc==0.2.0` is kept; the package shipped media in `0.2.0` but
+    the scitex-etc develop branch will retarget 0.2.0 to drop media + wait_key
+    (moving to figrecipe and scitex-parallel respectively).
+  - `_DEFAULT_BRANDED` and the lazy-module loader both now point `media` at
+    `figrecipe.media`.
+
 ## [2.30.0] - 2026-05-31
 
 ### Changed

@@ -2,7 +2,13 @@
 
 ## Status
 
-Proposed (deferred) — 2026-05-30.
+**Superseded by operator decision (2026-06-07)** — Phase B of the
+scitex-gen full retirement wave. Operator characterized `scitex-etc` as the
+catch-all bin and routed `media` to **figrecipe** instead (`scitex.media`
+→ `figrecipe.media`, shipped in figrecipe 0.29.0). `scitex-etc` retains
+only `count_grids` / `yield_grids` / `search`.
+
+Original status: Proposed (deferred) — 2026-05-30.
 
 ## Context
 
