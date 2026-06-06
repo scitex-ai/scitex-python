@@ -5,6 +5,45 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **`_LazyModule` error messages now name the canonical attribute home when
+  one exists.** When `scitex.<short>.<attr>` lookup fails because `<short>`
+  is not installed (extras gate) or because `<short>` is installed but
+  doesn't carry `<attr>` (the "phantom" case), the resulting error now
+  routes through a curated redirect map (`scitex._canonical_redirects`).
+  Example: `scitex.gen.load_configs` (which doesn't exist in `scitex_gen`)
+  used to raise `ImportError: scitex.gen requires additional dependencies.
+  Install with: pip install scitex[gen]` — telling the user to pip-install
+  a heavy extras package (torch + CUDA + …) that doesn't even contain the
+  function. Now it raises `ImportError: scitex.gen.load_configs is not
+  available here; the canonical location is scitex.io.load_configs (already
+  installed by the umbrella core — no extra needed). Change your import to
+  `from scitex.io import load_configs``. Same upgrade for the
+  `AttributeError` path when the module loaded fine but doesn't have the
+  attribute. Seed redirect entries (gen → io / session / dict / str / etc /
+  context / types) come from proj-paper-ripple-wm's PR#4a misdirected-
+  callsite audit (2026-06-07) — the mngs.gen kitchen-sink namespace was
+  split across multiple scitex peers, leaving hundreds of callsites
+  pointing at `scitex.gen.<X>` for `X` that now lives elsewhere.
+- **`pip install` hints now use `{sys.executable} -m pip`.** The previous
+  bare `pip install scitex[...]` hint risked installing into a system-level
+  Python when the user had an active virtualenv. Switched to
+  `{sys.executable} -m pip install 'scitex[<extras>]'` so the install lands
+  in the venv the user is currently running. Quotes the extras spec so
+  shells that glob square brackets (zsh) don't choke. Applied to both
+  `_LazyModule.__getattr__`'s ImportError fallback and the `__dir__()`
+  missing-module warning.
+
+### Added
+- **`scitex._canonical_redirects`** module — private helper carrying the
+  `(short, attr) → canonical_short` map and the two hint builders
+  (`missing_extras_hint`, `phantom_attr_hint`). Extracted from
+  `scitex.re_export` to keep the latter under the 512-line file cap. Pinned
+  by 27 tests across `tests/scitex/test_canonical_redirects.py` and
+  `tests/scitex/test_lazymodule_redirects.py`.
+
 ## [2.30.0] - 2026-05-31
 
 ### Changed

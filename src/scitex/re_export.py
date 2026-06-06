@@ -36,6 +36,12 @@ from importlib.machinery import ModuleSpec
 from types import ModuleType
 from typing import Mapping, Optional
 
+from ._canonical_redirects import (
+    missing_extras_hint as _missing_extras_hint,
+    phantom_attr_hint as _phantom_attr_hint,
+    venv_pip_hint as _venv_pip_hint,
+)
+
 
 # =============================================================================
 # Lazy attribute proxies
@@ -63,7 +69,7 @@ class _LazyModule:
     def _warn_missing(self):
         warnings.warn(
             f"scitex.{self._name} requires additional dependencies. "
-            f"Install with: pip install scitex[{self._name}]",
+            f"Install with: {_venv_pip_hint(self._name)}",
             UserWarning,
             stacklevel=3,
         )
@@ -88,11 +94,25 @@ class _LazyModule:
         try:
             return getattr(self._load_module(), attr)
         except (ImportError, ModuleNotFoundError):
+            # Either the external package itself is not importable (missing
+            # extras), or a deeper transitive ImportError fired at module-
+            # body exec. Route through the canonical-redirect hint so attrs
+            # with a known core home don't demand a heavy extras install.
             self._module = None  # Reset so next attempt retries
             raise ImportError(
-                f"scitex.{self._name} requires additional dependencies. "
-                f"Install with: pip install scitex[{self._name}]"
+                _missing_extras_hint(self._name, attr)
             ) from None
+        except AttributeError:
+            # The external package loaded fine but doesn't carry ``attr`` —
+            # the "phantom" case (e.g. scitex.gen.load_configs where
+            # load_configs actually lives in scitex_io, not scitex_gen).
+            # If the redirect map names a canonical home, raise an
+            # AttributeError naming it; otherwise let the original
+            # AttributeError propagate untouched.
+            hint = _phantom_attr_hint(self._name, attr)
+            if hint is None:
+                raise
+            raise AttributeError(hint) from None
 
     def __dir__(self):
         """Return dir of the actual module for tab completion."""
