@@ -1320,3 +1320,15 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+[tool.scitex_dev.audit]
+# PS-168 — Per-package secret + env-var prefix in GitHub Actions workflows.
+# `GH_PERSONAL_ACCESS_TOKEN` is the ecosystem-wide cross-cutting PAT used
+# by the contributor-assistant CLA action. The natural GITHUB_* namespace
+# is reserved by GitHub Actions on the secret-name surface (HTTP 422 on
+# every `gh secret set`), so the GH_ shorthand is the canonical
+# substitute and is registered ecosystem-wide via PR #122 on scitex-dev
+# (EXCEPTION_SECRETS_DEFAULT). This per-package entry pins the same
+# exception inline so the audit passes on every scitex-dev version,
+# independent of release timing.
+ps168_secret_exceptions = ["GH_PERSONAL_ACCESS_TOKEN"]
