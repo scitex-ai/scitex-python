@@ -5,18 +5,13 @@
 **Executed — 2026-06-07.** `scitex.media` now re-exports
 `scitex_etc.media` (shipped in scitex-etc >=0.3.0). The in-tree
 `src/scitex/media/` directory was deleted in an earlier umbrella-thinning
-pass; the umbrella holds only the lazy alias.
-
-A short-lived alternative routing to **figrecipe** was attempted in PR
-[#317][orig] / figrecipe PR #161, but reverted before merge: `scitex.media`
-is media-reference detection/display for chat-pane / terminal / markdown
-targets, **not** figure rendering — semantically it does not belong with
-figrecipe's figure-recipe domain. Re-routed to scitex-etc per this ADR's
-original conclusion.
+pass; the umbrella holds only the lazy alias. Confirmed semantic fit:
+`scitex.media` is chat-pane / terminal / markdown media-reference
+detection & display (`render.classify`, `render.detect`, `render.show`,
+plus a CLI and an MCP server), which is the cross-cutting kind of helper
+`scitex-etc` is for.
 
 Original status: Proposed (deferred) — 2026-05-30.
-
-[orig]: https://github.com/ywatanabe1989/scitex-python/pull/317
 
 ## Context
 

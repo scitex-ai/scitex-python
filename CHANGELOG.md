@@ -16,9 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `search`.
   - `scitex-etc>=0.3.0` is required at all three pin sites (top-level core
     deps, the `[etc]` extra, the `[all,dev]` aggregate).
-  - Reverts a brief detour through `figrecipe.media` (PR #317 first draft +
-    figrecipe PR #161) — semantically wrong: figrecipe is figure-recipe /
-    scientific plotting, not chat/terminal media handling.
+  - Replaces an earlier draft that had attempted a different routing —
+    semantically wrong: media is chat/terminal/markdown handling, not
+    figure rendering.
   - `_DEFAULT_BRANDED` and the lazy-module loader both now point `media`
     at `scitex_etc.media`.
 
