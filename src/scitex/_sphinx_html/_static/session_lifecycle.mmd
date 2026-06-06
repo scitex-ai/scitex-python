@@ -1,0 +1,20 @@
+%%{init: {"theme": "default"}}%%
+graph TD
+    A(["main()"])
+    B["Parse CLI args from signature"]
+    C["Create session dir"]
+    D["Load config, inject globals"]
+    E["Execute function"]
+    F{"return code?"}
+    G(["FINISHED_SUCCESS/"])
+    H(["FINISHED_ERROR/"])
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F -->|"0"| G
+    F -->|"nonzero"| H
+    style E fill:#e8f4fd,stroke:#2196F3,stroke-width:2px
+    style G fill:#e8f5e9,stroke:#4CAF50
+    style H fill:#fce4ec,stroke:#E91E63

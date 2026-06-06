@@ -1,0 +1,681 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>torch Module (stx.torch) &mdash; SciTeX v0.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="cv Module (stx.cv)" href="cv.html" />
+    <link rel="prev" title="NN Module (stx.nn)" href="nn.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SciTeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Module Overview</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="session.html">Session Decorator (<code class="docutils literal notranslate"><span class="pre">&#64;stx.session</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="session.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#output-directory-structure">Output Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#injected-parameters">Injected Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#config-object">CONFIG Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#decorator-options">Decorator Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#best-practices">Best Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="session.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">IO Module (<code class="docutils literal notranslate"><span class="pre">stx.io</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="io.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="io.html#supported-formats">Supported Formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="io.html#figure-saving">Figure Saving</a></li>
+<li class="toctree-l3"><a class="reference internal" href="io.html#provenance-tracking">Provenance Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="io.html#other-functions">Other Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="io.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">Config Module (<code class="docutils literal notranslate"><span class="pre">stx.config</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="config.html#priority-resolution">Priority Resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#yaml-configuration">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#key-classes">Key Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#path-management">Path Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging Module (<code class="docutils literal notranslate"><span class="pre">stx.logging</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#log-levels">Log Levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#warning-categories">Warning Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#exception-hierarchy">Exception Hierarchy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#stream-redirection">Stream Redirection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="repro.html">Repro Module (<code class="docutils literal notranslate"><span class="pre">stx.repro</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="repro.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repro.html#randomstatemanager">RandomStateManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repro.html#available-functions">Available Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repro.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clew.html">Clew Module (<code class="docutils literal notranslate"><span class="pre">stx.clew</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clew.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clew.html#cli-commands">CLI Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clew.html#verification-levels">Verification Levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clew.html#dependency-chains">Dependency Chains</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clew.html#verification-statuses">Verification Statuses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clew.html#key-functions">Key Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clew.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stats.html">Stats Module (<code class="docutils literal notranslate"><span class="pre">stx.stats</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#available-tests">Available Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#seaborn-style-data-parameter">Seaborn-Style Data Parameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#test-recommendation">Test Recommendation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#output-formats">Output Formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#descriptive-statistics">Descriptive Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#multiple-comparison-correction">Multiple Comparison Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#post-hoc-tests">Post-hoc Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stats.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plt.html">PLT Module (<code class="docutils literal notranslate"><span class="pre">stx.plt</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#plot-types-47">Plot Types (47)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#mm-based-layout">MM-Based Layout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#axis-helpers">Axis Helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#figure-composition">Figure Composition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#statistical-annotations">Statistical Annotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#reproducible-figures">Reproducible Figures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#style-presets">Style Presets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plt.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dsp.html">DSP Module (<code class="docutils literal notranslate"><span class="pre">stx.dsp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dsp.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dsp.html#available-functions">Available Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dsp.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="diagram.html">Diagram Module (<code class="docutils literal notranslate"><span class="pre">stx.diagram</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#yaml-specification">YAML Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#node-shapes">Node Shapes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#node-emphasis">Node Emphasis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#diagram-types">Diagram Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#paper-modes">Paper Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#backends">Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diagram.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="canvas.html">canvas Module (<code class="docutils literal notranslate"><span class="pre">stx.canvas</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scholar.html">Scholar Module (<code class="docutils literal notranslate"><span class="pre">stx.scholar</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#cli-usage">CLI Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#data-sources">Data Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#key-classes">Key Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#paper-metadata">Paper Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#filtering-and-sorting">Filtering and Sorting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#project-organization">Project Organization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#storage-architecture">Storage Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scholar.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="writer.html">Writer Module (<code class="docutils literal notranslate"><span class="pre">stx.writer</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#cli-usage">CLI Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#project-structure">Project Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#key-classes">Key Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#document-management">Document Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#writing-guidelines">Writing Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#compilation-options">Compilation Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writer.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebook.html">notebook Module (<code class="docutils literal notranslate"><span class="pre">stx.notebook</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai.html">AI Module (<code class="docutils literal notranslate"><span class="pre">stx.ai</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ai.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ai.html#training">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ai.html#classification">Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ai.html#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ai.html#visualization">Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ai.html#other">Other</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ai.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nn.html">NN Module (<code class="docutils literal notranslate"><span class="pre">stx.nn</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="nn.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nn.html#signal-processing-layers">Signal Processing Layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nn.html#channel-manipulation">Channel Manipulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nn.html#attention-shape">Attention &amp; Shape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nn.html#architectures">Architectures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nn.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">torch Module (<code class="docutils literal notranslate"><span class="pre">stx.torch</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cv.html">cv Module (<code class="docutils literal notranslate"><span class="pre">stx.cv</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmark.html">benchmark Module (<code class="docutils literal notranslate"><span class="pre">stx.benchmark</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pd.html">PD Module (<code class="docutils literal notranslate"><span class="pre">stx.pd</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pd.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pd.html#available-functions">Available Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pd.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db.html">db Module (<code class="docutils literal notranslate"><span class="pre">stx.db</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html">dataset Module (<code class="docutils literal notranslate"><span class="pre">stx.dataset</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema.html">schema Module (<code class="docutils literal notranslate"><span class="pre">stx.schema</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html">app Module (<code class="docutils literal notranslate"><span class="pre">stx.app</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cloud.html">cloud Module (<code class="docutils literal notranslate"><span class="pre">stx.cloud</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="container.html">container Module (<code class="docutils literal notranslate"><span class="pre">stx.container</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tunnel.html">tunnel Module (<code class="docutils literal notranslate"><span class="pre">stx.tunnel</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">cli Module (<code class="docutils literal notranslate"><span class="pre">stx.cli</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="browser.html">browser Module (<code class="docutils literal notranslate"><span class="pre">stx.browser</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="capture.html">capture Module (<code class="docutils literal notranslate"><span class="pre">stx.capture</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio.html">audio Module (<code class="docutils literal notranslate"><span class="pre">stx.audio</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notify.html">notify Module (<code class="docutils literal notranslate"><span class="pre">stx.notify</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="social.html">social Module (<code class="docutils literal notranslate"><span class="pre">stx.social</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen.html">Gen Module (<code class="docutils literal notranslate"><span class="pre">stx.gen</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gen.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gen.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="template.html">Template Module (<code class="docutils literal notranslate"><span class="pre">stx.template</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="template.html#project-templates">Project Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="template.html#git-strategies">Git Strategies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="template.html#code-templates">Code Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="template.html#python-api">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="template.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decorators.html">Decorators Module (<code class="docutils literal notranslate"><span class="pre">stx.decorators</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="decorators.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="decorators.html#type-conversion">Type Conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="decorators.html#batch-processing">Batch Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="decorators.html#caching">Caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="decorators.html#utilities">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="decorators.html#auto-ordering">Auto-Ordering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="decorators.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="introspect.html">Introspect Module (<code class="docutils literal notranslate"><span class="pre">stx.introspect</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="introspect.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introspect.html#ipython-style-shortcuts">IPython-Style Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introspect.html#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introspect.html#type-analysis">Type Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introspect.html#code-analysis">Code Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introspect.html#api-tree">API Tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="introspect.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="str.html">str Module (<code class="docutils literal notranslate"><span class="pre">stx.str</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dict.html">dict Module (<code class="docutils literal notranslate"><span class="pre">stx.dict</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path.html">path Module (<code class="docutils literal notranslate"><span class="pre">stx.path</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="os.html">os Module (<code class="docutils literal notranslate"><span class="pre">stx.os</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sh.html">sh Module (<code class="docutils literal notranslate"><span class="pre">stx.sh</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="git.html">git Module (<code class="docutils literal notranslate"><span class="pre">stx.git</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html">parallel Module (<code class="docutils literal notranslate"><span class="pre">stx.parallel</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linalg.html">linalg Module (<code class="docutils literal notranslate"><span class="pre">stx.linalg</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">datetime Module (<code class="docutils literal notranslate"><span class="pre">stx.datetime</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">types Module (<code class="docutils literal notranslate"><span class="pre">stx.types</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rng.html">rng Module (<code class="docutils literal notranslate"><span class="pre">stx.rng</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context.html">context Module (<code class="docutils literal notranslate"><span class="pre">stx.context</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource.html">resource Module (<code class="docutils literal notranslate"><span class="pre">stx.resource</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils Module (<code class="docutils literal notranslate"><span class="pre">stx.utils</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etc.html">etc Module (<code class="docutils literal notranslate"><span class="pre">stx.etc</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html">web Module (<code class="docutils literal notranslate"><span class="pre">stx.web</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msword.html">msword Module (<code class="docutils literal notranslate"><span class="pre">stx.msword</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tex.html">tex Module (<code class="docutils literal notranslate"><span class="pre">stx.tex</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bridge.html">bridge Module (<code class="docutils literal notranslate"><span class="pre">stx.bridge</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compat.html">compat Module (<code class="docutils literal notranslate"><span class="pre">stx.compat</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module.html">module Module (<code class="docutils literal notranslate"><span class="pre">stx.module</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gists.html">gists Module (<code class="docutils literal notranslate"><span class="pre">stx.gists</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media.html">media Module (<code class="docutils literal notranslate"><span class="pre">stx.media</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security.html">security Module (<code class="docutils literal notranslate"><span class="pre">stx.security</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui.html">ui Module (<code class="docutils literal notranslate"><span class="pre">stx.ui</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html">dev Module (<code class="docutils literal notranslate"><span class="pre">stx.dev</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audit.html">audit Module (<code class="docutils literal notranslate"><span class="pre">stx.audit</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">events Module (<code class="docutils literal notranslate"><span class="pre">stx.events</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project.html">project Module (<code class="docutils literal notranslate"><span class="pre">stx.project</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#core-install">Core Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#recommended-install-everything">Recommended: Install Everything</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#research-workflow">Research Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#per-module-extras">Per-Module Extras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#development-install">Development Install</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#using-uv-recommended">Using uv (recommended)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verifying-the-installation">Verifying the Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#three-interfaces">Three Interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#python-api">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#cli-commands">CLI Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#mcp-tools-120-tools-for-ai-agents">MCP Tools (120+ tools for AI agents)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../core_concepts.html">Core Concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core_concepts.html#research-workflow">Research Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_concepts.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_concepts.html#the-session-model">The Session Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_concepts.html#universal-i-o">Universal I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_concepts.html#provenance-tracking-clew">Provenance Tracking (Clew)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_concepts.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_concepts.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gallery.html">Plot Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#line-plots">Line Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#statistical-plots">Statistical Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#distribution-plots">Distribution Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#categorical-plots">Categorical Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#scatter-plots">Scatter Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#heatmaps-and-grids">Heatmaps and Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#area-plots">Area Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#special-plots">Special Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery.html#contour-and-vector-plots">Contour and Vector Plots</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.session.html">scitex.session API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.io.html">scitex.io API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.config.html">scitex.config API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig"><code class="docutils literal notranslate"><span class="pre">ScitexConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.__init__"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.get"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.resolve"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.resolve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.get_nested"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.get_nested()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.config_path"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.config_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.raw"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.raw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.flat"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.flat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexConfig.print"><code class="docutils literal notranslate"><span class="pre">ScitexConfig.print()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.get_config"><code class="docutils literal notranslate"><span class="pre">get_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.load_yaml"><code class="docutils literal notranslate"><span class="pre">load_yaml()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths"><code class="docutils literal notranslate"><span class="pre">ScitexPaths</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.__init__"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.base"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.logs"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.logs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.cache"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.cache</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.capture"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.capture</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.screenshots"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.screenshots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.rng"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.rng</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.browser"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.browser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.browser_screenshots"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.browser_screenshots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.browser_sessions"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.browser_sessions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.browser_persistent"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.browser_persistent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.test_monitor"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.test_monitor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.function_cache"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.function_cache</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.impact_factor_cache"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.impact_factor_cache</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.openathens_cache"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.openathens_cache</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.scholar"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.scholar</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.scholar_cache"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.scholar_cache</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.scholar_library"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.scholar_library</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.writer"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.writer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.resolve"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.resolve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.ensure_dir"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.ensure_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.ensure_all"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.ensure_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.ScitexPaths.list_all"><code class="docutils literal notranslate"><span class="pre">ScitexPaths.list_all()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.get_paths"><code class="docutils literal notranslate"><span class="pre">get_paths()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.PriorityConfig"><code class="docutils literal notranslate"><span class="pre">PriorityConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.PriorityConfig.SENSITIVE_EXPRESSIONS"><code class="docutils literal notranslate"><span class="pre">PriorityConfig.SENSITIVE_EXPRESSIONS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.PriorityConfig.__init__"><code class="docutils literal notranslate"><span class="pre">PriorityConfig.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.PriorityConfig.get"><code class="docutils literal notranslate"><span class="pre">PriorityConfig.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.PriorityConfig.resolve"><code class="docutils literal notranslate"><span class="pre">PriorityConfig.resolve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.PriorityConfig.print_resolutions"><code class="docutils literal notranslate"><span class="pre">PriorityConfig.print_resolutions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.config.html#scitex.config.PriorityConfig.clear_log"><code class="docutils literal notranslate"><span class="pre">PriorityConfig.clear_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.get_scitex_dir"><code class="docutils literal notranslate"><span class="pre">get_scitex_dir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.load_dotenv"><code class="docutils literal notranslate"><span class="pre">load_dotenv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.parse_src_file"><code class="docutils literal notranslate"><span class="pre">parse_src_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.load_env_from_path"><code class="docutils literal notranslate"><span class="pre">load_env_from_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.config.html#scitex.config.load_scitex_env"><code class="docutils literal notranslate"><span class="pre">load_scitex_env()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.logging.html">scitex.logging API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.configure"><code class="docutils literal notranslate"><span class="pre">configure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.set_level"><code class="docutils literal notranslate"><span class="pre">set_level()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.get_level"><code class="docutils literal notranslate"><span class="pre">get_level()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.enable_file_logging"><code class="docutils literal notranslate"><span class="pre">enable_file_logging()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.is_file_logging_enabled"><code class="docutils literal notranslate"><span class="pre">is_file_logging_enabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.get_log_path"><code class="docutils literal notranslate"><span class="pre">get_log_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.Tee"><code class="docutils literal notranslate"><span class="pre">Tee</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.Tee.write"><code class="docutils literal notranslate"><span class="pre">Tee.write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.Tee.flush"><code class="docutils literal notranslate"><span class="pre">Tee.flush()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.Tee.isatty"><code class="docutils literal notranslate"><span class="pre">Tee.isatty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.Tee.fileno"><code class="docutils literal notranslate"><span class="pre">Tee.fileno()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.Tee.buffer"><code class="docutils literal notranslate"><span class="pre">Tee.buffer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.Tee.close"><code class="docutils literal notranslate"><span class="pre">Tee.close()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.tee"><code class="docutils literal notranslate"><span class="pre">tee()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.log_to_file"><code class="docutils literal notranslate"><span class="pre">log_to_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.SciTeXWarning"><code class="docutils literal notranslate"><span class="pre">SciTeXWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.UnitWarning"><code class="docutils literal notranslate"><span class="pre">UnitWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.StyleWarning"><code class="docutils literal notranslate"><span class="pre">StyleWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.SciTeXDeprecationWarning"><code class="docutils literal notranslate"><span class="pre">SciTeXDeprecationWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.PerformanceWarning"><code class="docutils literal notranslate"><span class="pre">PerformanceWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.DataLossWarning"><code class="docutils literal notranslate"><span class="pre">DataLossWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.warn"><code class="docutils literal notranslate"><span class="pre">warn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.filterwarnings"><code class="docutils literal notranslate"><span class="pre">filterwarnings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.resetwarnings"><code class="docutils literal notranslate"><span class="pre">resetwarnings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.warn_deprecated"><code class="docutils literal notranslate"><span class="pre">warn_deprecated()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.warn_performance"><code class="docutils literal notranslate"><span class="pre">warn_performance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.warn_data_loss"><code class="docutils literal notranslate"><span class="pre">warn_data_loss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.SciTeXError"><code class="docutils literal notranslate"><span class="pre">SciTeXError</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.SciTeXError.__init__"><code class="docutils literal notranslate"><span class="pre">SciTeXError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.ConfigurationError"><code class="docutils literal notranslate"><span class="pre">ConfigurationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.ConfigFileNotFoundError"><code class="docutils literal notranslate"><span class="pre">ConfigFileNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.ConfigKeyError"><code class="docutils literal notranslate"><span class="pre">ConfigKeyError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.IOError"><code class="docutils literal notranslate"><span class="pre">IOError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.FileFormatError"><code class="docutils literal notranslate"><span class="pre">FileFormatError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.SaveError"><code class="docutils literal notranslate"><span class="pre">SaveError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.LoadError"><code class="docutils literal notranslate"><span class="pre">LoadError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.ScholarError"><code class="docutils literal notranslate"><span class="pre">ScholarError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.SearchError"><code class="docutils literal notranslate"><span class="pre">SearchError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.EnrichmentError"><code class="docutils literal notranslate"><span class="pre">EnrichmentError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.PDFDownloadError"><code class="docutils literal notranslate"><span class="pre">PDFDownloadError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.DOIResolutionError"><code class="docutils literal notranslate"><span class="pre">DOIResolutionError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.PDFExtractionError"><code class="docutils literal notranslate"><span class="pre">PDFExtractionError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.BibTeXEnrichmentError"><code class="docutils literal notranslate"><span class="pre">BibTeXEnrichmentError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.TranslatorError"><code class="docutils literal notranslate"><span class="pre">TranslatorError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.AuthenticationError"><code class="docutils literal notranslate"><span class="pre">AuthenticationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.PlottingError"><code class="docutils literal notranslate"><span class="pre">PlottingError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.FigureNotFoundError"><code class="docutils literal notranslate"><span class="pre">FigureNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.AxisError"><code class="docutils literal notranslate"><span class="pre">AxisError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.DataError"><code class="docutils literal notranslate"><span class="pre">DataError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.ShapeError"><code class="docutils literal notranslate"><span class="pre">ShapeError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.DTypeError"><code class="docutils literal notranslate"><span class="pre">DTypeError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.PathError"><code class="docutils literal notranslate"><span class="pre">PathError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.InvalidPathError"><code class="docutils literal notranslate"><span class="pre">InvalidPathError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.PathNotFoundError"><code class="docutils literal notranslate"><span class="pre">PathNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.TemplateError"><code class="docutils literal notranslate"><span class="pre">TemplateError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.TemplateViolationError"><code class="docutils literal notranslate"><span class="pre">TemplateViolationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.NNError"><code class="docutils literal notranslate"><span class="pre">NNError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.ModelError"><code class="docutils literal notranslate"><span class="pre">ModelError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.StatsError"><code class="docutils literal notranslate"><span class="pre">StatsError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.TestError"><code class="docutils literal notranslate"><span class="pre">TestError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.check_path"><code class="docutils literal notranslate"><span class="pre">check_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.check_file_exists"><code class="docutils literal notranslate"><span class="pre">check_file_exists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.logging.html#scitex.logging.check_shape_compatibility"><code class="docutils literal notranslate"><span class="pre">check_shape_compatibility()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.repro.html">scitex.repro API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.gen_ID"><code class="docutils literal notranslate"><span class="pre">gen_ID()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.gen_id"><code class="docutils literal notranslate"><span class="pre">gen_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.gen_timestamp"><code class="docutils literal notranslate"><span class="pre">gen_timestamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.timestamp"><code class="docutils literal notranslate"><span class="pre">timestamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.hash_array"><code class="docutils literal notranslate"><span class="pre">hash_array()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager"><code class="docutils literal notranslate"><span class="pre">RandomStateManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.__init__"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.get_np_generator"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.get_np_generator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.__call__"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.__call__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.verify"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.verify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.checkpoint"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.checkpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.restore"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.restore()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.temporary_seed"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.temporary_seed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.get_sklearn_random_state"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.get_sklearn_random_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.get_torch_generator"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.get_torch_generator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.get_generator"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.get_generator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.RandomStateManager.clear_cache"><code class="docutils literal notranslate"><span class="pre">RandomStateManager.clear_cache()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.reset"><code class="docutils literal notranslate"><span class="pre">reset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.repro.html#scitex.repro.fix_seeds"><code class="docutils literal notranslate"><span class="pre">fix_seeds()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.clew.html">scitex.clew API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.status"><code class="docutils literal notranslate"><span class="pre">status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.chain"><code class="docutils literal notranslate"><span class="pre">chain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.dag"><code class="docutils literal notranslate"><span class="pre">dag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.rerun"><code class="docutils literal notranslate"><span class="pre">rerun()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.rerun_dag"><code class="docutils literal notranslate"><span class="pre">rerun_dag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.rerun_claims"><code class="docutils literal notranslate"><span class="pre">rerun_claims()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.list_runs"><code class="docutils literal notranslate"><span class="pre">list_runs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.stats"><code class="docutils literal notranslate"><span class="pre">stats()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.add_claim"><code class="docutils literal notranslate"><span class="pre">add_claim()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.list_claims"><code class="docutils literal notranslate"><span class="pre">list_claims()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.verify_claim"><code class="docutils literal notranslate"><span class="pre">verify_claim()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.export_claims_json"><code class="docutils literal notranslate"><span class="pre">export_claims_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.register_intermediate"><code class="docutils literal notranslate"><span class="pre">register_intermediate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.stamp"><code class="docutils literal notranslate"><span class="pre">stamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.list_stamps"><code class="docutils literal notranslate"><span class="pre">list_stamps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.check_stamp"><code class="docutils literal notranslate"><span class="pre">check_stamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.hash_file"><code class="docutils literal notranslate"><span class="pre">hash_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.hash_directory"><code class="docutils literal notranslate"><span class="pre">hash_directory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.mermaid"><code class="docutils literal notranslate"><span class="pre">mermaid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.init_examples"><code class="docutils literal notranslate"><span class="pre">init_examples()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.on_session_start"><code class="docutils literal notranslate"><span class="pre">on_session_start()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.clew.html#scitex.clew.on_session_close"><code class="docutils literal notranslate"><span class="pre">on_session_close()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.stats.html">scitex.stats API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.plt.html">scitex.plt API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.dsp.html">scitex.dsp API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.diagram.html">scitex.diagram API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.scholar.html">scitex.scholar API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.writer.html">scitex.writer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.usage"><code class="docutils literal notranslate"><span class="pre">usage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer"><code class="docutils literal notranslate"><span class="pre">Writer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer.__init__"><code class="docutils literal notranslate"><span class="pre">Writer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer.compile_manuscript"><code class="docutils literal notranslate"><span class="pre">Writer.compile_manuscript()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer.compile_supplementary"><code class="docutils literal notranslate"><span class="pre">Writer.compile_supplementary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer.compile_revision"><code class="docutils literal notranslate"><span class="pre">Writer.compile_revision()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer.watch"><code class="docutils literal notranslate"><span class="pre">Writer.watch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer.get_pdf"><code class="docutils literal notranslate"><span class="pre">Writer.get_pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.Writer.delete"><code class="docutils literal notranslate"><span class="pre">Writer.delete()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult"><code class="docutils literal notranslate"><span class="pre">CompilationResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.success"><code class="docutils literal notranslate"><span class="pre">CompilationResult.success</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.exit_code"><code class="docutils literal notranslate"><span class="pre">CompilationResult.exit_code</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.stdout"><code class="docutils literal notranslate"><span class="pre">CompilationResult.stdout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.stderr"><code class="docutils literal notranslate"><span class="pre">CompilationResult.stderr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.output_pdf"><code class="docutils literal notranslate"><span class="pre">CompilationResult.output_pdf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.diff_pdf"><code class="docutils literal notranslate"><span class="pre">CompilationResult.diff_pdf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.log_file"><code class="docutils literal notranslate"><span class="pre">CompilationResult.log_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.duration"><code class="docutils literal notranslate"><span class="pre">CompilationResult.duration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.errors"><code class="docutils literal notranslate"><span class="pre">CompilationResult.errors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.warnings"><code class="docutils literal notranslate"><span class="pre">CompilationResult.warnings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.CompilationResult.__str__"><code class="docutils literal notranslate"><span class="pre">CompilationResult.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.root"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.git_root"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.git_root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.contents"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.contents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.base"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.readme"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.readme</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.archive"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.archive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.__post_init__"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.__post_init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.ManuscriptTree.verify_structure"><code class="docutils literal notranslate"><span class="pre">ManuscriptTree.verify_structure()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.root"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.git_root"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.git_root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.contents"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.contents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.base"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.supplementary"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.supplementary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.supplementary_diff"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.supplementary_diff</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.readme"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.readme</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.archive"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.archive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.__post_init__"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.__post_init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.SupplementaryTree.verify_structure"><code class="docutils literal notranslate"><span class="pre">SupplementaryTree.verify_structure()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree"><code class="docutils literal notranslate"><span class="pre">RevisionTree</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.root"><code class="docutils literal notranslate"><span class="pre">RevisionTree.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.git_root"><code class="docutils literal notranslate"><span class="pre">RevisionTree.git_root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.contents"><code class="docutils literal notranslate"><span class="pre">RevisionTree.contents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.base"><code class="docutils literal notranslate"><span class="pre">RevisionTree.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.revision"><code class="docutils literal notranslate"><span class="pre">RevisionTree.revision</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.readme"><code class="docutils literal notranslate"><span class="pre">RevisionTree.readme</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.archive"><code class="docutils literal notranslate"><span class="pre">RevisionTree.archive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.docs"><code class="docutils literal notranslate"><span class="pre">RevisionTree.docs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.__post_init__"><code class="docutils literal notranslate"><span class="pre">RevisionTree.__post_init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/scitex.writer.html#scitex.writer.RevisionTree.verify_structure"><code class="docutils literal notranslate"><span class="pre">RevisionTree.verify_structure()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.linter.html">scitex.linter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.ai.html">scitex.ai API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.nn.html">scitex.nn API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.template.html">scitex.template API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.decorators.html">scitex.decorators API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.introspect.html">scitex.introspect API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.pd.html">scitex.pd API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.gen.html">scitex.gen API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.db.html">scitex.db API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.dict.html">scitex.dict API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.str.html">scitex.str API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.path.html">scitex.path API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.clean"><code class="docutils literal notranslate"><span class="pre">clean()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.create_relative_symlink"><code class="docutils literal notranslate"><span class="pre">create_relative_symlink()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.find_dir"><code class="docutils literal notranslate"><span class="pre">find_dir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.find_file"><code class="docutils literal notranslate"><span class="pre">find_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.find_git_root"><code class="docutils literal notranslate"><span class="pre">find_git_root()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.find_latest"><code class="docutils literal notranslate"><span class="pre">find_latest()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.fix_broken_symlinks"><code class="docutils literal notranslate"><span class="pre">fix_broken_symlinks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.get_data_path_from_a_package"><code class="docutils literal notranslate"><span class="pre">get_data_path_from_a_package()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.get_spath"><code class="docutils literal notranslate"><span class="pre">get_spath()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.get_this_path"><code class="docutils literal notranslate"><span class="pre">get_this_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.getsize"><code class="docutils literal notranslate"><span class="pre">getsize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.increment_version"><code class="docutils literal notranslate"><span class="pre">increment_version()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.is_symlink"><code class="docutils literal notranslate"><span class="pre">is_symlink()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.list_symlinks"><code class="docutils literal notranslate"><span class="pre">list_symlinks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.mk_spath"><code class="docutils literal notranslate"><span class="pre">mk_spath()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.readlink"><code class="docutils literal notranslate"><span class="pre">readlink()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.resolve_symlinks"><code class="docutils literal notranslate"><span class="pre">resolve_symlinks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.split"><code class="docutils literal notranslate"><span class="pre">split()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.symlink"><code class="docutils literal notranslate"><span class="pre">symlink()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.this_path"><code class="docutils literal notranslate"><span class="pre">this_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/scitex.path.html#scitex.path.unlink_symlink"><code class="docutils literal notranslate"><span class="pre">unlink_symlink()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/scitex.social.html">scitex.social API Reference</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SciTeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module Overview</a></li>
+      <li class="breadcrumb-item active">torch Module (<code class="docutils literal notranslate"><span class="pre">stx.torch</span></code>)</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ywatanabe1989/scitex-python/blob/develop/docs/sphinx/modules/torch.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="torch-module-stx-torch">
+<h1>torch Module (<code class="docutils literal notranslate"><span class="pre">stx.torch</span></code>)<a class="headerlink" href="#torch-module-stx-torch" title="Link to this heading"></a></h1>
+<p>See <span class="xref std std-doc">/api/scitex.torch</span> for the auto-generated Python API.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nn.html" class="btn btn-neutral float-left" title="NN Module (stx.nn)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cv.html" class="btn btn-neutral float-right" title="cv Module (stx.cv)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

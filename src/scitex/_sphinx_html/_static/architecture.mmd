@@ -1,0 +1,35 @@
+%%{init: {"theme": "default"}}%%
+graph LR
+    subgraph Experiment
+        session["session"]
+        config["config"]
+        io["io"]
+        logging["logging"]
+        repro["repro"]
+    end
+
+    subgraph Analysis & Visualization
+        stats["stats"]
+        dsp["dsp"]
+        plt["plt"]
+        diagram["diagram"]
+    end
+
+    subgraph Publication
+        scholar["scholar"]
+        writer["writer"]
+        clew["clew"]
+    end
+
+    style session fill:#e8f4fd,stroke:#2196F3,stroke-width:2px
+    style config fill:#e8f4fd,stroke:#2196F3
+    style io fill:#e8f4fd,stroke:#2196F3
+    style logging fill:#e8f4fd,stroke:#2196F3
+    style repro fill:#e8f4fd,stroke:#2196F3
+    style stats fill:#fff3e0,stroke:#FF9800
+    style dsp fill:#fff3e0,stroke:#FF9800
+    style plt fill:#fff3e0,stroke:#FF9800
+    style diagram fill:#fff3e0,stroke:#FF9800
+    style scholar fill:#f3e5f5,stroke:#9C27B0
+    style writer fill:#f3e5f5,stroke:#9C27B0
+    style clew fill:#f3e5f5,stroke:#9C27B0
