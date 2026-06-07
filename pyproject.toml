@@ -180,16 +180,41 @@ benchmark = [
     "psutil",
 ]
 
-# Bridge Module - External system integration
-# Use: pip install scitex[bridge]
-bridge = [
-    "matplotlib",
-    "scipy",
-]
-
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
 container = ["scitex-container==0.2.1"]
+
+# Core Module - Core infrastructure / fundamental utilities
+# Use: pip install scitex[core]
+core = ["scitex-core==0.2.8"]
+
+# HPC Module - High-performance / cluster utilities
+# Use: pip install scitex[hpc]
+hpc = ["scitex-hpc==0.8.1"]
+
+# Math Module - Mathematical utilities (parity helpers, etc.)
+# Use: pip install scitex[math]
+math = ["scitex-math==0.1.0"]
+
+# Newb Module - newb peer (external-lib brand)
+# Use: pip install scitex[newb]
+newb = ["newb==0.26.7"]
+
+# REPL Module - Interactive REPL helpers (embed, less, paste)
+# Use: pip install scitex[repl]
+repl = ["scitex-repl==0.1.1"]
+
+# Seizure-Metrics Module - Epilepsy seizure-detection metrics
+# Use: pip install scitex[seizure-metrics]
+seizure-metrics = ["scitex-seizure-metrics==0.1.3"]
+
+# SSH Module - SSH client + reverse tunnel
+# Use: pip install scitex[ssh]
+ssh = ["scitex-ssh==1.0.1"]
+
+# Todo Module - Task / todo utilities
+# Use: pip install scitex[todo]
+todo = ["scitex-todo==0.3.0"]
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -979,71 +1004,77 @@ dev = [
 # Auto-aggregates all individual module extras via self-referencing.
 # When adding a new module extras group, add a corresponding entry here.
 all = [
-    "scitex[ml]",
-    "scitex[genai]",
+    "scitex[agent-container]",
     "scitex[app]",
     "scitex[audio]",
     "scitex[audit]",
-    "scitex[docs]",
     "scitex[benchmark]",
-    "scitex[bridge]",
     "scitex[browser]",
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
-    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
-    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
     "scitex[context]",
+    "scitex[core]",
     "scitex[cv]",
     "scitex[dataset]",
-    "scitex[db]",
     "scitex[datetime]",
+    "scitex[db]",
     "scitex[decorators]",
+    "scitex[dev]",
     "scitex[devtools]",
     "scitex[diagram]",
     "scitex[dict]",
+    "scitex[docs]",
     "scitex[dsp]",
     "scitex[dt]",
     "scitex[etc]",
     "scitex[events]",
     "scitex[gen]",
+    "scitex[genai]",
     "scitex[gists]",
     "scitex[git]",
     "scitex[heavy]",
+    "scitex[hpc]",
     "scitex[introspect]",
     "scitex[io]",
     "scitex[linalg]",
     "scitex[logging]",
+    "scitex[math]",
     "scitex[media]",
     "scitex[ml]",
     "scitex[msword]",
+    "scitex[newb]",
     "scitex[nn]",
     "scitex[notebook]",
     "scitex[notification]",
+    "scitex[orochi]",
     "scitex[os]",
     "scitex[parallel]",
     "scitex[path]",
     "scitex[pd]",
     "scitex[plt]",
+    "scitex[repl]",
     "scitex[repro]",
     "scitex[reproduce]",
     "scitex[resource]",
     "scitex[rng]",
     "scitex[schema]",
-    "scitex[scholar]",
     "scitex[scholar-gui]",
+    "scitex[scholar]",
     "scitex[security]",
+    "scitex[seizure-metrics]",
     "scitex[session]",
     "scitex[sh]",
     "scitex[social]",
+    "scitex[ssh]",
     "scitex[stats]",
     "scitex[str]",
     "scitex[template]",
     "scitex[tex]",
+    "scitex[todo]",
     "scitex[torch]",
     "scitex[tunnel]",
     "scitex[types]",
@@ -1051,16 +1082,11 @@ all = [
     "scitex[verify]",
     "scitex[web]",
     "scitex[writer]",
-    "scitex[linter]",
-    "scitex[orochi]",
-    "scitex[agent-container]",
-    "scitex[dev]",
 ]
 
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev>=0.17.6"]
 orochi = ["scitex-orochi==0.16.4"]
 agent-container = ["scitex-agent-container==0.21.9"]
 
