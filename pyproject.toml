@@ -85,7 +85,7 @@ dependencies = [
     "scitex-etc==0.2.0",  # media shipped here; scitex.media re-exports scitex_etc.media
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
-    "scitex-audit==0.1.7",
+    "scitex-audit==0.2.0",
     "scitex-logging==0.1.7",
     "scitex-dict==0.1.7",
     "scitex-browser==0.1.15",
@@ -96,7 +96,10 @@ dependencies = [
     "scitex-introspect==0.1.7",
     "scitex-msword==0.2.0",
     "scitex-os==0.1.7",
-    "scitex-security==0.1.4",
+    # scitex-security DROPPED here per ADR-0001 (scitex-dev #139) —
+    # absorbed into scitex-audit. The [security] extra now installs
+    # scitex-audit; scitex-python's main deps no longer pull the
+    # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
     "figrecipe==0.28.20",
     "scitex-ui==0.5.1",
@@ -172,7 +175,7 @@ audio = [
 
 # Audit Module - Code and security auditing
 # Use: pip install scitex[audit]
-audit = ["scitex-audit==0.1.7"]
+audit = ["scitex-audit==0.2.0"]
 
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
@@ -638,9 +641,13 @@ scholar = [
 # Use: pip install scitex[schema]
 schema = []
 
-# Security Module - Security utilities
+# Security Module - Security utilities. Absorbed into scitex-audit
+# per ADR-0001 (scitex-dev #139, Accepted 2026-06-07); `scitex.security`
+# lazily resolves to `scitex_audit.github` (see src/scitex/re_export.py
+# "security" mapping). The standalone `scitex-security` 0.2.0 is a
+# deprecated thin shim and is NOT pulled here.
 # Use: pip install scitex[security]
-security = []
+security = ["scitex-audit>=0.2.0"]
 
 # Session Module - Session management
 # Use: pip install scitex[session]
@@ -915,7 +922,7 @@ dev = [
     "scipy",
     "scitex-agent-container==0.21.9",
     "scitex-audio==0.2.13",
-    "scitex-audit==0.1.7",
+    "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
     "scitex-clew==0.2.15",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly

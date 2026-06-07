@@ -5,6 +5,38 @@ All notable changes to SciTeX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **`scitex.security` repointed to `scitex_audit.github`** per ADR-0001
+  (scitex-dev #139, Accepted 2026-06-07). `scitex-security` was absorbed
+  into `scitex-audit` 0.2.0; the 5 public symbols (`check_github_alerts`,
+  `save_alerts_to_file`, `get_latest_alerts_file`, `format_alerts_report`,
+  `GitHubSecurityError`) now live in `scitex_audit.github`. The umbrella
+  `_LazyModule("security", external="scitex_audit.github")` resolution
+  + the `external_alias_map` "security" entry both move atomically.
+- **`[security]` extra** now installs `scitex-audit>=0.2.0` (was empty).
+  Brings the umbrella extras into compliance with skill 03 §8 "every
+  module MUST have an extra listing its standalone package".
+- **`scitex-audit` pinned to `==0.2.0`** in main deps, `[audit]`,
+  `[dev]`, and `[all]`.
+
+### Removed
+- **`scitex-security==0.1.4`** from main deps and `[all]` — absorbed
+  into `scitex-audit`. The deprecated `scitex-security` 0.2.0 PyPI
+  shim is NOT pulled by the umbrella; users who explicitly depend on
+  the old package still get a `DeprecationWarning` redirecting them
+  to `scitex_audit.github`.
+
+### Migration
+- `from scitex_security import X` → `from scitex_audit.github import X`,
+  or just `scitex.security.X` (now resolves to the same SSOT).
+- `scitex-security check OWNER/REPO --save` → `scitex-audit github
+  --repo OWNER/REPO --save`. The legacy console-script hard-errors
+  with a redirect per CLI-deprecation skill 11 §5.
+- `~/.scitex/security/` auto-symlinks to `~/.scitex/audit/github-alerts/`
+  on first import of `scitex_audit` (one-shot, marker-gated).
+
 ## [2.30.0] - 2026-05-31
 
 ### Changed
