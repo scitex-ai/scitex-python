@@ -1,0 +1,48 @@
+name: quality
+
+# Single-package quality gate — runs `scitex-dev ecosystem audit-all`
+# against this package (audit-cli / audit-mcp-tools / audit-skills /
+# audit-python-apis / audit-project). Mirrors the canonical audit that
+# `tests/develop/test_audit.py` runs inside the test suite, but as a
+# standalone gate so an audit regression is visible even when the matrix
+# is skipped.
+#
+# The previous body of this workflow shallow-cloned the entire ecosystem
+# and ran `scripts/quality/audit_ecosystem.py` — both of which live only
+# in scitex-dev, not in leaf packages. That template was copied here
+# verbatim and was always broken (FileNotFoundError on a non-existent
+# ecosystem registry file). This version audits just this package.
+
+on:
+  schedule:
+    - cron: "0 8 * * *"  # 08:00 UTC, after the 07:00 per-repo Test runs
+  workflow_dispatch:
+  push:
+    branches: [develop]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - ".github/workflows/scitex-code-quality-audit-on-ubuntu-latest.yml"
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package + audit tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+          pip install "scitex-dev[cli-audit]"
+
+      - name: Run scitex-dev ecosystem audit-all
+        run: scitex-dev ecosystem audit-all scitex-code --no-version-check
