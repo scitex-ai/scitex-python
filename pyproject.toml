@@ -68,7 +68,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.17.4",
+    "scitex-dev>=0.17.8",
     "scitex-io==0.2.20",
     "scitex-stats==0.2.23",
     "scitex-audio==0.2.13",
@@ -931,7 +931,7 @@ dev = [
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.3.10",
-    "scitex-dev==0.17.4",
+    "scitex-dev>=0.17.8",
     "scitex-etc==0.2.0",
     "scitex-genai==0.1.0",
     "scitex-io==0.2.20",
@@ -1067,7 +1067,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.17.4"]
+linter = ["scitex-dev>=0.17.8"]
 orochi = ["scitex-orochi==0.16.4"]
 agent-container = ["scitex-agent-container==0.21.9"]
 
