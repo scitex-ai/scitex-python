@@ -46,63 +46,47 @@ classifiers = [
 # ============================================
 # Core Dependencies (Minimal - Always Installed)
 # ============================================
-# Philosophy: Keep core minimal. Users install what they need with:
-#   pip install scitex[modulename]
-#   pip install scitex[audio,scholar]  # multiple modules
-#   pip install scitex[all]            # everything
+# Philosophy: Keep core MINIMAL — 8 packages — so `pip install scitex`
+# is a small download and users opt in per-module via extras. This
+# restores the documented extras model after issue #326 surfaced that
+# 30+ scitex-* leaves were leaking into `dependencies` and getting
+# installed as *required* deps, defeating `scitex[modulename]`.
+#
+# Install patterns:
+#   pip install scitex                            # core only
+#   pip install scitex[stats,io,scholar]          # specific modules
+#   pip install scitex[all]                       # the whole ecosystem
+#
+# What stays in core (and why):
+#   - numpy / pandas / PyYAML / tqdm / packaging / natsort — every
+#     scitex helper touches at least one of these; they're cheap and
+#     near-universal in the Python scientific stack.
+#   - scitex-config — the env / config loader; `scitex.helpers.load_scitex_env`
+#     delegates here. Required even before any module is imported.
+#   - scitex-dev — the audit / CLI / skill discovery machinery + the
+#     project's quality-rule corpus. Operator decision (2026-06-09
+#     Telegram msg 664): keep in core because users practically always
+#     need it once they install scitex-config (it pulls in via
+#     scitex-config's chain anyway).
+#
+# What MOVED to `[project.optional-dependencies]` (issue #326 fix):
+#   - All scitex-* leaf packages (~30 entries) — each has its own
+#     `<name>` extra further down in this file; `scitex[all]` already
+#     aggregates them via `scitex[<name>]` self-references.
+#   - bs4 / beautifulsoup4 — only used by `helpers/_optional_deps.py`
+#     check_optional_deps wrapper for the scholar stack; declared in
+#     `[scholar]` instead.
+#   - figrecipe / scitex-ui — leaf packages, declared in `[plt]` /
+#     `[ui]` respectively.
 dependencies = [
-    # ============================================
-    # Essential 3rd-party deps (always required)
-    # ============================================
     "numpy",
     "pandas",
     "PyYAML",
     "tqdm",
     "packaging",
-    "natsort",  # Natural sorting - used by many modules
-    "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
-    # Config + env loading (scitex.helpers.load_scitex_env delegates here)
+    "natsort",
     "scitex-config==0.3.6",
-    # Reproducibility Verification
-    "scitex-clew==0.2.15",
-    # App SDK — unified file storage for local + cloud
-    "scitex-app==0.2.8",
-    # Delegated core modules (thin re-exports)
-    "scitex-dev==0.17.4",
-    "scitex-io==0.2.20",
-    "scitex-stats==0.2.23",
-    "scitex-audio==0.2.13",
-    "scitex-notification==0.2.8",
-    "scitex-notebook==0.1.2",
-    # Delegated modules from #51 standalonization
-    "scitex-db==0.1.11",
-    "scitex-scholar==1.4.1",
-    "scitex-parallel==0.1.8",
-    "scitex-types==0.1.6",
-    "scitex-path==0.1.7",
-    "scitex-repro==0.1.6",
-    "scitex-compat==0.1.8",
-    "scitex-etc==0.2.0",  # media shipped here; scitex.media re-exports scitex_etc.media
-    "scitex-genai==0.1.0",
-    "scitex-gists==0.1.7",
-    "scitex-audit==0.2.0",
-    "scitex-logging==0.1.7",
-    "scitex-dict==0.1.7",
-    "scitex-browser==0.1.15",
-    "scitex-str==0.1.12",
-    "scitex-benchmark==0.1.5",
-    "scitex-context==0.1.4",
-    "scitex-cv==0.1.5",
-    "scitex-introspect==0.1.7",
-    "scitex-msword==0.2.0",
-    "scitex-os==0.1.7",
-    # scitex-security DROPPED here per ADR-0001 (scitex-dev #139) —
-    # absorbed into scitex-audit. The [security] extra now installs
-    # scitex-audit; scitex-python's main deps no longer pull the
-    # deprecated 0.1.4 standalone.
-    "scitex-tex==0.1.7",
-    "figrecipe==0.28.20",
-    "scitex-ui==0.5.1",
+    "scitex-dev>=0.17.8",
 ]
 
 [project.urls]
@@ -181,6 +165,7 @@ audit = ["scitex-audit==0.2.0"]
 # Use: pip install scitex[benchmark]
 benchmark = [
     "psutil",
+    "scitex-benchmark==0.1.5",
 ]
 
 # Bridge Module - External system integration
@@ -252,13 +237,14 @@ config = [
 
 # Context Module - Context managers
 # Use: pip install scitex[context]
-context = []
+context = ["scitex-context==0.1.4"]
 
 # CV Module - Computer vision
 # Use: pip install scitex[cv]
 cv = [
     "opencv-python",
     "Pillow",
+    "scitex-cv==0.1.5",
 ]
 
 # DB Module - Database operations
@@ -420,7 +406,7 @@ io = [
 
 # Introspect Module - Code introspection
 # Use: pip install scitex[introspect]
-introspect = []
+introspect = ["scitex-introspect==0.1.7"]
 
 # Linalg Module - Linear algebra
 # Use: pip install scitex[linalg]
@@ -463,6 +449,7 @@ module = [
 msword = [
     "python-docx",
     "pypandoc",
+    "scitex-msword==0.2.0",
 ]
 
 # NN Module - Neural Networks
@@ -500,7 +487,7 @@ notification = [
 
 # OS Module - OS utilities
 # Use: pip install scitex[os]
-os = []
+os = ["scitex-os==0.1.7"]
 
 # Parallel Module - Parallel processing
 # Use: pip install scitex[parallel]
@@ -701,6 +688,7 @@ template = [
 # Use: pip install scitex[tex]
 tex = [
     "matplotlib",
+    "scitex-tex==0.1.7",
 ]
 
 # Tunnel Module - SSH reverse tunnel for NAT traversal
