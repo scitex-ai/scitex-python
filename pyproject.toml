@@ -57,6 +57,21 @@ dependencies = [
     "numpy",
     "pandas",
     "PyYAML",
+    # `click` is a HARD core dep — the `scitex-pkg` console-script
+    # (`scitex.cli.pkg:pkg`) does an UNGUARDED module-load `import click`
+    # at `src/scitex/cli/pkg.py:32`. Without it in core, bare
+    # `pip install scitex` followed by `scitex-pkg --help` raises
+    # ModuleNotFoundError. PS-213 console-script-deps-must-be-core
+    # (scitex-dev v0.17.10+) enforces this rule ecosystem-wide.
+    #
+    # The sibling `scitex` entry-point (`scitex.__main__:main`) uses the
+    # LAZY-EXTRA pattern — function-scope `import click` in
+    # `_check_cli_dependencies()` with a `pip install scitex[cli]` install
+    # hint — and would qualify for the PS-213i lazy-pass on its own, BUT
+    # `scitex-pkg` lives in the same package so the moment we ship a
+    # console-script that loads click unconditionally we have to make
+    # click a hard core dep.
+    "click>=8.0.0",
     "tqdm",
     "packaging",
     "natsort",  # Natural sorting - used by many modules
@@ -68,14 +83,14 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.8",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.17.6",
-    "scitex-io>=0.3.0",
-    "scitex-stats==0.2.23",
+    "scitex-dev==0.17.10",
+    "scitex-io==0.3.1",
+    "scitex-stats==0.2.24",
     "scitex-audio==0.2.13",
     "scitex-notification==0.2.8",
     "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
-    "scitex-db>=0.1.12",
+    "scitex-db==0.1.12",
     "scitex-scholar==1.4.1",
     "scitex-parallel==0.1.8",
     "scitex-types==0.1.6",
@@ -85,7 +100,7 @@ dependencies = [
     "scitex-etc==0.2.0",  # media shipped here; scitex.media re-exports scitex_etc.media
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
-    "scitex-audit==0.1.7",
+    "scitex-audit==0.2.0",
     "scitex-logging==0.1.7",
     "scitex-dict==0.1.7",
     "scitex-browser==0.1.15",
@@ -94,9 +109,12 @@ dependencies = [
     "scitex-context==0.1.4",
     "scitex-cv==0.1.5",
     "scitex-introspect==0.1.7",
-    "scitex-msword>=0.3.2",
+    "scitex-msword==0.3.2",
     "scitex-os==0.1.7",
-    "scitex-security==0.1.4",
+    # scitex-security DROPPED here per ADR-0001 (scitex-dev #139) —
+    # absorbed into scitex-audit. The [security] extra now installs
+    # scitex-audit; scitex-python's main deps no longer pull the
+    # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
     "figrecipe==0.28.20",
     "scitex-ui==0.5.1",
@@ -172,7 +190,7 @@ audio = [
 
 # Audit Module - Code and security auditing
 # Use: pip install scitex[audit]
-audit = ["scitex-audit==0.1.7"]
+audit = ["scitex-audit==0.2.0"]
 
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
@@ -180,41 +198,16 @@ benchmark = [
     "psutil",
 ]
 
+# Bridge Module - External system integration
+# Use: pip install scitex[bridge]
+bridge = [
+    "matplotlib",
+    "scipy",
+]
+
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
 container = ["scitex-container==0.2.1"]
-
-# Core Module - Core infrastructure / fundamental utilities
-# Use: pip install scitex[core]
-core = ["scitex-core==0.2.8"]
-
-# HPC Module - High-performance / cluster utilities
-# Use: pip install scitex[hpc]
-hpc = ["scitex-hpc==0.8.1"]
-
-# Math Module - Mathematical utilities (parity helpers, etc.)
-# Use: pip install scitex[math]
-math = ["scitex-math==0.1.0"]
-
-# Newb Module - newb peer (external-lib brand)
-# Use: pip install scitex[newb]
-newb = ["newb==0.26.7"]
-
-# REPL Module - Interactive REPL helpers (embed, less, paste)
-# Use: pip install scitex[repl]
-repl = ["scitex-repl==0.1.1"]
-
-# Seizure-Metrics Module - Epilepsy seizure-detection metrics
-# Use: pip install scitex[seizure-metrics]
-seizure-metrics = ["scitex-seizure-metrics==0.1.3"]
-
-# SSH Module - SSH client + reverse tunnel
-# Use: pip install scitex[ssh]
-ssh = ["scitex-ssh==1.0.1"]
-
-# Todo Module - Task / todo utilities
-# Use: pip install scitex[todo]
-todo = ["scitex-todo==0.3.0"]
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -236,8 +229,15 @@ capture = [
 
 # CLI Module - Command line interface
 # Use: pip install scitex[cli]
+#
+# Note: `click` moved to [project.dependencies] (PS-213 dep-hygiene
+# wave): the `scitex-pkg` console-script does an unguarded module-load
+# `import click` so it must be core, not extras. The remaining entries
+# here are the LEGACY [cli] extras (requests/playwright/pyyaml/aiohttp/
+# beautifulsoup4/GitPython) that the higher-level CLI subcommands pull
+# in; keeping them as a coherent group preserves `pip install
+# scitex[cli]` ergonomics for the rest of the CLI feature set.
 cli = [
-    "click",
     "requests",
     "playwright",
     "pyyaml",
@@ -288,12 +288,12 @@ cv = [
 db = [
     "sqlalchemy",
     "psycopg2-binary",
-    "scitex-db>=0.1.12",
+    "scitex-db==0.1.12",
 ]
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = ["scitex-dataset>=0.4.0"]
+dataset = ["scitex-dataset==0.4.0"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -403,7 +403,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io>=0.3.0",
+    "scitex-io==0.3.1",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -663,9 +663,13 @@ scholar = [
 # Use: pip install scitex[schema]
 schema = []
 
-# Security Module - Security utilities
+# Security Module - Security utilities. Absorbed into scitex-audit
+# per ADR-0001 (scitex-dev #139, Accepted 2026-06-07); `scitex.security`
+# lazily resolves to `scitex_audit.github` (see src/scitex/re_export.py
+# "security" mapping). The standalone `scitex-security` 0.2.0 is a
+# deprecated thin shim and is NOT pulled here.
 # Use: pip install scitex[security]
-security = []
+security = ["scitex-audit>=0.2.0"]
 
 # Session Module - Session management
 # Use: pip install scitex[session]
@@ -690,7 +694,7 @@ social = [
 # Stats Module - Statistical analysis
 # Use: pip install scitex[stats]
 stats = [
-    "scitex-stats==0.2.23",
+    "scitex-stats==0.2.24",
     "scipy",
     "statsmodels",
     "matplotlib",
@@ -792,7 +796,7 @@ clew = ["scitex-clew==0.2.15"]
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer==2.17.3",  # Core writer package (single source of truth)
+    "scitex-writer==2.17.5",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -938,9 +942,9 @@ dev = [
     "scholarly",
     "scikit-learn",
     "scipy",
-    "scitex-agent-container==0.21.9",
+    "scitex-agent-container==0.21.11",
     "scitex-audio==0.2.13",
-    "scitex-audit==0.1.7",
+    "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
     "scitex-clew==0.2.15",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
@@ -948,17 +952,17 @@ dev = [
     # it here would break CI's `.[all,dev]` resolve. Install explicitly via
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
-    "scitex-dataset>=0.4.0",
-    "scitex-dev>=0.17.6",
+    "scitex-dataset==0.4.0",
+    "scitex-dev==0.17.10",
     "scitex-etc==0.2.0",
     "scitex-genai==0.1.0",
-    "scitex-io>=0.3.0",
+    "scitex-io==0.3.1",
     "scitex-notification==0.2.8",
     "scitex-scholar==1.4.1",
     "scitex-ssh==1.0.1",
-    "scitex-stats==0.2.23",
+    "scitex-stats==0.2.24",
     "scitex-ui==0.5.1",
-    "scitex-writer==2.17.3",
+    "scitex-writer==2.17.5",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1004,77 +1008,71 @@ dev = [
 # Auto-aggregates all individual module extras via self-referencing.
 # When adding a new module extras group, add a corresponding entry here.
 all = [
-    "scitex[agent-container]",
+    "scitex[ml]",
+    "scitex[genai]",
     "scitex[app]",
     "scitex[audio]",
     "scitex[audit]",
+    "scitex[docs]",
     "scitex[benchmark]",
+    "scitex[bridge]",
     "scitex[browser]",
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
+    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
+    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
+    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
     "scitex[context]",
-    "scitex[core]",
     "scitex[cv]",
     "scitex[dataset]",
-    "scitex[datetime]",
     "scitex[db]",
+    "scitex[datetime]",
     "scitex[decorators]",
-    "scitex[dev]",
     "scitex[devtools]",
     "scitex[diagram]",
     "scitex[dict]",
-    "scitex[docs]",
     "scitex[dsp]",
     "scitex[dt]",
     "scitex[etc]",
     "scitex[events]",
     "scitex[gen]",
-    "scitex[genai]",
     "scitex[gists]",
     "scitex[git]",
     "scitex[heavy]",
-    "scitex[hpc]",
     "scitex[introspect]",
     "scitex[io]",
     "scitex[linalg]",
     "scitex[logging]",
-    "scitex[math]",
     "scitex[media]",
     "scitex[ml]",
     "scitex[msword]",
-    "scitex[newb]",
     "scitex[nn]",
     "scitex[notebook]",
     "scitex[notification]",
-    "scitex[orochi]",
     "scitex[os]",
     "scitex[parallel]",
     "scitex[path]",
     "scitex[pd]",
     "scitex[plt]",
-    "scitex[repl]",
     "scitex[repro]",
     "scitex[reproduce]",
     "scitex[resource]",
     "scitex[rng]",
     "scitex[schema]",
-    "scitex[scholar-gui]",
     "scitex[scholar]",
+    "scitex[scholar-gui]",
     "scitex[security]",
-    "scitex[seizure-metrics]",
     "scitex[session]",
     "scitex[sh]",
     "scitex[social]",
-    "scitex[ssh]",
     "scitex[stats]",
     "scitex[str]",
     "scitex[template]",
     "scitex[tex]",
-    "scitex[todo]",
     "scitex[torch]",
     "scitex[tunnel]",
     "scitex[types]",
@@ -1082,13 +1080,18 @@ all = [
     "scitex[verify]",
     "scitex[web]",
     "scitex[writer]",
+    "scitex[linter]",
+    "scitex[orochi]",
+    "scitex[agent-container]",
+    "scitex[dev]",
 ]
 
 # ============================================
 # Tool Configurations
 # ============================================
+linter = ["scitex-dev==0.17.10"]
 orochi = ["scitex-orochi==0.16.4"]
-agent-container = ["scitex-agent-container==0.21.9"]
+agent-container = ["scitex-agent-container==0.21.11"]
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"

@@ -151,7 +151,9 @@ notify = notification  # Backward compat alias
 git = _LazyModule("git", external="scitex_git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
 canvas = _LazyModule("canvas")  # Canvas utilities for figure composition
-security = _LazyModule("security", external="scitex_security")  # Security utilities
+security = _LazyModule(
+    "security", external="scitex_audit.github"
+)  # Security utilities — absorbed into scitex-audit per ADR-0001 (scitex-dev #139)
 benchmark = _LazyModule(
     "benchmark", external="scitex_benchmark"
 )  # Benchmarking utilities

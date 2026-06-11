@@ -289,7 +289,13 @@ EXTERNAL_REEXPORTS = {
     "introspect": "scitex_introspect",
     "msword": "scitex_msword",
     "os": "scitex_os",
-    "security": "scitex_security",
+    # `scitex.security` → `scitex_audit.github` per ADR-0001 (scitex-dev
+    # #139, 2026-06-07). scitex-security 0.1.4 was absorbed into
+    # scitex-audit 0.2.0; the 5 public symbols (check_github_alerts,
+    # save_alerts_to_file, get_latest_alerts_file, format_alerts_report,
+    # GitHubSecurityError) now live in scitex_audit.github. The standalone
+    # `scitex-security` 0.2.0 PyPI package is a deprecated thin shim only.
+    "security": "scitex_audit.github",
     "session": "scitex_session",  # @scitex.session decorator + INJECTED sentinel
     "tex": "scitex_tex",
 }
