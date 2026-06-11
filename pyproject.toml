@@ -57,6 +57,21 @@ dependencies = [
     "numpy",
     "pandas",
     "PyYAML",
+    # `click` is a HARD core dep — the `scitex-pkg` console-script
+    # (`scitex.cli.pkg:pkg`) does an UNGUARDED module-load `import click`
+    # at `src/scitex/cli/pkg.py:32`. Without it in core, bare
+    # `pip install scitex` followed by `scitex-pkg --help` raises
+    # ModuleNotFoundError. PS-213 console-script-deps-must-be-core
+    # (scitex-dev v0.17.10+) enforces this rule ecosystem-wide.
+    #
+    # The sibling `scitex` entry-point (`scitex.__main__:main`) uses the
+    # LAZY-EXTRA pattern — function-scope `import click` in
+    # `_check_cli_dependencies()` with a `pip install scitex[cli]` install
+    # hint — and would qualify for the PS-213i lazy-pass on its own, BUT
+    # `scitex-pkg` lives in the same package so the moment we ship a
+    # console-script that loads click unconditionally we have to make
+    # click a hard core dep.
+    "click>=8.0.0",
     "tqdm",
     "packaging",
     "natsort",  # Natural sorting - used by many modules
@@ -214,8 +229,15 @@ capture = [
 
 # CLI Module - Command line interface
 # Use: pip install scitex[cli]
+#
+# Note: `click` moved to [project.dependencies] (PS-213 dep-hygiene
+# wave): the `scitex-pkg` console-script does an unguarded module-load
+# `import click` so it must be core, not extras. The remaining entries
+# here are the LEGACY [cli] extras (requests/playwright/pyyaml/aiohttp/
+# beautifulsoup4/GitPython) that the higher-level CLI subcommands pull
+# in; keeping them as a coherent group preserves `pip install
+# scitex[cli]` ergonomics for the rest of the CLI feature set.
 cli = [
-    "click",
     "requests",
     "playwright",
     "pyyaml",
