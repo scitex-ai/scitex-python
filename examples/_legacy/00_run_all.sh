@@ -31,7 +31,7 @@ Arguments:
 
 Examples:
     $(basename "$0")                    # Run all examples
-    $(basename "$0") bridge session     # Run specific directories
+    $(basename "$0") session            # Run specific directories
     $(basename "$0") -l                 # List available directories
     $(basename "$0") -d                 # Dry run
 
