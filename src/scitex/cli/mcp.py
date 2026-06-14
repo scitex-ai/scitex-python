@@ -174,13 +174,31 @@ def list_tools(
     # Get ALL tools (including mounted sub-servers like crossref, openalex)
     all_tools = _get_all_tools(mcp_server)
 
-    # Group by module
+    # Group by module using the REAL mounted namespaces (FastMCP mount
+    # records), not a naive ``split("_")[0]`` -- multi-word namespaces like
+    # ``agent_container`` would otherwise be mis-bucketed under ``agent`` and
+    # ``--module agent_container`` would fail "Unknown module". Longest
+    # namespace wins so each tool maps to its most specific namespace.
+    from scitex._mcp import _iter_registry, mounted_namespaces
+
+    # ``_iter_registry`` is the authoritative namespace source -- it knows
+    # multi-word namespaces like ``agent_container`` (via _NAMESPACE_ALIASES),
+    # which ``mounted_namespaces`` misses on FastMCP 3.x (it splits tool names
+    # on the first underscore -> ``agent``). ``mounted_namespaces`` still adds
+    # umbrella-only / extra prefixes (browser, capture, social, linter, ...).
+    # Union both; longest-match buckets each tool under its most specific ns.
+    _namespaces = sorted(
+        {t[-1] for t in _iter_registry()} | mounted_namespaces(mcp_server),
+        key=len,
+        reverse=True,
+    )
     modules = {}
     for tool_name in sorted(all_tools.keys()):
-        prefix = tool_name.split("_")[0]
-        if prefix not in modules:
-            modules[prefix] = []
-        modules[prefix].append(tool_name)
+        ns = next(
+            (n for n in _namespaces if tool_name.startswith(n + "_")),
+            tool_name.split("_")[0],
+        )
+        modules.setdefault(ns, []).append(tool_name)
 
     # Filter by module if specified
     if module:
