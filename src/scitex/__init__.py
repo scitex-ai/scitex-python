@@ -73,7 +73,17 @@ _register_external_lazy_modules()
 
 # Create lazy modules
 io = _LazyModule("io", external="scitex_io")
-gen = _LazyModule("gen", external="scitex_gen")
+# `gen` is NOT a peer re-export anymore. It is a FAIL-LOUD deprecation shim
+# (umbrella-only) — a real on-disk module at `src/scitex/gen.py` whose every
+# attribute access raises an AttributeError naming the focused package the
+# symbol moved to. NO fallback to the standalone `scitex_gen`. Importing the
+# module is cheap and side-effect-free; the error only fires on attribute
+# access (e.g. `scitex.gen.to_z`). Kept out of EXTERNAL_REEXPORTS (so the
+# eager lazy-registrar doesn't pre-register a `scitex_gen` proxy in
+# sys.modules), and the default path finder resolves this on-disk file before
+# the appended alias finder is ever consulted. See src/scitex/gen.py.
+from . import gen
+
 plt = _LazyModule("plt")
 ml = _LazyModule("ml", external="scitex_ml")
 genai = _LazyModule("genai", external="scitex_genai")

@@ -226,7 +226,13 @@ EXTERNAL_REEXPORTS = {
     "decorators": "scitex_decorators",
     "dsp": "scitex_dsp",
     "events": "scitex_events",
-    "gen": "scitex_gen",
+    # NOTE: `gen` is intentionally absent. `scitex.gen` is no longer a peer
+    # re-export of the standalone `scitex_gen`; it is a FAIL-LOUD deprecation
+    # shim shipped in-tree at `src/scitex/gen.py`. Leaving it out of this map
+    # prevents `register_external_lazy_modules()` from pre-registering a lazy
+    # `scitex_gen` proxy in `sys.modules["scitex.gen"]` (which would shadow the
+    # on-disk shim). The shim names the focused package each old symbol moved
+    # to and raises — no fallback to `scitex_gen`.
     "git": "scitex_git",
     "linalg": "scitex_linalg",
     "nn": "scitex_nn",
