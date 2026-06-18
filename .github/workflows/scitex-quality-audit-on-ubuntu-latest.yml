@@ -6,7 +6,7 @@ name: quality
 
 on:
   schedule:
-    - cron: "0 8 * * *"  # 08:00 UTC, after the 07:00 per-repo Test runs
+    - cron: "0 18 * * *"  # 18:00 UTC (~03:00 JST), after Test
   workflow_dispatch:
   push:
     branches: [develop]

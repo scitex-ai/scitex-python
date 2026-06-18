@@ -9,7 +9,7 @@ name: newb
 # are intentionally NOT enabled here (LLM API cost + run time).
 on:
   schedule:
-    - cron: "0 4 * * 1"        # weekly Monday 04:00 UTC
+    - cron: "0 17 * * 1"  # weekly Mon 17:00 UTC (~Tue 02:00 JST)
   workflow_dispatch:
 
 jobs:
