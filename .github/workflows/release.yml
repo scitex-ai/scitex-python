@@ -1,0 +1,78 @@
+name: release
+
+# ============================================================================
+# CANONICAL release pipeline — IDENTICAL across every scitex repo (synced by
+# `scitex-dev ecosystem sync-workflows`). On a `v*` tag (cut on main after the
+# deliberate develop->main promotion PR): build the dist, publish to PyPI
+# **only if the repo is a pip package**, and cut a GitHub Release.
+#
+# Promotion develop->main is a DELIBERATE PR — there is intentionally NO
+# sync-main job here. PyPI opt-out: drop a `.github/NO_PYPI` marker file.
+# ============================================================================
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write # create the GitHub Release
+  id-token: write # PyPI trusted publishing (OIDC)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build sdist + wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    steps:
+      - uses: actions/checkout@v4
+      - name: Is this a pip package?
+        id: gate
+        run: |
+          if [ -f .github/NO_PYPI ]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::.github/NO_PYPI present — not a pip package, skipping PyPI publish"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.gate.outputs.publish == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI (OIDC trusted publisher)
+        if: steps.gate.outputs.publish == 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" dist/* \
+            --title "${{ github.ref_name }}" --generate-notes \
+          || gh release upload "${{ github.ref_name }}" dist/* --clobber
