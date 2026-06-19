@@ -49,6 +49,9 @@ jobs:
           # kaleido/plotly image export needs Chrome; install best-effort (no-op for non-plotly repos)
           yes | .venv/bin/plotly_get_chrome >/dev/null 2>&1 || true
           PKG=$(basename "$(find src -maxdepth 1 -mindepth 1 -type d ! -name '*.egg-info' | sort | head -1)")
+          # .venv/bin on PATH so tests that spawn the package's console script via
+          # subprocess (bare name, e.g. `scitex-dev …`) resolve it — else FileNotFoundError.
+          export PATH="$PWD/.venv/bin:$PATH"
           .venv/bin/python -m pytest tests/ --cov="src/$PKG" --cov-report=xml --cov-report=term
       - name: Upload coverage to Codecov
         if: always() && matrix.python-version == '3.12'
