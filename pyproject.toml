@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.1"
+version = "2.30.2"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,30 +79,30 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config==0.3.6",
     # Reproducibility Verification
-    "scitex-clew==0.2.15",
+    "scitex-clew==0.2.17",
     # App SDK — unified file storage for local + cloud
-    "scitex-app==0.2.8",
+    "scitex-app==0.2.11",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.17.10",
-    "scitex-io==0.3.1",
+    "scitex-dev==0.18.1",
+    "scitex-io==0.3.2",
     "scitex-stats==0.2.24",
     "scitex-audio==0.2.13",
     "scitex-notification==0.2.8",
     "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
     "scitex-db==0.1.12",
-    "scitex-scholar==1.4.1",
+    "scitex-scholar==1.4.2",
     "scitex-parallel==0.1.8",
     "scitex-types==0.1.6",
     "scitex-path==0.1.7",
-    "scitex-repro==0.1.6",
-    "scitex-compat==0.1.8",
-    "scitex-etc==0.2.0",  # media shipped here; scitex.media re-exports scitex_etc.media
-    "scitex-genai==0.1.0",
-    "scitex-gists==0.1.7",
+    "scitex-repro==0.1.7",
+    "scitex-compat==0.1.9",
+    "scitex-etc==0.2.1",  # media shipped here; scitex.media re-exports scitex_etc.media
+    "scitex-genai==0.1.1",
+    "scitex-gists==0.1.8",
     "scitex-audit==0.2.0",
     "scitex-logging==0.1.7",
-    "scitex-dict==0.1.7",
+    "scitex-dict==0.1.8",
     "scitex-browser==0.1.15",
     "scitex-str==0.1.12",
     "scitex-benchmark==0.1.5",
@@ -110,14 +110,14 @@ dependencies = [
     "scitex-cv==0.1.5",
     "scitex-introspect==0.1.7",
     "scitex-msword==0.3.2",
-    "scitex-os==0.1.7",
+    "scitex-os==0.1.8",
     # scitex-security DROPPED here per ADR-0001 (scitex-dev #139) —
     # absorbed into scitex-audit. The [security] extra now installs
     # scitex-audit; scitex-python's main deps no longer pull the
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
     "figrecipe==0.28.20",
-    "scitex-ui==0.5.1",
+    "scitex-ui==0.6.0",
 ]
 
 [project.urls]
@@ -167,7 +167,7 @@ scitex = "scitex"
 # App Module - Unified file storage SDK (local + cloud)
 # Use: pip install scitex[app]
 app = [
-    "scitex-app==0.2.8",
+    "scitex-app==0.2.11",
 ]
 
 # ML Module — classical / deep machine-learning utilities
@@ -179,7 +179,7 @@ app = [
 # GenAI Module — generative-AI provider abstraction (LLM today; agent /
 # image / audio / video reserved). Use: pip install scitex[genai]
 genai = [
-    "scitex-genai==0.1.0",
+    "scitex-genai==0.1.1",
 ]
 
 # Audio Module - Text-to-Speech
@@ -264,7 +264,7 @@ hub = [
 
 # Compat Module - Compatibility utilities
 # Use: pip install scitex[compat]
-compat = ["scitex-compat==0.1.8"]
+compat = ["scitex-compat==0.1.9"]
 
 # Config Module - Configuration management
 # Use: pip install scitex[config]
@@ -293,7 +293,7 @@ db = [
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = ["scitex-dataset==0.4.0"]
+dataset = ["scitex-dataset==0.5.0"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -320,7 +320,7 @@ diagram = [
 
 # Dict Module - Dictionary utilities
 # Use: pip install scitex[dict]
-dict = ["scitex-dict==0.1.7"]
+dict = ["scitex-dict==0.1.8"]
 
 # DSP Module - Digital Signal Processing
 # Use: pip install scitex[dsp]
@@ -382,7 +382,7 @@ gen = [
 # Use: pip install scitex[etc]
 etc = [
     "readchar",
-    "scitex-etc==0.2.0",
+    "scitex-etc==0.2.1",
 ]
 
 # Events Module - Event system
@@ -391,7 +391,7 @@ events = []
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]
-gists = ["scitex-gists==0.1.7"]
+gists = ["scitex-gists==0.1.8"]
 
 # Git Module - Git operations
 # Use: pip install scitex[git]
@@ -403,7 +403,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io==0.3.1",
+    "scitex-io==0.3.2",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -575,7 +575,7 @@ repro = [
     # "torch",
     # "jax",
     # "tensorflow",
-    "scitex-repro==0.1.6"
+    "scitex-repro==0.1.7"
 ]
 
 # Resource Module - Resource monitoring
@@ -610,8 +610,8 @@ rng = [
 scholar-gui = [
     "flask>=2.0.0",
     "click",
-    "crossref-local",
-    "openalex-local",
+    "crossref-local==0.7.6",
+    "openalex-local==0.7.6",
 ]
 
 # Scholar Module - Paper management & browser
@@ -651,12 +651,12 @@ scholar = [
     "sql-manager",
     "ruamel.yaml",
     # Standalone packages
-    "crossref-local",
-    "openalex-local",
+    "crossref-local==0.7.6",
+    "openalex-local==0.7.6",
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar==1.4.1"
+    "scitex-scholar==1.4.2"
 ]
 
 # Schema Module - Data schema validation
@@ -669,12 +669,12 @@ schema = []
 # "security" mapping). The standalone `scitex-security` 0.2.0 is a
 # deprecated thin shim and is NOT pulled here.
 # Use: pip install scitex[security]
-security = ["scitex-audit>=0.2.0"]
+security = ["scitex-audit==0.2.0"]
 
 # Session Module - Session management
 # Use: pip install scitex[session]
 session = [
-    "scitex-session==0.2.1",
+    "scitex-session==0.2.4",
     "matplotlib",
     "PyYAML",
 ]
@@ -688,7 +688,7 @@ sh = [
 # Social Module - Social media integration
 # Use: pip install scitex[social]
 social = [
-    "socialia==0.5.14",
+    "socialia==0.5.15",
 ]
 
 # Stats Module - Statistical analysis
@@ -748,7 +748,7 @@ types = [
 
 # UI Module - User interface utilities
 # Use: pip install scitex[ui]
-ui = ["scitex-ui==0.5.1"]
+ui = ["scitex-ui==0.6.0"]
 
 # Utils Module - REMOVED (Phase B). The in-tree scitex.utils grab-bag was
 # deleted; its public helpers live in their SoC owners (compress_hdf5 →
@@ -791,7 +791,7 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = ["scitex-clew==0.2.15"]
+clew = ["scitex-clew==0.2.17"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
@@ -860,7 +860,7 @@ dev = [
     "click",
     "connectedpapers-py",
     "crawl4ai",
-    "crossref-local",
+    "crossref-local==0.7.6",
     "csv2latex",
     "feedparser",
     "figrecipe==0.28.20",
@@ -896,7 +896,7 @@ dev = [
     "newb==0.26.7",
     "numcodecs",
     "openai",
-    "openalex-local",
+    "openalex-local==0.7.6",
     "openpyxl",
     "optuna",
     "pdfplumber",
@@ -946,22 +946,22 @@ dev = [
     "scitex-audio==0.2.13",
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
-    "scitex-clew==0.2.15",
+    "scitex-clew==0.2.17",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
     # it here would break CI's `.[all,dev]` resolve. Install explicitly via
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
-    "scitex-dataset==0.4.0",
-    "scitex-dev==0.17.10",
-    "scitex-etc==0.2.0",
-    "scitex-genai==0.1.0",
-    "scitex-io==0.3.1",
+    "scitex-dataset==0.5.0",
+    "scitex-dev==0.18.1",
+    "scitex-etc==0.2.1",
+    "scitex-genai==0.1.1",
+    "scitex-io==0.3.2",
     "scitex-notification==0.2.8",
-    "scitex-scholar==1.4.1",
+    "scitex-scholar==1.4.2",
     "scitex-ssh==1.0.1",
     "scitex-stats==0.2.24",
-    "scitex-ui==0.5.1",
+    "scitex-ui==0.6.0",
     "scitex-writer==2.17.5",
     "seaborn",
     "selenium",
@@ -1089,8 +1089,8 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.17.10"]
-orochi = ["scitex-orochi==0.16.4"]
+linter = ["scitex-dev==0.18.1"]
+orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 
 [tool.hatch.version]

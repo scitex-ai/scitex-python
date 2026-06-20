@@ -8,25 +8,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **`_LazyModule` error messages now name the canonical attribute home when
+  one exists.** When `scitex.<short>.<attr>` lookup fails because `<short>`
+  is not installed (extras gate) or because `<short>` is installed but
+  doesn't carry `<attr>` (the "phantom" case), the resulting error now
+  routes through a curated redirect map (`scitex._canonical_redirects`).
+  Example: `scitex.gen.load_configs` (which doesn't exist in `scitex_gen`)
+  used to raise `ImportError: scitex.gen requires additional dependencies.
+  Install with: pip install scitex[gen]` — telling the user to pip-install
+  a heavy extras package (torch + CUDA + …) that doesn't even contain the
+  function. Now it raises `ImportError: scitex.gen.load_configs is not
+  available here; the canonical location is scitex.io.load_configs (already
+  installed by the umbrella core — no extra needed). Change your import to
+  `from scitex.io import load_configs``. Same upgrade for the
+  `AttributeError` path when the module loaded fine but doesn't have the
+  attribute. Seed redirect entries (gen → io / session / dict / str / etc /
+  context / types) come from proj-paper-ripple-wm's PR#4a misdirected-
+  callsite audit (2026-06-07) — the mngs.gen kitchen-sink namespace was
+  split across multiple scitex peers, leaving hundreds of callsites
+  pointing at `scitex.gen.<X>` for `X` that now lives elsewhere.
+- **`pip install` hints now use `{sys.executable} -m pip`.** The previous
+  bare `pip install scitex[...]` hint risked installing into a system-level
+  Python when the user had an active virtualenv. Switched to
+  `{sys.executable} -m pip install 'scitex[<extras>]'` so the install lands
+  in the venv the user is currently running. Quotes the extras spec so
+  shells that glob square brackets (zsh) don't choke. Applied to both
+  `_LazyModule.__getattr__`'s ImportError fallback and the `__dir__()`
+  missing-module warning.
 - **`scitex.security` repointed to `scitex_audit.github`** per ADR-0001
   (scitex-dev #139, Accepted 2026-06-07). `scitex-security` was absorbed
   into `scitex-audit` 0.2.0; the 5 public symbols (`check_github_alerts`,
   `save_alerts_to_file`, `get_latest_alerts_file`, `format_alerts_report`,
   `GitHubSecurityError`) now live in `scitex_audit.github`. The umbrella
   `_LazyModule("security", external="scitex_audit.github")` resolution
-  + the `external_alias_map` "security" entry both move atomically.
+  + the `external_alias_map` "security" entry both move atomically. (#322)
+- **`click` promoted to a hard core dependency** (`click>=8.0.0` in
+  `[project.dependencies]`). The `scitex-pkg` console-script
+  (`scitex.cli.pkg:pkg`) does an unguarded module-load `import click`, so
+  PS-213 (console-script-deps-must-be-core, scitex-dev v0.17.10+) requires
+  click in core — bare `pip install scitex` followed by `scitex-pkg --help`
+  no longer raises `ModuleNotFoundError`. (#328)
+- **Umbrella sub-package pins bumped to PyPI latest** to satisfy PS-170
+  (audit-umbrella-pins freshness gate) — unblocks the `tests` matrix that
+  was red on `main` since 2026-06-09: `scitex-dev` 0.17.4 → 0.17.10,
+  `scitex-io` 0.2.20 → 0.3.1, `scitex-stats` 0.2.23 → 0.2.24, `scitex-db`
+  0.1.11 → 0.1.12, `scitex-msword` 0.2.0 → 0.3.2, `scitex-dataset` 0.3.10
+  → 0.4.0, `scitex-writer` 2.17.3 → 2.17.5, `scitex-agent-container`
+  0.21.9 → 0.21.11. 18 occurrences updated across `[project.dependencies]`,
+  module extras, `[dev]`, and tooling extras. (#329)
+
+### Added
+- **`scitex._canonical_redirects`** module — private helper carrying the
+  `(short, attr) → canonical_short` map and the two hint builders
+  (`missing_extras_hint`, `phantom_attr_hint`). Extracted from
+  `scitex.re_export` to keep the latter under the 512-line file cap. Pinned
+  by 27 tests across `tests/scitex/test_canonical_redirects.py` and
+  `tests/scitex/test_lazymodule_redirects.py`.
 - **`[security]` extra** now installs `scitex-audit>=0.2.0` (was empty).
   Brings the umbrella extras into compliance with skill 03 §8 "every
-  module MUST have an extra listing its standalone package".
+  module MUST have an extra listing its standalone package". (#322)
 - **`scitex-audit` pinned to `==0.2.0`** in main deps, `[audit]`,
-  `[dev]`, and `[all]`.
+  `[dev]`, and `[all]`. (#322)
 
 ### Removed
 - **`scitex-security==0.1.4`** from main deps and `[all]` — absorbed
   into `scitex-audit`. The deprecated `scitex-security` 0.2.0 PyPI
   shim is NOT pulled by the umbrella; users who explicitly depend on
   the old package still get a `DeprecationWarning` redirecting them
-  to `scitex_audit.github`.
+  to `scitex_audit.github`. (#322)
 
 ### Migration
 - `from scitex_security import X` → `from scitex_audit.github import X`,

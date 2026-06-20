@@ -249,17 +249,11 @@ _KNOWN_FAILING_PREFIXES = [
     "tests/scitex/db/_BaseMixins/test__BaseConnectionMixin.py::TestBaseConnectionMixin::test_init",
     "tests/scitex/db/_BaseMixins/test__BaseTransactionMixin.py::TestBaseTransactionMixin::",
     "tests/scitex/dict/test__DotDict.py::",
-    # ----------------------------------------------------------------
-    # Stale peer-internal tests for the EXTRACTED scitex-container peer.
-    # `scitex.container` is now a thin re-export of the standalone
-    # `scitex_container`; these tests reach into private submodules
-    # (`scitex.container._utils` / `._build` / `._freeze` / `._status`)
-    # that moved into the peer and no longer exist on the umbrella's
-    # deep-import surface — so they ModuleNotFoundError on collection.
-    # The behaviour they cover lives in (and is tested by) scitex-container's
-    # own repo; chasing it here would couple the umbrella matrix to peer
-    # internals. xfail (non-strict) until they're regenerated/removed.
-    "tests/container/",
+    # NOTE: the stale `tests/container/` peer-internal tests for the extracted
+    # scitex-container peer were REMOVED (not xfail-parked) — they reached into
+    # private submodules (`scitex.container._build` / `._freeze` / `._status` /
+    # `._utils`) that moved into the standalone and used `unittest.mock`. That
+    # behaviour lives in (and is tested by) scitex-container's own repo.
     # Stale `test_module_imports` boilerplate importing module paths that
     # were moved/removed during decomposition (e.g. `scitex.custom.*`,
     # `scitex.module` INJECTED symbol). Pre-existing; not umbrella-code bugs.

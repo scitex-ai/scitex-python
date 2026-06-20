@@ -36,24 +36,47 @@ from importlib.machinery import ModuleSpec
 from types import ModuleType
 from typing import Mapping, Optional
 
+from ._canonical_redirects import (
+    missing_extras_hint as _missing_extras_hint,
+)
+from ._canonical_redirects import (
+    phantom_attr_hint as _phantom_attr_hint,
+)
+from ._canonical_redirects import (
+    venv_pip_hint as _venv_pip_hint,
+)
+
 
 # =============================================================================
 # Lazy attribute proxies
 # =============================================================================
 class _LazyModule:
-    def __init__(self, name, external=None):
+    def __init__(self, name, external=None, fallback=None):
         self._name = name
         # If `external` is given, the lazy module proxies an external top-level
         # package (e.g. "scitex_io") instead of the in-tree submodule
         # `scitex.<name>`. This lets the umbrella drop pure re-export shim
         # directories — no source tree under `src/scitex/<name>/` is required.
         self._external = external
+        # `fallback` is a secondary external tried when the primary `external`
+        # is not importable. Used where two packages absorbed each other in
+        # conflicting ADRs (e.g. scitex.security: ADR-0001 #139 routed it to
+        # `scitex_audit.github`, while ADR-0002 #142 made `scitex_security`
+        # the unified home and `scitex-audit` the deprecated shim). The
+        # fallback keeps `scitex.security` reachable whichever package is
+        # actually installed, instead of dying with a bare ModuleNotFoundError.
+        self._fallback = fallback
         self._module = None
 
     def _load_module(self):
         if self._module is None:
             if self._external is not None:
-                self._module = importlib.import_module(self._external)
+                try:
+                    self._module = importlib.import_module(self._external)
+                except (ImportError, ModuleNotFoundError):
+                    if self._fallback is None:
+                        raise
+                    self._module = importlib.import_module(self._fallback)
             else:
                 self._module = importlib.import_module(
                     f".{self._name}", package="scitex"
@@ -63,7 +86,7 @@ class _LazyModule:
     def _warn_missing(self):
         warnings.warn(
             f"scitex.{self._name} requires additional dependencies. "
-            f"Install with: pip install scitex[{self._name}]",
+            f"Install with: {_venv_pip_hint(self._name)}",
             UserWarning,
             stacklevel=3,
         )
@@ -88,11 +111,23 @@ class _LazyModule:
         try:
             return getattr(self._load_module(), attr)
         except (ImportError, ModuleNotFoundError):
+            # Either the external package itself is not importable (missing
+            # extras), or a deeper transitive ImportError fired at module-
+            # body exec. Route through the canonical-redirect hint so attrs
+            # with a known core home don't demand a heavy extras install.
             self._module = None  # Reset so next attempt retries
-            raise ImportError(
-                f"scitex.{self._name} requires additional dependencies. "
-                f"Install with: pip install scitex[{self._name}]"
-            ) from None
+            raise ImportError(_missing_extras_hint(self._name, attr)) from None
+        except AttributeError:
+            # The external package loaded fine but doesn't carry ``attr`` —
+            # the "phantom" case (e.g. scitex.gen.load_configs where
+            # load_configs actually lives in scitex_io, not scitex_gen).
+            # If the redirect map names a canonical home, raise an
+            # AttributeError naming it; otherwise let the original
+            # AttributeError propagate untouched.
+            hint = _phantom_attr_hint(self._name, attr)
+            if hint is None:
+                raise
+            raise AttributeError(hint) from None
 
     def __dir__(self):
         """Return dir of the actual module for tab completion."""
@@ -275,15 +310,28 @@ EXTERNAL_REEXPORTS = {
     "introspect": "scitex_introspect",
     "msword": "scitex_msword",
     "os": "scitex_os",
-    # `scitex.security` → `scitex_audit.github` per ADR-0001 (scitex-dev
-    # #139, 2026-06-07). scitex-security 0.1.4 was absorbed into
-    # scitex-audit 0.2.0; the 5 public symbols (check_github_alerts,
-    # save_alerts_to_file, get_latest_alerts_file, format_alerts_report,
-    # GitHubSecurityError) now live in scitex_audit.github. The standalone
-    # `scitex-security` 0.2.0 PyPI package is a deprecated thin shim only.
+    # `scitex.security`: ADR-0001 (scitex-dev #139, 2026-06-07) routed it to
+    # `scitex_audit.github` (scitex-security absorbed into scitex-audit 0.2.0).
+    # ADR-0002 (#142) then REVERSED the direction: `scitex_security` 0.2.0 is
+    # the unified home and `scitex-audit` is now the deprecated thin shim.
+    # The two ADRs conflict, and which package is installed varies. Primary
+    # stays `scitex_audit.github` (ADR-0001 SSOT); `_EXTERNAL_FALLBACKS` adds
+    # `scitex_security` so the module stays reachable whichever side resolves.
+    # The 5 public symbols (check_github_alerts, save_alerts_to_file,
+    # get_latest_alerts_file, format_alerts_report, GitHubSecurityError) are
+    # exposed by both.
     "security": "scitex_audit.github",
     "session": "scitex_session",  # @scitex.session decorator + INJECTED sentinel
     "tex": "scitex_tex",
+}
+
+
+# Secondary external tried when the primary `EXTERNAL_REEXPORTS[<short>]` is
+# not importable. Keeps `import scitex.<short>` and `scitex.<short>.X` working
+# across the conflicting security ADRs (see the `security` note above). Mirrors
+# the `fallback=` argument of `_LazyModule`.
+_EXTERNAL_FALLBACKS = {
+    "security": "scitex_security",
 }
 
 
@@ -300,22 +348,31 @@ def register_external_lazy_modules() -> None:
     deferred ``exec_module()``.
     """
     for _short, _ext in EXTERNAL_REEXPORTS.items():
-        if _ext in sys.modules:
+        # Resolve the primary external, else its registered fallback (the
+        # security-ADR conflict case). The first candidate that is importable
+        # wins; both are pre-registered lazily under `scitex.<short>`.
+        _candidates = [_ext]
+        _fb = _EXTERNAL_FALLBACKS.get(_short)
+        if _fb is not None:
+            _candidates.append(_fb)
+        if any(_c in sys.modules for _c in _candidates):
             # Already imported (e.g. by user code earlier in this process); reuse.
-            sys.modules[f"scitex.{_short}"] = sys.modules[_ext]
+            _hit = next(_c for _c in _candidates if _c in sys.modules)
+            sys.modules[f"scitex.{_short}"] = sys.modules[_hit]
             continue
-        try:
-            _spec = _importlib_util.find_spec(_ext)
+        for _target in _candidates:
+            try:
+                _spec = _importlib_util.find_spec(_target)
+            except (ImportError, ModuleNotFoundError):
+                continue  # this candidate's parent is missing — try the next
             if _spec is None or _spec.loader is None:
-                continue  # missing optional dep — handled by __getattr__ proxy
+                continue  # missing optional dep — try fallback, else proxy
             _spec.loader = _importlib_util.LazyLoader(_spec.loader)
             _mod = _importlib_util.module_from_spec(_spec)
-            sys.modules[_ext] = _mod
+            sys.modules[_target] = _mod
             sys.modules[f"scitex.{_short}"] = _mod
             _spec.loader.exec_module(_mod)  # records spec; defers body
-        except ImportError:
-            # Hard-missing — friendly install hint via the __getattr__ proxy.
-            pass
+            break  # candidate registered — done with this short
 
 
 # =============================================================================

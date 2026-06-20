@@ -162,8 +162,10 @@ git = _LazyModule("git", external="scitex_git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
 canvas = _LazyModule("canvas")  # Canvas utilities for figure composition
 security = _LazyModule(
-    "security", external="scitex_audit.github"
-)  # Security utilities — absorbed into scitex-audit per ADR-0001 (scitex-dev #139)
+    "security", external="scitex_audit.github", fallback="scitex_security"
+)  # ADR-0001 (#139) routed scitex.security → scitex_audit.github; ADR-0002
+# (#142) then made scitex_security the unified home (scitex-audit = deprecated
+# shim). Prefer scitex_audit.github when present, fall back to scitex_security.
 benchmark = _LazyModule(
     "benchmark", external="scitex_benchmark"
 )  # Benchmarking utilities
