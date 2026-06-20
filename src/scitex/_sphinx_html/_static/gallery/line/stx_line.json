@@ -1,0 +1,140 @@
+{
+    "metadata_version": "1.1.0",
+    "scitex": {
+        "version": "2.5.0",
+        "created_at": "2025-12-08T23:40:17.384765",
+        "created_with": "scitex.plt.subplots (mm-control)",
+        "mode": "publication",
+        "axes_size_mm": [
+            40,
+            28
+        ],
+        "position_in_grid": [
+            0,
+            0
+        ],
+        "style_mm": {
+            "axis_thickness_mm": 0.2,
+            "tick_length_mm": 0.8,
+            "tick_thickness_mm": 0.2,
+            "trace_thickness_mm": 0.2,
+            "marker_size_mm": 0.8,
+            "axis_font_size_pt": 7,
+            "tick_font_size_pt": 7,
+            "title_font_size_pt": 8,
+            "legend_font_size_pt": 6,
+            "label_pad_pt": 0.5,
+            "tick_pad_pt": 2.0,
+            "title_pad_pt": 1.0,
+            "font_family": "Arial",
+            "n_ticks": 4,
+            "font_family_requested": "Arial",
+            "font_family_actual": "Arial"
+        }
+    },
+    "matplotlib": {
+        "version": "3.10.3"
+    },
+    "id": "stx_line",
+    "dimensions": {
+        "figure_size_mm": [
+            80.0,
+            68.0
+        ],
+        "figure_size_inch": [
+            3.1496062992125986,
+            2.677165354330709
+        ],
+        "figure_size_px": [
+            944,
+            803
+        ],
+        "axes_size_mm": [
+            40.0,
+            27.999999999999993
+        ],
+        "axes_size_inch": [
+            1.5748031496062993,
+            1.1023622047244093
+        ],
+        "axes_size_px": [
+            472,
+            330
+        ],
+        "axes_position": [
+            0.25,
+            0.29411764705882354,
+            0.5,
+            0.41176470588235287
+        ],
+        "dpi": 300
+    },
+    "margins_mm": {
+        "left": 20.0,
+        "bottom": 20.0,
+        "right": 20.0,
+        "top": 20.000000000000007
+    },
+    "axes_bbox_px": {
+        "x0": 236,
+        "y0": 236,
+        "x1": 708,
+        "y1": 566,
+        "width": 472,
+        "height": 330
+    },
+    "axes_bbox_mm": {
+        "x0": 20.0,
+        "y0": 20.0,
+        "x1": 60.0,
+        "y1": 47.99999999999999,
+        "width": 40.0,
+        "height": 27.999999999999993
+    },
+    "axes": {
+        "x": {
+            "label": "Sample",
+            "unit": "",
+            "scale": "linear",
+            "lim": [
+                -4.95,
+                103.95
+            ],
+            "n_ticks": 4
+        },
+        "y": {
+            "label": "Amplitude",
+            "unit": "\u03bcV",
+            "scale": "linear",
+            "lim": [
+                -1.3085321119130287,
+                1.1706692688128397
+            ],
+            "n_ticks": 4
+        }
+    },
+    "title": "ax.stx_line()",
+    "plot_type": "line",
+    "method": "plot",
+    "traces": [
+        {
+            "id": "Signal",
+            "label": "Signal",
+            "color": "#0080bf",
+            "linestyle": "-",
+            "linewidth": 0.56693,
+            "csv_columns": {
+                "x": "ax_00_plot_0_plot_x",
+                "y": "ax_00_plot_0_plot_y"
+            }
+        }
+    ],
+    "legend": {
+        "visible": true,
+        "loc": 0,
+        "frameon": false,
+        "labels": [
+            "Signal"
+        ]
+    }
+}

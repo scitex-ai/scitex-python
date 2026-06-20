@@ -7,7 +7,7 @@ expected SKILL.md was auto-loaded by the agent for each realistic query.
 
 Usage:
     python3.11 scripts/run_agentic_trigger_tests.py \\
-        --eval tests/skill_evals/pilot.json \\
+        --eval tests/agentic/pilot.json \\
         --runs 1 \\
         --model claude-haiku-4-5 \\
         --report GITIGNORED/reports/agentic_trigger_$(date +%Y%m%d_%H%M).md
