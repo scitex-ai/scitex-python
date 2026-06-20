@@ -170,7 +170,7 @@ query:
 
 ```bash
 python3.11 scripts/run_agentic_trigger_tests.py \
-    --eval tests/skill_evals/pilot.json \
+    --eval tests/agentic/pilot.json \
     --runs 3 \
     --model claude-haiku-4-5 \
     --backend host \
@@ -179,7 +179,7 @@ python3.11 scripts/run_agentic_trigger_tests.py \
 
 See the [agentic nightly workflow](../.github/workflows/agentic-nightly.yml)
 for the self-hosted-runner CI setup, and the [pilot eval
-set](../tests/skill_evals/pilot.json) for example test cases covering
+set](../tests/agentic/pilot.json) for example test cases covering
 every package.
 
 ## 5. Further reading

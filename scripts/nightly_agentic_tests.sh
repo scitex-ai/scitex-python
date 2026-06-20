@@ -28,7 +28,7 @@ set -euo pipefail
 
 REPO_ROOT="${SCITEX_REPO_ROOT:-$HOME/proj/scitex-python}"
 PYTHON="${SCITEX_PYTHON:-python3.11}"
-EVAL_PATH="${SCITEX_EVAL_PATH:-$REPO_ROOT/tests/skill_evals/pilot.json}"
+EVAL_PATH="${SCITEX_EVAL_PATH:-$REPO_ROOT/tests/agentic/pilot.json}"
 REPORT_DIR="${SCITEX_REPORT_DIR:-$REPO_ROOT/GITIGNORED/reports}"
 MODEL="${SCITEX_MODEL:-claude-haiku-4-5}"
 BACKEND="${SCITEX_BACKEND:-host}"

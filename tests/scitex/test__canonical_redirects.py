@@ -57,9 +57,12 @@ class TestSeedRedirects:
         ],
     )
     def test_seed_entry_present(self, short, attr, expected):
-        # Arrange / Act
+        # Arrange
+        key = (short, attr)
+        # Act
+        home = CANONICAL_REDIRECTS.get(key)
         # Assert
-        assert CANONICAL_REDIRECTS.get((short, attr)) == expected
+        assert home == expected
 
 
 class TestVenvPipHint:
@@ -69,20 +72,26 @@ class TestVenvPipHint:
     square brackets don't choke."""
 
     def test_uses_sys_executable(self):
-        # Arrange / Act
-        hint = venv_pip_hint("gen")
+        # Arrange
+        short = "gen"
+        # Act
+        hint = venv_pip_hint(short)
         # Assert
         assert sys.executable in hint
 
     def test_uses_module_invocation(self):
-        # Arrange / Act
-        hint = venv_pip_hint("gen")
+        # Arrange
+        short = "gen"
+        # Act
+        hint = venv_pip_hint(short)
         # Assert
         assert "-m pip install" in hint
 
     def test_quotes_extras_spec(self):
-        # Arrange / Act
-        hint = venv_pip_hint("gen")
+        # Arrange
+        short = "gen"
+        # Act
+        hint = venv_pip_hint(short)
         # Assert — the literal `'scitex[gen]'` quoted form, not the bare
         # `scitex[gen]` form, so zsh's filename-globbing doesn't barf.
         assert "'scitex[gen]'" in hint
@@ -95,30 +104,45 @@ class TestMissingExtrasHint:
     back to the venv-pip hint."""
 
     def test_known_redirect_names_canonical_module(self):
-        # Arrange / Act
-        hint = missing_extras_hint("gen", "load_configs")
+        # Arrange
+        short, attr = "gen", "load_configs"
+        # Act
+        hint = missing_extras_hint(short, attr)
         # Assert
         assert "scitex.io.load_configs" in hint
 
     def test_known_redirect_announces_no_extra_needed(self):
-        # Arrange / Act
-        hint = missing_extras_hint("gen", "load_configs")
+        # Arrange
+        short, attr = "gen", "load_configs"
+        # Act
+        hint = missing_extras_hint(short, attr)
         # Assert — the message must reassure the user they DON'T need to
         # pip-install heavy extras for a callsite they can just rewrite.
         assert "no extra needed" in hint
 
     def test_known_redirect_suggests_from_import_rewrite(self):
-        # Arrange / Act
-        hint = missing_extras_hint("gen", "load_configs")
+        # Arrange
+        short, attr = "gen", "load_configs"
+        # Act
+        hint = missing_extras_hint(short, attr)
         # Assert
         assert "from scitex.io import load_configs" in hint
 
-    def test_unknown_redirect_falls_back_to_venv_pip_hint(self):
-        # Arrange / Act
-        hint = missing_extras_hint("audio", "some_attr_with_no_redirect")
-        # Assert — without a redirect the message is the generic missing-
-        # extras hint, but still venv-correct.
+    def test_unknown_redirect_hint_names_venv_executable(self):
+        # Arrange
+        short, attr = "audio", "some_attr_with_no_redirect"
+        # Act
+        hint = missing_extras_hint(short, attr)
+        # Assert — without a redirect the generic missing-extras hint is
+        # still venv-correct (names the current interpreter).
         assert sys.executable in hint
+
+    def test_unknown_redirect_hint_names_the_extra_spec(self):
+        # Arrange
+        short, attr = "audio", "some_attr_with_no_redirect"
+        # Act
+        hint = missing_extras_hint(short, attr)
+        # Assert
         assert "'scitex[audio]'" in hint
 
 
@@ -129,21 +153,29 @@ class TestPhantomAttrHint:
     propagate) and a sharp message when there is."""
 
     def test_returns_none_when_no_redirect(self):
-        # Arrange / Act
-        hint = phantom_attr_hint("audio", "definitely_not_in_redirect_map")
+        # Arrange
+        short, attr = "audio", "definitely_not_in_redirect_map"
+        # Act
+        hint = phantom_attr_hint(short, attr)
         # Assert
         assert hint is None
 
     def test_known_redirect_returns_string_naming_canonical(self):
-        # Arrange / Act
-        hint = phantom_attr_hint("gen", "load_configs")
+        # Arrange
+        short, attr = "gen", "load_configs"
+        # Act
+        hint = phantom_attr_hint(short, attr)
         # Assert
-        assert hint is not None
-        assert "scitex.io.load_configs" in hint
+        assert hint is not None and "scitex.io.load_configs" in hint
 
     def test_known_redirect_uses_attribute_error_phrasing(self):
-        # Arrange / Act
-        hint = phantom_attr_hint("gen", "load_configs")
+        # Arrange
+        short, attr = "gen", "load_configs"
+        # Act
+        hint = phantom_attr_hint(short, attr)
         # Assert — message should say "module ... has no attribute X" so
         # it reads naturally when raised as AttributeError(message).
         assert "has no attribute" in hint
+
+
+# EOF

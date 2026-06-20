@@ -18,6 +18,7 @@
   <a href="https://badge.fury.io/py/scitex"><img src="https://badge.fury.io/py/scitex.svg" alt="PyPI version"></a>
   <a href="https://pypi.org/project/scitex/"><img src="https://img.shields.io/pypi/pyversions/scitex.svg" alt="Python Versions"></a>
   <a href="https://scitex-python.readthedocs.io"><img src="https://readthedocs.org/projects/scitex-python/badge/?version=latest" alt="Documentation"></a>
+  <a href="https://codecov.io/gh/ywatanabe1989/scitex-python"><img src="https://img.shields.io/codecov/c/github/ywatanabe1989/scitex-python/develop?label=cov" alt="cov"></a>
   <a href="https://github.com/ywatanabe1989/scitex-python/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ywatanabe1989/scitex-python" alt="License"></a>
 </p>
 
@@ -160,6 +161,18 @@ Downstream (standalone apps — own IO/GUI, unit tests)
 ```
 
 **One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [01_ecosystem_01_upstream-and-downstream.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_01_upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [01_ecosystem_02_dependency-and-version-pinning.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_02_dependency-and-version-pinning.md) for dep-pinning.
+
+## Three Interfaces
+
+Every capability in the SciTeX umbrella is reachable through three surfaces, so humans and AI agents share one toolkit:
+
+| Interface | Entry point | Example |
+|-----------|-------------|---------|
+| **Python API** | `import scitex as stx` | `stx.io.save(fig, "result.png")` |
+| **CLI** | `scitex <group> <command>` | `scitex io convert data.csv data.parquet` |
+| **MCP** | `scitex mcp start` | 323 tools an AI agent calls directly |
+
+The Python API is the primary surface; the CLI and MCP server expose the same logic for shells and AI agents. See the [Quick Start](#quick-start) below for runnable Python examples and the [Full MCP reference](./docs/02_MCP_TOOLS.md).
 
 ## Quick Start
 
@@ -696,6 +709,10 @@ Each package exposes the ecosystem via up to six interfaces: Python library, CLI
 | [scitex-ui](https://github.com/ywatanabe1989/scitex-ui) | `stx.ui` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Shared frontend framework for SciTeX web apps |
 | [scitex-writer](https://github.com/ywatanabe1989/scitex-writer) | `stx.writer` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | End-to-end LaTeX manuscript toolchain (45 MCP tools) |
 </details>
+
+## Part of SciTeX
+
+`scitex` is part of [SciTeX](https://scitex.ai) — it is the umbrella distribution that aggregates the whole ecosystem under one `import scitex` namespace. Each peer module (`scitex.io`, `scitex.plt`, `scitex.stats`, …) is a standalone package installable on its own (`pip install scitex[io]`) yet composes into designed synergy: save a figure → auto-export CSV + YAML recipe → hash-track via Clew → cite in scitex-writer.
 
 >Four Freedoms for Research
 >
