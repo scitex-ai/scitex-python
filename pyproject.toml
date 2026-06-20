@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.1"
+version = "2.30.2"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,11 +79,11 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config==0.3.6",
     # Reproducibility Verification
-    "scitex-clew==0.2.15",
+    "scitex-clew==0.2.17",
     # App SDK — unified file storage for local + cloud
-    "scitex-app==0.2.8",
+    "scitex-app==0.2.10",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.17.10",
+    "scitex-dev==0.18.0",
     "scitex-io==0.3.1",
     "scitex-stats==0.2.24",
     "scitex-audio==0.2.13",
@@ -96,7 +96,7 @@ dependencies = [
     "scitex-types==0.1.6",
     "scitex-path==0.1.7",
     "scitex-repro==0.1.6",
-    "scitex-compat==0.1.8",
+    "scitex-compat==0.1.9",
     "scitex-etc==0.2.0",  # media shipped here; scitex.media re-exports scitex_etc.media
     "scitex-genai==0.1.0",
     "scitex-gists==0.1.7",
@@ -167,7 +167,7 @@ scitex = "scitex"
 # App Module - Unified file storage SDK (local + cloud)
 # Use: pip install scitex[app]
 app = [
-    "scitex-app==0.2.8",
+    "scitex-app==0.2.10",
 ]
 
 # ML Module — classical / deep machine-learning utilities
@@ -264,7 +264,7 @@ hub = [
 
 # Compat Module - Compatibility utilities
 # Use: pip install scitex[compat]
-compat = ["scitex-compat==0.1.8"]
+compat = ["scitex-compat==0.1.9"]
 
 # Config Module - Configuration management
 # Use: pip install scitex[config]
@@ -674,7 +674,7 @@ security = ["scitex-audit>=0.2.0"]
 # Session Module - Session management
 # Use: pip install scitex[session]
 session = [
-    "scitex-session==0.2.1",
+    "scitex-session==0.2.3",
     "matplotlib",
     "PyYAML",
 ]
@@ -791,7 +791,7 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = ["scitex-clew==0.2.15"]
+clew = ["scitex-clew==0.2.17"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
@@ -946,14 +946,14 @@ dev = [
     "scitex-audio==0.2.13",
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
-    "scitex-clew==0.2.15",
+    "scitex-clew==0.2.17",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
     # it here would break CI's `.[all,dev]` resolve. Install explicitly via
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.4.0",
-    "scitex-dev==0.17.10",
+    "scitex-dev==0.18.0",
     "scitex-etc==0.2.0",
     "scitex-genai==0.1.0",
     "scitex-io==0.3.1",
@@ -1089,7 +1089,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.17.10"]
+linter = ["scitex-dev==0.18.0"]
 orochi = ["scitex-orochi==0.16.4"]
 agent-container = ["scitex-agent-container==0.21.11"]
 
