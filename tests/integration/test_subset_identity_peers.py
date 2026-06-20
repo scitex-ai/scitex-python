@@ -31,7 +31,14 @@ PEERS: list = [  # list[tuple[str, str] | pytest.ParameterSet]
     ("scitex_stats", "scitex.stats"),
     ("scitex_dsp", "scitex.dsp"),
     ("scitex_config", "scitex.config"),
-    ("scitex_gen", "scitex.gen"),
+    # scitex.gen is INTENTIONALLY excluded from the peer-subset matrix. It is
+    # no longer a re-export of the standalone scitex_gen: the umbrella surface
+    # `scitex.gen` is now a FAIL-LOUD deprecation shim whose every attribute
+    # access raises an AttributeError naming the focused package the symbol
+    # moved to (scitex.math/linalg/datetime/io/context/os/sh/str/introspect/
+    # stats). Its public surface is intentionally empty (`__all__ == []`), so
+    # the peer ⊆ umbrella invariant does not — and must not — hold here. The
+    # shim's behavior is verified by tests/scitex/test_gen_deprecation_shim.py.
     ("scitex_pd", "scitex.pd"),
     ("scitex_dict", "scitex.dict"),
     ("scitex_str", "scitex.str"),
