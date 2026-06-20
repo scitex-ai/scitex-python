@@ -944,9 +944,14 @@ MEMO.md
 CLAUDE.md
 docs/sphinx/_build/
 
-# NOTE: src/<pkg>/_sphinx_html/ is intentionally NOT ignored — scitex-cloud
-# serves docs from the in-wheel bundle, so the built HTML MUST be tracked
-# (hatchling force-include fails otherwise). See PS-121 / PS-128.
+# Generated Sphinx HTML — NOT committed for the umbrella. RTD
+# (readthedocs.io) builds and hosts the docs from docs/sphinx/; committing
+# ~120MB of generated HTML is pure repo bloat. The PyPI wheel does not need
+# it (the SIF installs the wheel, which excludes docs). NOTE: this conflicts
+# with scitex-dev rules PS-121/PS-128, which currently require the umbrella
+# to commit src/<pkg>/_sphinx_html/ for scitex-cloud's in-wheel doc serving
+# — flagged to scitex-dev for the umbrella to accept RTD-built docs instead.
+src/scitex/_sphinx_html/
 .playwright-cli/
 .venv/
 # Claude worktree symlink
