@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.2"
+version = "2.30.3"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -83,10 +83,10 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.11",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.18.1",
-    "scitex-io==0.3.2",
+    "scitex-dev==0.20.1",
+    "scitex-io==0.3.3",
     "scitex-stats==0.2.24",
-    "scitex-audio==0.2.13",
+    "scitex-audio==0.3.0",
     "scitex-notification==0.2.8",
     "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
@@ -107,16 +107,17 @@ dependencies = [
     "scitex-str==0.1.12",
     "scitex-benchmark==0.1.5",
     "scitex-context==0.1.4",
-    "scitex-cv==0.1.5",
+    "scitex-cv==0.2.0",
     "scitex-introspect==0.1.7",
     "scitex-msword==0.3.2",
     "scitex-os==0.1.8",
+    "scitex-pd==0.1.6",  # pandas utilities — pinned-in-core so scitex.pd works out of the box
     # scitex-security DROPPED here per ADR-0001 (scitex-dev #139) —
     # absorbed into scitex-audit. The [security] extra now installs
     # scitex-audit; scitex-python's main deps no longer pull the
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
-    "figrecipe==0.28.20",
+    "figrecipe==0.29.5",
     "scitex-ui==0.6.0",
 ]
 
@@ -185,7 +186,7 @@ genai = [
 # Audio Module - Text-to-Speech
 # Use: pip install scitex[audio]
 audio = [
-    "scitex-audio==0.2.13",
+    "scitex-audio==0.3.0",
 ]
 
 # Audit Module - Code and security auditing
@@ -403,7 +404,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io==0.3.2",
+    "scitex-io==0.3.3",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -543,6 +544,7 @@ path = [
 # Use: pip install scitex[pd]
 pd = [
     "xarray",
+    "scitex-pd==0.1.6",
 ]
 
 # PLT Module - Plotting utilities
@@ -558,7 +560,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.28.20",
+    "figrecipe==0.29.5",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
@@ -796,7 +798,7 @@ clew = ["scitex-clew==0.2.17"]
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer==2.17.5",  # Core writer package (single source of truth)
+    "scitex-writer==2.22.0",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -863,7 +865,7 @@ dev = [
     "crossref-local==0.7.6",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.28.20",
+    "figrecipe==0.29.5",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -943,7 +945,7 @@ dev = [
     "scikit-learn",
     "scipy",
     "scitex-agent-container==0.21.11",
-    "scitex-audio==0.2.13",
+    "scitex-audio==0.3.0",
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
     "scitex-clew==0.2.17",
@@ -953,16 +955,16 @@ dev = [
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.5.0",
-    "scitex-dev==0.18.1",
+    "scitex-dev==0.20.1",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
-    "scitex-io==0.3.2",
+    "scitex-io==0.3.3",
     "scitex-notification==0.2.8",
     "scitex-scholar==1.4.2",
     "scitex-ssh==1.0.1",
     "scitex-stats==0.2.24",
     "scitex-ui==0.6.0",
-    "scitex-writer==2.17.5",
+    "scitex-writer==2.22.0",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1089,7 +1091,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.18.1"]
+linter = ["scitex-dev==0.20.1"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 
