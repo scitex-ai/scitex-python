@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.30.4] - 2026-06-29
+
 ### Changed
+- **Umbrella `==` pin bumps to PyPI latest (PS-170 freshness sweep).**
+  figrecipe 0.29.5→0.29.9 (NeuroVista grant figure fixes: caption justify,
+  title-aware 10pt-bold-Arial panel labels, imshow aspect honoring,
+  numpy-scalar recipe-save crash), scitex-writer 2.22.0→2.23.0,
+  scitex-clew 0.2.17→0.2.18. Lets downstream research projects pin
+  `figrecipe==0.29.9` consistently alongside `scitex==2.30.4`.
 - **`_LazyModule` error messages now name the canonical attribute home when
   one exists.** When `scitex.<short>.<attr>` lookup fails because `<short>`
   is not installed (extras gate) or because `<short>` is installed but
