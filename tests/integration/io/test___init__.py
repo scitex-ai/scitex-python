@@ -12,6 +12,16 @@ import pytest
 
 import scitex.io as sio
 
+# `scitex.io.bundle` is a submodule: per Python import semantics it only
+# becomes an attribute of `scitex.io` once it has been imported. Import it
+# explicitly here so the attribute-access assertions below are deterministic
+# under pytest-xdist — relying on a sibling test to have imported it first is
+# worker-distribution-dependent and flakes when this file lands on a worker
+# that hasn't (the v2.30.4 release-SIF flake). `import scitex.io.bundle` is the
+# supported access path; the standalone `scitex_io` does not eagerly bind it
+# either.
+import scitex.io.bundle  # noqa: F401,E402
+
 
 @pytest.mark.parametrize(
     "name",
