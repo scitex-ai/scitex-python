@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.3"
+version = "2.30.4"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,7 +79,7 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config==0.3.6",
     # Reproducibility Verification
-    "scitex-clew==0.2.17",
+    "scitex-clew==0.2.18",
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.11",
     # Delegated core modules (thin re-exports)
@@ -117,7 +117,7 @@ dependencies = [
     # scitex-audit; scitex-python's main deps no longer pull the
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
-    "figrecipe==0.29.5",
+    "figrecipe==0.29.9",
     "scitex-ui==0.6.0",
 ]
 
@@ -560,7 +560,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.29.5",
+    "figrecipe==0.29.9",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
@@ -793,12 +793,12 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = ["scitex-clew==0.2.17"]
+clew = ["scitex-clew==0.2.18"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer==2.22.0",  # Core writer package (single source of truth)
+    "scitex-writer==2.23.0",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -865,7 +865,7 @@ dev = [
     "crossref-local==0.7.6",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.29.5",
+    "figrecipe==0.29.9",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -948,7 +948,7 @@ dev = [
     "scitex-audio==0.3.0",
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
-    "scitex-clew==0.2.17",
+    "scitex-clew==0.2.18",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
     # it here would break CI's `.[all,dev]` resolve. Install explicitly via
@@ -964,7 +964,7 @@ dev = [
     "scitex-ssh==1.0.1",
     "scitex-stats==0.2.24",
     "scitex-ui==0.6.0",
-    "scitex-writer==2.22.0",
+    "scitex-writer==2.23.0",
     "seaborn",
     "selenium",
     "setuptools",
