@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.30.5] - 2026-06-30
+
+### Changed
+- **Umbrella `==` pin bumps to PyPI latest (PS-170 freshness sweep).**
+  scitex-writer 2.23.0→2.24.1 (post-compile fail-loud verification gate +
+  clew verify gate + markers/colophon — the fix for the figure-less-PDF
+  incident, so `scitex[writer]` consumers get the gate), scitex-dev
+  0.20.1→0.21.0 (the unified compliance-linter trio: figure-lint v1 +
+  raw-import research-ERROR + `--new-only` baseline gate), scitex-clew
+  0.2.18→0.2.22.
+
 ## [2.30.4] - 2026-06-29
 
 ### Changed
