@@ -102,8 +102,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.plt",
     "scitex.plt._subplots._AxisWrapper",
     "scitex.plt._subplots._FigWrapper",
-    "scitex.plt.io",
-    "scitex.plt.io._bundle",
     "scitex.plt.styles",
     "scitex.plt.styles.presets",
     "scitex.plt.utils",
@@ -113,13 +111,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.project._mcp.handlers",
     "scitex.repro",
     "scitex.resource",
-    "scitex.schema",
-    "scitex.schema._encoding",
-    "scitex.schema._figure_elements",
-    "scitex.schema._plot",
-    "scitex.schema._stats",
-    "scitex.schema._theme",
-    "scitex.schema._validation",
     "scitex.scholar._mcp.handlers",
     "scitex.scholar._mcp.job_handlers",
     "scitex.scholar.bibtex",
@@ -255,4 +246,9 @@ CROSS_PACKAGE_IMPORTS = [
 @pytest.mark.parametrize("module_name", CROSS_PACKAGE_IMPORTS)
 def test_cross_package_import(module_name):
     """Importing scitex-python's declared cross-package dependency must succeed."""
-    importlib.import_module(module_name)
+    # Arrange
+    name = module_name
+    # Act
+    mod = importlib.import_module(name)
+    # Assert
+    assert mod is not None

@@ -83,7 +83,7 @@ def _build_encoding_from_figure(fig, csv_df):
 
     Encoding captures data→visual mappings for scientific reproducibility.
     """
-    from scitex.schema import ENCODING_VERSION
+    from scitex.io.bundle.kinds._plot._dataclasses import ENCODING_VERSION
 
     traces = []
     axes_list = list(fig.axes) if hasattr(fig.axes, "__iter__") else [fig.axes]
@@ -134,7 +134,7 @@ def _build_theme_from_figure(fig):
 
     Theme captures pure aesthetics without affecting scientific meaning.
     """
-    from scitex.schema import THEME_VERSION
+    from scitex.io.bundle.kinds._plot._dataclasses import THEME_VERSION
 
     # Extract colors from figure
     fig_facecolor = fig.get_facecolor()

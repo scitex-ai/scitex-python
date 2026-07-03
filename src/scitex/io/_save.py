@@ -284,10 +284,24 @@ def _save(
         else _os.path.splitext(spath)[1].lower()
     )
 
-    # Check if matplotlib figure for SciTeX bundle (zip or no-ext directory)
+    # Check if matplotlib figure for SciTeX bundle (zip / .plot / no-ext dir)
     if _is_matplotlib_figure(obj) and not is_file_like:
-        if ext == ".zip" or (ext == "" and not spath.endswith("/")):
-            as_zip = kwargs.pop("as_zip", ext == ".zip")
+        path_l = spath.lower()
+        is_plt_zip = path_l.endswith(".plt.zip") or path_l.endswith(".fig.zip")
+        is_legacy_plot = path_l.endswith(".plot") or path_l.endswith(".plot.zip")
+        is_no_ext = ext == "" and not spath.endswith("/")
+
+        if is_plt_zip or is_legacy_plot or ext == ".zip" or is_no_ext:
+            if is_legacy_plot:
+                import warnings as _warnings
+
+                _warnings.warn(
+                    "Use `.plt.zip` instead. The `.plot` directory format "
+                    "will be removed in a future release.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+            as_zip = kwargs.pop("as_zip", ext == ".zip" or path_l.endswith(".zip"))
             _save_scitex_bundle(
                 obj, spath, as_zip, verbose, symlink_from_cwd, symlink_to, **kwargs
             )
