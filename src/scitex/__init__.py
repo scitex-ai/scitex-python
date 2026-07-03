@@ -73,7 +73,15 @@ _register_external_lazy_modules()
 
 # Create lazy modules
 io = _LazyModule("io", external="scitex_io")
-gen = _LazyModule("gen", external="scitex_gen")
+# `gen` is a FAIL-LOUD deprecation shim (umbrella-only), NOT a re-export of the
+# standalone scitex_gen. The mngs-era kitchen-sink namespace was split across
+# focused packages (math/linalg/datetime/io/context/os/sh/str/introspect/stats);
+# every `scitex.gen.<x>` access now raises an AttributeError naming the new
+# home. The shim is a real in-tree module so `import scitex.gen` resolves it
+# (and the alias finder defers to it — see re_export.py). No proxy/fallback to
+# scitex_gen.
+from . import gen
+
 plt = _LazyModule("plt")
 ml = _LazyModule("ml", external="scitex_ml")
 genai = _LazyModule("genai", external="scitex_genai")

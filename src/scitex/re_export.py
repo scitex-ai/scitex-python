@@ -226,7 +226,11 @@ EXTERNAL_REEXPORTS = {
     "decorators": "scitex_decorators",
     "dsp": "scitex_dsp",
     "events": "scitex_events",
-    "gen": "scitex_gen",
+    # `gen` is intentionally ABSENT: scitex.gen is no longer a re-export of the
+    # standalone scitex_gen. It is a FAIL-LOUD deprecation shim shipped in-tree
+    # at `src/scitex/gen.py` whose __getattr__ raises a clear error naming the
+    # focused package each old symbol moved to. Re-adding it here would shadow
+    # the shim by pre-registering `scitex.gen` → `scitex_gen` in sys.modules.
     "git": "scitex_git",
     "linalg": "scitex_linalg",
     "nn": "scitex_nn",
@@ -444,6 +448,19 @@ class _ScitexAliasFinder(MetaPathFinder):
             for child in p.iterdir():
                 if child.is_dir() and (child / "__init__.py").exists():
                     self._intree.add(child.name)
+                # A single-file in-tree module (e.g. the `scitex.gen`
+                # fail-loud deprecation shim at `src/scitex/gen.py`) also wins
+                # over the peer alias: never route `scitex.gen[.…]` to the
+                # standalone `scitex_gen`. The default path finder resolves the
+                # top-level `import scitex.gen`; this guard stops the alias
+                # finder from forwarding deep `scitex.gen.<sub>` imports to the
+                # peer (they raise ModuleNotFoundError naturally instead).
+                elif (
+                    child.is_file()
+                    and child.suffix == ".py"
+                    and child.stem != "__init__"
+                ):
+                    self._intree.add(child.stem)
 
     def find_spec(self, fullname: str, path, target=None) -> Optional[ModuleSpec]:
         if not fullname.startswith("scitex."):
