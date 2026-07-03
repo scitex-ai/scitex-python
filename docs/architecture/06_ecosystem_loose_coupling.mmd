@@ -1,0 +1,28 @@
+%% SciTeX ecosystem — loose coupling (record → read → render).
+%% Every edge is a data contract (optional hook / neutral file / JSON export),
+%% never a code import. clew = provenance hub; writer = render/UI hub.
+%% Producer topology finalized 2026-07-04 (writer/clew/scholar/figrecipe agreed).
+flowchart TB
+  subgraph SUB["record → read → render — no imports across edges"]
+    direction TB
+    IO["scitex-io<br/>save / load + record_output hooks"]
+    SESS["scitex-session<br/>provenance session (@stx.session)"]
+    STATS["scitex-stats<br/>stat outputs"]
+    FIG["figrecipe<br/>figures = recipe + data"]
+    SCH["scitex-scholar<br/>citations / DOI"]
+    CLEW["scitex-clew<br/>provenance DAG · claims · citations · stat · source-gate<br/>exports JSON — renderer-agnostic"]
+    WRITER["scitex-writer<br/>compile + editor UI<br/>neutral Hints feed (manuscript-hints/1) + renders marks"]
+  end
+
+  IO    -->|"record_output (optional hook)"| CLEW
+  SESS  -->|"session records"| CLEW
+  STATS -->|"recorded outputs"| CLEW
+  FIG   -->|"tracker files (provenance)"| CLEW
+  SCH   -->|"citations/v1 data"| CLEW
+  CLEW  -->|"claims.json / export_manuscript_hints (JSON)"| WRITER
+  FIG   -->|"figure-quality hints (direct, source:figrecipe)"| WRITER
+
+  classDef core fill:#dbeafe,stroke:#1d4ed8,color:#0b1324,stroke-width:2px;
+  classDef prod fill:#dcfce7,stroke:#166534,color:#0b1324;
+  class CLEW,WRITER core
+  class IO,SESS,STATS,FIG,SCH prod
