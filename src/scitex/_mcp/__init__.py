@@ -30,6 +30,8 @@ from __future__ import annotations
 import importlib
 import logging
 import os
+import threading
+import time
 import warnings
 from typing import Iterable
 
@@ -88,6 +90,30 @@ _NAMESPACE_ALIASES: dict[str, str] = {
     "agent-container": "agent_container",
 }
 
+# Per-peer resolve budget. Importing ONE peer's ``_mcp_server`` can hang at
+# init (real case: scitex-todo's store-wedge stalls 20s+ at mcp-start). Since
+# the umbrella fronts ~33 packages, a naive sequential resolve lets one hung
+# peer darken EVERY peer's tools. We bound each peer's resolve and skip any
+# that overruns. Override via ``SCITEX_MCP_PEER_TIMEOUT`` (seconds).
+_DEFAULT_PEER_TIMEOUT = 8.0
+
+
+def _peer_timeout() -> float:
+    """Per-peer resolve budget in seconds (``SCITEX_MCP_PEER_TIMEOUT`` env)."""
+    raw = os.environ.get("SCITEX_MCP_PEER_TIMEOUT")
+    if raw is None:
+        return _DEFAULT_PEER_TIMEOUT
+    try:
+        val = float(raw)
+    except (TypeError, ValueError):
+        logger.warning(
+            "invalid SCITEX_MCP_PEER_TIMEOUT=%r — using default %.1fs",
+            raw,
+            _DEFAULT_PEER_TIMEOUT,
+        )
+        return _DEFAULT_PEER_TIMEOUT
+    return val if val > 0 else _DEFAULT_PEER_TIMEOUT
+
 
 def _env_gate_key(namespace: str) -> str:
     """Return the SCITEX_MCP_USE_<NS> env-var name for a namespace."""
@@ -141,25 +167,115 @@ def _iter_registry() -> Iterable[tuple[str, str, str]]:
         yield pip_name, import_name, namespace
 
 
-def register_all_tools(mcp) -> None:
+def _resolve_peers_bounded(
+    peers: list[tuple[str, str]], timeout: float
+) -> tuple[list[tuple[str, object]], list[tuple[str, str]]]:
+    """Resolve each peer's FastMCP concurrently under a bounded time budget.
+
+    Each ``(import_name, namespace)`` is resolved in its own **daemon** thread
+    so that a peer whose ``_mcp_server`` import HANGS cannot (a) block the
+    other peers' resolution nor (b) block interpreter exit. All threads start
+    at once and are joined against a single shared deadline, so total wall time
+    is ~``max(peer resolve)`` bounded by ``timeout`` — never the sum.
+
+    Returns ``(resolved, skipped)`` where:
+      * ``resolved`` is ``[(namespace, peer_mcp), ...]`` in registry order for
+        peers that produced a FastMCP instance, and
+      * ``skipped`` is ``[(namespace, reason), ...]`` for peers that timed out
+        (hung import) or raised during resolve.
+
+    Peers that resolve cleanly to ``None`` (no FastMCP found — an optional peer
+    that isn't installed) are silently omitted from both, matching the prior
+    behavior of the sequential loop.
+    """
+    results: dict[str, object] = {}
+    errors: dict[str, BaseException] = {}
+
+    def _worker(import_name: str, namespace: str) -> None:
+        try:
+            results[namespace] = _resolve_peer_mcp(import_name)
+        except BaseException as exc:  # noqa: BLE001 — surfaced by caller
+            # BaseException: a peer may ``sys.exit()`` at import; that must be
+            # recorded as a skip, never propagate out of the daemon thread.
+            errors[namespace] = exc
+
+    threads: list[tuple[str, threading.Thread]] = []
+    for import_name, namespace in peers:
+        t = threading.Thread(
+            target=_worker,
+            args=(import_name, namespace),
+            name=f"scitex-mcp-resolve-{namespace}",
+            daemon=True,
+        )
+        threads.append((namespace, t))
+        t.start()
+
+    deadline = time.monotonic() + timeout
+    for _namespace, t in threads:
+        remaining = deadline - time.monotonic()
+        if remaining > 0:
+            t.join(remaining)
+
+    resolved: list[tuple[str, object]] = []
+    skipped: list[tuple[str, str]] = []
+    for namespace, t in threads:
+        if t.is_alive():
+            skipped.append(
+                (namespace, f"resolve timed out after {timeout:.1f}s (hung import)")
+            )
+        elif namespace in errors:
+            skipped.append((namespace, f"resolve raised {errors[namespace]!r}"))
+        elif results.get(namespace) is not None:
+            resolved.append((namespace, results[namespace]))
+    return resolved, skipped
+
+
+def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
     """Mount every peer's FastMCP onto the umbrella, then fold in extras.
 
     Order:
-      1. Registry-driven ``safe_mount`` of each peer's FastMCP instance.
+      1. Registry-driven ``safe_mount`` of each peer's FastMCP instance. Each
+         peer's *resolve* (its ``_mcp_server`` import) runs concurrently under
+         a bounded timeout (``SCITEX_MCP_PEER_TIMEOUT``, default 8s); a hung
+         peer is SKIPPED with a warning so it can't darken the aggregator.
       2. Peer surfaces needing brand/name adjustment (figrecipe plt_stx,
          socialia social_*, linter, optional cloud mount).
       3. Umbrella-only inline tools (no peer owns them).
 
     Each peer is gated by ``SCITEX_MCP_USE_<NAMESPACE>=0`` (default enabled).
+
+    Args:
+        mcp: the umbrella FastMCP server to mount onto.
+        iter_registry: injectable ``() -> Iterable[(pip, import_name, ns)]``
+            source of peers; defaults to :func:`_iter_registry` (the ecosystem
+            registry). Exposed for tests so they can drive the real code path
+            with hand-rolled fixture peers instead of patching module globals.
+        peer_timeout: injectable per-peer resolve budget in seconds; defaults
+            to :func:`_peer_timeout` (the ``SCITEX_MCP_PEER_TIMEOUT`` env var).
     """
+    iter_registry = iter_registry if iter_registry is not None else _iter_registry
+    timeout = peer_timeout if peer_timeout is not None else _peer_timeout()
     mounted: set[str] = set()
 
-    for _pip, import_name, namespace in _iter_registry():
-        if not _is_enabled(namespace):
-            continue
-        peer_mcp = _resolve_peer_mcp(import_name)
-        if peer_mcp is None:
-            continue
+    peers = [
+        (import_name, namespace)
+        for _pip, import_name, namespace in iter_registry()
+        if _is_enabled(namespace)
+    ]
+
+    resolved, skipped = _resolve_peers_bounded(peers, timeout)
+
+    for namespace, reason in skipped:
+        logger.warning(
+            "MCP peer %r %s — its tools will be unavailable this session",
+            namespace,
+            reason,
+        )
+
+    # Mount on the MAIN thread. The slow, hang-prone part is the peer IMPORT
+    # (bounded above); the mount itself is fast and mutates shared parent-server
+    # state, so it stays single-threaded here to avoid concurrent-mutation races.
+    for namespace, peer_mcp in resolved:
         try:
             safe_mount(mcp, peer_mcp, namespace=namespace)
             mounted.add(namespace)
