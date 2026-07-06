@@ -59,6 +59,19 @@ from fastmcp import FastMCP  # never reached within the resolve budget
 mcp = FastMCP(name="{name}")
 """
 
+_INFINITE_PEER = """
+# Simulates the REAL store-wedge shape: an import that blocks INDEFINITELY on a
+# lock/IO (here an Event that is never set), not a bounded sleep. The bounded
+# resolve must still return promptly and skip this peer.
+import threading
+
+threading.Event().wait()
+
+from fastmcp import FastMCP  # never reached
+
+mcp = FastMCP(name="{name}")
+"""
+
 _RAISING_PEER = """
 raise ImportError("{name}: simulated precondition failure at import")
 """
@@ -253,6 +266,60 @@ def test_exiting_peer_does_not_block_fast_peer(resolve_with_exiting_peer):
     resolved = outcome.resolved
     # Assert
     assert "fastns3" in resolved
+
+
+# --------------------------------------------------------------------------- #
+# A peer whose import blocks INDEFINITELY (Event.wait, never set) — the real
+# store-wedge shape — must still be bounded + skipped, not hang forever.
+# --------------------------------------------------------------------------- #
+
+
+@pytest.fixture(scope="module")
+def resolve_with_infinite_peer(tmp_path_factory):
+    root = tmp_path_factory.mktemp("resolve_infinite")
+    _write_peer(root, "bminfpeer", _INFINITE_PEER)
+    _write_peer(root, "bmfastpeer4", _FAST_PEER)
+    sys.path.insert(0, str(root))
+    try:
+        # Fast peer first, then the infinite one — proves the wedged peer is
+        # abandoned after the budget and never blocks the run.
+        peers = [("bmfastpeer4", "fastns4"), ("bminfpeer", "infns")]
+        start = monotonic()
+        resolved, skipped = umbrella._resolve_peers_bounded(peers, 1.0)
+        elapsed = monotonic() - start
+        yield SimpleNamespace(
+            elapsed=elapsed, resolved=dict(resolved), skipped=dict(skipped)
+        )
+    finally:
+        sys.path.remove(str(root))
+        _purge_modules("bminfpeer", "bmfastpeer4")
+
+
+def test_infinite_peer_does_not_hang(resolve_with_infinite_peer):
+    # Arrange
+    outcome = resolve_with_infinite_peer
+    # Act
+    elapsed = outcome.elapsed
+    # Assert — bounded by ~timeout (1s) even though the import never returns.
+    assert elapsed < 6.0
+
+
+def test_infinite_peer_is_skipped(resolve_with_infinite_peer):
+    # Arrange
+    outcome = resolve_with_infinite_peer
+    # Act
+    skipped = outcome.skipped
+    # Assert
+    assert "infns" in skipped
+
+
+def test_infinite_peer_does_not_block_fast_peer(resolve_with_infinite_peer):
+    # Arrange
+    outcome = resolve_with_infinite_peer
+    # Act
+    resolved = outcome.resolved
+    # Assert
+    assert "fastns4" in resolved
 
 
 # --------------------------------------------------------------------------- #
