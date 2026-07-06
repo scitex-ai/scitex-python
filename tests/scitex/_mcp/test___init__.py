@@ -126,6 +126,46 @@ def test_crossref_namespace_alias_applied():
     assert "crossref-local" not in prefixes
 
 
+def test_iter_registry_excludes_orochi_orchestrator():
+    # Arrange
+    from scitex._mcp import _iter_registry
+
+    # Act
+    pip_names = {row[0] for row in _iter_registry()}
+    # Assert
+    assert "scitex-orochi" not in pip_names
+
+
+def test_iter_registry_includes_core_library_peer():
+    # Arrange
+    from scitex._mcp import _iter_registry
+
+    # Act
+    pip_names = {row[0] for row in _iter_registry()}
+    # Assert
+    assert "scitex-io" in pip_names
+
+
+def test_mount_skip_true_for_orochi_orchestrator():
+    # Arrange
+    from scitex._mcp import _mount_skip
+
+    # Act
+    skipped = _mount_skip("scitex-orochi", {"import_name": "scitex_orochi"})
+    # Assert
+    assert skipped is True
+
+
+def test_mount_skip_false_for_core_library_peer():
+    # Arrange
+    from scitex._mcp import _mount_skip
+
+    # Act
+    skipped = _mount_skip("scitex-io", {"import_name": "scitex_io"})
+    # Assert
+    assert skipped is False
+
+
 def test_peer_extras_registration_folds_in_brand_renamed_tools():
     # Arrange
     from fastmcp import FastMCP

@@ -80,6 +80,14 @@ _MCP_ATTR_CANDIDATES = ("mcp", "server", "app")
 # Categories the umbrella does NOT mount.
 _SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 
+# Packages the umbrella never mounts even when scitex-dev is too old to
+# carry the ``is_mcp_mountable`` SSoT. ``scitex-orochi`` is the
+# single-instance agent-communication ORCHESTRATOR — its ``mcp_server``
+# guards refuse to run alongside the Telegram bot and it is not a
+# per-agent tool provider, so mounting it is both wrong and a cold-start
+# hazard. Kept in sync with scitex-dev ``_core._MCP_UNMOUNTABLE``.
+_LOCAL_UNMOUNTABLE = frozenset({"scitex-orochi"})
+
 # Namespace overrides — registry's ``umbrella_subcommand`` may differ from
 # the prefix consumers already know. Apply these renames so existing tool
 # names (``crossref_search``, not ``crossref-local_search``) survive.
@@ -145,6 +153,34 @@ def _resolve_peer_mcp(import_name: str):
     return None
 
 
+def _mount_skip(pip_name: str, info: dict) -> bool:
+    """Return True iff ``pip_name`` must NOT be auto-mounted.
+
+    Prefers scitex-dev's ``is_mcp_mountable`` SSoT (which also skips the
+    orchestrator ``scitex-orochi`` and any entry with ``mcp_mountable:
+    False``). Falls back to the local archived/category/field checks when
+    an older scitex-dev without that helper is installed, so the umbrella
+    keeps working across the coordinated two-repo rollout.
+    """
+    try:
+        from scitex_dev._ecosystem._core import is_mcp_mountable
+    except ImportError:
+        is_mcp_mountable = None
+
+    if is_mcp_mountable is not None:
+        return not is_mcp_mountable(pip_name)
+
+    # Fallback (older scitex-dev): replicate the SSoT's checks inline plus
+    # the local unmountable guard so the orchestrator is skipped even when
+    # the installed scitex-dev predates the ``is_mcp_mountable`` helper.
+    return bool(
+        pip_name in _LOCAL_UNMOUNTABLE
+        or info.get("archived")
+        or info.get("category") in _SKIP_CATEGORIES
+        or info.get("mcp_mountable") is False
+    )
+
+
 def _iter_registry() -> Iterable[tuple[str, str, str]]:
     """Yield ``(pip_name, import_name, namespace)`` for every mountable peer."""
     try:
@@ -154,9 +190,7 @@ def _iter_registry() -> Iterable[tuple[str, str, str]]:
         return
 
     for pip_name, info in ECOSYSTEM.items():
-        if info.get("archived"):
-            continue
-        if info.get("category") in _SKIP_CATEGORIES:
+        if _mount_skip(pip_name, info):
             continue
         import_name = info.get("import_name")
         if not import_name:
