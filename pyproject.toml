@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.6"
+version = "2.30.7"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,7 +79,7 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config==0.3.6",
     # Reproducibility Verification
-    "scitex-clew==0.16.0",
+    "scitex-clew==0.17.0",
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.11",
     # Delegated core modules (thin re-exports)
@@ -793,7 +793,7 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
-clew = ["scitex-clew==0.16.0"]
+clew = ["scitex-clew==0.17.0"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
@@ -948,7 +948,7 @@ dev = [
     "scitex-audio==0.3.0",
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
-    "scitex-clew==0.16.0",
+    "scitex-clew==0.17.0",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
     # it here would break CI's `.[all,dev]` resolve. Install explicitly via
