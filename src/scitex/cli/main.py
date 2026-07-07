@@ -13,7 +13,6 @@ warnings.filterwarnings(
 )
 
 import os
-import sys
 
 import click
 
@@ -43,7 +42,15 @@ class LazyGroup(click.Group):
         return super().get_command(ctx, cmd_name)
 
     def format_commands(self, ctx, formatter):
-        """Show help without importing lazy subcommands."""
+        """Categorized help (doctrine §4a) without importing lazy subcommands.
+
+        Commands render under the canonical ordered headers (Core /
+        Data & Sync / Service / Diagnostics / Introspection / Shell /
+        Other); empty categories are omitted. Help text comes from the
+        lazy-spec blurb, so no subcommand module is imported.
+        """
+        from ._lazy_subcommands import CATEGORY_ORDER, command_category
+
         commands = []
         for name in self.list_commands(ctx):
             if name in self._lazy_subcommands:
@@ -51,15 +58,24 @@ class LazyGroup(click.Group):
                 commands.append((name, help_text))
             else:
                 cmd = super().get_command(ctx, name)
-                if cmd is None:
+                if cmd is None or cmd.hidden:
                     continue
                 help_text = cmd.get_short_help_str(limit=150)
                 commands.append((name, help_text))
 
-        if commands:
-            limit = formatter.width - 6 - max(len(c[0]) for c in commands)
-            rows = [(name, h[:limit]) for name, h in commands]
-            with formatter.section("Commands"):
+        if not commands:
+            return
+        limit = formatter.width - 6 - max(len(c[0]) for c in commands)
+        by_category = {}
+        for name, help_text in commands:
+            by_category.setdefault(command_category(name), []).append(
+                (name, help_text[:limit])
+            )
+        for category in CATEGORY_ORDER:
+            rows = by_category.get(category)
+            if not rows:
+                continue
+            with formatter.section(category):
                 formatter.write_dl(rows)
 
     def _load_lazy(self, cmd_name):
@@ -97,7 +113,14 @@ class LazyGroup(click.Group):
                 last_exc = exc
                 continue
             cmd = getattr(mod, attr, None)
-            if cmd is not None:
+            # Only a click command/group is mountable. Some peers expose a
+            # plain ``def main(argv)`` console-script function at a probed
+            # location (e.g. scitex_writer._cli.main) — returning it would
+            # crash click at dispatch ('function' object has no attribute
+            # 'make_context'). Skip non-commands and keep probing.
+            # (click.Group is not a click.Command subclass until click 9,
+            # so check both; avoids the deprecated click.BaseCommand.)
+            if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
         if last_exc is not None:
             logging.getLogger(__name__).debug(
@@ -109,7 +132,7 @@ class LazyGroup(click.Group):
 
 
 # Registry-driven subcommand wiring. See ``_lazy_subcommands.py``.
-from ._lazy_subcommands import build_lazy_subcommands
+from ._lazy_subcommands import DEPRECATED_ALIASES, build_lazy_subcommands
 
 _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 
@@ -120,7 +143,7 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )
-@click.version_option()
+@click.version_option(None, "-V", "--version")
 @click.option("--help-recursive", is_flag=True, help="Show help for all commands")
 @click.option(
     "--json",
@@ -148,8 +171,9 @@ def cli(ctx, help_recursive, as_json):
 
     \b
     Enable tab-completion:
-      scitex completion          # Auto-install for your shell
-      scitex completion --show   # Show installation instructions
+      scitex completion install            # Install for your shell
+      scitex completion install --dry-run  # Preview without writing
+      scitex completion status             # Check installation status
     """
     ctx.ensure_object(dict)["as_json"] = as_json
     # #211: top-level `--json <sub>` can't propagate to subcommand click.options.
@@ -176,6 +200,22 @@ def cli(ctx, help_recursive, as_json):
             group_to_json(ctx, cli)
         else:
             click.echo(ctx.get_help())
+
+
+# Retired duplicate namespaces (notify/verify/events/socialia) become
+# hidden warn-phase aliases that forward to the canonical name — the
+# doctrine 3-phase deprecation ladder (Warn -> Error -> Removed). The
+# helper ships with scitex-dev > 0.21.0; with an older scitex-dev the
+# duplicates are simply excluded (build_lazy_subcommands never registers
+# them), so canonical names are the only surface either way.
+try:
+    from scitex_dev._ecosystem.click_compat import deprecated_alias
+except ImportError:
+    deprecated_alias = None
+
+if deprecated_alias is not None:
+    for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
+        deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
 
 
 def _get_all_command_paths(group, prefix=""):
@@ -208,211 +248,10 @@ def _print_help_recursive(ctx):
             click.echo(cmd.get_help(sub_ctx))
 
 
-def _detect_shell() -> str | None:
-    """Auto-detect current shell."""
-    shell_env = os.environ.get("SHELL", "")
-    if "bash" in shell_env:
-        return "bash"
-    elif "zsh" in shell_env:
-        return "zsh"
-    elif "fish" in shell_env:
-        return "fish"
-    return None
-
-
-def _get_rc_file(shell: str) -> str:
-    """Get shell config file path."""
-    if shell == "bash":
-        return os.path.expanduser("~/.bashrc")
-    elif shell == "zsh":
-        return os.path.expanduser("~/.zshrc")
-    elif shell == "fish":
-        return os.path.expanduser("~/.config/fish/config.fish")
-    return ""
-
-
-def _generate_completion_script(shell: str) -> str:
-    """Generate completion script for scitex CLI."""
-    import shutil
-
-    cli_path = shutil.which("scitex")
-    if not cli_path:
-        return ""
-
-    if shell == "bash":
-        return f'# scitex tab completion\neval "$(_SCITEX_COMPLETE=bash_source {cli_path})"'
-    elif shell == "zsh":
-        return (
-            f'# scitex tab completion\neval "$(_SCITEX_COMPLETE=zsh_source {cli_path})"'
-        )
-    elif shell == "fish":
-        return f"# scitex tab completion\neval (env _SCITEX_COMPLETE=fish_source {cli_path})"
-    return ""
-
-
-@cli.group(invoke_without_command=True)
-@click.pass_context
-def completion(ctx):
-    """
-    Shell completion for scitex CLI.
-
-    \b
-    Commands:
-      scitex completion install   # Install completion (default)
-      scitex completion status    # Check installation status
-      scitex completion bash      # Show bash completion script
-      scitex completion zsh       # Show zsh completion script
-
-    \b
-    Quick install:
-      scitex completion install
-    """
-    if ctx.invoked_subcommand is None:
-        # Default to install
-        ctx.invoke(completion_install)
-
-
-@completion.command("install")
-@click.option(
-    "--shell",
-    type=click.Choice(["bash", "zsh", "fish"], case_sensitive=False),
-    help="Shell type (auto-detected if not provided).",
-)
-def completion_install(shell):
-    """
-    Install shell completion for scitex CLI.
-
-    \b
-    Examples:
-      scitex completion install           # Auto-detect shell
-      scitex completion install --shell bash
-    """
-    if not shell:
-        shell = _detect_shell()
-        if not shell:
-            click.secho(
-                "Could not auto-detect shell. Please specify with --shell option.",
-                fg="red",
-                err=True,
-            )
-            sys.exit(1)
-
-    shell = shell.lower()
-    rc_file = _get_rc_file(shell)
-    completion_script = _generate_completion_script(shell)
-
-    if not completion_script:
-        click.secho("scitex CLI not found in PATH.", fg="red", err=True)
-        sys.exit(1)
-
-    # Check if already installed
-    if os.path.exists(rc_file):
-        with open(rc_file) as f:
-            content = f.read()
-            if "scitex tab completion" in content:
-                click.secho(f"Completion already installed in {rc_file}", fg="yellow")
-                click.echo(
-                    "\nTo reinstall, first remove the existing block, then run again."
-                )
-                click.echo("\nTo reload, run:")
-                click.secho(f"  source {rc_file}", fg="cyan")
-                sys.exit(0)
-
-    # Install
-    try:
-        os.makedirs(os.path.dirname(rc_file), exist_ok=True)
-        with open(rc_file, "a") as f:
-            f.write(f"\n{completion_script}\n")
-
-        click.secho(f"Installed scitex completion to {rc_file}", fg="green")
-        click.echo("\nTo activate, run:")
-        click.secho(f"  source {rc_file}", fg="cyan")
-
-    except Exception as e:
-        click.secho(f"ERROR: {e}", fg="red", err=True)
-        click.echo("\nManually add to your shell config:")
-        click.echo(completion_script)
-        sys.exit(1)
-
-
-@completion.command("status")
-def completion_status():
-    """
-    Check shell completion installation status.
-
-    \b
-    Shows:
-      - Current shell
-      - Config file path
-      - Installation status
-    """
-    import shutil
-
-    shell = _detect_shell() or "unknown"
-    rc_file = _get_rc_file(shell) if shell != "unknown" else "N/A"
-
-    click.secho("Shell Completion Status", fg="cyan", bold=True)
-    click.echo(f"  Shell: {shell}")
-    click.echo(f"  Config: {rc_file}")
-
-    # Check if installed
-    installed = False
-    if rc_file != "N/A" and os.path.exists(rc_file):
-        with open(rc_file) as f:
-            content = f.read()
-            if "scitex tab completion" in content:
-                installed = True
-
-    status = (
-        click.style("installed", fg="green")
-        if installed
-        else click.style("not installed", fg="yellow")
-    )
-    click.echo(f"  Status: {status}")
-
-    # Check if scitex is in PATH
-    cli_path = shutil.which("scitex")
-    path_status = (
-        click.style("OK", fg="green") if cli_path else click.style("missing", fg="red")
-    )
-    click.echo(f"  scitex in PATH: {path_status}")
-
-    if not installed:
-        click.echo("\nTo install completion:")
-        click.secho("  scitex completion install", fg="cyan")
-
-
-@completion.command("bash")
-def completion_bash():
-    """Show bash completion script."""
-    script = _generate_completion_script("bash")
-    if script:
-        click.echo(script)
-    else:
-        click.secho("scitex CLI not found in PATH.", fg="red", err=True)
-        sys.exit(1)
-
-
-@completion.command("zsh")
-def completion_zsh():
-    """Show zsh completion script."""
-    script = _generate_completion_script("zsh")
-    if script:
-        click.echo(script)
-    else:
-        click.secho("scitex CLI not found in PATH.", fg="red", err=True)
-        sys.exit(1)
-
-
-@completion.command("fish")
-def completion_fish():
-    """Show fish completion script."""
-    script = _generate_completion_script("fish")
-    if script:
-        click.echo(script)
-    else:
-        click.secho("scitex CLI not found in PATH.", fg="red", err=True)
-        sys.exit(1)
+# NOTE: the `completion` noun group (doctrine §1b) lives in
+# ``scitex/cli/completion.py`` and is mounted lazily like every other
+# wrapper module. The old eager in-file group (whose bare invocation
+# auto-installed) was replaced in CLI-standardization slice 5.
 
 
 @cli.command("list-python-apis")
