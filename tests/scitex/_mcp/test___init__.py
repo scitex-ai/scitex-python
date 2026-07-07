@@ -136,6 +136,16 @@ def test_iter_registry_excludes_orochi_orchestrator():
     assert "scitex-orochi" not in pip_names
 
 
+def test_iter_registry_excludes_types_zero_tool_peer():
+    # Arrange
+    from scitex._mcp import _iter_registry
+
+    # Act
+    pip_names = {row[0] for row in _iter_registry()}
+    # Assert
+    assert "scitex-types" not in pip_names
+
+
 def test_iter_registry_includes_core_library_peer():
     # Arrange
     from scitex._mcp import _iter_registry
@@ -144,6 +154,16 @@ def test_iter_registry_includes_core_library_peer():
     pip_names = {row[0] for row in _iter_registry()}
     # Assert
     assert "scitex-io" in pip_names
+
+
+def test_mount_skip_true_for_types_zero_tool_peer():
+    # Arrange
+    from scitex._mcp import _mount_skip
+
+    # Act
+    skipped = _mount_skip("scitex-types", {"import_name": "scitex_types"})
+    # Assert
+    assert skipped is True
 
 
 def test_mount_skip_true_for_orochi_orchestrator():

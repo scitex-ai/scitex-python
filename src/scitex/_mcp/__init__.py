@@ -81,12 +81,16 @@ _MCP_ATTR_CANDIDATES = ("mcp", "server", "app")
 _SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 
 # Packages the umbrella never mounts even when scitex-dev is too old to
-# carry the ``is_mcp_mountable`` SSoT. ``scitex-orochi`` is the
-# single-instance agent-communication ORCHESTRATOR — its ``mcp_server``
-# guards refuse to run alongside the Telegram bot and it is not a
-# per-agent tool provider, so mounting it is both wrong and a cold-start
-# hazard. Kept in sync with scitex-dev ``_core._MCP_UNMOUNTABLE``.
-_LOCAL_UNMOUNTABLE = frozenset({"scitex-orochi"})
+# carry the ``is_mcp_mountable`` SSoT. Kept in sync with scitex-dev
+# ``_core._MCP_UNMOUNTABLE``.
+#   - ``scitex-orochi``: the single-instance agent-communication
+#     ORCHESTRATOR — its ``mcp_server`` guards refuse to run alongside the
+#     Telegram bot and it is not a per-agent tool provider, so mounting it
+#     is both wrong and a cold-start hazard.
+#   - ``scitex-types``: ships NO ``_mcp_server`` (zero tools) yet importing
+#     it pulls the heavy scientific stack (numpy/torch/…). Probing it for a
+#     non-existent FastMCP is pure cold-start waste.
+_LOCAL_UNMOUNTABLE = frozenset({"scitex-orochi", "scitex-types"})
 
 # Namespace overrides — registry's ``umbrella_subcommand`` may differ from
 # the prefix consumers already know. Apply these renames so existing tool
