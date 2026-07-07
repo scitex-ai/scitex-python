@@ -69,6 +69,7 @@ DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
 _INTERNAL_HELP: Dict[str, str] = {
     "audit": "Security auditing tools.",
     "capture": "Screenshot capture tools.",
+    "completion": "Shell tab-completion management (install, status).",
     "convert": "File format conversion.",
     "docs": "Browse and search SciTeX documentation.",
     "event": "Event bus for async task results.",
