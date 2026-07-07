@@ -90,7 +90,14 @@ _SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 #   - ``scitex-types``: ships NO ``_mcp_server`` (zero tools) yet importing
 #     it pulls the heavy scientific stack (numpy/torch/…). Probing it for a
 #     non-existent FastMCP is pure cold-start waste.
-_LOCAL_UNMOUNTABLE = frozenset({"scitex-orochi", "scitex-types"})
+#   - ``scitex-str``: likewise ships NO ``_mcp`` server (zero tools — pure
+#     text-utility library) yet importing ``scitex_str`` eagerly pulls
+#     pandas + numpy via its ``_search`` / ``_plot`` submodules. Same
+#     cold-start waste as ``scitex-types`` (sac real-SIF re-verify of
+#     umbrella 2.30.8).
+_LOCAL_UNMOUNTABLE = frozenset(
+    {"scitex-orochi", "scitex-types", "scitex-str"}
+)
 
 # Namespace overrides — registry's ``umbrella_subcommand`` may differ from
 # the prefix consumers already know. Apply these renames so existing tool
