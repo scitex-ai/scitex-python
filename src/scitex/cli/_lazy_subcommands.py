@@ -64,9 +64,15 @@ DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
 # documents `scitex plt` as a figrecipe mount. Both names stay mounted;
 # `figrecipe` is canonical and `plt` self-describes as the alias.
 
-# Help blurbs for scitex-internal subcommands (no corresponding peer in
-# the registry). Anything not listed falls through to the bare name.
-_INTERNAL_HELP: Dict[str, str] = {
+# Help blurbs for scitex-internal subcommands AND fallback one-liners
+# for registry peers whose package metadata is unavailable in the
+# current environment (peer not installed -> importlib.metadata fails).
+# Without a fallback the root help degraded to the bare subcommand name
+# ("dataset   dataset"). One-liners are sourced from each package's own
+# pyproject `description` (what metadata Summary would return), trimmed
+# to fit the help column.
+_FALLBACK_HELP: Dict[str, str] = {
+    # scitex-internal wrappers (no peer in the registry)
     "audit": "Security auditing tools.",
     "capture": "Screenshot capture tools.",
     "completion": "Shell tab-completion management (install, status).",
@@ -81,8 +87,41 @@ _INTERNAL_HELP: Dict[str, str] = {
     "resource": "Resource management.",
     "security": "Security scanning tools.",
     "skills": "Browse skills across the ecosystem.",
+    "social": "Social media management (post, feed, analytics) via socialia.",
+    "template": "Project template cloner + code snippet library.",
     "tex": "LaTeX tools.",
     "web": "Web utilities.",
+    # registry peers (fallback when the peer is not installed)
+    "app": "SciTeX App SDK — write-once interface for local + cloud apps.",
+    "audio": "Text-to-speech with multiple backends for scientific work.",
+    "browser": "Browser automation for scholarly paper access.",
+    "clew": "Verifiable knowledge graph for scientific experiments.",
+    "crossref-local": "Local CrossRef database (167M+ works) with full-text search.",
+    "dataset": "Multi-domain dataset fetcher (OpenNeuro, DANDI, PhysioNet, GEO, ...).",
+    "datetime": "Datetime helpers (linspace, normalize_timestamp, format helpers).",
+    "decorators": "Decorator library (numpy_fn/torch_fn/pandas_fn, caching, batching).",
+    "dsp": "Digital signal processing (PAC, Hilbert, wavelet, filters).",
+    "figrecipe": "Reproducible matplotlib wrapper with mm-precision layouts.",
+    "git": "Git + GitHub Actions utilities (clone, branch, commit, gh secrets).",
+    "hpc": "Generic SLURM dispatch (srun, sbatch, sync, poll, fetch).",
+    "hub": "Deployment and management CLI for SciTeX Hub.",
+    "io": "Universal scientific data I/O with plugin registry.",
+    "linalg": "Small linear-algebra helpers (distance, geometric median, cosine).",
+    "linter": "DEPRECATED shim re-exporting scitex-dev's linter.",
+    "math": "Mathematical utilities (parity helpers, etc.).",
+    "ml": "Machine learning, classification, and training utilities.",
+    "newb": "Fresh-agent doc smoke-tests — checks your docs actually work.",
+    "nn": "Neural network building blocks (BNet, Hilbert, PAC, wavelet).",
+    "openalex-local": "Local OpenAlex database (284M+ works) with semantic search.",
+    "orochi": "Agent communication hub for the SciTeX ecosystem.",
+    "plt": "SciTeX plotting (published alias for figrecipe).",
+    "repl": "Interactive REPL helpers (embed / less / paste).",
+    "scholar": "Scientific paper search, enrichment, download, and management.",
+    "seizure-metrics": "Metrics for epileptic seizure detection and forecasting.",
+    "sh": "Safe subprocess wrapper (list-only, no shell injection).",
+    "ssh": "SSH primitives (exec/copy/attach/tunnel; per-host allowlist).",
+    "tunnel": "SSH tunnel management for SciTeX services.",
+    "writer": "LaTeX manuscript compilation system for scientific documents.",
 }
 
 
@@ -168,7 +207,7 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         # LazyGroup._load_lazy walks the candidates at invocation time
         # and returns the first one that resolves. An on-disk wrapper
         # file in scitex/cli/<short>.py acts as an explicit override.
-        help_text = _registry_subcommand_help(imp) or _INTERNAL_HELP.get(sub) or sub
+        help_text = _registry_subcommand_help(imp) or _FALLBACK_HELP.get(sub) or sub
         if attr in have_wrapper:
             out[sub] = (f"scitex.cli.{attr}", attr, help_text)
         else:
@@ -184,7 +223,7 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         if attr in registered_attrs:
             continue
         sub = attr.replace("_", "-")
-        out.setdefault(sub, (f"scitex.cli.{attr}", attr, _INTERNAL_HELP.get(sub, sub)))
+        out.setdefault(sub, (f"scitex.cli.{attr}", attr, _FALLBACK_HELP.get(sub, sub)))
 
     # 3. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
     # main.py re-adds them as hidden warn-phase deprecated aliases when
@@ -193,6 +232,52 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         out.pop(old_name, None)
 
     return out
+
+
+# Fixed, ordered help categories per doctrine §4a (10a_command-categories
+# .md): Core / Data & Sync / Service / Diagnostics / Introspection /
+# Shell / Other. Header names and order are canonical ecosystem-wide;
+# `Other` is the catch-all and must be empty at audit-clean, so every
+# mounted subcommand is explicitly assigned here. `Core` is the implicit
+# default for anything not listed below — the umbrella's Core is "every
+# re-exported domain package", which grows with the registry, so listing
+# the non-Core minority keeps this table maintainable and keeps new
+# registry peers out of `Other`.
+_NON_CORE_CATEGORIES: Tuple[Tuple[str, frozenset], ...] = (
+    ("Data & Sync", frozenset({"convert"})),
+    (
+        "Service",
+        frozenset({"agent-container", "container", "hub", "mcp", "orochi", "ssh", "tunnel"}),
+    ),
+    (
+        "Diagnostics",
+        frozenset({"audit", "benchmark", "linter", "pkg", "resource", "security"}),
+    ),
+    (
+        "Introspection",
+        frozenset({"dev", "docs", "introspect", "list-python-apis", "skills"}),
+    ),
+    ("Shell", frozenset({"completion", "repl"})),
+)
+
+# Canonical render order (§4a). Empty categories are omitted at render.
+CATEGORY_ORDER: Tuple[str, ...] = (
+    "Core",
+    "Data & Sync",
+    "Service",
+    "Diagnostics",
+    "Introspection",
+    "Shell",
+    "Other",
+)
+
+
+def command_category(name: str) -> str:
+    """Return the §4a help category for a top-level subcommand name."""
+    for category, names in _NON_CORE_CATEGORIES:
+        if name in names:
+            return category
+    return "Core"
 
 
 # EOF

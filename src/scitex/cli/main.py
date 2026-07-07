@@ -42,7 +42,15 @@ class LazyGroup(click.Group):
         return super().get_command(ctx, cmd_name)
 
     def format_commands(self, ctx, formatter):
-        """Show help without importing lazy subcommands."""
+        """Categorized help (doctrine §4a) without importing lazy subcommands.
+
+        Commands render under the canonical ordered headers (Core /
+        Data & Sync / Service / Diagnostics / Introspection / Shell /
+        Other); empty categories are omitted. Help text comes from the
+        lazy-spec blurb, so no subcommand module is imported.
+        """
+        from ._lazy_subcommands import CATEGORY_ORDER, command_category
+
         commands = []
         for name in self.list_commands(ctx):
             if name in self._lazy_subcommands:
@@ -55,10 +63,19 @@ class LazyGroup(click.Group):
                 help_text = cmd.get_short_help_str(limit=150)
                 commands.append((name, help_text))
 
-        if commands:
-            limit = formatter.width - 6 - max(len(c[0]) for c in commands)
-            rows = [(name, h[:limit]) for name, h in commands]
-            with formatter.section("Commands"):
+        if not commands:
+            return
+        limit = formatter.width - 6 - max(len(c[0]) for c in commands)
+        by_category = {}
+        for name, help_text in commands:
+            by_category.setdefault(command_category(name), []).append(
+                (name, help_text[:limit])
+            )
+        for category in CATEGORY_ORDER:
+            rows = by_category.get(category)
+            if not rows:
+                continue
+            with formatter.section(category):
                 formatter.write_dl(rows)
 
     def _load_lazy(self, cmd_name):
@@ -126,7 +143,7 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )
-@click.version_option()
+@click.version_option(None, "-V", "--version")
 @click.option("--help-recursive", is_flag=True, help="Show help for all commands")
 @click.option(
     "--json",
