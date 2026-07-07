@@ -51,7 +51,7 @@ class LazyGroup(click.Group):
                 commands.append((name, help_text))
             else:
                 cmd = super().get_command(ctx, name)
-                if cmd is None:
+                if cmd is None or cmd.hidden:
                     continue
                 help_text = cmd.get_short_help_str(limit=150)
                 commands.append((name, help_text))
@@ -116,7 +116,7 @@ class LazyGroup(click.Group):
 
 
 # Registry-driven subcommand wiring. See ``_lazy_subcommands.py``.
-from ._lazy_subcommands import build_lazy_subcommands
+from ._lazy_subcommands import DEPRECATED_ALIASES, build_lazy_subcommands
 
 _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 
@@ -183,6 +183,22 @@ def cli(ctx, help_recursive, as_json):
             group_to_json(ctx, cli)
         else:
             click.echo(ctx.get_help())
+
+
+# Retired duplicate namespaces (notify/verify/events/socialia) become
+# hidden warn-phase aliases that forward to the canonical name — the
+# doctrine 3-phase deprecation ladder (Warn -> Error -> Removed). The
+# helper ships with scitex-dev > 0.21.0; with an older scitex-dev the
+# duplicates are simply excluded (build_lazy_subcommands never registers
+# them), so canonical names are the only surface either way.
+try:
+    from scitex_dev._ecosystem.click_compat import deprecated_alias
+except ImportError:
+    deprecated_alias = None
+
+if deprecated_alias is not None:
+    for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
+        deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
 
 
 def _get_all_command_paths(group, prefix=""):

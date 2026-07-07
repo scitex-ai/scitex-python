@@ -30,6 +30,40 @@ LazySpec = Tuple[object, str, str]
 
 _REGISTRY_SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 
+# Duplicate namespaces retired 2026-07-07 (CLI-standardization slice 5).
+# {old_name: (canonical_name, remove_in_version)}. The old names are
+# NEVER registered as lazy subcommands; ``main.py`` re-adds them as
+# hidden warn-phase deprecated aliases via scitex-dev's
+# ``click_compat.deprecated_alias`` when that helper is importable
+# (scitex-dev > 0.21.0). With an older scitex-dev the duplicates are
+# simply excluded — canonical names only.
+#
+# Canonical picks (verified against the packages' own CLI names and the
+# doctrine noun catalog):
+#   notification — the package is scitex-notification; `notify` was an
+#                  ad-hoc alias added here.
+#   clew         — the package is scitex-clew; `verify` was an ad-hoc
+#                  alias added here.
+#   event        — singular noun-group doctrine; the `events` name came
+#                  from the scitex-events peer, which ships NO CLI (all
+#                  candidate probes fail), so `scitex events` was a dead
+#                  entry in help.
+#   social       — doctrine §5b brand table (socialia → `scitex social`);
+#                  the bare `socialia` name leaked from the registry
+#                  because the peer record has no umbrella_subcommand.
+DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
+    "notify": ("notification", "3.0"),
+    "verify": ("clew", "3.0"),
+    "events": ("event", "3.0"),
+    "socialia": ("social", "3.0"),
+}
+
+# NOTE on figrecipe/plt: NOT a deprecated duplicate. `scitex plt` mounts
+# the scitex-plt peer, a published identity-alias package for figrecipe
+# (`scitex_plt is figrecipe` -> True), and doctrine §5b's brand table
+# documents `scitex plt` as a figrecipe mount. Both names stay mounted;
+# `figrecipe` is canonical and `plt` self-describes as the alias.
+
 # Help blurbs for scitex-internal subcommands (no corresponding peer in
 # the registry). Anything not listed falls through to the bare name.
 _INTERNAL_HELP: Dict[str, str] = {
@@ -151,11 +185,11 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         sub = attr.replace("_", "-")
         out.setdefault(sub, (f"scitex.cli.{attr}", attr, _INTERNAL_HELP.get(sub, sub)))
 
-    # 3. Aliases.
-    if "notification" in out:
-        out["notify"] = out["notification"]
-    if "clew" in out:
-        out["verify"] = out["clew"]
+    # 3. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
+    # main.py re-adds them as hidden warn-phase deprecated aliases when
+    # scitex-dev's click_compat is importable.
+    for old_name in DEPRECATED_ALIASES:
+        out.pop(old_name, None)
 
     return out
 
