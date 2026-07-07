@@ -80,6 +80,7 @@ _PEER_CLI_PROBES: tuple[tuple[str, str], ...] = (
     ("_cli", "main"),  # scitex-dataset, scitex-audio, scitex-cloud, …
     ("cli", "main"),  # scitex-capture, scitex-security, scitex-agent-container
     ("_cli._app", "app"),  # scitex-app
+    ("_cli_main", "cli"),  # scitex-scholar (entry point scitex_scholar._cli_main:cli)
 )
 
 

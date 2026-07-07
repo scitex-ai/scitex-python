@@ -97,7 +97,14 @@ class LazyGroup(click.Group):
                 last_exc = exc
                 continue
             cmd = getattr(mod, attr, None)
-            if cmd is not None:
+            # Only a click command/group is mountable. Some peers expose a
+            # plain ``def main(argv)`` console-script function at a probed
+            # location (e.g. scitex_writer._cli.main) — returning it would
+            # crash click at dispatch ('function' object has no attribute
+            # 'make_context'). Skip non-commands and keep probing.
+            # (click.Group is not a click.Command subclass until click 9,
+            # so check both; avoids the deprecated click.BaseCommand.)
+            if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
         if last_exc is not None:
             logging.getLogger(__name__).debug(
