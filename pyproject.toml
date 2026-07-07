@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.7"
+version = "2.30.8"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -83,7 +83,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.11",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.21.0",
+    "scitex-dev==0.28.0",
     "scitex-io==0.3.3",
     "scitex-stats==0.2.24",
     "scitex-audio==0.3.0",
@@ -676,7 +676,7 @@ security = ["scitex-audit==0.2.0"]
 # Session Module - Session management
 # Use: pip install scitex[session]
 session = [
-    "scitex-session==0.2.4",
+    "scitex-session==0.3.1",
     "matplotlib",
     "PyYAML",
 ]
@@ -955,7 +955,7 @@ dev = [
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.5.0",
-    "scitex-dev==0.21.0",
+    "scitex-dev==0.28.0",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
@@ -1091,7 +1091,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.21.0"]
+linter = ["scitex-dev==0.28.0"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 
