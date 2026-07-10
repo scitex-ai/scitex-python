@@ -950,3 +950,4 @@ src/*/_sphinx_html/
 .venv/
 # Claude worktree symlink
 /feat-enhance-interface_04_skills
+/.worktrees/
