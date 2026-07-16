@@ -288,7 +288,7 @@ EXTERNAL_REEXPORTS = {
     "etc": "scitex_etc",
     "media": "scitex_etc.media",  # in-tree dir removed; shipped in scitex-etc (>=0.2.0)
     "gists": "scitex_gists",
-    "audit": "scitex_audit",
+    "audit": "scitex_security",
     "compat": "scitex_compat",
     "repro": "scitex_repro",
     "app": "scitex_app",
@@ -320,7 +320,7 @@ EXTERNAL_REEXPORTS = {
     # The 5 public symbols (check_github_alerts, save_alerts_to_file,
     # get_latest_alerts_file, format_alerts_report, GitHubSecurityError) are
     # exposed by both.
-    "security": "scitex_audit.github",
+    "security": "scitex_security.github",
     "session": "scitex_session",  # @scitex.session decorator + INJECTED sentinel
     "tex": "scitex_tex",
 }
