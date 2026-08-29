@@ -118,7 +118,7 @@ Lower-level SciTeX utilities re-exported under the umbrella:
 | `stx.dict` | `DotDict` + safe merge / flatten | `DotDict`, `safe_merge`, `flatten` |
 | `stx.logging` | stdlib-logging + SUCCESS/FAIL + `SciTeXError` | `getLogger`, `warn_deprecated`, `Tee` |
 | `stx.types` | Union type aliases + predicates | `ArrayLike`, `ColorLike`, `is_array_like` |
-| `stx.db` | SQLite3 / PostgreSQL wrapper w/ ndarray BLOBs | `SQLite3`, `PostgreSQL`, `delete_duplicates` |
+| `stx.db` | PostgreSQL wrapper w/ ndarray BLOBs | `PostgreSQL`, `check_health` |
 | `stx.audit` | Unified security scan (bandit / shellcheck / pip-audit) | `audit()` |
 | `stx.browser` | Playwright helpers for scraping | `save_as_pdf`, `click_with_fallbacks_async` |
 | `stx.compat` | Deprecation shims | `@deprecated`, `notify` legacy alias |

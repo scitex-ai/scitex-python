@@ -44,7 +44,7 @@ Supported File Extensions for `stx.io.load` are:
 | **Python Objects** | `.pkl`, `.pickle`, `.joblib` |
 | **Media** | `.jpg`, `.png`, `.gif`, `.tiff`, `.pdf`, `.mp3`, `.wav` |
 | **Documents** | `.docx`, `.pdf` |
-| **Special** | `.db`, `.sqlite3`, `.edf` (EEG data) |
+| **Special** | `.db`, `.edf` (EEG data) |
 
 #### `stx.io.save`
 
