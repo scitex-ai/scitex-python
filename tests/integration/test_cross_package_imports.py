@@ -165,7 +165,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex_io._load_modules._pandas",
     "scitex_io._load_modules._pdf",
     "scitex_io._load_modules._pickle",
-    "scitex_io._load_modules._sqlite3",
     "scitex_io._load_modules._torch",
     "scitex_io._load_modules._txt",
     "scitex_io._load_modules._xml",

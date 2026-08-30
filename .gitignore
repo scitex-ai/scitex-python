@@ -147,6 +147,15 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Embedded database files. These are binary, so `git grep` skips them and a
+# committed one stays invisible until something opens it. Two were already
+# tracked here (a clew runtime store and a legacy example's) before these
+# rules existed; the rules are what stop the next one.
+**/*.sqlite
+**/*.sqlite3
+**/clew.db
+.scitex/clew/runtime/
+
 # Flask stuff:
 instance/
 .webassets-cache
