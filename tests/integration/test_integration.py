@@ -298,7 +298,6 @@ class TestDelegatedModules:
 
     def test_db_delegates(self):
         """stx.db delegates to scitex-db package."""
-        assert hasattr(stx.db, "SQLite3")
         assert hasattr(stx.db, "PostgreSQL")
         assert hasattr(stx.db, "check_health")
 

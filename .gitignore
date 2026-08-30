@@ -144,8 +144,6 @@ cover/
 # Django stuff:
 # *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -389,8 +387,6 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -928,6 +924,7 @@ tests/results/
 mgmt
 .jupyter_ystore.db
 **/scitex/clew.db
+.scitex/clew/
 docs/visualization/FROM_USER.md
 /.claude-worktree-symlinks
 # Claude worktree symlink
