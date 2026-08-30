@@ -529,9 +529,15 @@ Extends stdlib `logging` with SUCCESS/FAIL levels, a 30+ class exception tree (`
 <summary><strong><code>scitex.db</code> -- PostgreSQL with ndarray BLOB Storage</strong></summary>
 
 ```python
+import os
 import scitex as stx, numpy as np
 
-db = stx.db.PostgreSQL(dbname="experiments", user="researcher", host="localhost")
+db = stx.db.PostgreSQL(
+    dbname="experiments",
+    user="researcher",
+    password=os.environ["PGPASSWORD"],
+    host="localhost",
+)
 with db:                                             # closes the connection on exit
     db.execute(
         "CREATE TABLE IF NOT EXISTS runs (id SERIAL PRIMARY KEY, acc REAL, weights BYTEA)"
@@ -542,7 +548,7 @@ with db:                                             # closes the connection on 
     df = db.get_rows("runs")                         # pandas round-trip
     w = db.load_array("runs", "weights", ids=1)      # typed ndarray back
 ```
-PostgreSQL clients with first-class compressed-ndarray BLOBs, dataframe round-trips, health checks, and duplicate removal. Drop-in replacement for hand-rolling `pickle → BLOB` storage or SQLAlchemy Core when you don't need an ORM.
+A PostgreSQL client with first-class compressed-ndarray BLOBs and dataframe round-trips. Drop-in replacement for hand-rolling `pickle → BLOB` storage or SQLAlchemy Core when you don't need an ORM.
 </details>
 
 <details>
