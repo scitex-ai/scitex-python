@@ -1,5 +1,47 @@
 name: CLA Assistant
 
+# Org-level reusable-workflow caller (scitex-ai/.github, fleet standard).
+#
+# This file used to INLINE the CLA job, calling
+# `contributor-assistant/github-action@v2.6.1` directly with every setting
+# — signature path, document URL, signature BRANCH, allowlist and both comment
+# templates — hardcoded here. Twenty repositories carried a byte-identical copy
+# of that block.
+#
+# WHY THAT SHAPE HAD TO GO
+# ------------------------
+# The signature branch was renamed `cla-signatures` -> `cla` and the old name
+# deleted. Every repo that inlined the config kept writing to the deleted branch,
+# so every PR in all twenty failed with
+#
+#     Error occurred when creating the signed contributors file:
+#     Branch cla-signatures not found.
+#     Committers of pull request N have to sign the CLA
+#
+# and SIGNING COULD NOT CLEAR IT. Repos that already called the org reusable
+# picked the rename up for free and were never affected.
+#
+# Patching the string in twenty files would have restored service and left the
+# duplication in place — the same twenty-way break waiting for the next change.
+# Single source of truth: the branch name, the document URL and the comment
+# wording now live in exactly one file, the org reusable.
+#
+# WHY THE `uses:` REF IS A SHA, NOT `@main`
+# ------------------------------------------
+# A mutable org-level ref means one change to the reusable lands in EVERY
+# calling repo at once with no review in any of them — and this workflow runs on
+# `pull_request_target` and `issue_comment`, which unauthenticated strangers can
+# fire on a public repo while it holds a write token and
+# `GH_PERSONAL_ACCESS_TOKEN`. That is exactly where an unreviewed simultaneous
+# fleet-wide change is least acceptable, so the SHA is pinned and reusable
+# updates are taken deliberately.
+#
+# WHY THE `secrets:` MAPPING IS EXPLICIT, NOT `inherit`
+# -----------------------------------------------------
+# `secrets: inherit` forwards every secret this repo holds to an
+# attacker-startable job. Naming the one secret the callee declares drops the
+# rest.
+
 on:
   issue_comment:
     types: [created]
@@ -14,20 +56,17 @@ permissions:
 
 jobs:
   CLAssistant:
-    runs-on: ubuntu-latest
-    steps:
-      - name: CLA Assistant
-        uses: contributor-assistant/github-action@v2.6.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
-        with:
-          path-to-signatures: "signatures/cla.json"
-          path-to-document: "https://github.com/ywatanabe1989/scitex-dev/blob/main/CLA.md"
-          branch: "cla"
-          allowlist: bot*,ywatanabe1989
-          custom-allsigned-prcomment: |
-            Thank you for signing the SciTeX CLA. Your contribution can now be reviewed.
-          custom-notsigned-prcomment: |
-            Please sign the [SciTeX CLA](https://github.com/ywatanabe1989/scitex-dev/blob/main/CLA.md) before your contribution can be merged.
-            Comment `I have read and agree to the SciTeX CLA.` to sign.
+    uses: scitex-ai/.github/.github/workflows/cla.yml@f5d19f5b7424fcf985137bb6acff54f5d0e11749 # main@2026-08-30
+    # NON-DEFAULT ON PURPOSE. The reusable defaults to `bot*,ywatanabe1989`;
+    # the inline version this replaces also allowlisted `LLEmacs`. Taking the
+    # default would silently start demanding a CLA signature from an
+    # already-allowlisted contributor, so the third entry is carried over.
+    #
+    # `default_branch` (main) and `runs_on` (ubuntu-latest) already match what
+    # the inline version did, so they are left at their defaults.
+    with:
+      owner_allowlist: "bot*,ywatanabe1989,LLEmacs"
+    # The ONE secret the callee declares. GITHUB_TOKEN is provided to called
+    # workflows automatically and must NOT be listed here.
+    secrets:
+      GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
