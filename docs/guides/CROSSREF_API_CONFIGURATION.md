@@ -146,7 +146,7 @@ else:
 
 - **Total papers**: 167,008,748
 - **Database size**: 1.2TB (1,197,367 MB)
-- **Format**: local database with indexed fields
+- **Format**: Local database file with indexed fields
 - **Source**: CrossRef official database
 
 ## Best Practices

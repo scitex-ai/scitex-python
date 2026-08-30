@@ -228,7 +228,7 @@ axes:
                 margin_mm: 0.0
               - id: db
                 title: verification.db
-                subtitle: local DB
+                subtitle: verification store
                 content:
                   - runs, file_hashes
                 emphasis: red

@@ -113,7 +113,7 @@ def main(
     s.add_box(
         "db",
         "verification.db",
-        subtitle="local DB",
+        subtitle="verification store",
         content=["runs, file_hashes"],
         emphasis="red",
         x_mm=W / 2 - db_w / 2 - 10,
