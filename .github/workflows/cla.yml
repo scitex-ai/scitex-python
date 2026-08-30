@@ -24,7 +24,7 @@ jobs:
         with:
           path-to-signatures: "signatures/cla.json"
           path-to-document: "https://github.com/ywatanabe1989/scitex-dev/blob/main/CLA.md"
-          branch: "cla-signatures"
+          branch: "cla"
           allowlist: bot*,ywatanabe1989
           custom-allsigned-prcomment: |
             Thank you for signing the SciTeX CLA. Your contribution can now be reviewed.
