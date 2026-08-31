@@ -11,6 +11,7 @@ as a silent ModuleNotFoundError when an end user runs the CLI.
 """
 
 import importlib
+import importlib.util
 
 import pytest
 
@@ -18,26 +19,9 @@ import pytest
 CROSS_PACKAGE_IMPORTS = [
     "scitex",
     "scitex._dev",
-    "scitex._dev._config",
-    "scitex._dev._ecosystem",
-    "scitex._dev._fix",
-    "scitex._dev._rename",
-    "scitex._dev._rename._io",
-    "scitex._dev._rename._safety",
-    "scitex._dev._sync",
-    "scitex._dev._sync_remote",
-    "scitex._dev._test",
-    "scitex._env_loader",
     "scitex._mcp",
     "scitex._mcp._compat",
     "scitex.audio",
-    "scitex.audit",
-    "scitex.bridge._figrecipe",
-    "scitex.bridge._helpers",
-    "scitex.bridge._plt_vis",
-    "scitex.bridge._protocol",
-    "scitex.bridge._stats_plt",
-    "scitex.bridge._stats_vis",
     "scitex.browser.core",
     "scitex.browser.pdf",
     "scitex.browser.pdf._save_as_pdf",
@@ -46,12 +30,7 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.capture.mcp_server",
     "scitex.clew",
     "scitex.cli",
-    "scitex.cli._clew_claims",
-    "scitex.cli._clew_dag",
-    "scitex.cli._clew_misc",
     "scitex.cli._introspect_advanced",
-    "scitex.cli._stats_mcp",
-    "scitex.cli.clew",
     "scitex.cli.introspect",
     "scitex.cli.main",
     "scitex.cli.mcp",
@@ -63,7 +42,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.decorators._deprecated",
     "scitex.decorators._numpy_fn",
     "scitex.decorators._wrap",
-    "scitex.dev._analyze_code_flow",
     "scitex.diagram",
     "scitex.dict",
     "scitex.dsp.utils",
@@ -73,10 +51,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.dsp.utils.filter",
     "scitex.events",
     "scitex.gen",
-    "scitex.gen._detect_notebook_path",
-    "scitex.gen._norm",
-    "scitex.gen._to_even",
-    "scitex.gen._to_odd",
     "scitex.introspect",
     "scitex.introspect._mcp.handlers",
     "scitex.io",
@@ -86,7 +60,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.mcp_server",
     "scitex.notebook",
     "scitex.notification",
-    "scitex.notify",
     "scitex.os",
     "scitex.path",
     "scitex.plt",
@@ -94,8 +67,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex.resource",
     "scitex.scholar._mcp.handlers",
     "scitex.scholar._mcp.job_handlers",
-    "scitex.scholar.bibtex",
-    "scitex.scholar.gui",
     "scitex.scholar.jobs",
     "scitex.scholar.pipelines",
     "scitex.security",
@@ -165,7 +136,6 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex_io._load_modules._pandas",
     "scitex_io._load_modules._pdf",
     "scitex_io._load_modules._pickle",
-    "scitex_io._load_modules._sqlite3",
     "scitex_io._load_modules._torch",
     "scitex_io._load_modules._txt",
     "scitex_io._load_modules._xml",
@@ -214,39 +184,59 @@ CROSS_PACKAGE_IMPORTS = [
 # ===== END AUTO-GENERATED =====
 
 
-def _import_or_skip_if_snapshot_drifted(module_name: str):
-    """Import ``module_name``; skip when a module in the chain isn't present.
+def _import_or_skip_if_peer_absent(module_name: str):
+    """Import ``module_name``; skip ONLY when its DISTRIBUTION is not installed.
 
-    The ``CROSS_PACKAGE_IMPORTS`` list is auto-generated from a source-tree
-    snapshot. During the active decomposition (peers being extracted,
-    deep-import paths moving, umbrella aliases pointing at relocated leaves) a
-    snapshot entry routinely names a module that has since moved/been-removed,
-    or an optional peer not installed in this environment. Python reports that
-    as ``ModuleNotFoundError`` — the *absence* of a module — which is list
-    staleness, not a runtime regression, so it is skipped (the named module
-    OR the aliased ``scitex_<x>`` target it forwards to may be the one that's
-    gone; either way the symptom is "not present").
+    THE SCOPE OF THE SKIP IS THE ENTIRE POINT OF THIS FUNCTION (PS-140).
 
-    Any *other* failure (a plain ``ImportError`` from a module that exists but
-    references a missing symbol, ``AttributeError``, a syntax error, ...) is a
-    real breakage and propagates — that's the rename/move gate this test
-    exists to guard.
+    The previous implementation caught ``ModuleNotFoundError`` from the FULL
+    dotted path and skipped on it. That made the gate unable to fail: a
+    renamed or moved submodule -- ``scitex_io._load_cache`` ->
+    ``scitex_io._loading._load_cache``, the very incident this file was
+    written for -- raises exactly that exception, so the one failure the gate
+    exists to catch was swallowed and the run reported GREEN. An absent peer
+    and a rename inside an installed peer raise the same exception type, and
+    the old code could not tell them apart, so it treated every rename as an
+    absence.
 
-    The one non-absence symptom we still tolerate is torch's global-state
-    re-init collision (``RuntimeError: function '...' already has a
-    docstring``). It fires only when an earlier test in the same process has
-    already imported torch's overrides table and a torch-backed peer
-    (scitex_dsp / scitex_nn / scitex_stats) re-touches it — a cross-test
-    pollution artifact of the torch C-extension, not an umbrella import bug
-    (these same targets import cleanly in a fresh process).
+    The two ARE distinguishable, by SCOPE rather than by exception type:
+
+      * the ROOT distribution is not installed  -> a legitimately absent peer
+        (an optional extra, a marker-gated dependency, a lean install). Skip.
+      * the root IS installed and a SUBMODULE of it is missing -> a rename or
+        a move. FAIL. That is the gate.
+
+    So the skip is scoped to the root and the full path is hard-imported. Not
+    dropping the skip altogether matters just as much: a blanket hard import
+    would fail a lean install where the peer is legitimately absent -- a gate
+    that cannot PASS, in place of one that cannot FAIL.
+
+    One further absence is legitimate, and recognising it is not a widening of
+    the hole: the umbrella's ``scitex.<x>`` shim forwards to a separate
+    ``scitex_<x>`` distribution, so ``import scitex.io`` fails with ``No
+    module named 'scitex_io'`` while the root ``scitex`` is perfectly present.
+    That is the same absent-peer category as the root skip, and it is
+    recognised structurally -- the missing name must be a DIFFERENT top-level
+    distribution with no importable spec at all. A missing submodule of an
+    installed distribution never matches it, which is what keeps a rename
+    failing.
+
+    The remaining tolerances below are unrelated to PS-140 and are unchanged:
+    torch's global-state re-init collision, the umbrella's helpful "install
+    with pip install scitex[...]" ImportError, and a C-extension
+    METH_CLASS/METH_STATIC quirk on some CPython builds.
     """
+    root = module_name.split(".")[0]
+
+    # Skip on the ROOT -- never on the full dotted path.
+    pytest.importorskip(root)
+
     try:
         return importlib.import_module(module_name)
     except ModuleNotFoundError as exc:
-        pytest.skip(
-            f"{module_name}: not importable in this environment "
-            f"(auto-gen snapshot drift / optional peer absent): {exc}"
-        )
+        # MUST be caught before ImportError below (it is a subclass).
+        _skip_if_a_different_distribution_is_absent(exc, root, module_name)
+        raise
     except RuntimeError as exc:
         if "already has a docstring" in str(exc):
             pytest.skip(
@@ -256,12 +246,11 @@ def _import_or_skip_if_snapshot_drifted(module_name: str):
         raise
     except ImportError as exc:
         # The umbrella's lazy modules raise a *helpful* ImportError when an
-        # OPTIONAL backing peer isn't installed (e.g. `scitex.web...: scitex_web
-        # is required for scitex.web. Install with: pip install scitex[web]`).
-        # That's the umbrella working as designed — an absent optional peer,
-        # same category as ModuleNotFoundError — not a rename/missing-symbol
-        # regression. Skip on the install-hint signature; propagate anything
-        # else (a genuine broken import of a module that *should* resolve).
+        # OPTIONAL backing peer isn't installed (e.g. `scitex.web...:
+        # scitex_web is required for scitex.web. Install with: pip install
+        # scitex[web]`). That is an absent optional peer -- the same category
+        # as the root skip -- not a rename. Skip on the install-hint
+        # signature; propagate anything else.
         msg = str(exc)
         if (
             "pip install scitex[" in msg
@@ -274,9 +263,9 @@ def _import_or_skip_if_snapshot_drifted(module_name: str):
             )
         raise
     except ValueError as exc:
-        # Some C-extensions (numba-backed peers) raise this at import on certain
-        # CPython builds: a binding-vs-interpreter quirk, environmental — not an
-        # umbrella import bug.
+        # Some C-extensions (numba-backed peers) raise this at import on
+        # certain CPython builds: a binding-vs-interpreter quirk,
+        # environmental -- not an umbrella import bug.
         if "METH_CLASS or METH_STATIC" in str(exc):
             pytest.skip(
                 f"{module_name}: C-extension METH_CLASS/STATIC quirk on this "
@@ -285,11 +274,81 @@ def _import_or_skip_if_snapshot_drifted(module_name: str):
         raise
 
 
-@pytest.mark.parametrize("module_name", CROSS_PACKAGE_IMPORTS)
+def _skip_if_a_different_distribution_is_absent(
+    exc: ModuleNotFoundError, root: str, module_name: str
+) -> None:
+    """Skip iff the missing name is ANOTHER top-level distribution, absent.
+
+    Returns (so the caller re-raises and the test FAILS) in every other case,
+    which is what makes a rename inside an installed distribution loud. The
+    test is deliberately narrow on both counts:
+
+      * the missing top-level name must DIFFER from ``root`` -- a missing
+        submodule of the module's own distribution is a rename, never an
+        absence;
+      * that name must have NO importable spec -- if the distribution is
+        installed, the piece that went missing is inside it, which is again a
+        rename.
+    """
+    missing_root = (exc.name or "").split(".")[0]
+    if not missing_root or missing_root == root:
+        return
+    try:
+        if importlib.util.find_spec(missing_root) is not None:
+            return
+    except (ImportError, ValueError):
+        # Cannot answer "is it installed?" -- do not treat that as grounds to
+        # skip. Silence on an unanswerable question is the permissive pole
+        # this whole fix exists to close.
+        return
+    pytest.skip(
+        f"{module_name}: forwards to `{missing_root}`, a separate "
+        f"distribution not installed in this environment: {exc}"
+    )
+
+
+#: Declared modules that do not resolve against the peer version this package
+#: PINS (``scitex-dev==0.28.0``) -- recorded here rather than skipped away.
+#:
+#: Found by this gate the moment its skip was scoped to the root: exactly the
+#: defect class PS-140 was written for, and invisible until now because the
+#: old full-path skip swallowed it. ``src/scitex/`` imports all four
+#: (``cli/docs.py``, ``cli/skills.py``, ``cli/mcp.py``, ``_mcp/__init__.py``,
+#: ``_mcp/_umbrella_tools.py``), and scitex-dev exposes neither them nor --
+#: under the underscored ``scitex_dev._docs`` / ``scitex_dev._skills`` that
+#: replaced them -- the symbols those sites import. Verified against the
+#: pinned tag itself, so this is not a local version skew: ``git ls-tree
+#: v0.28.0 src/scitex_dev/`` lists ``_docs`` and ``_skills`` and no ``docs`` /
+#: ``skills`` / ``search`` / ``types``.
+#:
+#: Where those symbols moved to is NOT unambiguous, so the import sites are
+#: left to a separate change rather than guessed at. ``strict=True`` means the
+#: day they are corrected this gate FAILS until the entry is deleted -- the
+#: record cannot rot into a permanent exemption.
+UNRESOLVED_AGAINST_PINNED_PEER = {
+    "scitex_dev.docs": "scitex-dev==0.28.0 ships no `docs` (cf. `_docs`)",
+    "scitex_dev.search": "scitex-dev==0.28.0 ships no `search`",
+    "scitex_dev.skills": "scitex-dev==0.28.0 ships no `skills` (cf. `_skills`)",
+    "scitex_dev.types": "scitex-dev==0.28.0 ships no `types`",
+}
+
+
+def _cases():
+    for name in CROSS_PACKAGE_IMPORTS:
+        reason = UNRESOLVED_AGAINST_PINNED_PEER.get(name)
+        if reason is None:
+            yield pytest.param(name)
+        else:
+            yield pytest.param(
+                name, marks=pytest.mark.xfail(strict=True, reason=reason)
+            )
+
+
+@pytest.mark.parametrize("module_name", list(_cases()))
 def test_cross_package_import(module_name):
-    """A declared cross-package module imports cleanly when it is present."""
+    """A declared cross-package module imports cleanly when it is installed."""
     # Arrange: the module name is supplied by the parametrize list above.
     # Act
-    mod = _import_or_skip_if_snapshot_drifted(module_name)
+    mod = _import_or_skip_if_peer_absent(module_name)
     # Assert: import_module returns the loaded module (never None on success).
     assert mod is not None
