@@ -83,12 +83,25 @@ dependencies = [
     # two months, so the storage-backend migration shipped in clew 0.20.0 never
     # reached anyone here and the retired embedded file engine kept being used.
     # 0.20.0 is the first release where clew's stores resolve through
-    # scitex_dev.store.host_store() instead of a database file.
-    "scitex-clew>=0.20.0",
+    # scitex_dev.store.host_store() instead of a database file; 0.20.1 is the
+    # first that declares an honest scitex-dev floor for it.
+    "scitex-clew>=0.20.1",
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.2.11",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.28.0",
+    #
+    # scitex-dev 0.28.0 -> 0.57.0 is REQUIRED BY the clew floor above, not an
+    # optional freshness bump: clew's stores resolve through
+    # `scitex_dev.store.host_store()`, and 0.28.0 has no `scitex_dev.store` at
+    # all. Left at 0.28.0 the resolve still SUCCEEDS and the failure lands at
+    # import instead — measured here as "failed to load plugin 'clew':
+    # ModuleNotFoundError: No module named 'scitex_dev.store'" plus three
+    # failing clew integration tests on all three Python legs.
+    # The floor clew declares is 0.49.2, measured by a real write-then-read
+    # (0.43.1 imports every symbol and still TypeErrors inside `Store.rows()`);
+    # 0.57.0 is PyPI's newest, matching this file's established practice of
+    # pinning the umbrella at latest.
+    "scitex-dev==0.57.0",
     "scitex-io==0.3.3",
     "scitex-stats==0.2.24",
     "scitex-audio==0.3.0",
@@ -800,7 +813,7 @@ web = [
 # Note: clew's own dependencies come with it. Since 0.20.0 its stores resolve
 # through scitex_dev.store.host_store() (the per-host PostgreSQL), not a
 # database file, so this is no longer a standard-library-only extra.
-clew = ["scitex-clew>=0.20.0"]
+clew = ["scitex-clew>=0.20.1"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
@@ -955,14 +968,14 @@ dev = [
     "scitex-audio==0.3.0",
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
-    "scitex-clew>=0.20.0",
+    "scitex-clew>=0.20.1",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
     # it here would break CI's `.[all,dev]` resolve. Install explicitly via
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.5.0",
-    "scitex-dev==0.28.0",
+    "scitex-dev==0.57.0",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
@@ -1098,7 +1111,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.28.0"]
+linter = ["scitex-dev==0.57.0"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 

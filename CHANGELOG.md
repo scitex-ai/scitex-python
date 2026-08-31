@@ -14,8 +14,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   four stores off the retired embedded file engine onto the per-host
   PostgreSQL, and because of the `==` that never reached this package:
   running this suite still re-created a `.scitex/clew/runtime/clew.db`
-  database file. `>=0.20.0` sets the floor at the first clew release that
-  carries the migration and lets subsequent fixes through.
+  database file. `>=0.20.1` sets the floor at the first clew release that
+  carries the migration with honest metadata, and lets subsequent fixes
+  through.
+- **`scitex-dev` 0.28.0 → 0.57.0, required by the clew floor above.** clew's
+  stores resolve through `scitex_dev.store.host_store()`, and 0.28.0 has no
+  `scitex_dev.store` at all. Left at 0.28.0 the resolve still SUCCEEDS and
+  the failure lands at import instead: `failed to load plugin 'clew':
+  ModuleNotFoundError: No module named 'scitex_dev.store'`, with three clew
+  integration tests failing on all three Python legs. clew 0.20.1 declares
+  `scitex-dev>=0.49.2` — a floor measured by a real write-then-read, since
+  0.43.1 imports every symbol clew uses and still raises `TypeError: tuple
+  indices must be integers or slices, not str` inside `Store.rows()`.
 
 ## [2.30.5] - 2026-06-30
 
