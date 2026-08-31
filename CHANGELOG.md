@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **`scitex-clew` is a FLOOR (`>=0.20.0`), not an exact pin.** All three
+  occurrences in `pyproject.toml` (core dependency, the `clew` extra, the
+  `dev` extra) read `scitex-clew==0.17.0` — a July 6 build. clew moved its
+  four stores off the retired embedded file engine onto the per-host
+  PostgreSQL, and because of the `==` that never reached this package:
+  running this suite still re-created a `.scitex/clew/runtime/clew.db`
+  database file. `>=0.20.0` sets the floor at the first clew release that
+  carries the migration and lets subsequent fixes through.
+
 ## [2.30.5] - 2026-06-30
 
 ### Changed
