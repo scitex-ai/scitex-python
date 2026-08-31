@@ -29,6 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   tuple indices must be integers or slices, not str` inside `Store.rows()`.
   0.57.0 is PyPI's newest at time of writing; using `>=` rather than `==`
   here avoids repeating the exact freeze bug this PR fixes for clew.
+- **`scitex-scholar` 1.4.2 → 1.4.3 and `scitex-ssh` 1.0.1 → 1.1.0, required
+  by the scitex-dev floor above.** scitex-dev 0.57.0 itself declares
+  `scitex-scholar>=1.4.3` and `scitex-ssh>=1.1.0`; the previous exact pins
+  here (`==1.4.2`, `==1.0.1`) were below both floors and made the whole
+  dependency set unresolvable (`uv`: "your requirements are unsatisfiable"),
+  measured directly from a failed CI run on this branch before this commit.
+  Both stay exact pins (unlike clew/scitex-dev above) — this is a transitive
+  unblock, not the freeze-prone coupling this PR targets.
 
 ## [2.30.5] - 2026-06-30
 
