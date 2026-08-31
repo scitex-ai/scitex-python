@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- **`scitex-clew` is a FLOOR (`>=0.20.0`), not an exact pin.** All three
+- **`scitex-clew` is a FLOOR (`>=0.20.1`), not an exact pin.** All three
   occurrences in `pyproject.toml` (core dependency, the `clew` extra, the
   `dev` extra) read `scitex-clew==0.17.0` — a July 6 build. clew moved its
   four stores off the retired embedded file engine onto the per-host
@@ -17,15 +17,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   database file. `>=0.20.1` sets the floor at the first clew release that
   carries the migration with honest metadata, and lets subsequent fixes
   through.
-- **`scitex-dev` 0.28.0 → 0.57.0, required by the clew floor above.** clew's
-  stores resolve through `scitex_dev.store.host_store()`, and 0.28.0 has no
-  `scitex_dev.store` at all. Left at 0.28.0 the resolve still SUCCEEDS and
-  the failure lands at import instead: `failed to load plugin 'clew':
-  ModuleNotFoundError: No module named 'scitex_dev.store'`, with three clew
-  integration tests failing on all three Python legs. clew 0.20.1 declares
-  `scitex-dev>=0.49.2` — a floor measured by a real write-then-read, since
-  0.43.1 imports every symbol clew uses and still raises `TypeError: tuple
-  indices must be integers or slices, not str` inside `Store.rows()`.
+- **`scitex-dev` also becomes a FLOOR (`>=0.57.0`), not an exact pin —
+  required by the clew floor above.** clew's stores resolve through
+  `scitex_dev.store.host_store()`, and the previous exact `scitex-dev==0.28.0`
+  pin has no `scitex_dev.store` at all. Left at 0.28.0 the resolve still
+  SUCCEEDS and the failure lands at import instead: `failed to load plugin
+  'clew': ModuleNotFoundError: No module named 'scitex_dev.store'`, with
+  three clew integration tests failing on all three Python legs. clew 0.20.1
+  declares `scitex-dev>=0.49.2` — a floor measured by a real write-then-read,
+  since 0.43.1 imports every symbol clew uses and still raises `TypeError:
+  tuple indices must be integers or slices, not str` inside `Store.rows()`.
+  0.57.0 is PyPI's newest at time of writing; using `>=` rather than `==`
+  here avoids repeating the exact freeze bug this PR fixes for clew.
 
 ## [2.30.5] - 2026-06-30
 
