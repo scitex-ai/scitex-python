@@ -792,7 +792,7 @@ web = [
 
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
-# Note: No extra dependencies - uses only stdlib (sqlite3, hashlib)
+# Note: No extra dependencies - uses only the standard library
 clew = ["scitex-clew==0.17.0"]
 
 # Writer Module - Academic paper writing

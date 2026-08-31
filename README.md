@@ -526,22 +526,29 @@ Extends stdlib `logging` with SUCCESS/FAIL levels, a 30+ class exception tree (`
 </details>
 
 <details>
-<summary><strong><code>scitex.db</code> -- SQLite3 / PostgreSQL with ndarray BLOB Storage</strong></summary>
+<summary><strong><code>scitex.db</code> -- PostgreSQL with ndarray BLOB Storage</strong></summary>
 
 ```python
+import os
 import scitex as stx, numpy as np
 
-db = stx.db.SQLite3("experiments.db")
-with db:                                             # context-manager transaction
-    db.execute("CREATE TABLE IF NOT EXISTS runs (id TEXT, acc REAL)")
-    db.save_array("weights_epoch_87", np.random.rand(1024, 1024))   # compressed BLOB
+db = stx.db.PostgreSQL(
+    dbname="experiments",
+    user="researcher",
+    password=os.environ["PGPASSWORD"],
+    host="localhost",
+)
+with db:                                             # closes the connection on exit
+    db.execute(
+        "CREATE TABLE IF NOT EXISTS runs (id SERIAL PRIMARY KEY, acc REAL, weights BYTEA)"
+    )
+    db.execute("INSERT INTO runs (acc) VALUES (0.87)")
+    db.save_array("runs", np.random.rand(1024, 1024), column="weights", ids=1)  # BLOB
 
-df = db.to_df("runs")                                # pandas round-trip
-w = db.load_array("weights_epoch_87")                # typed ndarray back
-db.check_health()                                    # integrity + schema drift
-stx.db.delete_duplicates(conn, "runs", columns=["id"])
+    df = db.get_rows("runs")                         # pandas round-trip
+    w = db.load_array("runs", "weights", ids=1)      # typed ndarray back
 ```
-SQLite / PostgreSQL clients with first-class compressed-ndarray BLOBs, dataframe round-trips, health checks, and duplicate removal. Drop-in replacement for hand-rolling `pickle → BLOB` storage or SQLAlchemy Core when you don't need an ORM.
+A PostgreSQL client with first-class compressed-ndarray BLOBs and dataframe round-trips. Drop-in replacement for hand-rolling `pickle → BLOB` storage or SQLAlchemy Core when you don't need an ORM.
 </details>
 
 <details>
