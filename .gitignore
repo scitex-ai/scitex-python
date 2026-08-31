@@ -952,3 +952,7 @@ src/scitex/_sphinx_html/
 .venv/
 # Claude worktree symlink
 /feat-enhance-interface_04_skills
+
+# clew's runtime store is written by the scitex-clew package at import
+# time; it is machine-local state and must never be committed again.
+.scitex/clew/runtime/
