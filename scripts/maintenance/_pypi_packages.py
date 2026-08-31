@@ -150,7 +150,6 @@ STDLIB_MODULES = {
     "socket",
     "socketserver",
     "spwd",
-    "sqlite3",
     "ssl",
     "stat",
     "statistics",
