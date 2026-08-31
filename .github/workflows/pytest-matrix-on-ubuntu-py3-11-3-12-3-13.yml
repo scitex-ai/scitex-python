@@ -12,7 +12,14 @@ on:
 jobs:
   test:
     name: pytest-matrix-on-ubuntu-py${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    # Consult the repo-level CI_RUNS_ON variable so this matrix can be pointed at
+    # our own hardware (label set `scitex-org-cpu`, hosts compute-01/03/04)
+    # without editing the workflow. The variable holds a JSON array of labels,
+    # e.g. '["self-hosted","Linux","X64","scitex-org-cpu"]'. Where it is UNSET the
+    # literal fallback applies and nothing changes: ubuntu-latest, exactly as
+    # before. Until 2026-08-31 this line hardcoded ubuntu-latest, so setting the
+    # variable was silently ignored — the write landed, the runs did not move.
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["ubuntu-latest"]') }}
     # Ceiling well below the GitHub-Actions 6h maximum so a genuine hang
     # (wedged subprocess / coverage deadlock — the old chronic "tests" red)
     # fails fast and diagnosably. The suite itself is single-digit minutes
