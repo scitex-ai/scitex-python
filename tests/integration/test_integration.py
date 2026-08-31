@@ -30,6 +30,37 @@ def tmp_dir():
     shutil.rmtree(d, ignore_errors=True)
 
 
+@pytest.fixture(scope="module")
+def _clew_store_dsn():
+    """A throwaway local PostgreSQL cluster for clew's store-backed tests.
+
+    As of scitex-clew>=0.20.1, clew's four stores resolve through
+    `scitex_dev.store.host_store()`, which defaults to the fleet's central
+    Postgres (unreachable from this off-fleet CI runner, and not something a
+    test must ever write to regardless). Point `SCITEX_STORE_DSN` at a
+    private, throwaway cluster instead, using the exact affordance
+    scitex-dev shipped for this: scitex-scholar, scitex-writer and
+    scitex-dev's own CI independently hit the same "off-fleet CI cannot
+    exercise a store-backed path" wall on 2026-08-29, and
+    `scitex_dev.store.testing.ephemeral_cluster_dsn()` is the shared fix.
+
+    Module-scoped: one throwaway cluster serves every clew test in this
+    file rather than paying `initdb`+`pg_ctl start` per test.
+    """
+    testing = pytest.importorskip("scitex_dev.store.testing")
+    try:
+        with testing.ephemeral_cluster_dsn() as dsn:
+            yield dsn
+    except RuntimeError as exc:
+        pytest.skip(f"no throwaway PostgreSQL available for clew's store: {exc}")
+
+
+@pytest.fixture
+def _clew_store(_clew_store_dsn, monkeypatch):
+    """Point SCITEX_STORE_DSN at the throwaway cluster for one test."""
+    monkeypatch.setenv("SCITEX_STORE_DSN", _clew_store_dsn)
+
+
 # ---------------------------------------------------------------------------
 # 1. Lazy loading and namespace
 # ---------------------------------------------------------------------------
@@ -208,17 +239,21 @@ class TestDevIntegration:
 class TestClewIntegration:
     """Verify stx.clew is accessible through unified namespace."""
 
-    def test_status(self):
+    def test_status(self, _clew_store):
         result = stx.clew.status()
         assert isinstance(result, dict)
 
-    def test_hash_file(self, tmp_dir):
+    def test_hash_file(self, tmp_dir, _clew_store):
         path = os.path.join(tmp_dir, "test.txt")
         with open(path, "w") as f:
             f.write("hello")
         h = stx.clew.hash_file(path)
         assert isinstance(h, str)
-        assert len(h) == 32  # SHA-256 prefix
+        # Full SHA-256 hex digest (64 chars). Prior to scitex-clew's
+        # clew-fix-truncated-hash-comparison fix, hash_file() returned the
+        # first 32 hex chars only, which silently broke external hash
+        # comparisons; clew now returns the full digest.
+        assert len(h) == 64
 
 
 # ---------------------------------------------------------------------------
@@ -229,13 +264,13 @@ class TestClewIntegration:
 class TestCrossModuleWorkflow:
     """Verify modules work together in realistic workflows."""
 
-    def test_io_save_then_clew_hash(self, tmp_dir):
+    def test_io_save_then_clew_hash(self, tmp_dir, _clew_store):
         """Save a file via stx.io, verify clew can hash it."""
         path = os.path.join(tmp_dir, "data.csv")
         df = pd.DataFrame({"a": [1, 2, 3]})
         stx.io.save(df, path)
         h = stx.clew.hash_file(path)
-        assert len(h) == 32
+        assert len(h) == 64  # full SHA-256 hex digest, see test_hash_file
 
     def test_stats_then_io_save(self, tmp_dir):
         """Run a stat test, save results via stx.io."""
