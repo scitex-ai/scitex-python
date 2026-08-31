@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **`scitex-clew` is a FLOOR (`>=0.20.1`), not an exact pin.** All three
+  occurrences in `pyproject.toml` (core dependency, the `clew` extra, the
+  `dev` extra) read `scitex-clew==0.17.0` — a July 6 build. clew moved its
+  four stores off the retired embedded file engine onto the per-host
+  PostgreSQL, and because of the `==` that never reached this package:
+  running this suite still re-created a `.scitex/clew/runtime/clew.db`
+  database file. `>=0.20.1` sets the floor at the first clew release that
+  carries the migration with honest metadata, and lets subsequent fixes
+  through.
+- **`scitex-dev` also becomes a FLOOR (`>=0.57.0`), not an exact pin —
+  required by the clew floor above.** clew's stores resolve through
+  `scitex_dev.store.host_store()`, and the previous exact `scitex-dev==0.28.0`
+  pin has no `scitex_dev.store` at all. Left at 0.28.0 the resolve still
+  SUCCEEDS and the failure lands at import instead: `failed to load plugin
+  'clew': ModuleNotFoundError: No module named 'scitex_dev.store'`, with
+  three clew integration tests failing on all three Python legs. clew 0.20.1
+  declares `scitex-dev>=0.49.2` — a floor measured by a real write-then-read,
+  since 0.43.1 imports every symbol clew uses and still raises `TypeError:
+  tuple indices must be integers or slices, not str` inside `Store.rows()`.
+  0.57.0 is PyPI's newest at time of writing; using `>=` rather than `==`
+  here avoids repeating the exact freeze bug this PR fixes for clew.
+- **`scitex-scholar` 1.4.2 → 1.4.3 and `scitex-ssh` 1.0.1 → 1.1.0, required
+  by the scitex-dev floor above.** scitex-dev 0.57.0 itself declares
+  `scitex-scholar>=1.4.3` and `scitex-ssh>=1.1.0`; the previous exact pins
+  here (`==1.4.2`, `==1.0.1`) were below both floors and made the whole
+  dependency set unresolvable (`uv`: "your requirements are unsatisfiable"),
+  measured directly from a failed CI run on this branch before this commit.
+  Both stay exact pins (unlike clew/scitex-dev above) — this is a transitive
+  unblock, not the freeze-prone coupling this PR targets.
+
 ## [2.30.5] - 2026-06-30
 
 ### Changed
