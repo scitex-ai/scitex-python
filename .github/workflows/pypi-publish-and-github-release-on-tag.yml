@@ -1,20 +1,41 @@
 name: release
 
-# Tag-driven release pipeline. The intended operator flow is:
+# Tag-driven release pipeline — SELF-HOSTED (Spartan CPU) via the scitex-ci SIF.
+#
+# The intended operator flow is:
 #
 #     git tag vX.Y.Z && git push origin vX.Y.Z
 #
 # Everything else fires automatically:
 #
-#   1. test          — matrix pytest. Must pass or the pipeline halts;
-#                      nothing is published until tests are green on the
+#   1. test          — matrix pytest INSIDE the SIF. Must pass or the pipeline
+#                      halts; nothing is published until tests are green on the
 #                      tagged commit.
-#   2. build         — wheel + sdist, uploaded as workflow artifact.
-#   3. publish       — PyPI via OIDC trusted publisher.
+#   2. build         — wheel + sdist built INSIDE the SIF, uploaded as artifact.
+#   3. publish       — PyPI via MANUAL OIDC trusted publishing INSIDE the SIF.
 #   4. release       — GitHub Release with CHANGELOG notes + artifacts.
-#   5. sync-main     — open a develop→main PR (admin-merge) so main
-#                      always equals the latest released commit. Skipped
-#                      if main already matches.
+#
+# develop→main promotion is a DELIBERATE, separate PR (operator policy);
+# this pipeline never auto-syncs main.
+#
+# WHY the SIF (operator standardization 2026-06-18, fleet canary 2026-06-21):
+# the Spartan compute runners have NO Python on the bare node, so the old
+# `actions/setup-python@v5` step failed at init ("version 3.x not found for
+# this OS"). The working pytest-matrix CI runs INSIDE the pre-built, reused
+# scitex-ci SIF (`apptainer exec ci-cpu.sif`), which bakes python 3.11/3.12/
+# 3.13 + pip + uv + fd at /opt/venv-<ver>. This release pipeline mirrors that:
+#   - test/build run `bash .github/ci/exec-in-sif.sh <inner>.sh <pyver>`.
+#   - publish CANNOT use pypa/gh-action-pypi-publish (a Docker action; the
+#     compute nodes have no Docker), so it does MANUAL OIDC trusted publishing
+#     inside the SIF (.github/ci/publish-in-sif.sh): GitHub OIDC JWT →
+#     PyPI mint-token → twine upload. Trust config on PyPI is unchanged.
+#   - actions/checkout, upload/download-artifact, codecov are JS actions and
+#     run fine on the self-hosted runner.
+# fail-loud: a missing SIF/shim/interpreter is a HARD error, never a
+# bare-runner fallback.
+#
+# runs-on driven by repo Actions Variable CI_RUNS_ON; SIF + apptainer paths
+# come from SCITEX_CI_SIF / SCITEX_CI_APPTAINER (same as pytest-matrix).
 #
 # Manual re-run: the workflow also accepts a `version` input via
 # workflow_dispatch so you can re-publish without re-tagging.
@@ -29,15 +50,13 @@ on:
         required: true
         type: string
 
+env:
+  SCITEX_CI_APPTAINER: ${{ vars.SCITEX_CI_APPTAINER }}
+  SCITEX_CI_SIF: ${{ vars.SCITEX_CI_SIF }}
+
 jobs:
   test:
-    runs-on: ubuntu-latest
-    # Mirror the hardened `tests` matrix (pytest-matrix-on-ubuntu-*.yml): the
-    # release gate MUST use the same install + run recipe, or it reintroduces
-    # the chronic failures #19 fixed (pip wrapt resolver-thrash -> ~50min hang,
-    # CUDA-torch segfault, non-deterministic C-ext shutdown crash). Keeping a
-    # second, un-hardened copy here meant every release stalled at this gate.
-    timeout-minutes: 90
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
     strategy:
       fail-fast: false
       matrix:
@@ -56,70 +75,18 @@ jobs:
         with:
           ref: ${{ steps.ver.outputs.version }}
           fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install uv
-        # uv resolves the graph in seconds; pip backtracks through dozens of
-        # `wrapt` candidates at ~13s each (~50min) and hits the job cap.
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-      - name: Install dependencies
-        run: |
-          # CPU-only torch FIRST so transitive torch resolves to the CPU build;
-          # default CUDA wheels segfault the suite on a GPU-less runner.
-          uv pip install --system torch --index-url https://download.pytorch.org/whl/cpu \
-            || echo "CPU torch pre-install skipped (torch may be optional in this resolve)"
-          uv pip install --system -e ".[all,dev]" \
-            || uv pip install --system -e ".[dev]" \
-            || uv pip install --system -e .
-      - name: Install peer standalones aliased by the umbrella
-        run: |
-          uv pip install --system \
-            scitex-dsp scitex-gen scitex-pd scitex-nn scitex-resource \
-            scitex-linalg scitex-datetime scitex-decorators \
-          || echo "peer standalones partially unavailable; identity test will importorskip the rest"
-      - name: Run tests
-        # Pass/fail judged from the JUnit report, not the exit code: the deep
-        # ecosystem C-extension stack (torch/numba/catboost) segfaults
-        # NON-deterministically and can kill the process before the report is
-        # written. Retry up to 3x on a crash-before-report; a finished run is
-        # judged by the report (real failures still fail). e2e + the
-        # cross-package import gate are quarantined (heavy/segfault-prone).
-        run: |
-          set +e
-          for attempt in 1 2 3; do
-            rm -f pytest-results.xml
-            pytest tests/ --ignore=tests/e2e \
-              --ignore=tests/integration/test_cross_package_imports.py \
-              -p no:cacheprovider -o faulthandler_timeout=120 \
-              --junitxml=pytest-results.xml
-            if [ -f pytest-results.xml ]; then
-              echo "pytest produced a report on attempt $attempt"
-              break
-            fi
-            echo "::warning::attempt $attempt crashed before writing the report (C-extension shutdown/import segfault); retrying"
-          done
-          set -e
-          python - <<'PY'
-          import sys, xml.etree.ElementTree as ET
-          try:
-              root = ET.parse("pytest-results.xml").getroot()
-          except Exception as e:
-              print(f"::error::no JUnit report after retries ({e}) — pytest never "
-                    "finished; failing")
-              sys.exit(1)
-          suites = list(root.iter("testsuite"))
-          bad = sum(int(s.get("failures", 0)) + int(s.get("errors", 0)) for s in suites)
-          total = sum(int(s.get("tests", 0)) for s in suites)
-          print(f"JUnit: {total} tests, {bad} failures+errors")
-          sys.exit(1 if bad else 0)
-          PY
+      # SIF-based self-hosted test run — mirrors pytest-matrix exactly. No
+      # setup-python (the bare Spartan node has no Python tool cache; that step
+      # failed "version not found for this OS"); no apt fd-install (fd is baked
+      # in the SIF). exec-in-sif.sh apptainer-execs the reused ci-cpu.sif and
+      # run-in-sif.sh layers THIS (tagged) checkout + [all,dev] into a writable
+      # target, then runs pytest. fail-loud on a missing SIF/shim.
+      - name: Run tests in the reused CI SIF (apptainer exec — deps layered, not on the bare runner)
+        run: bash .github/ci/exec-in-sif.sh run-in-sif.sh ${{ matrix.python-version }}
 
   build:
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
     outputs:
       version: ${{ steps.ver.outputs.version }}
     steps:
@@ -136,13 +103,12 @@ jobs:
         with:
           ref: ${{ steps.ver.outputs.version }}
           fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install build tools
-        run: pip install build
-      - name: Build distribution
-        run: python -m build
+      # Build INSIDE the SIF (no setup-python on the bare Spartan node).
+      # build-in-sif.sh installs the `build` frontend into a writable --target
+      # inside the SIF, then `python -m build` → dist/. fail-loud on empty dist.
+      - name: Build wheel + sdist in the CI SIF (apptainer exec)
+        run: bash .github/ci/exec-in-sif.sh build-in-sif.sh 3.12
+      # upload-artifact is a JS action — runs fine on the self-hosted runner.
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -150,22 +116,33 @@ jobs:
 
   publish:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
     environment:
       name: pypi
       url: https://pypi.org/p/scitex
+    # id-token: write is what populates ACTIONS_ID_TOKEN_REQUEST_{TOKEN,URL},
+    # which publish-in-sif.sh uses to mint the OIDC JWT. Keep it.
     permissions:
       id-token: write
     steps:
+      # Need the repo checked out so .github/ci/exec-in-sif.sh +
+      # publish-in-sif.sh are on disk (the build job uploaded only dist/).
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      # Manual OIDC trusted publishing INSIDE the SIF — pypa/gh-action-pypi-
+      # publish is a Docker action and the Spartan compute nodes have no Docker.
+      # publish-in-sif.sh: GitHub OIDC JWT (audience=pypi) → PyPI mint-token →
+      # twine upload dist/*. apptainer exec (no --cleanenv) passes the
+      # ACTIONS_ID_TOKEN_REQUEST_* env vars into the SIF. fail-loud at each step.
+      - name: Publish to PyPI via manual OIDC trusted publishing in the SIF
+        run: bash .github/ci/exec-in-sif.sh publish-in-sif.sh 3.12
 
   release:
     needs: [build, publish]
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
     permissions:
       contents: write
     steps:
@@ -196,48 +173,3 @@ jobs:
             --title "${{ needs.build.outputs.version }}" \
             --notes-file release-notes.md \
             dist/*
-
-  sync-main:
-    # Open develop→main PR so main always equals the latest released
-    # commit. Branch-protected mains require PR review; this job tries
-    # admin-merge but leaves the PR open if that isn't allowed.
-    needs: publish
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: develop
-      - name: Open develop→main PR if diverged
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -e
-          git fetch origin main
-          AHEAD=$(git rev-list --count origin/main..origin/develop)
-          if [ "$AHEAD" -eq 0 ]; then
-            echo "main already up-to-date with develop."
-            exit 0
-          fi
-          EXISTING=$(gh pr list --base main --head develop --state open --json number --jq '.[0].number // empty')
-          if [ -z "$EXISTING" ]; then
-            PR_URL=$(gh pr create --base main --head develop \
-              --title "release: sync main with develop" \
-              --body "Auto-opened by the release pipeline so main equals the latest released commit.")
-            EXISTING=$(echo "$PR_URL" | grep -oE '[0-9]+$')
-            echo "Created PR #${EXISTING}"
-          else
-            echo "Reusing existing PR #${EXISTING}"
-          fi
-          gh pr merge "$EXISTING" --merge --admin \
-            || echo "Admin merge unavailable; PR left open for manual merge."
-          # The repo has delete_branch_on_merge=true, so merging the
-          # develop→main PR DELETES the develop branch (its head). develop is
-          # an unprotected permanent branch; losing it breaks `git pull` on
-          # every dev machine ("no such ref develop was fetched"). Recreate it
-          # at the just-synced commit. Idempotent: a no-op if develop survived.
-          git push origin "HEAD:refs/heads/develop" \
-            || echo "develop already present or push skipped."

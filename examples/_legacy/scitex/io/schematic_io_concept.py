@@ -5,7 +5,7 @@
 """stx.io concept schematic: Transparent Verification Layer.
 
 Shows how unified I/O captures hashes at every boundary,
-writing to verification.db (SQLite) in real-time.
+writing to the verification store (PostgreSQL) in real-time.
 The dependency DAG is reconstructed from the DB on demand.
 For paper Figure 02 Panel A.
 NOTE: x_mm/y_mm is the CENTER of the box, not bottom-left.
@@ -106,14 +106,14 @@ def main(
     s.add_arrow("stxio", "on_load", color="orange", style="dashed")
     s.add_arrow("stxio", "on_save", color="orange", style="dashed")
 
-    # --- Row 3: verification.db + Dependency DAG ---
+    # --- Row 3: verification store + Dependency DAG ---
     row3_cy = 18
     db_w, db_h = 46, 22
 
     s.add_box(
         "db",
-        "verification.db",
-        subtitle="SQLite",
+        "verification store",
+        subtitle="PostgreSQL",
         content=["runs, file_hashes"],
         emphasis="red",
         x_mm=W / 2 - db_w / 2 - 10,

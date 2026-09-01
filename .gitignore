@@ -144,8 +144,6 @@ cover/
 # Django stuff:
 # *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -389,8 +387,6 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -956,3 +952,7 @@ src/scitex/_sphinx_html/
 .venv/
 # Claude worktree symlink
 /feat-enhance-interface_04_skills
+
+# clew's runtime store is written by the scitex-clew package at import
+# time; it is machine-local state and must never be committed again.
+.scitex/clew/runtime/

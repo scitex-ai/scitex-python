@@ -14,6 +14,7 @@ Multiple modules:
 """
 
 import importlib
+import importlib.util  # `import importlib` alone does not bind the submodule
 from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 F = TypeVar("F", bound=Callable[..., Any])
@@ -195,30 +196,69 @@ def optional_import(
         raise ImportError(error_msg)
 
 
+def _is_installed(module_name: str) -> bool:
+    """
+    Report whether ``module_name`` can be located, WITHOUT executing it.
+
+    ``importlib.util.find_spec`` asks the finders on ``sys.meta_path`` where a
+    module lives and stops there; it never runs the module's top-level code.
+    Mirrors the handling already proven in ``scitex.re_export``.
+
+    Args:
+        module_name: Import name of the module (e.g. 'torch', 'ruamel.yaml')
+
+    Returns
+    -------
+        True if the module is installed, False otherwise
+    """
+    try:
+        return importlib.util.find_spec(module_name) is not None
+    except (ImportError, AttributeError, ValueError):
+        # ModuleNotFoundError (an ImportError subclass): a dotted name whose
+        # PARENT package is absent -- find_spec raises rather than returning
+        # None. AttributeError: a parent that is not a package. ValueError:
+        # the name is already in sys.modules with __spec__ set to None.
+        # All three mean "not usable as an import target".
+        return False
+
+
 def check_optional_deps(*module_names: str) -> Dict[str, bool]:
     """
-    Check which optional dependencies are available.
+    Check which optional dependencies are INSTALLED.
+
+    Availability is resolved from each module's spec, without executing the
+    module. Importing a package merely to discover that it exists runs
+    arbitrary third-party code inside what callers reasonably expect to be a
+    cheap predicate. That has three costs this function used to pay:
+
+    - it loads the dependency and every C extension underneath it into the
+      calling process, purely as a side effect of asking a question;
+    - it is slow (importing torch to answer "is torch installed" takes
+      seconds);
+    - it can fail in ways an availability probe must never propagate. The old
+      body caught only ``ImportError``, so probing the ``dsp`` module -- whose
+      ``sounddevice`` dependency raises ``OSError('PortAudio library not
+      found')`` on a host without PortAudio -- did not return False, it
+      crashed the caller.
 
     Args:
         *module_names: Names of modules to check
 
     Returns
     -------
-        Dictionary mapping module names to availability (True/False)
+        Dictionary mapping module names to installed-ness (True/False)
+
+    Note:
+        This answers "is it installed", not "does it import cleanly". A
+        package that is present but raises at import time reports True here.
+        Use :func:`optional_import` when you need the module object itself.
 
     Example:
         >>> available = check_optional_deps('torch', 'transformers')
         >>> if available['torch']:
-        ...     import torch
+        ...     import torch  # may still raise if the install is broken
     """
-    result = {}
-    for name in module_names:
-        try:
-            importlib.import_module(name)
-            result[name] = True
-        except ImportError:
-            result[name] = False
-    return result
+    return {name: _is_installed(name) for name in module_names}
 
 
 def get_install_command(module_name: str) -> str:

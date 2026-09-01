@@ -94,7 +94,7 @@ Provenance Tracking
 -------------------
 
 Inside ``@stx.session``, every ``save`` and ``load`` records file hashes
-to a local SQLite database for reproducibility verification.
+to a local provenance database for reproducibility verification.
 
 .. code-block:: python
 

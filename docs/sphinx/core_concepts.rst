@@ -37,7 +37,7 @@ The Session Model
 2. **Logging**: All stdout/stderr captured to ``script.log``
 3. **Config injection**: YAML files from ``./config/`` merged and injected
 4. **CLI generation**: Function parameters become ``--flags``
-5. **Provenance**: File hashes recorded to SQLite for reproducibility
+5. **Provenance**: File hashes recorded to a local database for reproducibility
 
 .. code-block:: python
 
@@ -124,7 +124,7 @@ Provenance Tracking (Clew)
 --------------------------
 
 Inside ``@stx.session``, every ``stx.io.save`` and ``stx.io.load`` call
-records the file's SHA-256 hash to a local SQLite database. This enables:
+records the file's SHA-256 hash to a local provenance database. This enables:
 
 - **Verification**: Check if output files have been modified since creation
 - **DAG reconstruction**: Trace which inputs produced which outputs

@@ -227,8 +227,8 @@ axes:
                 padding_mm: 5.0
                 margin_mm: 0.0
               - id: db
-                title: verification.db
-                subtitle: SQLite
+                title: verification store
+                subtitle: PostgreSQL
                 content:
                   - runs, file_hashes
                 emphasis: red
