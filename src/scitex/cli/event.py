@@ -50,7 +50,11 @@ def event(ctx, as_json):
 @click.option("--source", default="local", help="Source: local, hpc, ci")
 @click.option("--payload", default=None, help="JSON payload string")
 def emit_cmd(event_type, project, status, source, payload):
-    """Emit an event."""
+    """Emit an event.
+
+    Example:
+      $ scitex event emit --type test_complete --project myproj --status success
+    """
     from scitex.events import emit
 
     payload_dict = {}
@@ -70,7 +74,11 @@ def emit_cmd(event_type, project, status, source, payload):
 @event.command("latest")
 @click.option("--type", "event_type", default=None, help="Filter by event type")
 def latest_cmd(event_type):
-    """Show the latest event."""
+    """Show the latest event.
+
+    Example:
+      $ scitex event latest --type test_complete
+    """
     from scitex.events import latest
 
     data = latest(event_type)
@@ -83,7 +91,11 @@ def latest_cmd(event_type):
 @event.command("history")
 @click.option("--limit", default=20, help="Max events to show")
 def history_cmd(limit):
-    """Show recent event history."""
+    """Show recent event history.
+
+    Example:
+      $ scitex event history --limit 10
+    """
     from scitex.events import history
 
     events = history(limit=limit)
@@ -99,7 +111,11 @@ def history_cmd(limit):
 
 @event.command("types")
 def types_cmd():
-    """List known event types."""
+    """List known event types.
+
+    Example:
+      $ scitex event types
+    """
     from scitex.events import get_type_info, list_types
 
     for t in list_types():

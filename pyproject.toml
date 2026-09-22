@@ -64,13 +64,13 @@ dependencies = [
     # ModuleNotFoundError. PS-213 console-script-deps-must-be-core
     # (scitex-dev v0.17.10+) enforces this rule ecosystem-wide.
     #
-    # The sibling `scitex` entry-point (`scitex.__main__:main`) uses the
-    # LAZY-EXTRA pattern — function-scope `import click` in
-    # `_check_cli_dependencies()` with a `pip install scitex[cli]` install
-    # hint — and would qualify for the PS-213i lazy-pass on its own, BUT
-    # `scitex-pkg` lives in the same package so the moment we ship a
-    # console-script that loads click unconditionally we have to make
-    # click a hard core dep.
+    # The sibling `scitex` entry-point is now the click group itself
+    # (`scitex.cli.main:cli`) — audit-cli requires a click/argparse object
+    # behind the entry point. `python -m scitex` keeps the LAZY-EXTRA
+    # pattern (function-scope `import click` in `_check_cli_dependencies()`
+    # with a `pip install scitex[cli]` install hint). Either way, shipping a
+    # console-script that loads click unconditionally keeps click a hard
+    # core dep.
     "click>=8.0.0",
     "tqdm",
     "packaging",
@@ -128,7 +128,12 @@ Repository = "https://github.com/ywatanabe1989/scitex-python"
 "Bug Tracker" = "https://github.com/ywatanabe1989/scitex-python/issues"
 
 [project.scripts]
-scitex = "scitex.__main__:main"
+# Main CLI: the click group directly (audit-cli requires a click/argparse
+# object behind the entry point; a plain-function wrapper reads as
+# not-auditable). Top imports of scitex.cli.main are stdlib + click (core),
+# subcommands stay lazy, so a bare `pip install scitex` still works.
+# `python -m scitex` keeps the friendly _check_cli_dependencies() path.
+scitex = "scitex.cli.main:cli"
 # Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
 scitex-pkg = "scitex.cli.pkg:pkg"
 # Unified MCP Server (all modules in one). Use `scitex serve` (preferred)
@@ -275,7 +280,7 @@ config = [
 
 # Context Module - Context managers
 # Use: pip install scitex[context]
-context = []
+context = ["scitex-context==0.1.4"]
 
 # CV Module - Computer vision
 # Use: pip install scitex[cv]
@@ -298,7 +303,7 @@ dataset = ["scitex-dataset==0.5.0"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
-datetime = []
+datetime = ["scitex-datetime==0.1.3"]
 
 # Decorators Module - Caching and utilities
 # Use: pip install scitex[decorators]
@@ -388,7 +393,7 @@ etc = [
 
 # Events Module - Event system
 # Use: pip install scitex[events]
-events = []
+events = ["scitex-events==0.1.6"]
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]
@@ -443,7 +448,7 @@ io = [
 
 # Introspect Module - Code introspection
 # Use: pip install scitex[introspect]
-introspect = []
+introspect = ["scitex-introspect==0.1.7"]
 
 # Linalg Module - Linear algebra
 # Use: pip install scitex[linalg]
@@ -467,7 +472,7 @@ logging = [
 
 # Media Module - Media display utilities (always available: scitex-etc is a
 # core dep). scitex.media re-exports scitex_etc.media (shipped in >=0.2.0).
-media = []
+media = ["scitex-etc==0.2.1"]
 
 # ML Module - Machine learning
 # Use: pip install scitex[ml]
@@ -523,7 +528,7 @@ notification = [
 
 # OS Module - OS utilities
 # Use: pip install scitex[os]
-os = []
+os = ["scitex-os==0.1.8"]
 
 # Parallel Module - Parallel processing
 # Use: pip install scitex[parallel]
@@ -609,9 +614,11 @@ rng = [
 
 # Scholar GUI - Minimal deps for Flask citation graph viewer
 # Use: pip install scitex[scholar-gui]
+# NOTE: `click` is a hard core dep (see [project.dependencies]), so it is
+# NOT repeated here — repeating it trips PS-148 (optional-dep imported
+# unguarded at module top) across src/scitex/cli/.
 scholar-gui = [
     "flask>=2.0.0",
-    "click",
     "crossref-local==0.7.6",
     "openalex-local==0.7.6",
 ]
@@ -661,9 +668,8 @@ scholar = [
     "scitex-scholar==1.4.2"
 ]
 
-# Schema Module - Data schema validation
-# Use: pip install scitex[schema]
-schema = []
+# Schema Module - Data schema validation (planned; no standalone peer yet,
+# so no install handle is declared until the module ships).
 
 # Security Module - Security utilities. Absorbed into scitex-audit
 # per ADR-0001 (scitex-dev #139, Accepted 2026-06-07); `scitex.security`
@@ -949,16 +955,13 @@ dev = [
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
     "scitex-clew==0.17.0",
-    # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
-    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
-    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
-    # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.5.0",
-    "scitex-dev==0.28.0",
+    "scitex-dev>=0.28.0",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
+    "scitex-logging==0.1.7",
     "scitex-notification==0.2.9",
     "scitex-scholar==1.4.2",
     "scitex-ssh==1.0.1",
@@ -1022,9 +1025,10 @@ all = [
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
-    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
-    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
+    "scitex[cloud]",
+    "scitex[hub]",
+    "scitex[module]",
+    "scitex[project]",
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
@@ -1064,7 +1068,6 @@ all = [
     "scitex[reproduce]",
     "scitex[resource]",
     "scitex[rng]",
-    "scitex[schema]",
     "scitex[scholar]",
     "scitex[scholar-gui]",
     "scitex[security]",
@@ -1100,6 +1103,11 @@ path = "src/scitex/__version__.py"
 pattern = '__version__ = "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
+# In-wheel Sphinx bundle for scitex-cloud docs serving (PS-121/PS-128):
+# `artifacts` (not `force-include`) so local builds without the generated
+# bundle still succeed — CI's rtd workflow refreshes src/scitex/_sphinx_html/
+# before release builds. The dir stays gitignored (see .gitignore note).
+artifacts = ["src/scitex/_sphinx_html"]
 exclude = [
     # Scholar development symlinks
     "src/scitex/scholar/.env",

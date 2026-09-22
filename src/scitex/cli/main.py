@@ -91,7 +91,8 @@ class LazyGroup(click.Group):
         cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
         """
         import importlib
-        import logging
+
+        import scitex_logging as slogging
 
         module_path_or_candidates, attr_name, _ = self._lazy_subcommands[cmd_name]
         # Two shapes:
@@ -123,7 +124,7 @@ class LazyGroup(click.Group):
             if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
         if last_exc is not None:
-            logging.getLogger(__name__).debug(
+            slogging.getLogger(__name__).debug(
                 "Lazy-loaded subcommand %r unavailable (no candidate resolved): %s",
                 cmd_name,
                 last_exc,
@@ -218,6 +219,59 @@ if deprecated_alias is not None:
         deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
 
 
+def _versioned_root_help() -> None:
+    """Prepend the canonical `<cli> (vX.Y.Z)` opening line (§4) and a
+    config-path pointer (§6b) to the root help.
+
+    The version is resolved via importlib.metadata so the literal stays in
+    sync with the installed distribution; the docstring above keeps the
+    static long help (examples, completion).
+    """
+    try:
+        from importlib.metadata import version as _dist_version
+    except ImportError:
+        _dist_version = None  # type: ignore[assignment]
+    try:
+        _ver = _dist_version("scitex") if _dist_version else "unknown"
+    except Exception:
+        _ver = "unknown"
+    _lines = (cli.help or "").splitlines()
+    _rest = "\n".join(_lines[1:]).lstrip("\n")
+    # The docstring's own first line repeats the title — drop it so the
+    # versioned opening line above does not render twice.
+    _title = "Integrated Scientific Research Platform (SciTeX)."
+    if _rest.startswith(_title):
+        _rest = _rest[len(_title) :].lstrip("\n")
+    cli.help = (
+        f"scitex (v{_ver}) — Integrated Scientific Research Platform (SciTeX)."
+        f"\n\n{_rest}"
+    )
+    cli.epilog = (
+        "Configuration and state live under $SCITEX_DIR "
+        "(default ~/.scitex/); run `scitex config list` to inspect."
+    )
+
+
+_versioned_root_help()
+
+# §1a/§5 static visibility: audit-cli verifies the `mcp` group and
+# deprecated-alias targets via the eager `.commands` mapping, which lazy
+# subcommands populate only on invocation. Pre-resolve these few groups so
+# the tree is statically complete. Best-effort: a peer missing from a bare
+# install simply stays lazy (dispatch via get_command is unchanged).
+for _eager_name in (
+    "mcp",
+    "skills",
+    *(new for new, _ in DEPRECATED_ALIASES.values()),
+):
+    try:
+        _eager_cmd = cli.get_command(None, _eager_name)  # type: ignore[arg-type]
+    except Exception:
+        continue
+    if _eager_cmd is not None:
+        cli.add_command(_eager_cmd, _eager_name)
+
+
 def _get_all_command_paths(group, prefix=""):
     """Recursively get all command paths from a Click group."""
     paths = []
@@ -260,7 +314,11 @@ def _print_help_recursive(ctx):
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.pass_context
 def list_python_apis(ctx, verbose, max_depth, as_json):
-    """List all scitex Python APIs (alias for: scitex introspect api scitex)."""
+    """List all scitex Python APIs (alias for: scitex introspect api scitex).
+
+    Example:
+      $ scitex list-python-apis --json
+    """
     from .introspect import api
 
     ctx.invoke(

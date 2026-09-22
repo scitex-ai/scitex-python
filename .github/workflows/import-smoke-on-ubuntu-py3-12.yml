@@ -6,6 +6,10 @@ name: import-smoke
 # the bare package (no extras) is `pip install -e .`-able and
 # `import scitex` succeeds. Catches `[project] dependencies`
 # drift that the test matrix masks because it installs `[all,dev]`.
+#
+# Thin caller over the org reusable (PS-231): the local steps were
+# equivalent to the reusable's install (no extras) + import check.
+# `runs_on` stays explicit so the runner choice remains locally visible.
 
 on:
   push:
@@ -19,16 +23,6 @@ on:
 jobs:
   install-check:
     name: import-smoke-on-ubuntu-py3-12
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install (no extras)
-        run: |
-          python -m venv .venv
-          .venv/bin/pip install --upgrade pip
-          .venv/bin/pip install -e .
-      - name: Import smoke
-        run: .venv/bin/python -c "import scitex; print(scitex.__version__)"
+    uses: scitex-ai/.github/.github/workflows/import-smoke.yml@main
+    with:
+      runs_on: '["ubuntu-latest"]'

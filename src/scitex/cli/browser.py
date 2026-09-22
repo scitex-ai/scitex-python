@@ -122,7 +122,13 @@ def open(url, stealth, timeout, background):
     # Add https:// if no scheme provided
     if url != "about:blank" and not url.startswith(("http://", "https://", "about:")):
         url = f"https://{url}"
-    from playwright.async_api import async_playwright
+    try:
+        from playwright.async_api import async_playwright
+    except ImportError as exc:
+        raise ImportError(
+            "playwright is required for browser automation: "
+            "pip install scitex[browser]"
+        ) from exc
 
     from scitex.browser.core import BrowserMixin
 

@@ -11,14 +11,18 @@ import importlib
 import warnings
 from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
 
+import scitex_logging as slogging
+
 from ._optional_deps import PACKAGE_TO_EXTRA, check_optional_deps
+
+log = slogging.getLogger(__name__)
 
 F = TypeVar("F", bound=Callable[..., Any])
 
 # Module name -> (required_packages, extra_name, description)
 # Synced with pyproject.toml [project.optional-dependencies]
 MODULE_REQUIREMENTS: Dict[str, Tuple[List[str], str, str]] = {
-    "ai": (["openai", "anthropic"], "ai", "LLM APIs"),
+    "ai": (["openai", "anthropic"], "genai", "LLM APIs"),
     "audio": (["pyttsx3", "gtts"], "audio", "Text-to-Speech"),
     "benchmark": (["psutil"], "benchmark", "Performance Monitoring"),
     "bridge": (["matplotlib", "scipy"], "bridge", "External System Integration"),
@@ -54,7 +58,7 @@ MODULE_REQUIREMENTS: Dict[str, Tuple[List[str], str, str]] = {
     "tex": (["matplotlib"], "tex", "LaTeX Utilities"),
     "torch": (["torch"], "torch", "PyTorch Support"),
     "types": (["xarray"], "types", "Type Utilities"),
-    "utils": (["h5py", "natsort"], "utils", "General Utilities"),
+    "utils": (["h5py", "natsort"], "gen", "General Utilities"),
     "web": (["aiohttp", "bs4"], "web", "Web Utilities"),
     "writer": (["yq"], "writer", "Academic Writing"),
 }
@@ -226,9 +230,9 @@ def show_install_guide(module_name: Optional[str] = None) -> None:
         >>> show_install_guide("audio")
         >>> show_install_guide()  # Shows all modules
     """
-    print("\n" + "=" * 70)
-    print("SciTeX Installation Guide")
-    print("=" * 70)
+    log.info("\n" + "=" * 70)
+    log.info("SciTeX Installation Guide")
+    log.info("=" * 70)
 
     if module_name:
         if module_name in MODULE_REQUIREMENTS:
@@ -236,27 +240,27 @@ def show_install_guide(module_name: Optional[str] = None) -> None:
             result = check_module_deps(module_name)
             status = "Installed" if result["available"] else "Not installed"
 
-            print(f"\n{module_name} - {desc}")
-            print(f"  Status: {status}")
-            print(f"  Install: pip install scitex[{extra}]")
+            log.info(f"\n{module_name} - {desc}")
+            log.info(f"  Status: {status}")
+            log.info(f"  Install: pip install scitex[{extra}]")
             if not result["available"]:
-                print(f"  Missing: {', '.join(result['missing'])}")
+                log.info(f"  Missing: {', '.join(result['missing'])}")
         else:
-            print(f"\nModule '{module_name}' not found.")
+            log.info(f"\nModule '{module_name}' not found.")
     else:
-        print("\nModule-oriented installation (install only what you need):\n")
+        log.info("\nModule-oriented installation (install only what you need):\n")
 
         for mod_name, (required, extra, desc) in sorted(MODULE_REQUIREMENTS.items()):
             result = check_module_deps(mod_name)
             status = "[ok]" if result["available"] else "[--]"
-            print(f"  {status} {mod_name:12} pip install scitex[{extra}]")
+            log.info(f"  {status} {mod_name:12} pip install scitex[{extra}]")
 
-        print("\nConvenience groups:\n")
-        print("  pip install scitex[science]  # scipy, matplotlib, scikit-learn")
-        print("  pip install scitex[dl]       # PyTorch, transformers")
-        print("  pip install scitex[all]      # Everything")
+        log.info("\nConvenience groups:\n")
+        log.info("  pip install scitex[bridge]  # scipy, matplotlib")
+        log.info("  pip install scitex[torch]   # PyTorch")
+        log.info("  pip install scitex[all]     # Everything")
 
-    print("\n" + "=" * 70 + "\n")
+    log.info("\n" + "=" * 70 + "\n")
 
 
 # EOF

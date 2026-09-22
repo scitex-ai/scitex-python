@@ -20,9 +20,9 @@ Each helper is best-effort: a missing optional peer logs and is skipped.
 
 from __future__ import annotations
 
-import logging
+import scitex_logging as slogging
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 __all__ = ["register_peer_extras"]
 

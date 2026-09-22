@@ -17,6 +17,10 @@ import importlib
 import importlib.util  # `import importlib` alone does not bind the submodule
 from typing import Any, Callable, Dict, List, Optional, TypeVar
 
+import scitex_logging as slogging
+
+log = slogging.getLogger(__name__)
+
 F = TypeVar("F", bound=Callable[..., Any])
 
 # Mapping of package imports to their installation extras
@@ -363,15 +367,12 @@ def check_mcp_deps(server_name: str = "scitex") -> None:
     try:
         import mcp  # noqa: F401
     except ImportError:
-        print(f"{'=' * 60}")
-        print(f"MCP Server '{server_name}' requires the 'mcp' package.")
-        print()
-        print("Install with:")
-        print("  pip install mcp")
-        print()
-        print("Or install scitex with MCP support:")
-        print("  pip install scitex[mcp]")
-        print(f"{'=' * 60}")
+        log.error(f"{'=' * 60}")
+        log.error(f"MCP Server '{server_name}' requires the 'mcp' package.")
+        log.error("")
+        log.error("Install with:")
+        log.error("  pip install mcp")
+        log.error(f"{'=' * 60}")
         sys.exit(1)
 
 

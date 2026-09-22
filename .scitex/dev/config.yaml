@@ -17,3 +17,14 @@
 project-type:
   - pip
   - deferred
+
+# Reasoned PS-231 exemptions (rule-prescribed path for leaf-unique workflows).
+audit:
+  exemptions:
+    PS-231:
+      - path: .github/workflows/pytest-matrix-on-ubuntu-py3-11-3-12-3-13.yml
+        line: 0
+        reason: "Leaf-unique segfault-hardened matrix: CPU-only torch pre-install (CUDA wheels segfault GPU-less runners, exit 139), mid-extraction peer standalones install, PS-170 pin-freshness gate, JUnit-verdict pass/fail (shutdown segfault after last PASS must not fail the job), retry-on-segfault, tests/e2e + cross-package-import quarantines. The org pytest-matrix reusable provides none of these; converting would lose the hardening."
+      - path: .github/workflows/rtd-sphinx-build-on-ubuntu-latest.yml
+        line: 0
+        reason: "Vendoring publisher (rule BLOCKER 2): builds Sphinx HTML and refreshes src/scitex/_sphinx_html/ for the in-wheel docs bundle served by scitex-cloud. The org rtd-sphinx-build reusable is build-only; converting stops the bundle refresh while the wheel still declares the artifact."

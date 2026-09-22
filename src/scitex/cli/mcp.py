@@ -146,14 +146,18 @@ def list_tools(
 
     Verbosity: (none) names, -v signatures, -vv +description, -vvv full.
     Signatures are expanded by default; use -c/--compact for single line.
+
+    Example:
+      $ scitex mcp list-tools --module scholar
     """  # noqa: D301
-    import logging
     import warnings
+
+    import scitex_logging as slogging
 
     # Suppress DeprecationWarnings from third-party libraries (httplib2, etc.)
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     # Suppress INFO messages from env loader during import
-    logging.getLogger("scitex.helpers._env_loader").setLevel(logging.WARNING)
+    slogging.getLogger("scitex.helpers._env_loader").setLevel(slogging.WARNING)
     try:
         from scitex._mcp import FASTMCP_AVAILABLE
         from scitex._mcp import mcp as mcp_server
@@ -302,7 +306,11 @@ def list_tools(
 @mcp.command("doctor")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed diagnostics")
 def doctor(verbose: bool):
-    """Check MCP server health and configuration."""
+    """Check MCP server health and configuration.
+
+    Example:
+      $ scitex mcp doctor --verbose
+    """
     issues = []
     warnings = []
 
@@ -472,8 +480,26 @@ def _print_help_recursive(ctx):
 @click.option(
     "--port", "-p", default=8085, type=int, help="Port to bind (default: 8085)"
 )
-def start(transport: str, host: str, port: int):
-    """Start the unified MCP server."""
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Preview the server plan (transport/host/port) without binding.",
+)
+@click.option(
+    "-y",
+    "--yes",
+    is_flag=True,
+    help="Acknowledge binding host:port; required for unattended scripts.",
+)
+def start(transport: str, host: str, port: int, dry_run: bool, yes: bool):
+    """Start the unified MCP server.
+
+    Example:
+      $ scitex mcp start --transport http --port 8085 --dry-run
+    """
+    if dry_run:
+        click.echo(f"dry-run: would start scitex MCP ({transport}) on {host}:{port}")
+        return
     try:
         from scitex._mcp import run_server
     except ImportError:
@@ -484,20 +510,38 @@ def start(transport: str, host: str, port: int):
     run_server(transport=transport, host=host, port=port)
 
 
-@mcp.command("installation")
-def installation():
-    """Show Claude Desktop configuration for SciTeX MCP server."""
+@mcp.command("show-installation")
+@click.option(
+    "--json", "as_json", is_flag=True, help="Output the raw JSON config only."
+)
+def show_installation(as_json):
+    """Show Claude Desktop configuration for SciTeX MCP server.
+
+    Example:
+      $ scitex mcp show-installation
+    """
+    import json
     import shutil
     import sys
 
     from scitex import __version__
 
-    click.secho(f"SciTeX MCP Server v{__version__}", fg="cyan", bold=True)
-    click.echo()
-
     # Get actual path
     scitex_path = shutil.which("scitex")
     python_path = sys.executable
+
+    config = {
+        "scitex": {
+            "command": scitex_path or "/path/to/.venv/bin/scitex",
+            "args": ["mcp", "start"],
+        },
+    }
+    if as_json:
+        click.echo(json.dumps(config, indent=2))
+        return
+
+    click.secho(f"SciTeX MCP Server v{__version__}", fg="cyan", bold=True)
+    click.echo()
 
     if scitex_path:
         click.echo(f"Your installation path: {scitex_path}")
@@ -511,11 +555,14 @@ def installation():
     click.echo("or %APPDATA%\\Claude\\claude_desktop_config.json (Windows):")
     click.echo()
 
-    config = f""""scitex": {{
-  "command": "{scitex_path or "/path/to/.venv/bin/scitex"}",
-  "args": ["mcp", "start"]
-}}"""
-    click.secho(config, fg="yellow")
+    click.secho(json.dumps(config, indent=2), fg="yellow")
+
+
+@mcp.command("installation", hidden=True)
+def installation_compat():
+    """Forward the deprecated ``installation`` name to show-installation."""
+    ctx = click.get_current_context()
+    ctx.invoke(show_installation)
 
 
 # EOF
