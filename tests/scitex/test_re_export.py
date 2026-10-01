@@ -30,6 +30,22 @@ import pytest
 from scitex.re_export import _LazyModule
 
 
+@pytest.mark.parametrize(
+    ("facade", "owner"),
+    [("app.embed", "scitex_sdk.app.embed"), ("ui.branding", "scitex_sdk.ui.branding")],
+)
+def test_nested_app_ui_facades_resolve_to_sdk_owner(facade, owner):
+    """The installed Dev registry may still name the retired distributions."""
+    # Arrange
+    import importlib
+
+    # Act
+    mounted = importlib.import_module("scitex." + facade)
+    owning_module = importlib.import_module(owner)
+    # Assert
+    assert mounted is owning_module
+
+
 def _capture_access_error(proxy, attr: str) -> str:
     """Trigger ``proxy.<attr>`` and return the raised error's message.
 

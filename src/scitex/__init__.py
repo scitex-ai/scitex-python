@@ -153,7 +153,7 @@ introspect = _LazyModule(
 sh = _LazyModule("sh", external="scitex_sh")  # Shell command execution
 os = _LazyModule("os", external="scitex_os")  # OS utilities (file operations)
 cv = _LazyModule("cv", external="scitex_cv")  # Computer vision utilities
-ui = _LazyModule("ui", external="scitex_ui")  # User interface utilities
+ui = _LazyModule("ui", external="scitex_sdk.ui")  # User interface utilities
 notification = _LazyModule(
     "notification", external="scitex_notification"
 )  # Multi-backend notifications (scitex-notification)
@@ -191,7 +191,7 @@ notebook = _LazyModule(
     "notebook", external="scitex_notebook"
 )  # Jupyter notebook verification & compilation
 app = _LazyModule(
-    "app", external="scitex_app"
+    "app", external="scitex_sdk.app"
 )  # App SDK — unified file storage for local + cloud
 usage = _CallableModuleWrapper("usage", main_decorator_name="show")
 usage._setup_persistence("scitex", "usage")

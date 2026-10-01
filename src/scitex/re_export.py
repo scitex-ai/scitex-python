@@ -32,7 +32,7 @@ import importlib.util as _importlib_util
 import sys
 import warnings
 from importlib.abc import Loader, MetaPathFinder
-from importlib.machinery import ModuleSpec
+from importlib.machinery import ModuleSpec, PathFinder
 from types import ModuleType
 from typing import Mapping, Optional
 
@@ -275,7 +275,7 @@ EXTERNAL_REEXPORTS = {
     "pd": "scitex_pd",
     "resource": "scitex_resource",
     "sh": "scitex_sh",
-    "ui": "scitex_ui",
+    "ui": "scitex_sdk.ui",
     "web": "scitex_web",
     "writer": "scitex_writer",
     "io": "scitex_io",  # in-tree dir removed (#289); pure re-export of scitex_io
@@ -291,7 +291,7 @@ EXTERNAL_REEXPORTS = {
     "audit": "scitex_audit",
     "compat": "scitex_compat",
     "repro": "scitex_repro",
-    "app": "scitex_app",
+    "app": "scitex_sdk.app",
     "scholar": "scitex_scholar",
     "dict": "scitex_dict",
     "notebook": "scitex_notebook",
@@ -382,6 +382,8 @@ def register_external_lazy_modules() -> None:
 # explicit entries; the rest follow the `scitex_<short>` convention by default,
 # which the registry-driven map fills in automatically.
 _DEFAULT_BRANDED = {
+    "app": "scitex_sdk.app",
+    "ui": "scitex_sdk.ui",
     "plt": "figrecipe.pyplot",
     "diagram": "figrecipe.diagram",  # in-tree dir removed; public figrecipe.diagram (>=0.28.13)
     "social": "socialia",
@@ -538,6 +540,17 @@ def install_alias_finder(scitex_pkg_path: list) -> None:
         return
     alias = _build_alias_map()
     finder = _ScitexAliasFinder(alias, scitex_pkg_path)
+    # App/UI are SDK packages. A normal path finder would execute a nested
+    # owner file again under scitex.app/ui, creating different class identities.
+    # Resolve these two facades to the existing SDK modules before that finder.
+    sdk_finder = _ScitexAliasFinder(
+        {short: alias[short] for short in ("app", "ui")}, scitex_pkg_path
+    )
+    path_position = next(
+        (index for index, existing in enumerate(sys.meta_path) if existing is PathFinder),
+        len(sys.meta_path),
+    )
+    sys.meta_path.insert(path_position, sdk_finder)
     # Append (not insert) so default finders win first → real `scitex/<short>/`
     # directories stay authoritative for unmigrated peers.
     sys.meta_path.append(finder)

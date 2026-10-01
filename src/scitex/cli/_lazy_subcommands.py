@@ -225,6 +225,15 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         sub = attr.replace("_", "-")
         out.setdefault(sub, (f"scitex.cli.{attr}", attr, _FALLBACK_HELP.get(sub, sub)))
 
+    # App/UI belong to SDK even with an older installed ecosystem registry.
+    # Preserve the established umbrella verbs without probing imports at startup.
+    for sub in ("app", "ui"):
+        out[sub] = (
+            _peer_cli_candidates(f"scitex_sdk.{sub}"),
+            sub,
+            _FALLBACK_HELP.get(sub, sub),
+        )
+
     # 3. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
     # main.py re-adds them as hidden warn-phase deprecated aliases when
     # scitex-dev's click_compat is importable.

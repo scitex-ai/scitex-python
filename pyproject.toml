@@ -81,7 +81,7 @@ dependencies = [
     # Reproducibility Verification
     "scitex-clew==0.17.0",
     # App SDK — unified file storage for local + cloud
-    "scitex-app==0.2.11",
+    "scitex-sdk>=0.3.0",
     # Delegated core modules (thin re-exports)
     "scitex-dev==0.28.0",
     "scitex-io==0.3.3",
@@ -118,7 +118,6 @@ dependencies = [
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
     "figrecipe==0.29.9",
-    "scitex-ui==0.6.0",
 ]
 
 [project.urls]
@@ -168,7 +167,7 @@ scitex = "scitex"
 # App Module - Unified file storage SDK (local + cloud)
 # Use: pip install scitex[app]
 app = [
-    "scitex-app==0.2.11",
+    "scitex-sdk>=0.3.0",
 ]
 
 # ML Module — classical / deep machine-learning utilities
@@ -750,7 +749,7 @@ types = [
 
 # UI Module - User interface utilities
 # Use: pip install scitex[ui]
-ui = ["scitex-ui==0.6.0"]
+ui = ["scitex-sdk>=0.3.0"]
 
 # Utils Module - REMOVED (Phase B). The in-tree scitex.utils grab-bag was
 # deleted; its public helpers live in their SoC owners (compress_hdf5 →
@@ -963,7 +962,7 @@ dev = [
     "scitex-scholar==1.4.2",
     "scitex-ssh==1.0.1",
     "scitex-stats==0.2.24",
-    "scitex-ui==0.6.0",
+    "scitex-sdk>=0.3.0",
     "scitex-writer==2.24.1",
     "seaborn",
     "selenium",

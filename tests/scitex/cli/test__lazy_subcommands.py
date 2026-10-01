@@ -91,6 +91,17 @@ class TestScholarProbe:
         assert ("scitex_scholar._cli_main", "cli") in tuple(candidates)
 
 
+@pytest.mark.parametrize("sub", ["app", "ui"])
+def test_app_ui_cli_candidates_use_sdk_with_older_installed_registry(sub):
+    # Arrange
+    subcommands = build_lazy_subcommands(_cli_dir())
+    # Act
+    candidates, _attr, _help = subcommands[sub]
+    modules = tuple(module for module, _entry in candidates)
+    # Assert
+    assert modules and all(module.startswith(f"scitex_sdk.{sub}.") for module in modules)
+
+
 class TestWriterOverride:
     """The writer wrapper file overrides the (broken) generic probes."""
 
