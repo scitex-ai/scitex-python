@@ -14,7 +14,7 @@ on:
       - "scripts/quality/audit_ecosystem.py"
       - "src/scitex_dev/_ecosystem/_core.py"
       - "src/scitex_dev/ecosystem.py"
-      - ".github/workflows/quality-audit.yml"
+      - ".github/workflows/scitex-quality-audit-on-ubuntu-latest.yml"
 
 jobs:
   audit:
@@ -24,7 +24,10 @@ jobs:
       - name: Checkout scitex-dev
         uses: actions/checkout@v4
         with:
+          repository: scitex-ai/scitex-dev
+          ref: main
           path: scitex-dev
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -36,48 +39,49 @@ jobs:
           set -e
           mkdir -p proj
           python3 - <<'PY'
-          import json, re, subprocess, sys
+          import json, subprocess, sys
           from pathlib import Path
-          # 0.11.0 layout: ecosystem.py moved to _ecosystem/_core.py.
-          eco_new = Path("scitex-dev/src/scitex_dev/_ecosystem/_core.py")
-          eco_old = Path("scitex-dev/src/scitex_dev/ecosystem.py")
-          src = (eco_new if eco_new.is_file() else eco_old).read_text()
-          for m in re.finditer(
-              r'^\s*"([\w-]+)"\s*:\s*\{(.*?)\},?\s*$', src,
-              re.MULTILINE | re.DOTALL):
-              name, body = m.group(1), m.group(2)
-              g = re.search(r'"github_repo"\s*:\s*"([^"]+)"', body)
-              cat = re.search(r'"category"\s*:\s*"([^"]+)"', body)
-              category = cat.group(1) if cat else "library"
-              if category not in ("umbrella", "library", "external-lib"):
-                  continue
-              if not g:
-                  continue
+          # Supported public Dev enumerator reads the current split registry.
+          result = subprocess.run(
+              [sys.executable, "scitex-dev/scripts/quality/ecosystem_list.py"],
+              capture_output=True, text=True, check=True)
+          packages = [json.loads(line) for line in result.stdout.splitlines() if line]
+          if not packages:
+              raise RuntimeError("The public ecosystem registry returned no packages")
+          for package in packages:
+              name, github_repo = package["name"], package["github_repo"]
               dest = Path("proj") / name
               if dest.exists():
-                  continue
-              print(f"clone {g.group(1)} -> {dest}")
-              r = subprocess.run(
+                  raise RuntimeError(f"Refusing an existing audit destination: {dest}")
+              print(f"clone {github_repo} -> {dest}")
+              subprocess.run(
                   ["git", "clone", "--depth", "1", "--no-tags",
-                   f"https://github.com/{g.group(1)}.git", str(dest)],
-                  capture_output=True, text=True)
-              if r.returncode:
-                  print(f"  WARN: {r.stderr.strip()[:200]}", file=sys.stderr)
+                   f"https://github.com/{github_repo}.git", str(dest)], check=True)
           PY
 
       - name: Run ecosystem audit
         id: audit
         run: |
+          set -eu
+          test ! -e audit.json
+          set +e
           python3 scitex-dev/scripts/quality/audit_ecosystem.py \
             --projects-root proj \
             --scitex-dev-root scitex-dev \
             --out audit.json
-          echo "json_path=$(pwd)/audit.json" >> "$GITHUB_OUTPUT"
-          # Surface summary in step output.
+          audit_exit=$?
+          set -e
+          export SCITEX_AUDIT_EXIT="$audit_exit"
+          # Findings stay advisory; missing/broken audit output fails honestly.
           python3 - <<'PY'
-          import json
+          import json, os
           d = json.load(open("audit.json"))
           s = d["summary"]
+          expected_exit = int(bool(s["by_severity"].get("CRITICAL", 0) or s["by_severity"].get("HIGH", 0)))
+          if int(os.environ["SCITEX_AUDIT_EXIT"]) != expected_exit:
+              raise RuntimeError("Audit exited without a valid findings verdict")
+          if s["packages_audited"] <= 0:
+              raise RuntimeError("Audit measured no packages")
           print(f"::notice ::Packages audited: {s['packages_audited']}")
           print(f"::notice ::Findings by severity: {s['by_severity']}")
           if s["by_severity"].get("CRITICAL", 0):
@@ -85,7 +89,7 @@ jobs:
           if s["by_severity"].get("HIGH", 0):
               print(f"::warning ::{s['by_severity']['HIGH']} HIGH findings — see audit.json")
           PY
-        continue-on-error: true  # never block the workflow on findings
+          echo "json_path=$(pwd)/audit.json" >> "$GITHUB_OUTPUT"
 
       - name: Upload audit JSON
         uses: actions/upload-artifact@v4
@@ -95,7 +99,7 @@ jobs:
           retention-days: 30
 
       - name: Open / update tracking issue on CRITICAL or HIGH
-        if: ${{ always() }}
+        if: ${{ success() && steps.audit.outputs.json_path != '' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
