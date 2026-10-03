@@ -18,6 +18,7 @@
 set -euo pipefail
 
 V="${1:?python version arg required (3.11/3.12/3.13)}"
+case "$V" in 3.11|3.12|3.13) ;; *) exit 1;; esac
 VENV="/opt/venv-$V"
 test -x "$VENV/bin/python" || {
     echo "::error::baked python missing in $VENV — rebuild the SIF: scitex-container apptainer build ci-cpu"
@@ -30,8 +31,116 @@ export LC_ALL=C.UTF-8 LANG=C.UTF-8
 # path that does NOT resolve inside the container; tests (tmp_path) and the
 # install target both need a working, writable tmp. Node-local /tmp is writable
 # + ephemeral and per-version-isolated so concurrent matrix legs don't collide.
-export TMPDIR="/tmp/ci-scitex-${GITHUB_RUN_ID:-0}-${GITHUB_RUN_ATTEMPT:-0}-$V"
-rm -rf "$TMPDIR"
+SCRATCH_PREFIX="/tmp/ci-scitex-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}-$V-"
+
+# BEGIN owned temporary-root lifecycle
+OWNED_TMPDIR=""
+OWNED_TMP_ID=""
+OWNED_CHILD_PID=""
+OWNED_CHILD_GROUP=""
+OWNED_CHILD_BIRTH=""
+
+owned_birth() {
+    local line
+    IFS= read -r line < "/proc/$1/stat" || return 1
+    line="${line##*) }"
+    set -- $line
+    printf '%s' "${20}"
+}
+
+cleanup_owned_tmp() {
+    local result=$? cleanup_result=0 current_id='' attempt=0
+    trap - EXIT INT TERM
+    unset MINTED
+    # Reaping the body alone is insufficient when a descendant remains.
+    # The retained group must disappear before removing its scratch.
+    if [[ -n "$OWNED_CHILD_GROUP" ]]; then
+        for attempt in {1..40}; do
+            kill -0 -- "-$OWNED_CHILD_GROUP" 2>/dev/null || break
+            sleep 0.05
+        done
+        if kill -0 -- "-$OWNED_CHILD_GROUP" 2>/dev/null; then
+            echo "::error::owned child group remains; temporary cleanup refused" >&2
+            cleanup_result=1
+        fi
+    fi
+    if [ -n "$OWNED_TMPDIR" ]; then
+        current_id="$(stat -c '%d:%i:%u:%a' -- "$OWNED_TMPDIR" 2>/dev/null)" || cleanup_result=1
+        if [ "$cleanup_result" -eq 0 ] && [ ! -L "$OWNED_TMPDIR" ] && [ -d "$OWNED_TMPDIR" ] &&
+           [ -n "$OWNED_TMP_ID" ] && [ "$current_id" = "$OWNED_TMP_ID" ]; then
+            /usr/bin/timeout --signal=TERM --kill-after=2s 10s \
+                /usr/bin/rm -rf --one-file-system -- "$OWNED_TMPDIR" || cleanup_result=$?
+        else
+            cleanup_result=1
+        fi
+        if [ "$cleanup_result" -ne 0 ]; then
+            echo "::error::owned temporary cleanup refused or failed" >&2
+            [ "$result" -ne 0 ] || result=1
+        fi
+    fi
+    exit "$result"
+}
+
+terminate_owned_child() {
+    local signal="$1" status="$2" watchdog=""
+    trap '' INT TERM
+    if [[ -n "$OWNED_CHILD_PID" && "$OWNED_CHILD_BIRTH" =~ ^[0-9]+$ ]] \
+        && [[ "$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)" == "$OWNED_CHILD_BIRTH" ]]; then
+        kill -s "$signal" -- "-$OWNED_CHILD_PID" 2>/dev/null || true
+        # The watchdog checks this exact child's kernel birth before signalling
+        # its group, then is reaped by the owning shell on either outcome.
+        (
+            sleep 2
+            if [[ "$OWNED_CHILD_BIRTH" =~ ^[0-9]+$ ]] && [[ "$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)" == "$OWNED_CHILD_BIRTH" ]]; then
+                kill -KILL -- "-$OWNED_CHILD_PID" 2>/dev/null || true
+            fi
+        ) &
+        watchdog=$!
+        wait "$OWNED_CHILD_PID" 2>/dev/null || true
+        kill -TERM -- "-$watchdog" 2>/dev/null || true
+        wait "$watchdog" 2>/dev/null || true
+    fi
+    exit "$status"
+}
+
+trap cleanup_owned_tmp EXIT
+trap 'terminate_owned_child INT 130' INT
+trap 'terminate_owned_child TERM 143' TERM
+
+run_owned_body() {
+    local status=0
+    # Bash job control creates a group for exactly this owned body, so a
+    # termination targets its descendants rather than the runner's group.
+    set -m
+    (
+        set +m
+        trap 'unset MINTED' EXIT
+        # Keep this exact group leader alive through the watchdog window.
+        # Foreground descendants retain their ordinary signal dispositions.
+        trap 'unset MINTED; sleep 3' INT TERM
+        driver_body
+    ) &
+    OWNED_CHILD_PID=$!
+    OWNED_CHILD_GROUP="$OWNED_CHILD_PID"
+    OWNED_CHILD_BIRTH="$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)"
+    wait "$OWNED_CHILD_PID" || status=$?
+    OWNED_CHILD_PID=""
+    return "$status"
+}
+# END owned temporary-root lifecycle
+
+OWNED_TMPDIR="$(/usr/bin/mktemp -d "${SCRATCH_PREFIX}XXXXXX")"
+readonly OWNED_TMPDIR
+suffix="${OWNED_TMPDIR#"$SCRATCH_PREFIX"}"
+[[ "$OWNED_TMPDIR" = "$SCRATCH_PREFIX"* && "$suffix" =~ ^[[:alnum:]]{6}$ ]]
+[ "${OWNED_TMPDIR%/*}" = /tmp ] && [ ! -L "$OWNED_TMPDIR" ] && [ -d "$OWNED_TMPDIR" ]
+OWNED_TMP_ID="$(stat -c '%d:%i:%u:%a' -- "$OWNED_TMPDIR")"
+[ "${OWNED_TMP_ID##*:}" = 700 ]
+[ "$(stat -c '%u' -- "$OWNED_TMPDIR")" = "$(id -u)" ]
+readonly OWNED_TMP_ID
+export TMPDIR="$OWNED_TMPDIR"
+
+driver_body() {
 mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache"
 
 # The HPC compute-node $HOME is READ-ONLY inside the container, so uv/pip cannot
@@ -60,7 +169,7 @@ mkdir -p "$MPLCONFIGDIR"
 
 # A VIRTUAL_ENV leaked from the runner profile (~/.env-3.11) is a broken symlink
 # in here; unset it so no tool (uv, pip) tries to follow it.
-unset VIRTUAL_ENV || true
+unset VIRTUAL_ENV PYTHONHOME PYTHONPATH || true
 
 # venv bin on PATH (this matrix leg's python3 + pip); PYTHONPATH points at the
 # writable target so imports + coverage use the freshly-installed checkout.
@@ -69,13 +178,9 @@ export PATH="$VENV/bin:$PATH"
 echo "py=$("$VENV/bin/python" -V) target=$TMPDIR/site"
 
 # Install scitex + its [all,dev] extras WITH deps into the writable target.
-# Fallback chain mirrors scitex's historical bare-uv/pip workflow so a
-# packaging hiccup in an optional extra doesn't strand CI: [all,dev] → [dev] →
-# bare. uv first (fast resolver), pip as a final safety net.
-uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e ".[all,dev]" ||
-    uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e ".[dev]" ||
-    uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e "." ||
-    pip install --target="$TMPDIR/site" -e ".[dev]"
+# Resolver failure fails the leg; the declared complete extras are required.
+command -v uv >/dev/null
+uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e ".[all,dev]"
 
 # Peer standalones aliased by the umbrella (scitex_gen, scitex_dsp, ...) are NOT
 # in the [all] extra, so the install above never refreshes them. Install them
@@ -136,18 +241,20 @@ fi
 # nice -n 19 ionice -c 3: run at the lowest CPU + idle I/O priority so that if
 # this node is ever shared with interactive/dev work, CI grabs otherwise-idle
 # cores but YIELDS the CPU and disk to any higher-priority process — "all
-# available CPUs, with priority handling". exec replaces the shell with nice,
-# which execs ionice, which execs python (still PID-traceable, signals/exit
-# code propagate to the runner step).
+# available CPUs, with priority handling". The owning shell waits for its
+# dedicated child group and preserves its status before cleanup.
 # Quarantine the heavy/segfault-prone + umbrella-skip suites (parity with the
 # hardened ubuntu workflow): tests/e2e + the cross-package import gate are
 # crash-prone, and tests/examples/test_09_dev.py hard-requires scitex.module ->
 # scitex_hub, which is umbrella_skip BY DESIGN (never in [all]) so it can't run
 # in the [all] SIF. Dropping these ignores is what broke the v2.30.3 release.
-exec nice -n 19 ionice -c 3 \
+nice -n 19 ionice -c 3 \
     python -m pytest tests/ -n "$WORKERS" --dist load -q \
     --ignore=tests/e2e \
     --ignore=tests/integration/test_cross_package_imports.py \
     --ignore=tests/examples/test_09_dev.py \
     --cov=src/scitex --cov-report=xml --cov-report=term \
     -p no:cacheprovider
+}
+
+run_owned_body

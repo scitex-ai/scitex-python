@@ -7,6 +7,7 @@ live in their respective downstream packages (scitex-io, scitex-stats,
 figrecipe, scitex-clew, etc.).
 """
 
+import hashlib
 import os
 import shutil
 import tempfile
@@ -209,8 +210,10 @@ class TestClewIntegration:
     """Verify stx.clew is accessible through unified namespace."""
 
     def test_status(self):
-        result = stx.clew.status()
-        assert isinstance(result, dict)
+        """The status export is the leaf callable; do not query its Store here."""
+        import scitex_clew
+
+        assert stx.clew.status is scitex_clew.status and callable(stx.clew.status)
 
     def test_hash_file(self, tmp_dir):
         path = os.path.join(tmp_dir, "test.txt")
@@ -218,7 +221,7 @@ class TestClewIntegration:
             f.write("hello")
         h = stx.clew.hash_file(path)
         assert isinstance(h, str)
-        assert len(h) == 32  # SHA-256 prefix
+        assert h == hashlib.sha256(b"hello").hexdigest()
 
 
 # ---------------------------------------------------------------------------
@@ -235,7 +238,9 @@ class TestCrossModuleWorkflow:
         df = pd.DataFrame({"a": [1, 2, 3]})
         stx.io.save(df, path)
         h = stx.clew.hash_file(path)
-        assert len(h) == 32
+        with open(path, "rb") as f:
+            expected_hash = hashlib.sha256(f.read()).hexdigest()
+        assert h == expected_hash
 
     def test_stats_then_io_save(self, tmp_dir):
         """Run a stat test, save results via stx.io."""
