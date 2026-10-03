@@ -1,175 +1,164 @@
 name: release
 
-# Tag-driven release pipeline — SELF-HOSTED (Spartan CPU) via the scitex-ci SIF.
-#
-# The intended operator flow is:
-#
-#     git tag vX.Y.Z && git push origin vX.Y.Z
-#
-# Everything else fires automatically:
-#
-#   1. test          — matrix pytest INSIDE the SIF. Must pass or the pipeline
-#                      halts; nothing is published until tests are green on the
-#                      tagged commit.
-#   2. build         — wheel + sdist built INSIDE the SIF, uploaded as artifact.
-#   3. publish       — PyPI via MANUAL OIDC trusted publishing INSIDE the SIF.
-#   4. release       — GitHub Release with CHANGELOG notes + artifacts.
-#
-# develop→main promotion is a DELIBERATE, separate PR (operator policy);
-# this pipeline never auto-syncs main.
-#
-# WHY the SIF (operator standardization 2026-06-18, fleet canary 2026-06-21):
-# the Spartan compute runners have NO Python on the bare node, so the old
-# `actions/setup-python@v5` step failed at init ("version 3.x not found for
-# this OS"). The working pytest-matrix CI runs INSIDE the pre-built, reused
-# scitex-ci SIF (`apptainer exec ci-cpu.sif`), which bakes python 3.11/3.12/
-# 3.13 + pip + uv + fd at /opt/venv-<ver>. This release pipeline mirrors that:
-#   - test/build run `bash .github/ci/exec-in-sif.sh <inner>.sh <pyver>`.
-#   - publish CANNOT use pypa/gh-action-pypi-publish (a Docker action; the
-#     compute nodes have no Docker), so it does MANUAL OIDC trusted publishing
-#     inside the SIF (.github/ci/publish-in-sif.sh): GitHub OIDC JWT →
-#     PyPI mint-token → twine upload. Trust config on PyPI is unchanged.
-#   - actions/checkout, upload/download-artifact, codecov are JS actions and
-#     run fine on the self-hosted runner.
-# fail-loud: a missing SIF/shim/interpreter is a HARD error, never a
-# bare-runner fallback.
-#
-# runs-on driven by repo Actions Variable CI_RUNS_ON; SIF + apptainer paths
-# come from SCITEX_CI_SIF / SCITEX_CI_APPTAINER (same as pytest-matrix).
-#
-# Manual re-run: the workflow also accepts a `version` input via
-# workflow_dispatch so you can re-publish without re-tagging.
-
+# Company runners are admitted before checkout or SIF execution. The release
+# source must already be promoted to main; its tag, version and commit are fixed
+# once, then verified again before publication. Publisher identity is unchanged.
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
     inputs:
       version:
-        description: 'Tag to publish (e.g. v0.10.19) — must already exist on the repo'
+        description: 'Existing vX.Y.Z tag to publish'
         required: true
         type: string
 
+permissions:
+  contents: read
+concurrency:
+  group: scitex-release-${{ inputs.version || github.ref_name }}
+  cancel-in-progress: false
 env:
   SCITEX_CI_APPTAINER: ${{ vars.SCITEX_CI_APPTAINER }}
-  SCITEX_CI_SIF: ${{ vars.SCITEX_CI_SIF }}
+  SCITEX_CI_SIF: '~/.scitex/dev/containers/ci-cpu-sha256-aa5836a6c317640d7e20f01eb79aa7385b3dca2f369b595065c50ba3dd34a7d5.sif'
+  SCITEX_CI_SIF_SHA256: aa5836a6c317640d7e20f01eb79aa7385b3dca2f369b595065c50ba3dd34a7d5
+  RELEASE_TAG: ${{ inputs.version || github.ref_name }}
 
 jobs:
+  admission:
+    uses: scitex-ai/.github/.github/workflows/runner-admission.yml@8c646081e9f1352077d3d8674052cce7ec75a1b7
+    with:
+      runs_on: '["self-hosted","Linux","X64","scitex-org-cpu"]'
+
+  preflight:
+    needs: admission
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.identity.outputs.tag }}
+      commit: ${{ steps.identity.outputs.commit }}
+      version: ${{ steps.identity.outputs.version }}
+    steps:
+      - name: Require confirmed organization membership
+        env:
+          AUTHORIZED: ${{ needs.admission.outputs.native_authorized }}
+        run: test "$AUTHORIZED" = true
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check the release identity and archive refusal controls
+        run: python .github/ci/test_release_identity.py
+      - id: identity
+        name: Resolve the existing tag and promoted project version
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python .github/ci/release-identity.py resolve --tag "$RELEASE_TAG"
+
   test:
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
+    needs: [admission, preflight]
+    if: needs.admission.outputs.native_authorized == 'true'
+    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu"]}') }}
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ['3.11', '3.12', '3.13']
     steps:
-      - name: Resolve version
-        id: ver
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            v="${GITHUB_REF#refs/tags/}"
-          else
-            v="${{ inputs.version }}"
-          fi
-          echo "version=$v" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
-          ref: ${{ steps.ver.outputs.version }}
+          ref: ${{ needs.preflight.outputs.commit }}
           fetch-depth: 0
-      # SIF-based self-hosted test run — mirrors pytest-matrix exactly. No
-      # setup-python (the bare Spartan node has no Python tool cache; that step
-      # failed "version not found for this OS"); no apt fd-install (fd is baked
-      # in the SIF). exec-in-sif.sh apptainer-execs the reused ci-cpu.sif and
-      # run-in-sif.sh layers THIS (tagged) checkout + [all,dev] into a writable
-      # target, then runs pytest. fail-loud on a missing SIF/shim.
-      - name: Run tests in the reused CI SIF (apptainer exec — deps layered, not on the bare runner)
+      - name: Run the complete test suite in the qualified SIF
         run: bash .github/ci/exec-in-sif.sh run-in-sif.sh ${{ matrix.python-version }}
 
   build:
-    needs: test
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
-    outputs:
-      version: ${{ steps.ver.outputs.version }}
+    needs: [admission, preflight, test]
+    if: needs.admission.outputs.native_authorized == 'true'
+    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu"]}') }}
+    timeout-minutes: 30
+    env:
+      RELEASE_COMMIT: ${{ needs.preflight.outputs.commit }}
     steps:
-      - name: Resolve version
-        id: ver
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            v="${GITHUB_REF#refs/tags/}"
-          else
-            v="${{ inputs.version }}"
-          fi
-          echo "version=$v" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
-          ref: ${{ steps.ver.outputs.version }}
+          ref: ${{ needs.preflight.outputs.commit }}
           fetch-depth: 0
-      # Build INSIDE the SIF (no setup-python on the bare Spartan node).
-      # build-in-sif.sh installs the `build` frontend into a writable --target
-      # inside the SIF, then `python -m build` → dist/. fail-loud on empty dist.
-      - name: Build wheel + sdist in the CI SIF (apptainer exec)
+      - name: Build and verify one wheel and one sdist
         run: bash .github/ci/exec-in-sif.sh build-in-sif.sh 3.12
-      # upload-artifact is a JS action — runs fine on the self-hosted runner.
       - uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: scitex-dist-${{ needs.preflight.outputs.commit }}
           path: dist/
+          if-no-files-found: error
 
   publish:
-    needs: build
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
+    needs: [admission, preflight, build]
+    if: needs.admission.outputs.native_authorized == 'true'
+    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu"]}') }}
+    timeout-minutes: 15
     environment:
       name: pypi
       url: https://pypi.org/p/scitex
-    # id-token: write is what populates ACTIONS_ID_TOKEN_REQUEST_{TOKEN,URL},
-    # which publish-in-sif.sh uses to mint the OIDC JWT. Keep it.
     permissions:
+      contents: read
       id-token: write
+    env:
+      RELEASE_COMMIT: ${{ needs.preflight.outputs.commit }}
     steps:
-      # Need the repo checked out so .github/ci/exec-in-sif.sh +
-      # publish-in-sif.sh are on disk (the build job uploaded only dist/).
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preflight.outputs.commit }}
+          fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
-          name: dist
+          name: scitex-dist-${{ needs.preflight.outputs.commit }}
           path: dist
-      # Manual OIDC trusted publishing INSIDE the SIF — pypa/gh-action-pypi-
-      # publish is a Docker action and the Spartan compute nodes have no Docker.
-      # publish-in-sif.sh: GitHub OIDC JWT (audience=pypi) → PyPI mint-token →
-      # twine upload dist/*. apptainer exec (no --cleanenv) passes the
-      # ACTIONS_ID_TOKEN_REQUEST_* env vars into the SIF. fail-loud at each step.
-      - name: Publish to PyPI via manual OIDC trusted publishing in the SIF
+      - name: Verify bytes and tag before the existing OIDC publisher
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: bash .github/ci/exec-in-sif.sh publish-in-sif.sh 3.12
 
   release:
-    needs: [build, publish]
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","Linux","X64","scitex-ci"]') }}
+    needs: [preflight, build, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.build.outputs.version }}
+          ref: ${{ needs.preflight.outputs.commit }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - uses: actions/download-artifact@v4
         with:
-          name: dist
+          name: scitex-dist-${{ needs.preflight.outputs.commit }}
           path: dist
-      - name: Extract release notes from CHANGELOG.md
+      - name: Verify release assets and extract notes
+        env:
+          RELEASE_COMMIT: ${{ needs.preflight.outputs.commit }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          VERSION="${{ needs.build.outputs.version }}"
-          VERSION="${VERSION#v}"
+          python .github/ci/release-identity.py verify-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT" --revalidate
+          VERSION="${RELEASE_TAG#v}"
           awk -v v="$VERSION" '
             $0 ~ "^## \\[" v "\\]" {p=1; next}
             p && /^## \[/ {exit}
             p
-          ' CHANGELOG.md > release-notes.md || true
-          if [ ! -s release-notes.md ]; then
-            echo "Release v${VERSION}. See CHANGELOG.md for details." > release-notes.md
-          fi
-      - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create "${{ needs.build.outputs.version }}" \
-            --title "${{ needs.build.outputs.version }}" \
-            --notes-file release-notes.md \
-            dist/*
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md
+      - name: Create GitHub Release from the verified two assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.preflight.outputs.tag }}
+          name: ${{ needs.preflight.outputs.tag }}
+          body_path: release-notes.md
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+          fail_on_unmatched_files: true

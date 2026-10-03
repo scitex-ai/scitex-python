@@ -18,6 +18,7 @@
 set -euo pipefail
 
 V="${1:?python version arg required (3.11/3.12/3.13)}"
+case "$V" in 3.11|3.12|3.13) ;; *) exit 1;; esac
 VENV="/opt/venv-$V"
 test -x "$VENV/bin/python" || {
     echo "::error::baked python missing in $VENV — rebuild the SIF: scitex-container apptainer build ci-cpu"
@@ -30,8 +31,7 @@ export LC_ALL=C.UTF-8 LANG=C.UTF-8
 # path that does NOT resolve inside the container; tests (tmp_path) and the
 # install target both need a working, writable tmp. Node-local /tmp is writable
 # + ephemeral and per-version-isolated so concurrent matrix legs don't collide.
-export TMPDIR="/tmp/ci-scitex-${GITHUB_RUN_ID:-0}-${GITHUB_RUN_ATTEMPT:-0}-$V"
-rm -rf "$TMPDIR"
+export TMPDIR="$(mktemp -d "/tmp/ci-scitex-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}-$V-XXXXXX")"
 mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache"
 
 # The HPC compute-node $HOME is READ-ONLY inside the container, so uv/pip cannot
@@ -60,7 +60,7 @@ mkdir -p "$MPLCONFIGDIR"
 
 # A VIRTUAL_ENV leaked from the runner profile (~/.env-3.11) is a broken symlink
 # in here; unset it so no tool (uv, pip) tries to follow it.
-unset VIRTUAL_ENV || true
+unset VIRTUAL_ENV PYTHONHOME PYTHONPATH || true
 
 # venv bin on PATH (this matrix leg's python3 + pip); PYTHONPATH points at the
 # writable target so imports + coverage use the freshly-installed checkout.
@@ -69,13 +69,9 @@ export PATH="$VENV/bin:$PATH"
 echo "py=$("$VENV/bin/python" -V) target=$TMPDIR/site"
 
 # Install scitex + its [all,dev] extras WITH deps into the writable target.
-# Fallback chain mirrors scitex's historical bare-uv/pip workflow so a
-# packaging hiccup in an optional extra doesn't strand CI: [all,dev] → [dev] →
-# bare. uv first (fast resolver), pip as a final safety net.
-uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e ".[all,dev]" ||
-    uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e ".[dev]" ||
-    uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e "." ||
-    pip install --target="$TMPDIR/site" -e ".[dev]"
+# Resolver failure fails the leg; the declared complete extras are required.
+command -v uv >/dev/null
+uv pip install --python "$VENV/bin/python" --target="$TMPDIR/site" -e ".[all,dev]"
 
 # Peer standalones aliased by the umbrella (scitex_gen, scitex_dsp, ...) are NOT
 # in the [all] extra, so the install above never refreshes them. Install them
