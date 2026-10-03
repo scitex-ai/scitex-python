@@ -31,12 +31,13 @@ export LC_ALL=C.UTF-8 LANG=C.UTF-8
 # path that does NOT resolve inside the container; tests (tmp_path) and the
 # install target both need a working, writable tmp. Node-local /tmp is writable
 # + ephemeral and per-version-isolated so concurrent matrix legs don't collide.
-export TMPDIR="$(mktemp -d "/tmp/ci-scitex-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}-$V-XXXXXX")"
+SCRATCH_PREFIX="/tmp/ci-scitex-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}-$V-"
 
 # BEGIN owned temporary-root lifecycle
-readonly OWNED_TMPDIR="$TMPDIR"
-readonly OWNED_TMP_ID="$(stat -c '%d:%i' -- "$OWNED_TMPDIR")"
+OWNED_TMPDIR=""
+OWNED_TMP_ID=""
 OWNED_CHILD_PID=""
+OWNED_CHILD_GROUP=""
 OWNED_CHILD_BIRTH=""
 
 owned_birth() {
@@ -48,30 +49,49 @@ owned_birth() {
 }
 
 cleanup_owned_tmp() {
-    local status=$?
+    local result=$? cleanup_result=0 current_id='' attempt=0
     trap - EXIT INT TERM
     unset MINTED
-    if [[ -d "$OWNED_TMPDIR" && ! -L "$OWNED_TMPDIR" ]] \
-        && [[ "$(stat -c '%d:%i' -- "$OWNED_TMPDIR")" == "$OWNED_TMP_ID" ]]; then
-        rm -rf -- "$OWNED_TMPDIR"
-    else
-        echo "::error::owned temporary-root identity changed; cleanup refused" >&2
-        [[ "$status" -ne 0 ]] || status=1
+    # Reaping the body alone is insufficient when a descendant remains.
+    # The retained group must disappear before removing its scratch.
+    if [[ -n "$OWNED_CHILD_GROUP" ]]; then
+        for attempt in {1..40}; do
+            kill -0 -- "-$OWNED_CHILD_GROUP" 2>/dev/null || break
+            sleep 0.05
+        done
+        if kill -0 -- "-$OWNED_CHILD_GROUP" 2>/dev/null; then
+            echo "::error::owned child group remains; temporary cleanup refused" >&2
+            cleanup_result=1
+        fi
     fi
-    exit "$status"
+    if [ -n "$OWNED_TMPDIR" ]; then
+        current_id="$(stat -c '%d:%i:%u:%a' -- "$OWNED_TMPDIR" 2>/dev/null)" || cleanup_result=1
+        if [ "$cleanup_result" -eq 0 ] && [ ! -L "$OWNED_TMPDIR" ] && [ -d "$OWNED_TMPDIR" ] &&
+           [ -n "$OWNED_TMP_ID" ] && [ "$current_id" = "$OWNED_TMP_ID" ]; then
+            /usr/bin/timeout --signal=TERM --kill-after=2s 10s \
+                /usr/bin/rm -rf --one-file-system -- "$OWNED_TMPDIR" || cleanup_result=$?
+        else
+            cleanup_result=1
+        fi
+        if [ "$cleanup_result" -ne 0 ]; then
+            echo "::error::owned temporary cleanup refused or failed" >&2
+            [ "$result" -ne 0 ] || result=1
+        fi
+    fi
+    exit "$result"
 }
 
 terminate_owned_child() {
     local signal="$1" status="$2" watchdog=""
     trap '' INT TERM
-    if [[ -n "$OWNED_CHILD_PID" ]] \
+    if [[ -n "$OWNED_CHILD_PID" && "$OWNED_CHILD_BIRTH" =~ ^[0-9]+$ ]] \
         && [[ "$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)" == "$OWNED_CHILD_BIRTH" ]]; then
         kill -s "$signal" -- "-$OWNED_CHILD_PID" 2>/dev/null || true
         # The watchdog checks this exact child's kernel birth before signalling
         # its group, then is reaped by the owning shell on either outcome.
         (
             sleep 2
-            if [[ "$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)" == "$OWNED_CHILD_BIRTH" ]]; then
+            if [[ "$OWNED_CHILD_BIRTH" =~ ^[0-9]+$ ]] && [[ "$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)" == "$OWNED_CHILD_BIRTH" ]]; then
                 kill -KILL -- "-$OWNED_CHILD_PID" 2>/dev/null || true
             fi
         ) &
@@ -95,15 +115,30 @@ run_owned_body() {
     (
         set +m
         trap 'unset MINTED' EXIT
+        # Keep this exact group leader alive through the watchdog window.
+        # Foreground descendants retain their ordinary signal dispositions.
+        trap 'unset MINTED; sleep 3' INT TERM
         driver_body
     ) &
     OWNED_CHILD_PID=$!
+    OWNED_CHILD_GROUP="$OWNED_CHILD_PID"
     OWNED_CHILD_BIRTH="$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)"
     wait "$OWNED_CHILD_PID" || status=$?
     OWNED_CHILD_PID=""
     return "$status"
 }
 # END owned temporary-root lifecycle
+
+OWNED_TMPDIR="$(/usr/bin/mktemp -d "${SCRATCH_PREFIX}XXXXXX")"
+readonly OWNED_TMPDIR
+suffix="${OWNED_TMPDIR#"$SCRATCH_PREFIX"}"
+[[ "$OWNED_TMPDIR" = "$SCRATCH_PREFIX"* && "$suffix" =~ ^[[:alnum:]]{6}$ ]]
+[ "${OWNED_TMPDIR%/*}" = /tmp ] && [ ! -L "$OWNED_TMPDIR" ] && [ -d "$OWNED_TMPDIR" ]
+OWNED_TMP_ID="$(stat -c '%d:%i:%u:%a' -- "$OWNED_TMPDIR")"
+[ "${OWNED_TMP_ID##*:}" = 700 ]
+[ "$(stat -c '%u' -- "$OWNED_TMPDIR")" = "$(id -u)" ]
+readonly OWNED_TMP_ID
+export TMPDIR="$OWNED_TMPDIR"
 
 driver_body() {
 mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache"

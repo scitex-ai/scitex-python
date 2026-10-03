@@ -1910,6 +1910,8 @@ def owned_driver_fixture(mode):
         script.write_text(
             'set -euo pipefail\nTMPDIR="$(mktemp -d "$FIXTURE_PARENT/owned-XXXXXX")"\n'
             'printf "%s" "$TMPDIR" > "$FIXTURE_PARENT/root"\n' + lifecycle + "\n"
+            'readonly OWNED_TMPDIR="$TMPDIR"\n'
+            'readonly OWNED_TMP_ID="$(stat -c \'%d:%i:%u:%a\' -- "$TMPDIR")"\n'
             "driver_body() {\n"
             'printf "%s" "$BASHPID" > "$FIXTURE_PARENT/child"\n'
             + bodies[mode]
