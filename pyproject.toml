@@ -614,8 +614,8 @@ rng = [
 scholar-gui = [
     "flask>=2.0.0",
     "click",
-    "crossref-local==0.7.6",
-    "openalex-local==0.7.6",
+    "crossref-local>=0.7.6",
+    "openalex-local>=0.7.6",
 ]
 
 # Scholar Module - Paper management & browser
@@ -655,8 +655,8 @@ scholar = [
     "sql-manager",
     "ruamel.yaml",
     # Standalone packages
-    "crossref-local==0.7.6",
-    "openalex-local==0.7.6",
+    "crossref-local>=0.7.6",
+    "openalex-local>=0.7.6",
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
@@ -864,7 +864,7 @@ dev = [
     "click",
     "connectedpapers-py",
     "crawl4ai",
-    "crossref-local==0.7.6",
+    "crossref-local>=0.7.6",
     "csv2latex",
     "feedparser",
     "figrecipe>=0.29.9",
@@ -897,10 +897,10 @@ dev = [
     "myst-parser",
     "natsort",
     "nest-asyncio",
-    "newb==0.26.7",
+    "newb>=0.26.7",
     "numcodecs",
     "openai",
-    "openalex-local==0.7.6",
+    "openalex-local>=0.7.6",
     "openpyxl",
     "optuna",
     "pdfplumber",
