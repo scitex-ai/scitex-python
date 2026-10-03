@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.8"
+version = "2.30.9"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,11 +79,11 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config==0.3.6",
     # Reproducibility Verification
-    "scitex-clew==0.17.0",
+    "scitex-clew==0.21.0",
     # App SDK — unified file storage for local + cloud
-    "scitex-app==0.2.11",
+    "scitex-app==0.26.1",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.28.0",
+    "scitex-dev==0.62.2",
     "scitex-io==0.3.3",
     "scitex-stats==0.2.24",
     "scitex-audio==0.3.0",
@@ -91,7 +91,7 @@ dependencies = [
     "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
     "scitex-db==0.1.12",
-    "scitex-scholar==1.4.2",
+    "scitex-scholar==1.4.3",
     "scitex-parallel==0.1.8",
     "scitex-types==0.1.6",
     "scitex-path==0.1.7",
@@ -101,7 +101,7 @@ dependencies = [
     "scitex-genai==0.1.1",
     "scitex-gists==0.1.8",
     "scitex-audit==0.2.0",
-    "scitex-logging==0.1.7",
+    "scitex-logging==0.2.2",
     "scitex-dict==0.1.8",
     "scitex-browser==0.1.15",
     "scitex-str==0.1.12",
@@ -118,7 +118,7 @@ dependencies = [
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
     "figrecipe==0.29.9",
-    "scitex-ui==0.6.0",
+    "scitex-ui==0.23.0",
 ]
 
 [project.urls]
@@ -168,7 +168,7 @@ scitex = "scitex"
 # App Module - Unified file storage SDK (local + cloud)
 # Use: pip install scitex[app]
 app = [
-    "scitex-app==0.2.11",
+    "scitex-app==0.26.1",
 ]
 
 # ML Module — classical / deep machine-learning utilities
@@ -294,7 +294,7 @@ db = [
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = ["scitex-dataset==0.5.0"]
+dataset = ["scitex-dataset==0.7.1"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -462,7 +462,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
-    "scitex-logging==0.1.7",
+    "scitex-logging==0.2.2",
 ]
 
 # Media Module - Media display utilities (always available: scitex-etc is a
@@ -658,7 +658,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar==1.4.2"
+    "scitex-scholar==1.4.3"
 ]
 
 # Schema Module - Data schema validation
@@ -730,7 +730,7 @@ tex = [
 # Tunnel Module - SSH reverse tunnel for NAT traversal
 # Use: pip install scitex[tunnel]
 tunnel = [
-    "scitex-ssh==1.0.1",
+    "scitex-ssh==1.1.0",
 ]
 
 # Torch Module - PyTorch support
@@ -750,7 +750,7 @@ types = [
 
 # UI Module - User interface utilities
 # Use: pip install scitex[ui]
-ui = ["scitex-ui==0.6.0"]
+ui = ["scitex-ui==0.23.0"]
 
 # Utils Module - REMOVED (Phase B). The in-tree scitex.utils grab-bag was
 # deleted; its public helpers live in their SoC owners (compress_hdf5 →
@@ -793,7 +793,7 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only the standard library
-clew = ["scitex-clew==0.17.0"]
+clew = ["scitex-clew==0.21.0"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
@@ -948,22 +948,22 @@ dev = [
     "scitex-audio==0.3.0",
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
-    "scitex-clew==0.17.0",
+    "scitex-clew==0.21.0",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
     # it here would break CI's `.[all,dev]` resolve. Install explicitly via
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
-    "scitex-dataset==0.5.0",
-    "scitex-dev==0.28.0",
+    "scitex-dataset==0.7.1",
+    "scitex-dev==0.62.2",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
     "scitex-notification==0.2.9",
-    "scitex-scholar==1.4.2",
-    "scitex-ssh==1.0.1",
+    "scitex-scholar==1.4.3",
+    "scitex-ssh==1.1.0",
     "scitex-stats==0.2.24",
-    "scitex-ui==0.6.0",
+    "scitex-ui==0.23.0",
     "scitex-writer==2.24.1",
     "seaborn",
     "selenium",
@@ -1091,7 +1091,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.28.0"]
+linter = ["scitex-dev==0.62.2"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 
