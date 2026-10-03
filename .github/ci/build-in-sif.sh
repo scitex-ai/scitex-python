@@ -9,6 +9,80 @@ test -x "$PY"
 "$PY" -I -S -B .github/ci/release-identity.py check-source --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT"
 export LC_ALL=C.UTF-8 LANG=C.UTF-8
 TMPDIR="$(mktemp -d "/tmp/build-scitex-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$V-XXXXXX")"
+
+# BEGIN owned temporary-root lifecycle
+readonly OWNED_TMPDIR="$TMPDIR"
+readonly OWNED_TMP_ID="$(stat -c '%d:%i' -- "$OWNED_TMPDIR")"
+OWNED_CHILD_PID=""
+OWNED_CHILD_BIRTH=""
+
+owned_birth() {
+    local line
+    IFS= read -r line < "/proc/$1/stat" || return 1
+    line="${line##*) }"
+    set -- $line
+    printf '%s' "${20}"
+}
+
+cleanup_owned_tmp() {
+    local status=$?
+    trap - EXIT INT TERM
+    unset MINTED
+    if [[ -d "$OWNED_TMPDIR" && ! -L "$OWNED_TMPDIR" ]] \
+        && [[ "$(stat -c '%d:%i' -- "$OWNED_TMPDIR")" == "$OWNED_TMP_ID" ]]; then
+        rm -rf -- "$OWNED_TMPDIR"
+    else
+        echo "::error::owned temporary-root identity changed; cleanup refused" >&2
+        [[ "$status" -ne 0 ]] || status=1
+    fi
+    exit "$status"
+}
+
+terminate_owned_child() {
+    local signal="$1" status="$2" watchdog=""
+    trap '' INT TERM
+    if [[ -n "$OWNED_CHILD_PID" ]] \
+        && [[ "$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)" == "$OWNED_CHILD_BIRTH" ]]; then
+        kill -s "$signal" -- "-$OWNED_CHILD_PID" 2>/dev/null || true
+        # The watchdog checks this exact child's kernel birth before signalling
+        # its group, then is reaped by the owning shell on either outcome.
+        (
+            sleep 2
+            if [[ "$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)" == "$OWNED_CHILD_BIRTH" ]]; then
+                kill -KILL -- "-$OWNED_CHILD_PID" 2>/dev/null || true
+            fi
+        ) &
+        watchdog=$!
+        wait "$OWNED_CHILD_PID" 2>/dev/null || true
+        kill -TERM -- "-$watchdog" 2>/dev/null || true
+        wait "$watchdog" 2>/dev/null || true
+    fi
+    exit "$status"
+}
+
+trap cleanup_owned_tmp EXIT
+trap 'terminate_owned_child INT 130' INT
+trap 'terminate_owned_child TERM 143' TERM
+
+run_owned_body() {
+    local status=0
+    # Bash job control creates a group for exactly this owned body, so a
+    # termination targets its descendants rather than the runner's group.
+    set -m
+    (
+        set +m
+        trap 'unset MINTED' EXIT
+        driver_body
+    ) &
+    OWNED_CHILD_PID=$!
+    OWNED_CHILD_BIRTH="$(owned_birth "$OWNED_CHILD_PID" 2>/dev/null || true)"
+    wait "$OWNED_CHILD_PID" || status=$?
+    OWNED_CHILD_PID=""
+    return "$status"
+}
+# END owned temporary-root lifecycle
+
+driver_body() {
 export TMPDIR UV_CACHE_DIR="$TMPDIR/uv-cache" XDG_CACHE_HOME="$TMPDIR"
 mkdir "$TMPDIR/site" "$TMPDIR/wheel-site"
 unset VIRTUAL_ENV PYTHONHOME PYTHONPATH || true
@@ -41,3 +115,6 @@ assert umbrella.__version__ == __import__("os").environ["RELEASE_TAG"][1:]
 print("Actual isolated whole-wheel umbrella and CLI origins passed")
 PY
 "$PY" -I -S -B .github/ci/release-identity.py write-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT"
+}
+
+run_owned_body

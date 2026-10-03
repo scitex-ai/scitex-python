@@ -12,14 +12,17 @@ import importlib.util
 import io
 import json
 import os
+import signal
 import stat
 import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import tomllib
 import unittest
 import zipfile
+import zlib
 from pathlib import Path
 
 if not __debug__:
@@ -54,13 +57,88 @@ def git(*arguments):
 
 SOURCE = git("rev-parse", "HEAD").decode().strip()
 PYPROJECT = git("show", SOURCE + ":pyproject.toml")
-VERSION = tomllib.loads(PYPROJECT.decode())["project"]["version"]
+PROJECT = tomllib.loads(PYPROJECT.decode())["project"]
+VERSION = PROJECT["version"]
 TAG = "v" + VERSION
 DIST_INFO = "scitex-" + VERSION + ".dist-info"
 SDIST_ROOT = "scitex-" + VERSION
 CONFIG_BYTES = git("show", SOURCE + ":src/" + CONFIG)
 SCRIPT_BYTES = git("show", SOURCE + ":src/" + SCRIPT)
 INIT_BYTES = git("show", SOURCE + ":src/scitex/__init__.py")
+
+# Frozen static metadata from the existing Hatchling 1.27.0 producer, bound to
+# public f34 pyproject (42 core requirements / 77 extras). No backend build.
+PRODUCER_HEADERS = zlib.decompress(
+    base64.b85decode(
+        b"c$}r3U3c8J5r*&eEA}oorew*E6RWjPoy2W(>U<nKZBI{6FR&!E3yUOZ5|p(4^&ODhl@{|3fK4xw*xYA85&#D?gO|"
+        b")t+Nnx8Rs2KugR$-P>gxRE+0Uxc*Q=p4PCuMI`Q^p)^Vese#->sI?t1lZRobTO^;Wloxznp(cW!IjRc+Qi{l2=fy"
+        b">CLd&fJ)CVn=7%%}TY^%Ab?|pz7UVhO=LL`&pN+`1{8X*Q>wUMt5qXpRKmeb;I?=#m2bpxIU*AE_U~1*s8U@eEsd"
+        b"~i}?zRZaVRCD?iwBZ0Ov|(X~G|HCvqbT2*eVD_aid#vWUK)SVrSv;FS>yMph=&FZ&amAAS-wV?|$45J>--i`FPzR"
+        b"-;__4Vps<1pUp)jt=r)gKQn{Asx@W!|2BFeQzLF5W-T&<yj)z5C0rABq>}&kNhuy94oOQ`0Da`0@MqKYx0E_BXw|"
+        b"w|zBSPh(T;$L3k1%B^X2QESz=G<?rmJ@%?DTJ4Cx9iGuy=%;e~>~XM*!(cxf%!XPjy55%lYTC`&_qC!w+!)={DCs"
+        b"+0+s+Tv>JyFCIIOO(S1(t^>N}d4N9d2O(`}`z)w{8x^OV|?i#^TIH2bNX{&?|mx!xm-U#JZ=&CXA|!Rf{u{PKw!s"
+        b"&wa@YTXe|1HI{0(|Cgqs@;q<U%kol2+*HioXVeHK0n>$@^q7{(@l==<u}{W<Gk<CX}mAqw;P%xx(~-U!TMj`_0wU"
+        b"a>S@^O+HCwVo!ZQgE%}>fdfHd-_I?GoVQ<{M>h;m&qvIbYzh(6B<o<uM)mYPm_)&iu4Ndf7K7PG=`(_%j!|@-?;I"
+        b"3C|t!UQYjP+p0?&aGzFR8oF8CBM%ynXxT+w<rAw;QwRb!j^N=FRi-tJmai1E5uIu)Sl4$EMqb2Rm{;YU9U*{m@ow"
+        b"U`Ka5)zsn9#WAU_n=a|q`K3hAvt~W>g5TB?#7)hJ$eIR!OY6(6$1cymmayL554xYBONlCLeLtP<QaqpcRLafmu+B"
+        b"a(Ese{3Yp-O6{<AdnQiAT{H(#xn8@iGJJ+<)a>RcpDxm?7z0-;?wUxhS~^!zEaT!@6wUxxT;OzV0(bb5a|-$>jtX"
+        b"I==u*LLHl@O;VAT{nYYyXJ-@rnOG5tz9Nog!1lXawPLPrCDJU9ndLSCTm@%D7TGwP*=^rOEa(6w7ABb7|N}!6+JC"
+        b"9HN}n|X#E|QZk8tS;QGW2rGMhr;&z=L;&(Jov+oM{5%;BPe3W%(DmwQ5!S(8TMN3xerUy{biqK2G=a^dD!sX>3R@"
+        b"yhSdh=%WRlt13PgOJjsEqZ&-BB}j{T0Jnx9$BBlmd^}kR)x^baOP-$QdTt(bQE6qM1(*$>5TlU&NA-ZCi2xy6TjV"
+        b"(I~o2TJ-9^eyL2Fv%}Eq8*&e&njW!l&R->shP$g;QGcbt8|^PSr%%~>oiw13gckoRzxb!vjkZnE=*p-zi5fSj4oT"
+        b"43O|54ipJaRcCB<yNP7mtVHT9KW9n+xel7nNKwW<|`h}E2vB>Apdr<ttI`>c{z_nC$($=Ed|$w_Lg%{Zi}+UI7p0"
+        b"NhYAmz=HjLsRE4g&#2=J*6j}57jDrpUqvRLD$vRWpq$eCcSQ>8_MIe`=@Dj5*d<1((KZYL_=9-k>_Hbpp)N7@k@q"
+        b"~#MVPciT%S{a$HHT)oQv1HSF5b*fe{;UQ&f`lI+-&w$f#?PbtUGa99&nPeEh;s^E>vyCTm6c(~g=B%dPNxv^C#s;"
+        b"h3gdTiF|NzfVnU~bY>UEBL4Rjb{7Z#LWH9C;+)`p_|B$(kPB<m~Ty?GvxYq_1G0U?|z!-LNZdx4A0Trd56V^gGq}"
+        b"8U3`YC~8YbY~60-YY53X-0jG>`O0I)aPMf@&wxgnL21mV`!?e?@*2}U#ePZ8+wJmZ*v{#JJew->&`c`VS1ojD?=n"
+        b"f<=8~TW+xpxr!xb+UjZH_?3+n&Xq`lRiHjTDp?qxhwCaastTNX5}k`d8@)<aj&K;Pv|erNk~ORKgfjN+TBxXbVqQ"
+        b"}rrEed+yr^KWvL|4E_#NmXl88@DTR0w>RxTa~=Mp8iVxoOBnx={kzkEA1$SGU>sl>@pd>^rLEYUF7ssKi(w0!BSU"
+        b"9JABH)Z;i`~*NIKXPp2gH5%b5QX0FAPBIgMv`=V#2Nl@L)w0c_Y%r$vh{miy`+S}PZ=XaF`?dG5?+vrdb%{6!|km"
+        b"g!E7ECiO9t)_M22TsBxhCeZz?x}tD5Pfc$A#5QqozJ>CI>~=e5<esn`vo#TW;sR{wDh(gGz0-)uD2mYq787X7W!f"
+        b"yO}1(mEK&Vd7pTmKDje=7`FZ_`M&0;zMO5-pXdObZaQD%o4i1Fw>>RNXPP_~sWS~Ik#gQ?`rFUwWv$jWW3kk=Zq3"
+        b"-FIX8CB+Bz9_47Wa9e4D$DSif^?l<$kLbCxPQwiP*PQzm1Txjd0a(IV??R(<;kPr>Un@N^&@jY)PsF}_OQ_H0c_>"
+        b"TW$cXItODxmLZa3b)lwW{*AcS>>XA6)4ADeyNK_wG?zEgIq#YUD8FQBRTID8VbrYrlzZEvo7k4{AAcQ=^)an_2_*"
+        b"?lB4yTp5b(Rx*cqPlTm`1$xbDca`G5WW;xW^roK(*NmFi>1x>MT7CFq4uq^h@3>nFc-{?y+_a<GhojiMymmJP)Zh"
+        b"kh?`HppLRF{_l-78maE4xW@dR_H~GV0u?@_wszvKJmy->c+UKGc2E*FMz4!&NyXD<-?-F4KSMni#`2XS?piJg@6O"
+        b"D}L6Wn*I6XxGAR8No9rpIB)78i%Azq4=8A*H`PXmP2e4unN4Tsdyb!L%3(u$uwA~8>{QZqVLD!`maNhV_rWr}!BT"
+        b"Z@?0Ih<?@BEczq#XmBnjgceUXgb|G|pgMXm2otS9*6s3DUv)<m%@mlY3)hCAH|#M>N@WUB+B(7G^jyeI5f<xS=Zl"
+        b"_uqOT>CKb@^#q#lMOrTRLVKE&NKgjTJw^(jE<T(XdhMM#EM7}{mr7X<Hzs9^N728<z3E0cE``X6tGS%Z!N#T2DQ("
+        b"%_z!FD<;4xIYJFPq4Dm2n_aM76UD{qz9LL0?T+{H#W_tFBfxN2|F=9(qgbm}(2+HH5r!em^HZ_4;B#NB}D#j2f`%"
+        b"g#<iZRHB88w2CVhnPjVhlo2#Tc{ziZRS36l2f`DaH_p6=RT$DaN3Ipcq4}pcsQFT1O!$D8?WgD8>*ID#jp#6k`|+"
+        b"6k`aADaIflD8?|8)p>zp3?hMI3^KsG0*Wcd5G5+cARKIbN{pZwLpV~5#ki|9h*uLpmPxN0QH(+SxB>x@Avq+WVhl"
+        b"4-F@{i}0E3vgq#_oJx*&^0T?pi&E|H3fx+J4er-ivtr-dl2(}E<^X<;f1I3WcSm^g`YKWq`|v>*j_T99OA2uN|^6"
+        b"~?&m3Ugd|g*hm^5>TCtc!2N<V|fr4RADf0DqumCh-Ol`egX@sB4i+_ijab!Dq;}|sv;;5RK;j6sEW``P$jTPP!&P"
+        b"3ph_@E2&%AEnCv4;5L6*FCa9A5P*8<AUYLPgL{J6!Ku`r4EU3chP0|}cK@|qEph{rV;l&Aps+hS@AWxW}LU_a^Qm"
+        b"u_xN#)F#Nu){@F^klKB1Txb6tTcMq=<o}LyDL{QBj0XD0d>3vT`M61Vtz@14)DuvB64@h=Hv1fJR*DfibT1z#Q6;"
+        b"grunSfHYQaK$IyrWC|-c61=F~h}c0D1>~{HK|oRA6p>ivfKjM&fM}?4KoC+nKn|!J1P-ViWHL}WU=XStAj(w^7z<"
+        b"PmBE(b<A_-IuBFj|{5M@<oz=SFX2ni|&navHFVk!s3W0eCUk;(ybF_i-}2vrUULREY~1u6&3aFqk%cFD?UsB)MXu"
+        b"%R#wL{^D#BJ&Go7?)#Q%%gZyAmP%7SvX(|%KFGC|5clejAjN=3#GWzhXv#QFlfh?Y@}i@bb6i_)TCE6A)T*OjG0H"
+        b"IiZL@;dl<1|;=`F`eK|0F58F!^I$jm$4+fxwX9AEgEk&I0*Z`D2F$e+=3&Mmr4WM{^1|WF$1|XfP*drtKDtJ&Rna"
+        b"SyB!cI$vCIfb|J6|?rhbccwO)x^(`N38Y!uUKy6z(xZ!pb26Q9ojihXjaYvlT&n%1jjKa>aB*iF9>34w@oc=4%tL"
+        b"(@e)vQ*0)~?b3~x>g5d}67_Ahx?>;hLfh#R$S2hC-l71pJweO`8(A3QyCs<8y8!~1EKFj%SS1fz;G{)h!`vZ)vFs"
+        b"tjg8U&u^9%yRIN)AbHseMnEsBfH=rC{P@zY-XCnlYR4~|#MCOj=dkSYLh+|vRmtUwEhu(1tjw66^@<R1VCc5xAfH"
+        b"d_IQHbeo2cRCTsHaZ~`?sFoDZABu8?;Ju3ZuDU?+`@xY4g)uCAQ{Gj0220704c<mfMg3cX2g0gz{AP~KzIazpdi5"
+        b"pNSGBPrG0H$Rd1N<!D^@(&hQ!nh@W5qW_>SlVJT1Gc(3k3&?ipR-wL}8vkho#epfiNCuUfhV)A>(2gC66(-`uj(z"
+        b"i<COUey+W2Bir?|RybINN}>rcY1;55hjaGLyNEWKW0ZYm>Q3i&B+iWg9^FV*nsL@Bl=)2g0x~10=|T0R=N#!11T4"
+        b"1xd>OC3az=MBZ`V{{-7SY?R6E#`e;l{><B-UxXK0mfw<}e*w+$Y<d6Iyl{@lOZEGolB>!i$WQLJS&^m(Gp8>^<1h"
+        b"QqChX#v8;E@XpyRH9Ps<K?fUag)YE)cIe8$s`D51Xq$-_cSg>fOISiFQN!F3>%t;G=H4hCVumK8$5Xx5+_(9Qqzf"
+        b"YVl^#fY~yeLEs=94Azo_|i8h79)7tYAiEfGCbhF>-4iBzl6b#J->o*dE9du&xD9dcO~GwE+V6B@{1^1V`UgWE+Ws"
+        b"KnMaa!d~Sf)%fX>I-Y6^_{MI{<3l}9xcn0v=%|fz^k>98hErhpfBtHJ0i)aPjb&=V``!13pew9U{VNFJcgSRy#5Y"
+        b"HQl29**K6|}4ppA?_R48wYh#NwihNVCOLB%`u$(F&-qWj2sYN5HV&BBR+LlsZRnlwZks=p!Yv*L>eZWU>2|aHt2B"
+        b"VXO&_@NwatXvjk(8Re=qk;THR2oA(o5{=YNA{(S35{DElA{$e&9E^metk{e!m1D0{K4E|NVgQY$7Z77MxqfptX1A"
+        b"@&v8TZjW~?L`-kYHYr!SmkE;BQn;}HZh`CYYxA-hnP)e6@L($4u?T<lsRU+9{D11)*AV&;W-G#xdHSX7iNSYa(Ch"
+        b"LQSlA^Baim{Gdtych&v@$cFp3!XhrRCw|G@7@U~jC>Yv{}XESA+JLS1lE2RlMP3>w>ljF#v{eYQfUdRzGoBAlvgl"
+        b"H-6DMVZ#tea6bl!gl6&i@lpMK0S}Dwp<N&2t8D=Bi7%e^-*$`3emf=ST5Gbcih?d?dhivdpIbwLqjwtv>F$U2rM<"
+        b"joR6;V87hm`oH9in4zQ(>M*sgT1FDng}zQ(%u*1PJlK5@BI{h8X^=P854GrdKssxP(6YFr$2WqN=mN3iArXk?DX9"
+        b"l5d{~c1XZ1pvM~KJ@kVf%HDK-Bck};f1#&!#c$*prxnCq>>s<c{{h0HJqQ"
+    )
+)
+PRODUCER_ENTRY_POINTS = (
+    b"[console_scripts]\nscitex = scitex.__main__:main\n"
+    b"scitex-mcp-server = scitex._mcp:main\nscitex-pkg = scitex.cli.pkg:pkg\n\n"
+    b"[scitex_dev.docs]\nscitex = scitex\n\n"
+    b"[scitex_dev.skills]\nscitex = scitex\n\n"
+)
 
 
 @functools.lru_cache(maxsize=1)
@@ -84,7 +162,11 @@ def public_wheel_files():
 
 
 def metadata(version=VERSION, name="scitex", duplicate=False):
-    body = "Metadata-Version: 2.3\nName: " + name + "\nVersion: " + version + "\n"
+    body = (
+        PRODUCER_HEADERS.decode()
+        .replace("Name: scitex\n", "Name: " + name + "\n")
+        .replace("Version: " + VERSION + "\n", "Version: " + version + "\n")
+    )
     if duplicate:
         body += "Version: " + version + "\n"
     return body.encode()
@@ -111,13 +193,19 @@ def wheel(
     modes=None,
     record_transform=None,
     duplicate=None,
+    metadata_body=None,
+    entry_points=PRODUCER_ENTRY_POINTS,
 ):
     bodies = (
         {CONFIG: CONFIG_BYTES, SCRIPT: SCRIPT_BYTES, "scitex/__init__.py": INIT_BYTES}
         if files is None
         else dict(files)
     )
-    bodies[metadata_owner + "/METADATA"] = metadata(version)
+    bodies[metadata_owner + "/METADATA"] = (
+        metadata(version) if metadata_body is None else metadata_body
+    )
+    if entry_points is not None:
+        bodies[metadata_owner + "/entry_points.txt"] = entry_points
     bodies[metadata_owner + "/WHEEL"] = (
         b"Wheel-Version: 1.0\nGenerator: owned-fixture\n"
         b"Root-Is-Purelib: true\nTag: py3-none-any\n"
@@ -157,7 +245,10 @@ def sdist(
         else dict(files)
     )
     bodies.update(
-        {"pyproject.toml": project, "PKG-INFO": metadata_body or metadata(version)}
+        {
+            "pyproject.toml": project,
+            "PKG-INFO": metadata(version) if metadata_body is None else metadata_body,
+        }
     )
     for name in omit:
         bodies.pop(name)
@@ -969,7 +1060,7 @@ class WholeSourceTests(unittest.TestCase):
 
 class ProofAndCliTests(unittest.TestCase):
     def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory(prefix="writer-release-proof-")
+        self.temporary = tempfile.TemporaryDirectory(prefix="umbrella-release-proof-")
         self.addCleanup(self.temporary.cleanup)
         self.directory = Path(self.temporary.name)
         self.wheel_path = self.directory / (SDIST_ROOT + "-py3-none-any.whl")
@@ -1388,6 +1479,492 @@ class UmbrellaSelectionTests(unittest.TestCase):
         ]
         # Assert
         assert results == [1, 1]
+
+
+class SourceMetadataTests(unittest.TestCase):
+    def test_genuine_backend_metadata_binds_all_extras_and_entry_groups(self):
+        # Arrange
+        wheel_raw, sdist_raw = whole_archives()
+        # Act
+        result = RELEASE.source_payload_identity(
+            wheel_raw, sdist_raw, SOURCE, REPOSITORY
+        )
+        # Assert
+        assert result["metadata_source"] == {
+            "runtime_requirements": 630,
+            "extras": 77,
+            "entry_point_groups": 3,
+        }
+
+    def test_rehashed_wheel_cannot_strip_declared_runtime_dependencies(self):
+        # Arrange
+        headers = b"\n".join(
+            line
+            for line in metadata().split(b"\n")
+            if not line.startswith(b"Requires-Dist:")
+        )
+        wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="runtime requirements",
+        )
+        # Assert
+        assert result
+
+    def test_rehashed_wheel_cannot_change_declared_dependency_floor(self):
+        # Arrange
+        headers = metadata().replace(b"scitex-dev==0.62.2", b"scitex-dev==0.0.1")
+        wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="runtime requirements",
+        )
+        # Assert
+        assert result
+
+    def test_rehashed_wheel_cannot_omit_source_extras(self):
+        # Arrange
+        headers = metadata().replace(b"Provides-Extra: all\n", b"")
+        wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="source extras",
+        )
+        # Assert
+        assert result
+
+    def test_normalized_duplicate_extra_refuses_even_with_recomputed_record(self):
+        # Arrange
+        headers = metadata() + b"Provides-Extra: Docs\n"
+        wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="source extras",
+        )
+        # Assert
+        assert result
+
+    def test_rehashed_wheel_cannot_change_requires_python(self):
+        # Arrange
+        headers = metadata().replace(
+            b"Requires-Python: >=3.10", b"Requires-Python: >=3.11"
+        )
+        wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="Requires-Python",
+        )
+        # Assert
+        assert result
+
+    def test_sdist_pkg_info_must_retain_runtime_metadata(self):
+        # Arrange
+        headers = b"\n".join(
+            line
+            for line in metadata().split(b"\n")
+            if not line.startswith(b"Requires-Dist:")
+        )
+        wheel_raw, _ = whole_archives()
+        sdist_raw = sdist(files=public_source_files(), metadata_body=headers)
+        RELEASE.sdist_identity(sdist_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="runtime requirements",
+        )
+        # Assert
+        assert result
+
+    def test_generated_extra_marker_cannot_bind_requirement_to_another_extra(self):
+        # Arrange
+        headers = metadata().replace(b"extra == 'all'", b"extra == 'docs'", 1)
+        wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="runtime requirements",
+        )
+        # Assert
+        assert result
+
+    def test_rehashed_console_binding_cannot_target_another_callable(self):
+        # Arrange
+        entries = PRODUCER_ENTRY_POINTS.replace(
+            b"scitex.__main__:main", b"foreign.entry:main"
+        )
+        wheel_raw = wheel(files=public_wheel_files(), entry_points=entries)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="entry points",
+        )
+        # Assert
+        assert result
+
+    def test_rehashed_entry_points_cannot_add_undeclared_group(self):
+        # Arrange
+        entries = PRODUCER_ENTRY_POINTS + b"[foreign.group]\nforeign = scitex:main\n"
+        wheel_raw = wheel(files=public_wheel_files(), entry_points=entries)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="entry points",
+        )
+        # Assert
+        assert result
+
+    def test_declared_entry_points_cannot_be_absent(self):
+        # Arrange
+        wheel_raw = wheel(files=public_wheel_files(), entry_points=None)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="entry points",
+        )
+        # Assert
+        assert result
+
+    def test_same_owner_unknown_dist_info_payload_refuses(self):
+        # Arrange
+        files = {**public_wheel_files(), DIST_INFO + "/foreign.py": b"# undeclared\n"}
+        wheel_raw = wheel(files=files)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="undeclared payload",
+        )
+        # Assert
+        assert result
+
+    def test_source_byte_bound_license_cannot_be_rehashed_to_other_text(self):
+        # Arrange
+        files = {
+            **public_wheel_files(),
+            DIST_INFO + "/licenses/LICENSE": b"foreign license\n",
+        }
+        wheel_raw = wheel(files=files)
+        _, sdist_raw = whole_archives()
+        RELEASE.wheel_identity(wheel_raw, VERSION)
+        # Act
+        result = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="license bytes",
+        )
+        # Assert
+        assert result
+
+    def test_marker_quotes_order_and_parentheses_keep_same_source_contract(self):
+        # Arrange
+        project = {
+            "name": "scitex",
+            "dependencies": [],
+            "optional-dependencies": {"docs": ["example>=2; python_version < '3.12'"]},
+        }
+        headers = (
+            b"Metadata-Version: 2.4\nProvides-Extra: docs\n"
+            b'Requires-Dist: Example>=2; extra == "docs" '
+            b'and (python_version < "3.12")\n'
+        )
+        # Act
+        result = RELEASE.metadata_source_identity(headers, headers, None, project)
+        # Assert
+        assert result == {
+            "runtime_requirements": 1,
+            "extras": 1,
+            "entry_point_groups": 0,
+        }
+
+    def test_marker_condition_cannot_change_while_extra_identity_is_retained(self):
+        # Arrange
+        project = {
+            "name": "scitex",
+            "dependencies": [],
+            "optional-dependencies": {"docs": ["example>=2; python_version < '3.12'"]},
+        }
+        headers = (
+            b"Metadata-Version: 2.4\nProvides-Extra: docs\n"
+            b"Requires-Dist: example>=2; python_version >= '3.12' and extra == 'docs'\n"
+        )
+        # Act
+        result = refusal(
+            lambda: RELEASE.metadata_source_identity(headers, headers, None, project),
+            message="runtime requirements",
+        )
+        # Assert
+        assert result
+
+    def test_unknown_or_cyclic_source_extra_never_manufactures_metadata(self):
+        # Arrange
+        projects = [
+            {"name": "scitex", "optional-dependencies": {"all": ["scitex[absent]"]}},
+            {"name": "scitex", "optional-dependencies": {"all": ["scitex[all]"]}},
+        ]
+        # Act
+        result = [
+            refusal(lambda: RELEASE.declared_metadata(project), message="source extra")
+            for project in projects
+        ]
+        # Assert
+        assert result == [True, True]
+
+    def test_unsupported_direct_url_and_dynamic_metadata_fail_closed(self):
+        # Arrange
+        projects = [
+            {
+                "name": "scitex",
+                "dependencies": ["example @ https://public.invalid/a.whl"],
+            },
+            {"name": "scitex", "dynamic": ["dependencies"]},
+        ]
+        # Act
+        result = [
+            refusal(lambda: RELEASE.declared_metadata(project)) for project in projects
+        ]
+        # Assert
+        assert result == [True, True]
+
+
+def owned_driver_fixture(mode):
+    """Execute the real tracked lifecycle seam with an owned synthetic child."""
+    source = (HERE / "run-in-sif.sh").read_text()
+    start = source.index("# BEGIN owned temporary-root lifecycle")
+    end = source.index("# END owned temporary-root lifecycle") + len(
+        "# END owned temporary-root lifecycle"
+    )
+    lifecycle = source[start:end]
+    with tempfile.TemporaryDirectory(prefix="umbrella-owned-driver-") as temporary:
+        parent = Path(temporary)
+        unrelated = parent / "unrelated"
+        unrelated.mkdir()
+        (unrelated / "retained").write_text("keep")
+        script = parent / "fixture.sh"
+        bodies = {
+            "success": 'printf done > "$TMPDIR/result"; return 0',
+            "failure": 'printf failed > "$TMPDIR/result"; return 37',
+            "term": 'printf ready > "$FIXTURE_PARENT/ready"; while :; do sleep 1; done',
+            "int": 'printf ready > "$FIXTURE_PARENT/ready"; while :; do sleep 1; done',
+            "stubborn-term": ('trap "" TERM; printf ready > "$FIXTURE_PARENT/ready"; '
+                              'while :; do sleep 1; done'),
+            "symlink": ('mv "$TMPDIR" "$TMPDIR.saved"; '
+                        'ln -s "$FIXTURE_PARENT/unrelated" "$TMPDIR"'),
+            "replacement": ('mv "$TMPDIR" "$TMPDIR.saved"; mkdir "$TMPDIR"; '
+                            'printf replacement > "$TMPDIR/retained"'),
+        }
+        script.write_text(
+            'set -euo pipefail\nTMPDIR="$(mktemp -d "$FIXTURE_PARENT/owned-XXXXXX")"\n'
+            'printf "%s" "$TMPDIR" > "$FIXTURE_PARENT/root"\n' + lifecycle + "\n"
+            "driver_body() {\n"
+            'printf "%s" "$BASHPID" > "$FIXTURE_PARENT/child"\n'
+            + bodies[mode]
+            + "\n}\nrun_owned_body\n"
+        )
+        process = subprocess.Popen(
+            ["/usr/bin/bash", str(script)],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            start_new_session=True,
+            env={
+                "PATH": "/usr/bin:/bin",
+                "LANG": "C.UTF-8",
+                "FIXTURE_PARENT": str(parent),
+            },
+        )
+        try:
+            if mode in {"term", "int", "stubborn-term"}:
+                deadline = time.monotonic() + 3
+                while not (parent / "ready").exists() and process.poll() is None:
+                    if time.monotonic() > deadline:
+                        raise RuntimeError("owned driver fixture did not become ready")
+                    time.sleep(0.01)
+                process.send_signal(signal.SIGINT if mode == "int" else signal.SIGTERM)
+            stdout, stderr = process.communicate(timeout=7)
+        except BaseException:
+            if process.poll() is None:
+                os.killpg(process.pid, signal.SIGKILL)
+            process.communicate(timeout=7)
+            raise
+        root = Path((parent / "root").read_text())
+        child = int((parent / "child").read_text())
+        return {
+            "exit": process.returncode,
+            "root_absent": not root.exists() and not root.is_symlink(),
+            "child_reaped": not Path("/proc/" + str(child)).exists(),
+            "unrelated": (unrelated / "retained").read_text(),
+            "cleanup_refused": b"cleanup refused" in stderr,
+            "replacement_retained": (root / "retained").read_text()
+            if mode == "replacement"
+            else None,
+            "stdout": stdout,
+        }
+
+
+class OwnedDriverCleanupTests(unittest.TestCase):
+    def test_all_three_real_drivers_share_the_same_owned_lifecycle(self):
+        # Arrange
+        sources = [
+            (HERE / name).read_text()
+            for name in ("run-in-sif.sh", "build-in-sif.sh", "publish-in-sif.sh")
+        ]
+        # Act
+        blocks = [
+            text.split("# BEGIN owned temporary-root lifecycle", 1)[1].split(
+                "# END owned temporary-root lifecycle", 1
+            )[0]
+            for text in sources
+        ]
+        # Assert
+        assert len(set(blocks)) == 1
+
+    def test_success_reaps_child_and_removes_only_created_scratch(self):
+        # Arrange
+        # Act
+        result = owned_driver_fixture("success")
+        # Assert
+        assert result == {
+            "exit": 0,
+            "root_absent": True,
+            "child_reaped": True,
+            "unrelated": "keep",
+            "cleanup_refused": False,
+            "replacement_retained": None,
+            "stdout": b"",
+        }
+
+    def test_failure_keeps_child_status_and_cleans_owned_scratch(self):
+        # Arrange
+        # Act
+        result = owned_driver_fixture("failure")
+        # Assert
+        assert result == {
+            "exit": 37,
+            "root_absent": True,
+            "child_reaped": True,
+            "unrelated": "keep",
+            "cleanup_refused": False,
+            "replacement_retained": None,
+            "stdout": b"",
+        }
+
+    def test_term_reaps_owned_group_and_cleans_scratch(self):
+        # Arrange
+        # Act
+        result = owned_driver_fixture("term")
+        # Assert
+        assert result == {
+            "exit": 143,
+            "root_absent": True,
+            "child_reaped": True,
+            "unrelated": "keep",
+            "cleanup_refused": False,
+            "replacement_retained": None,
+            "stdout": b"",
+        }
+
+    def test_int_reaps_owned_group_and_cleans_scratch(self):
+        # Arrange
+        # Act
+        result = owned_driver_fixture("int")
+        # Assert
+        assert result == {
+            "exit": 130,
+            "root_absent": True,
+            "child_reaped": True,
+            "unrelated": "keep",
+            "cleanup_refused": False,
+            "replacement_retained": None,
+            "stdout": b"",
+        }
+
+    def test_term_ignoring_owned_child_is_killed_by_birth_fenced_watchdog(self):
+        # Arrange
+        # Act
+        result = owned_driver_fixture("stubborn-term")
+        # Assert
+        assert result == {
+            "exit": 143, "root_absent": True, "child_reaped": True,
+            "unrelated": "keep", "cleanup_refused": False,
+            "replacement_retained": None, "stdout": b""
+        }
+
+    def test_symlink_replacement_cannot_delete_unrelated_scratch(self):
+        # Arrange
+        # Act
+        result = owned_driver_fixture("symlink")
+        # Assert
+        assert result == {
+            "exit": 1,
+            "root_absent": False,
+            "child_reaped": True,
+            "unrelated": "keep",
+            "cleanup_refused": True,
+            "replacement_retained": None,
+            "stdout": b"",
+        }
+
+    def test_inode_replacement_is_retained_and_refused(self):
+        # Arrange
+        # Act
+        result = owned_driver_fixture("replacement")
+        # Assert
+        assert result == {
+            "exit": 1,
+            "root_absent": False,
+            "child_reaped": True,
+            "unrelated": "keep",
+            "cleanup_refused": True,
+            "replacement_retained": "replacement",
+            "stdout": b"",
+        }
 
 
 if __name__ == "__main__":
