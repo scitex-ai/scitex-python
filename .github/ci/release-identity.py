@@ -149,6 +149,16 @@ def metadata_identity(raw, version):
         raise ValueError("artifact version differs")
 
 
+def wheel_platform_identity(raw):
+    headers = BytesParser().parsebytes(raw)
+    if (
+        headers.get_all("Wheel-Version") != ["1.0"]
+        or headers.get_all("Root-Is-Purelib") != ["true"]
+        or headers.get_all("Tag") != ["py3-none-any"]
+    ):
+        raise ValueError("wheel platform differs from reviewed pure Python source")
+
+
 def wheel_identity(raw, version):
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
         names = archive.namelist()
@@ -170,6 +180,9 @@ def wheel_identity(raw, version):
         owner = "scitex-" + version + ".dist-info"
         if metadata[0] != owner + "/METADATA" or record != owner + "/RECORD":
             raise ValueError("wheel metadata and RECORD owners differ")
+        if owner + "/WHEEL" not in names:
+            raise ValueError("wheel platform metadata is missing")
+        wheel_platform_identity(archive.read(owner + "/WHEEL"))
         seen = set()
         for name, digest, size in csv.reader(
             io.StringIO(archive.read(record).decode())
@@ -699,6 +712,8 @@ def metadata_source_identity(wheel_raw, sdist_raw, entry_points, project):
     expected = declared_metadata(project)
     for raw in (wheel_raw, sdist_raw):
         headers = BytesParser().parsebytes(raw)
+        if headers.get_all("License-File") != ["LICENSE"]:
+            raise ValueError("source License-File declaration differs")
         if headers.get_all("Metadata-Version") not in [
             [x] for x in ("2.1", "2.2", "2.3", "2.4")
         ]:
@@ -776,6 +791,11 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                 for name in ("METADATA", "WHEEL", "RECORD", "entry_points.txt")
             }
             generated.add(owner + "licenses/LICENSE")
+            if owner + "WHEEL" not in names:
+                raise ValueError("wheel platform metadata is missing")
+            wheel_platform_identity(wheel.read(owner + "WHEEL"))
+            if owner + "licenses/LICENSE" not in names:
+                raise ValueError("wheel license payload is missing")
             directories = {
                 str(parent) + "/"
                 for name in generated | actual
@@ -837,7 +857,6 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                     raise ValueError("wheel public source bytes differ")
                 if (
                     name == "LICENSE"
-                    and owner + "licenses/LICENSE" in names
                     and wheel.read(owner + "licenses/LICENSE") != body
                 ):
                     raise ValueError("wheel license bytes differ")

@@ -65,6 +65,7 @@ SDIST_ROOT = "scitex-" + VERSION
 CONFIG_BYTES = git("show", SOURCE + ":src/" + CONFIG)
 SCRIPT_BYTES = git("show", SOURCE + ":src/" + SCRIPT)
 INIT_BYTES = git("show", SOURCE + ":src/scitex/__init__.py")
+LICENSE_BYTES = git("show", SOURCE + ":LICENSE")
 
 # Frozen static metadata from the existing Hatchling 1.27.0 producer, bound to
 # public f34 pyproject (42 core requirements / 77 extras). No backend build.
@@ -195,6 +196,11 @@ def wheel(
     duplicate=None,
     metadata_body=None,
     entry_points=PRODUCER_ENTRY_POINTS,
+    wheel_body=(
+        b"Wheel-Version: 1.0\nGenerator: owned-fixture\n"
+        b"Root-Is-Purelib: true\nTag: py3-none-any\n"
+    ),
+    license_body=LICENSE_BYTES,
 ):
     bodies = (
         {CONFIG: CONFIG_BYTES, SCRIPT: SCRIPT_BYTES, "scitex/__init__.py": INIT_BYTES}
@@ -206,10 +212,10 @@ def wheel(
     )
     if entry_points is not None:
         bodies[metadata_owner + "/entry_points.txt"] = entry_points
-    bodies[metadata_owner + "/WHEEL"] = (
-        b"Wheel-Version: 1.0\nGenerator: owned-fixture\n"
-        b"Root-Is-Purelib: true\nTag: py3-none-any\n"
-    )
+    if wheel_body is not None:
+        bodies[metadata_owner + "/WHEEL"] = wheel_body
+    if license_body is not None:
+        bodies.setdefault(metadata_owner + "/licenses/LICENSE", license_body)
     record = (record_owner or metadata_owner) + "/RECORD"
     encoded = record_bytes(bodies, record)
     bodies[record] = record_transform(encoded) if record_transform else encoded
@@ -1482,6 +1488,108 @@ class UmbrellaSelectionTests(unittest.TestCase):
 
 
 class SourceMetadataTests(unittest.TestCase):
+    def test_rehashed_wheel_cannot_change_pure_python_platform_headers(self):
+        # Arrange
+        valid = b"Wheel-Version: 1.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n"
+        headers = (
+            valid.replace(b"1.0", b"9.0"),
+            valid.replace(b"true", b"false"),
+            valid.replace(b"py3-none-any", b"cp312-cp312-linux_x86_64"),
+            valid + b"Tag: py3-none-any\n",
+        )
+        _, sdist_raw = whole_archives()
+        wheels = [wheel(files=public_wheel_files(), wheel_body=raw) for raw in headers]
+        # Act
+        results = [
+            refusal(
+                lambda raw=raw: RELEASE.source_payload_identity(
+                    raw, sdist_raw, SOURCE, REPOSITORY
+                ),
+                message="wheel platform",
+            )
+            for raw in wheels
+        ]
+        # Assert
+        assert results == [True, True, True, True]
+
+    def test_required_wheel_metadata_cannot_be_omitted_with_recomputed_record(self):
+        # Arrange
+        wheel_raw = wheel(files=public_wheel_files(), wheel_body=None)
+        _, sdist_raw = whole_archives()
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="wheel platform",
+        )
+        # Assert
+        assert refused
+
+    def test_archive_identity_checks_rehashed_wheel_platform_before_admission(self):
+        # Arrange
+        wheel_raw = wheel(
+            wheel_body=(
+                b"Wheel-Version: 1.0\nRoot-Is-Purelib: false\nTag: py3-none-any\n"
+            )
+        )
+        # Act
+        refused = refusal(
+            lambda: RELEASE.wheel_identity(wheel_raw, VERSION),
+            message="wheel platform",
+        )
+        # Assert
+        assert refused
+
+    def test_wheel_license_payload_cannot_be_absent_with_recomputed_record(self):
+        # Arrange
+        wheel_raw = wheel(files=public_wheel_files(), license_body=None)
+        _, sdist_raw = whole_archives()
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="license payload",
+        )
+        # Assert
+        assert refused
+
+    def test_both_artifacts_require_exact_source_license_declaration(self):
+        # Arrange
+        valid = metadata()
+        headers = (
+            valid.replace(b"License-File: LICENSE\n", b""),
+            valid.replace(b"License-File: LICENSE\n", b"License-File: OTHER\n"),
+            valid + b"License-File: LICENSE\n",
+        )
+        pairs = [
+            (
+                wheel(
+                    files=public_wheel_files(),
+                    metadata_body=raw if side == 0 else valid,
+                ),
+                sdist(
+                    files=public_source_files(),
+                    metadata_body=raw if side == 1 else valid,
+                ),
+            )
+            for side in (0, 1)
+            for raw in headers
+        ]
+        # Act
+        results = [
+            refusal(
+                lambda w=w, s=s: RELEASE.source_payload_identity(
+                    w, s, SOURCE, REPOSITORY
+                ),
+                message="source License-File",
+            )
+            for w, s in pairs
+        ]
+        # Assert
+        assert results == [True, True, True, True, True, True]
+
     def test_genuine_backend_metadata_binds_all_extras_and_entry_groups(self):
         # Arrange
         wheel_raw, sdist_raw = whole_archives()
@@ -1710,7 +1818,7 @@ class SourceMetadataTests(unittest.TestCase):
             "optional-dependencies": {"docs": ["example>=2; python_version < '3.12'"]},
         }
         headers = (
-            b"Metadata-Version: 2.4\nProvides-Extra: docs\n"
+            b"Metadata-Version: 2.4\nLicense-File: LICENSE\nProvides-Extra: docs\n"
             b'Requires-Dist: Example>=2; extra == "docs" '
             b'and (python_version < "3.12")\n'
         )
@@ -1731,7 +1839,7 @@ class SourceMetadataTests(unittest.TestCase):
             "optional-dependencies": {"docs": ["example>=2; python_version < '3.12'"]},
         }
         headers = (
-            b"Metadata-Version: 2.4\nProvides-Extra: docs\n"
+            b"Metadata-Version: 2.4\nLicense-File: LICENSE\nProvides-Extra: docs\n"
             b"Requires-Dist: example>=2; python_version >= '3.12' and extra == 'docs'\n"
         )
         # Act
