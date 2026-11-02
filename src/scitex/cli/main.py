@@ -92,6 +92,7 @@ class LazyGroup(SpecGroup):
         cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
         """
         import importlib
+
         import scitex_logging as slogging
 
         module_path_or_candidates, attr_name, _ = self._lazy_subcommands[cmd_name]
