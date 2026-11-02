@@ -83,7 +83,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app==0.26.1",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.62.8",
+    "scitex-dev==0.62.9",
     "scitex-io==0.4.2",
     "scitex-stats==1.0.0",
     "scitex-audio==0.3.0",
@@ -953,7 +953,7 @@ dev = [
     # [all] includes those published integrations without a duplicate here.
     "scitex-container==0.4.4",
     "scitex-dataset==0.8.1",
-    "scitex-dev==0.62.8",
+    "scitex-dev==0.62.9",
     "scitex-etc==0.2.1",
     "scitex-genai==0.2.1",
     "scitex-io==0.4.2",
@@ -1093,7 +1093,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.62.8"]
+linter = ["scitex-dev==0.62.9"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.38.6"]
 
