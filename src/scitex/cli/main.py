@@ -15,9 +15,10 @@ warnings.filterwarnings(
 import os
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand, SpecGroup
 
 
-class LazyGroup(click.Group):
+class LazyGroup(SpecGroup):
     """Click group that lazily imports subcommands on demand.
 
     Subcommands are only imported when actually invoked, not during
@@ -139,6 +140,26 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 
 @click.group(
     cls=LazyGroup,
+    help_spec=CliHelp(
+        summary="Integrated scientific research tools and delegated package commands.",
+        version_of="scitex",
+        description=(
+            "Peer commands keep their own configuration and API contracts.",
+            "Use `scitex completion install` to enable shell completion.",
+        ),
+        examples=(
+            Example("{prog} config list", "Show configured paths"),
+            Example("{prog} mcp list-tools", "List MCP tools"),
+            Example("{prog} completion status", "Check shell completion"),
+        ),
+        config_resolution=(
+            "Shared paths use scitex-config: SCITEX_DIR (including .env when "
+            "unset) falls back to ~/.scitex. `scitex config list --env` "
+            "shows the selected paths.",
+            "Peer commands resolve their own settings; see their --help "
+            "for package-specific configuration.",
+        ),
+    ),
     lazy_subcommands=_LAZY_SUBCOMMANDS,
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
@@ -157,24 +178,7 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 )
 @click.pass_context
 def cli(ctx, help_recursive, as_json):
-    """
-    Integrated Scientific Research Platform (SciTeX).
-
-    \b
-    Examples:
-      scitex config list                    # Show configured paths
-      scitex cloud clone user/project       # Clone from cloud
-      scitex scholar bibtex papers.bib      # Manage papers
-      scitex audio speak "Hello"            # Text-to-speech
-      scitex mcp list-tools                 # List MCP tools
-      scitex mcp start                      # Start MCP server
-
-    \b
-    Enable tab-completion:
-      scitex completion install            # Install for your shell
-      scitex completion install --dry-run  # Preview without writing
-      scitex completion status             # Check installation status
-    """
+    """Dispatch commands while keeping peer imports lazy."""
     ctx.ensure_object(dict)["as_json"] = as_json
     # #211: top-level `--json <sub>` can't propagate to subcommand click.options.
     # Warn once on stderr so agent scripts piping to jq learn the right form.
@@ -254,7 +258,14 @@ def _print_help_recursive(ctx):
 # auto-installed) was replaced in CLI-standardization slice 5.
 
 
-@cli.command("list-python-apis")
+@cli.command(
+    "list-python-apis",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="List SciTeX Python APIs; alias for introspect api scitex.",
+        examples=(Example("{prog} list-python-apis --json", "Print API inventory"),),
+    ),
+)
 @click.option("-v", "--verbose", count=True, help="Verbosity: -v +doc, -vv full doc")
 @click.option("-d", "--max-depth", type=int, default=5, help="Max recursion depth")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
