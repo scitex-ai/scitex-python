@@ -1,0 +1,44 @@
+name: ci
+
+# Canonical scitex CI — thin org-reusable caller (the ONE per-repo shape).
+# Job bodies live ONCE, org-side, in scitex-ai/.github@main.
+# Runner policy: SELF-HOSTED ONLY (PS-169), via repo Actions Variable CI_RUNS_ON.
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  schedule:
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pytest-matrix:
+    uses: scitex-ai/.github/.github/workflows/pytest-matrix.yml@main
+    with:
+      pre_test_command: |
+        owned=$(mktemp -d "${RUNNER_TEMP:?}/scitex-matrix-context.XXXXXXXX")
+        mkdir -p "$owned/tmp" "$owned/cache" "$owned/config" "$owned/scitex" "$owned/mpl"
+        for pair in "SCITEX_DIR=$owned/scitex" "TMPDIR=$owned/tmp" "XDG_CACHE_HOME=$owned/cache" "XDG_CONFIG_HOME=$owned/config" "MPLCONFIGDIR=$owned/mpl" "MPLBACKEND=Agg" "PIP_CACHE_DIR=$owned/cache/pip" "UV_CACHE_DIR=$owned/cache/uv" "PYTHONPYCACHEPREFIX=$owned/cache/pycache" "RUN_E2E=1"; do
+          printf '%s\n' "$pair" >> "${GITHUB_ENV:?}"
+        done
+    secrets: inherit
+
+  import-smoke:
+    uses: scitex-ai/.github/.github/workflows/import-smoke.yml@main
+    with:
+      console_script: scitex
+    secrets: inherit
+
+  quality-audit:
+    uses: scitex-ai/.github/.github/workflows/quality-audit.yml@main
+    secrets: inherit
+
+  rtd-sphinx-build:
+    uses: scitex-ai/.github/.github/workflows/rtd-sphinx-build.yml@main
+    secrets: inherit
