@@ -949,16 +949,15 @@ dev = [
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
     "scitex-clew==0.21.0",
-    # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
-    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
-    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
-    # `pip install scitex[cloud]` when scitex-hub is available.
+    # Hub integration is declared by the cloud/hub/module/project extras;
+    # [all] includes those published integrations without a duplicate here.
     "scitex-container==0.4.4",
     "scitex-dataset==0.8.1",
     "scitex-dev==0.62.7",
     "scitex-etc==0.2.1",
     "scitex-genai==0.2.1",
     "scitex-io==0.4.1",
+    "scitex-logging==0.2.4",
     "scitex-notification==0.2.9",
     "scitex-scholar==1.29.0",
     "scitex-ssh==1.2.0",
