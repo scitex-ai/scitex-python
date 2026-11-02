@@ -359,19 +359,21 @@ def check_mcp_deps(server_name: str = "scitex") -> None:
         server_name: Name of the MCP server for error messages
     """
     import sys
+    from scitex_logging import getLogger
 
+    log = getLogger(__name__)
     try:
         import mcp  # noqa: F401
     except ImportError:
-        print(f"{'=' * 60}")
-        print(f"MCP Server '{server_name}' requires the 'mcp' package.")
-        print()
-        print("Install with:")
-        print("  pip install mcp")
-        print()
-        print("Or install scitex with MCP support:")
-        print("  pip install scitex[mcp]")
-        print(f"{'=' * 60}")
+        log.error(f"{'=' * 60}")
+        log.error(f"MCP Server '{server_name}' requires the 'mcp' package.")
+        log.error("")
+        log.error("Install with:")
+        log.error("  pip install mcp")
+        log.error("")
+        log.error("Or install scitex with MCP support:")
+        log.error("  pip install scitex[mcp]")
+        log.error(f"{'=' * 60}")
         sys.exit(1)
 
 

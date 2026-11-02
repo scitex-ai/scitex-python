@@ -10,20 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.30.9] - Unreleased
 
 ### Changed
-- Align the umbrella's Clew, Dev and Logging requirements with the Clew 0.21.0
-  dependency contract across core dependencies and their declared extras:
-  scitex-clew 0.17.0 to 0.21.0, scitex-dev 0.28.0 to 0.62.2 and
-  scitex-logging 0.1.7 to 0.2.2. The existing lazy external Clew re-export
-  remains unchanged. Dev 0.62.2 requires scitex-scholar>=1.4.3, so the
-  corresponding existing Scholar pins move from 1.4.2 to 1.4.3 to close
-  that dependency constraint.
-  Existing scitex-ssh pins in the Dev and tunnel extras move from 1.0.1
-  to 1.1.0 because Dev 0.62.2 also requires scitex-ssh>=1.1.0.
-  The existing Dataset and Dev extra pins move from scitex-dataset 0.5.0
-  to 0.7.1 for the current Dataset consumer requirement.
-  Existing legacy App pins move from 0.2.11 to 0.26.1 and UI pins from
-  0.6.0 to 0.23.0 to satisfy the App>=0.24.0 and UI>=0.11.1 requirements
-  of Cards 0.53.4, while preserving the existing application namespaces.
+- Refresh the umbrella's exact member snapshot for the coordinated SAC 0.38.6
+  scientific environment. The dependency versions in `pyproject.toml` remain
+  the single snapshot for core dependencies and their existing extras; the
+  umbrella retains its 77 extras and public module entry points.
+- Include the existing Cloud, Hub, Module and Project integration extras in
+  `[all]`, which now includes the published Hub core package.
+
+### Fixed
+- Route diagnostics and human output through scitex-logging while preserving
+  caller-owned streams and prefix-free protocol output.
+- Package the real documentation bundle and guard optional Playwright imports.
+- Run release checks through the canonical shared CI workflows.
 
 ## [2.30.5] - 2026-06-30
 

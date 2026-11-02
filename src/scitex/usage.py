@@ -10,6 +10,10 @@ entry point: ``stx.usage("plt")`` instead of ``stx.template.get_code_template("p
 
 from __future__ import annotations
 
+from scitex_logging import getPlainConsole
+
+_result = getPlainConsole(__name__)
+
 
 def show(topic: str | None = None) -> str:
     """Show usage examples for a scitex module.
@@ -35,17 +39,17 @@ def show(topic: str | None = None) -> str:
         lines.append("")
         lines.append("Example: stx.usage('plt')")
         text = "\n".join(lines)
-        print(text)
+        _result.emit(text)
         return text
 
     if topic not in CODE_TEMPLATES:
         available = ", ".join(CODE_TEMPLATES.keys())
         msg = f"Unknown topic: '{topic}'. Available: {available}"
-        print(msg)
+        _result.emit(msg)
         return msg
 
     content = get_code_template(topic)
-    print(content)
+    _result.emit(content)
     return content
 
 

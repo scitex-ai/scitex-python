@@ -147,13 +147,13 @@ def list_tools(
     Verbosity: (none) names, -v signatures, -vv +description, -vvv full.
     Signatures are expanded by default; use -c/--compact for single line.
     """  # noqa: D301
-    import logging
+    import scitex_logging as slogging
     import warnings
 
     # Suppress DeprecationWarnings from third-party libraries (httplib2, etc.)
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     # Suppress INFO messages from env loader during import
-    logging.getLogger("scitex.helpers._env_loader").setLevel(logging.WARNING)
+    slogging.getLogger("scitex.helpers._env_loader").setLevel(slogging.WARNING)
     try:
         from scitex._mcp import FASTMCP_AVAILABLE
         from scitex._mcp import mcp as mcp_server

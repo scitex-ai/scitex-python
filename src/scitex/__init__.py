@@ -15,13 +15,13 @@ Modules are imported on-demand to avoid circular dependencies.
 
 # Suppress SQLAlchemy verbose logging (SQL queries, BEGIN/COMMIT)
 # Must happen early, before any module imports sqlalchemy
-import logging as _stdlib_logging
+import scitex_logging as _logging
 import warnings
 
-_stdlib_logging.getLogger("sqlalchemy").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.engine").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.engine.Engine").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.pool").setLevel(_stdlib_logging.WARNING)
+_logging.getLogger("sqlalchemy").setLevel(_logging.WARNING)
+_logging.getLogger("sqlalchemy.engine").setLevel(_logging.WARNING)
+_logging.getLogger("sqlalchemy.engine.Engine").setLevel(_logging.WARNING)
+_logging.getLogger("sqlalchemy.pool").setLevel(_logging.WARNING)
 
 # Show deprecation warnings from scitex modules (educational for migration)
 warnings.filterwarnings("default", category=DeprecationWarning, module="scitex.*")

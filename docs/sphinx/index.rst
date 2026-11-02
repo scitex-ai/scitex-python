@@ -1,7 +1,7 @@
 .. SciTeX documentation master file
 
 SciTeX -- Modular Python Toolkit for Researchers and AI Agents
-=============================================================
+==============================================================
 
 A Python framework for reproducible scientific research.
 

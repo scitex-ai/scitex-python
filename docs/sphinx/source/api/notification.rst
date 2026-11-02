@@ -1,5 +1,5 @@
 Notification Module (``stx.notification``)
-===============================
+==========================================
 
 Multi-backend notification system for alerting researchers when
 long-running tasks complete, errors occur, or results are ready.
