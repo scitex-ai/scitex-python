@@ -20,12 +20,13 @@ SciTeX is organized around a simple principle: every research script should be
 a reproducible, self-documenting unit of work. The ``@stx.session`` decorator
 enforces this by managing outputs, logging, and configuration automatically.
 
-.. image:: _static/architecture.png
+.. image:: _static/architecture.svg
    :width: 100%
    :alt: Module architecture: Experiment (session, config, io, logging, repro), Analysis & Visualization (stats, dsp, plt, diagram), Publication (scholar, writer, clew)
 
-Modules are grouped into three layers -- **Experiment** infrastructure (blue),
-**Analysis & Visualization** tools (orange), and **Publication** (purple).
+The diagram groups the public modules by their role in the workflow. Each
+module delegates to its focused standalone owner; these are not duplicated
+implementations inside the umbrella.
 See :doc:`modules/index` for the full module reference.
 
 The Session Model

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="240" viewBox="0 0 960 240" role="img" aria-labelledby="title desc">
+  <title id="title">SciTeX module responsibilities</title>
+  <desc id="desc">Experiment infrastructure, analysis and visualization, and publication modules delegate to focused standalone packages.</desc>
+  <style>text{font-family:Arial,sans-serif;fill:#1a2a40}.heading{font-size:20px;font-weight:bold}.modules{font-size:18px}.note{font-size:15px}</style>
+  <rect width="960" height="240" fill="#fff"/>
+  <rect x="16" y="20" width="288" height="168" rx="8" fill="#e8f4fd" stroke="#3973a4"/>
+  <rect x="336" y="20" width="288" height="168" rx="8" fill="#fff3e0" stroke="#aa6c22"/>
+  <rect x="656" y="20" width="288" height="168" rx="8" fill="#f3e5f5" stroke="#866096"/>
+  <g text-anchor="middle">
+    <text class="heading" x="160" y="57">Experiment</text>
+    <text class="modules" x="160" y="98">session · config · io</text>
+    <text class="modules" x="160" y="132">logging · repro</text>
+    <text class="heading" x="480" y="57">Analysis &amp; visualization</text>
+    <text class="modules" x="480" y="98">stats · dsp</text>
+    <text class="modules" x="480" y="132">plt · diagram</text>
+    <text class="heading" x="800" y="57">Publication</text>
+    <text class="modules" x="800" y="98">scholar · writer</text>
+    <text class="modules" x="800" y="132">clew</text>
+    <text class="note" x="480" y="222">One umbrella API · focused standalone implementations</text>
+  </g>
+</svg>

@@ -73,9 +73,9 @@ Package Reference
      - ``scitex.clew``
      - ``pip install scitex-clew``
      - Hash-based reproducibility verification
-   * - scitex-linter
-     - ``scitex.linter``
-     - ``pip install scitex-linter``
+   * - scitex-dev (linter)
+     - ``scitex_dev.linter``
+     - ``pip install scitex-dev``
      - AST-based code pattern checking
    * - scitex-dataset
      - ``scitex.dataset``
