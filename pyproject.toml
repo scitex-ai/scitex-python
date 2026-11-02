@@ -1022,9 +1022,12 @@ all = [
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
-    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
-    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
+    # Public Hub integration extras belong to the same [all] closure.
+    # scitex-hub 0.19.0 is published; these select its core package only.
+    "scitex[cloud]",
+    "scitex[hub]",
+    "scitex[module]",
+    "scitex[project]",
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
