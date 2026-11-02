@@ -120,8 +120,8 @@ class LazyGroup(SpecGroup):
             # location (e.g. scitex_writer._cli.main) — returning it would
             # crash click at dispatch ('function' object has no attribute
             # 'make_context'). Skip non-commands and keep probing.
-            # (click.Group is not a click.Command subclass until click 9,
-            # so check both; avoids the deprecated click.BaseCommand.)
+            # Explicitly accept both public command types; this also avoids
+            # depending on the deprecated click.BaseCommand compatibility API.
             if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
         if last_exc is not None:
