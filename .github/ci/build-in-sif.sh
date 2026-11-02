@@ -127,12 +127,38 @@ command -v uv >/dev/null
 # the complete frontend/backend normally into an exclusive target, then build
 # from the sdist without creating another virtual environment.
 "$PY" -c 'import tomllib; x=tomllib.load(open("pyproject.toml","rb")); assert x["build-system"] == {"requires":["hatchling"],"build-backend":"hatchling.build"}'
-uv pip install --python "$PY" --target="$TMPDIR/site" build hatchling
+uv pip install --python "$PY" --target="$TMPDIR/site" build hatchling ".[docs]"
 export PYTHONPATH="$TMPDIR/site"
 [ ! -e dist ] && [ ! -L dist ] || { echo "::error::stale release output refused"; exit 1; }
+# Build the real current documentation; never publish a wheel without its docs.
+"$PY" -m sphinx -b html docs/sphinx src/scitex/_sphinx_html
+test -s src/scitex/_sphinx_html/index.html
 "$PY" -m build --no-isolation --outdir dist
 WHEELS=(dist/*.whl)
 [ "${#WHEELS[@]}" -eq 1 ] && [ -f "${WHEELS[0]}" ]
+# Verify actual documentation membership, including source-distribution rebuilds.
+"$PY" - "$PWD" <<'DOCS'
+from pathlib import Path
+import hashlib
+import tarfile
+import zipfile
+import sys
+root = Path(sys.argv[1])
+source = root / "src/scitex/_sphinx_html"
+required = ("index.html", "searchindex.js", "objects.inv")
+expected = {name: hashlib.sha256((source / name).read_bytes()).digest() for name in required}
+wheel, = (root / "dist").glob("*.whl")
+sdist, = (root / "dist").glob("*.tar.gz")
+with zipfile.ZipFile(wheel) as archive:
+    for name, digest in expected.items():
+        assert hashlib.sha256(archive.read("scitex/_sphinx_html/" + name)).digest() == digest
+with tarfile.open(sdist) as archive:
+    for name, digest in expected.items():
+        matches = [item for item in archive.getmembers()
+                   if item.name.endswith("/src/scitex/_sphinx_html/" + name)]
+        assert len(matches) == 1
+        assert hashlib.sha256(archive.extractfile(matches[0]).read()).digest() == digest
+DOCS
 # Resolve the actual wheel's full runtime dependencies into a fresh target.
 # -I -S keeps both the source checkout and baked site-packages out of imports.
 uv pip install --python "$PY" --target="$TMPDIR/wheel-site" "${WHEELS[0]}"

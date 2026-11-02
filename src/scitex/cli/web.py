@@ -348,7 +348,12 @@ def take_screenshot_cmd(url, output, message, quality, full_page, dry_run):
             # For now, we'll use a simpler approach with playwright directly
             import asyncio
 
-            from playwright.async_api import async_playwright
+            try:
+                from playwright.async_api import async_playwright
+            except ImportError as exc:
+                raise ImportError(
+                    "Screenshot support requires pip install 'scitex[browser]'"
+                ) from exc
 
             async def capture():
                 async with async_playwright() as p:

@@ -28,7 +28,7 @@ Usage:
 from __future__ import annotations
 
 import importlib
-import logging
+import scitex_logging as slogging
 import os
 import threading
 import warnings
@@ -43,7 +43,7 @@ from scitex_dev import try_import_optional
 
 from ._compat import get_tools_sync, mounted_namespaces, safe_mount
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 FastMCP = try_import_optional("fastmcp", "FastMCP", pkg="scitex")
 FASTMCP_AVAILABLE = FastMCP is not None
@@ -95,9 +95,7 @@ _SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 #     pandas + numpy via its ``_search`` / ``_plot`` submodules. Same
 #     cold-start waste as ``scitex-types`` (sac real-SIF re-verify of
 #     umbrella 2.30.8).
-_LOCAL_UNMOUNTABLE = frozenset(
-    {"scitex-orochi", "scitex-types", "scitex-str"}
-)
+_LOCAL_UNMOUNTABLE = frozenset({"scitex-orochi", "scitex-types", "scitex-str"})
 
 # Namespace overrides — registry's ``umbrella_subcommand`` may differ from
 # the prefix consumers already know. Apply these renames so existing tool
@@ -439,19 +437,19 @@ def run_server(
     if not FASTMCP_AVAILABLE:
         import sys
 
-        print("=" * 60)
-        print("Requires 'fastmcp' package: pip install fastmcp")
-        print("=" * 60)
+        logger.error("=" * 60)
+        logger.error("Requires 'fastmcp' package: pip install fastmcp")
+        logger.error("=" * 60)
         sys.exit(1)
 
     if transport == "stdio":
         mcp.run(transport="stdio")
     elif transport == "sse":
-        print(f"Starting scitex MCP (SSE) on {host}:{port}")
-        print(f"Remote: ssh -R {port}:localhost:{port} remote-host")
+        logger.info(f"Starting scitex MCP (SSE) on {host}:{port}")
+        logger.info(f"Remote: ssh -R {port}:localhost:{port} remote-host")
         mcp.run(transport="sse", host=host, port=port)
     elif transport == "http":
-        print(f"Starting scitex MCP (HTTP) on {host}:{port}")
+        logger.info(f"Starting scitex MCP (HTTP) on {host}:{port}")
         mcp.run(transport="streamable-http", host=host, port=port)
     else:
         raise ValueError(f"Unknown transport: {transport}")

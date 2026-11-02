@@ -1102,6 +1102,9 @@ path = "src/scitex/__version__.py"
 pattern = '__version__ = "(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.wheel]
+# Release builds generate the real Sphinx bundle before building distributions.
+# Explicit artifacts override gitignore without committing generated HTML.
+artifacts = ["src/scitex/_sphinx_html/**"]
 exclude = [
     # Scholar development symlinks
     "src/scitex/scholar/.env",
@@ -1115,6 +1118,7 @@ exclude = [
 
 
 [tool.hatch.build.targets.sdist]
+artifacts = ["src/scitex/_sphinx_html/**"]
 exclude = [
     # Scholar development symlinks
     "src/scitex/scholar/.env",
