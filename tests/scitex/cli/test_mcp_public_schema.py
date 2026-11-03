@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
+import os
+import subprocess
+import sys
+from pathlib import Path
 
 import pytest
-from click.testing import CliRunner
 
 pytest.importorskip("fastmcp")
 pytest.importorskip("scitex_dev")
@@ -13,18 +17,27 @@ pytest.importorskip("scitex_dev")
 
 @pytest.fixture(scope="module")
 def actual_discovery():
-    from scitex.cli.mcp import mcp
-
-    return CliRunner().invoke(mcp, ["list-tools", "--json"])
+    source_root = str(Path(importlib.util.find_spec("scitex").origin).parent.parent)
+    env = os.environ.copy()
+    env["PYTHONPATH"] = os.pathsep.join(
+        filter(None, (source_root, env.get("PYTHONPATH")))
+    )
+    return subprocess.run(
+        [sys.executable, "-m", "scitex", "mcp", "list-tools", "--json"],
+        capture_output=True,
+        text=True,
+        timeout=45,
+        env=env,
+    )
 
 
 def test_actual_json_discovery_succeeds(actual_discovery):
     # Arrange
     result = actual_discovery
     # Act
-    exit_code = result.exit_code
+    exit_code = result.returncode
     # Assert
-    assert exit_code == 0, result.output
+    assert exit_code == 0, result.stderr
 
 
 def test_actual_json_discovery_uses_public_result_schema(actual_discovery):
