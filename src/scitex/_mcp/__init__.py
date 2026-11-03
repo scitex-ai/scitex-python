@@ -415,7 +415,7 @@ if FASTMCP_AVAILABLE:
 
     # Annotate tools with the standardized Result envelope schema.
     try:
-        from scitex_dev.types import RESULT_SCHEMA
+        from scitex_dev import RESULT_SCHEMA
 
         for tool in get_tools_sync(mcp).values():
             if getattr(tool, "output_schema", None) is None:
