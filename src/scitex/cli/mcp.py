@@ -214,7 +214,7 @@ def list_tools(
     if as_json:
         import json
 
-        from scitex_dev.types import RESULT_SCHEMA
+        from scitex_dev import RESULT_SCHEMA
 
         output = {
             "result_envelope": RESULT_SCHEMA,
