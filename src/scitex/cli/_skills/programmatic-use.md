@@ -1,80 +1,36 @@
-# Programmatic Use of stx.cli
+# Programmatic CLI access
 
-The `stx.cli` module exposes utilities for programmatic interaction with the Click-based CLI, including recursive help display and JSON output.
-
-## Accessing the CLI group
+The public Click group is `scitex.cli.cli`. Use a controlled runner to inspect
+its output without invoking a provider's business operation:
 
 ```python
+import json
+from click.testing import CliRunner
 from scitex.cli import cli
 
-# cli is a Click group — can be invoked programmatically
-from click.testing import CliRunner
-
-runner = CliRunner()
-result = runner.invoke(cli, ["scholar", "--help"])
-print(result.output)
+result = CliRunner().invoke(cli, ["--json"])
+assert result.exit_code == 0
+commands = json.loads(result.output)["data"]["commands"]
 ```
 
-## print_help_recursive
+`group_to_json(ctx, group)` prints a Result JSON summary and calls `ctx.exit(0)`;
+it does not return a dictionary. For the umbrella's normal summary it uses
+visible metadata without loading provider command trees. Hidden aliases are
+omitted.
 
-Print formatted help for a Click group and all its subcommands (terminal output):
-
-```python
-import click
-from scitex.cli import print_help_recursive
-
-ctx = click.Context(cli)
-print_help_recursive(ctx, cli)
-# Outputs colored "━━━ scitex <subcommand> ━━━" banners with help text
-```
-
-## group_to_json
-
-Output available subcommands as a JSON `Result` envelope:
+`help_recursive_to_json(ctx, group)` prints a nested command tree and exits.
+`print_help_recursive(ctx, group)` prints formatted help for the group and
+nested commands. Recursive inspection can import optional provider parsers;
+it is distinct from the normal metadata-only summary.
 
 ```python
-import click
-from scitex.cli import group_to_json
-
-ctx = click.Context(cli)
-group_to_json(ctx, cli)
-# Prints JSON: {"success": true, "data": {"commands": {"scholar": "Scholar CLI commands.", ...}}}
-```
-
-## help_recursive_to_json
-
-Get the full CLI command tree as structured JSON:
-
-```python
-import click
-from scitex.cli import help_recursive_to_json
-
-ctx = click.Context(cli)
-help_recursive_to_json(ctx, cli)
-# Prints JSON with nested command structure including help text, params, and subcommands
-```
-
-## format_python_signature
-
-Format a Python function signature with Click-style terminal colors:
-
-```python
+import json
 from scitex.cli import format_python_signature
-import scitex as stx
 
-name_colored, sig_colored = format_python_signature(stx.io.save, multiline=True)
-print(f"{name_colored}{sig_colored}")
-# Output: green bold function name + colored parameter types and defaults
+name, signature = format_python_signature(json.dumps, multiline=True)
 ```
 
-## LazyGroup (internal)
-
-The CLI uses a custom `LazyGroup` that only imports subcommand modules when they are actually invoked. This keeps `scitex --help` instant and avoids loading all 30+ subcommand modules at startup.
-
-```python
-from scitex.cli.main import LazyGroup
-
-# LazyGroup subcommands are defined as:
-# (module_path, attr_name, short_help)
-# They are importlib.import_module'd only when first called
-```
+`LazyGroup` and its command specifications are dispatcher internals. Do not
+manufacture command candidates from Python module names or invoke console
+functions to discover their schema. Installed declarations, effective policy,
+parser resolution and authorized execution are separate stages.
