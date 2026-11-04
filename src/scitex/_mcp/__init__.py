@@ -306,7 +306,9 @@ def _resolve_peers_bounded(
     return resolved, skipped
 
 
-def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
+def register_all_tools(
+    mcp, *, iter_registry=None, peer_timeout=None, package_policy=None
+) -> None:
     """Mount every peer's FastMCP onto the umbrella, then fold in extras.
 
     Order:
@@ -318,9 +320,10 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
          deadlock across the full peer set).
       2. Peer surfaces needing brand/name adjustment (figrecipe plt_stx,
          socialia social_*, linter, optional cloud mount).
-      3. Umbrella-only inline tools (no peer owns them).
+      3. Existing umbrella compatibility tools with explicit delegated owners.
 
-    Each peer is gated by ``SCITEX_MCP_USE_<NAMESPACE>=0`` (default enabled).
+    Shared owner MCP preferences and independent namespace environment switches
+    are applied before provider imports. CLI/Python visibility stays independent.
 
     Args:
         mcp: the umbrella FastMCP server to mount onto.
@@ -330,15 +333,20 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
             with hand-rolled fixture peers instead of patching module globals.
         peer_timeout: injectable per-peer resolve budget in seconds; defaults
             to :func:`_peer_timeout` (the ``SCITEX_MCP_PEER_TIMEOUT`` env var).
+        package_policy: shared construction snapshot, or an explicit owner map
+            for hosts and owned fixtures. The default uses the public Dev resolver.
     """
     iter_registry = iter_registry if iter_registry is not None else _iter_registry
     timeout = peer_timeout if peer_timeout is not None else _peer_timeout()
+    from ._exposure import is_exposed, load_package_policy
+
+    package_policy = load_package_policy(package_policy)
     mounted: set[str] = set()
 
     peers = [
         (import_name, namespace)
-        for _pip, import_name, namespace in iter_registry()
-        if _is_enabled(namespace)
+        for owner, import_name, namespace in iter_registry()
+        if is_exposed(owner, namespace, package_policy)
     ]
 
     resolved, skipped = _resolve_peers_bounded(peers, timeout)
@@ -363,8 +371,8 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
     from ._peer_extras import register_peer_extras
     from ._umbrella_tools import register_umbrella_tools
 
-    register_peer_extras(mcp)
-    register_umbrella_tools(mcp)
+    register_peer_extras(mcp, package_policy=package_policy)
+    register_umbrella_tools(mcp, package_policy=package_policy)
 
     if mounted:
         logger.info(
@@ -422,21 +430,16 @@ Use introspect_* tools to explore the API: introspect_dir("scitex.stats")
 if FASTMCP_AVAILABLE:
     mcp = FastMCP(name="scitex", instructions=_INSTRUCTIONS)
 
-    register_all_tools(mcp)
+    from ._exposure import configure_discovery, load_package_policy
 
-    # Annotate tools with the standardized Result envelope schema.
-    try:
-        from scitex_dev.types import RESULT_SCHEMA
+    package_policy = load_package_policy()
+    register_all_tools(mcp, package_policy=package_policy)
 
-        for tool in get_tools_sync(mcp).values():
-            if getattr(tool, "output_schema", None) is None:
-                tool.output_schema = RESULT_SCHEMA
-    except Exception:
-        pass  # Non-critical: schema annotation is informational.
-
+    # Preserve declared/inferred leaf contracts; missing schemas do not imply Result.
     from ._resources import register_resources
 
-    register_resources(mcp)
+    register_resources(mcp, package_policy=package_policy)
+    configure_discovery(mcp)
 else:
     mcp = None
 

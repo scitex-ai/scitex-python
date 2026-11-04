@@ -27,12 +27,21 @@ logger = slogging.getLogger(__name__)
 __all__ = ["register_peer_extras"]
 
 
-def register_peer_extras(mcp) -> None:
+def register_peer_extras(mcp, *, package_policy=None) -> None:
     """Apply every umbrella-side peer adjustment onto the FastMCP server."""
-    _register_figrecipe_plt_stx(mcp)
-    _register_social_core(mcp)
-    _register_linter(mcp)
-    _mount_cloud(mcp)
+    from ._exposure import is_exposed, load_package_policy
+
+    package_policy = load_package_policy(package_policy)
+    if not is_exposed("scitex", "scitex", package_policy):
+        return
+    if is_exposed("figrecipe", "figrecipe", package_policy):
+        _register_figrecipe_plt_stx(mcp)
+    if is_exposed("socialia", "social", package_policy):
+        _register_social_core(mcp)
+    if is_exposed("scitex-dev", "linter", package_policy):
+        _register_linter(mcp)
+    if is_exposed("scitex-cloud", "cloud", package_policy):
+        _mount_cloud(mcp)
 
 
 def _register_figrecipe_plt_stx(mcp) -> None:
