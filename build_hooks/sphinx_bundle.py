@@ -33,22 +33,25 @@ mimetypes.init()
 root = Path(sys.argv.pop(1)).resolve()
 allowed = (root, Path(sys.prefix).resolve(), Path(sys.base_prefix).resolve(),
            Path(__import__("os").environ["HOME"]).parent.resolve())
-denied = []
+class RefusedOperation(BaseException):
+    pass
 
 def deny_effects(event, args):
     if event in {"socket.connect", "socket.getaddrinfo", "subprocess.Popen", "os.system", "os.posix_spawn"}:
-        denied.append(event)
-        raise RuntimeError("documentation build refuses " + event)
+        raise RefusedOperation("documentation build refuses " + event)
     if event == "open" and isinstance(args[0], (str, bytes)):
         path = Path(__import__("os").fsdecode(args[0])).resolve()
-        if path != Path("/dev/null") and not any(path.is_relative_to(base) for base in allowed):
-            denied.append("out-of-tree file access")
-            raise RuntimeError("documentation build refuses out-of-tree file access")
+        flags = args[2]
+        writing = flags & (__import__("os").O_WRONLY | __import__("os").O_RDWR | __import__("os").O_CREAT | __import__("os").O_TRUNC)
+        private = allowed[-1]
+        if writing and path != Path("/dev/null") and not path.is_relative_to(private):
+            raise RefusedOperation("documentation build refuses non-private writes")
+        runtime_cpu = path.is_relative_to(Path("/sys/fs/cgroup"))
+        if path != Path("/dev/null") and not runtime_cpu and not any(path.is_relative_to(base) for base in allowed):
+            raise RefusedOperation("documentation build refuses out-of-tree file access: " + str(path))
 sys.addaudithook(deny_effects)
 from sphinx.cmd.build import main
 result = main(sys.argv[1:])
-if denied:
-    raise RuntimeError("documentation build attempted a refused operation")
 raise SystemExit(result)
 '''
 

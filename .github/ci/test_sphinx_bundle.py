@@ -21,6 +21,27 @@ def source_at(root, text):
 
 
 class SphinxBundleTests(unittest.TestCase):
+    def test_current_producer_admission_refuses_real_legacy_source_frame(self):
+        historical_spec = importlib.util.spec_from_file_location(
+            "owned_historical_boundary_fixture", ROOT / ".github/ci/test_release_identity.py"
+        )
+        fixture = importlib.util.module_from_spec(historical_spec)
+        historical_spec.loader.exec_module(fixture)
+        with self.assertRaisesRegex(ValueError, "requires derived documentation"):
+            fixture.RELEASE.check_source_layout(
+                fixture.SOURCE, fixture.REPOSITORY, require_derived_docs=True
+            )
+
+    def test_actual_project_config_refuses_unresolved_source_release(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source_at(root, "Owned\n=====\n")
+            (root / "docs/sphinx/conf.py").write_bytes((ROOT / "docs/sphinx/conf.py").read_bytes())
+            (root / "pyproject.toml").write_text('[project]\nversion = "unresolved"\n')
+            with self.assertRaises(subprocess.CalledProcessError):
+                PRODUCER.build_bundle(root, root / "output")
+            assert not (root / "output").exists()
+
     def test_actual_sphinx_output_tracks_changed_source_and_has_no_incremental_cache(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
