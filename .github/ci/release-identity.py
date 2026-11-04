@@ -690,6 +690,8 @@ def declared_metadata(project):
     """Follow the reviewed Hatch static metadata and recursive-extra contract."""
     if project.get("dynamic"):
         raise ValueError("dynamic release metadata is not qualified")
+    if "import-names" in project or "import-namespaces" in project:
+        raise ValueError("source import declarations are not qualified")
     core = {requirement_identity(value) for value in project.get("dependencies", [])}
     groups = {}
     inherited = {}
@@ -746,16 +748,25 @@ def declared_metadata(project):
     }
 
 
-def metadata_source_identity(wheel_raw, sdist_raw, entry_points, project):
+def metadata_source_identity(wheel_raw, sdist_raw, entry_points, project, *, required_version=None):
+    if required_version is not None and (not isinstance(required_version, str) or required_version != "2.5"):
+        raise ValueError("unsupported qualified metadata version")
     expected = declared_metadata(project)
     for raw in (wheel_raw, sdist_raw):
         headers = BytesParser().parsebytes(raw)
         if headers.get_all("License-File") != ["LICENSE"]:
             raise ValueError("source License-File declaration differs")
-        if headers.get_all("Metadata-Version") not in [
-            [x] for x in ("2.1", "2.2", "2.3", "2.4")
-        ]:
+        allowed = ["2.5"] if required_version else ["2.1", "2.2", "2.3", "2.4"]
+        if headers.get_all("Metadata-Version") not in [[x] for x in allowed]:
             raise ValueError("unsupported generated metadata version")
+        if headers.get_all("Import-Name") is not None or headers.get_all("Import-Namespace") is not None:
+            raise ValueError("artifact import declarations are not qualified")
+        if required_version == "2.5" and (
+            not isinstance(project.get("license"), str)
+            or headers.get_all("License-Expression") != [project["license"]]
+            or headers.get_all("License") is not None
+        ):
+            raise ValueError("source License-Expression declaration differs")
         python = headers.get_all("Requires-Python", [])
         if len(python) != (1 if expected["requires_python"] else 0) or (
             python and specifier_identity(python[0]) != expected["requires_python"]
@@ -1013,6 +1024,7 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                 if owner + "entry_points.txt" in names
                 else None,
                 project["project"],
+                required_version="2.5" if derived_identity is not None else None,
             )
             roots = {PurePosixPath(item.name).parts[0] for item in sdist.getmembers()}
             if len(roots) != 1 or roots != {"scitex-" + project["project"]["version"]}:

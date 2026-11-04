@@ -78,6 +78,7 @@ def _check_root_origin(name, obj):
         if path in _installed_root_files and not path.is_relative_to(source):
             raise RuntimeError("documented Root code came from installed umbrella instead of trusted source")
         observed[kind] = str(path)
+        observed[kind + "_is_concrete"] = path.is_file()
     return observed
 
 
@@ -103,6 +104,10 @@ def _finish_root_doc_origins(app, exception):
         "installed_umbrella_metadata_version": _installed_root.version if _installed_root else None,
         "source_module_version": getattr(sys.modules.get("scitex"), "__version__", None),
         "documented_modules": _documented_root_origins,
+        "documented_unverified_origins": sorted(
+            name for name, origin in _documented_root_origins.items()
+            if not origin.get("file_is_concrete")
+        ),
         "declared_but_not_documented": sorted(declared - _documented_root_origins.keys()),
         "imported_root_namespaces": imported,
         "mixed_installed_root_code": False,

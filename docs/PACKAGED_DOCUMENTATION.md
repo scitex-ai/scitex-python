@@ -91,3 +91,12 @@ The origin observer rejects documented/imported Root namespace files or
 function code from the installed umbrella, and reports module origins plus
 unverified declared modules. This is not a current installed-runtime identity
 claim. Actual installed delivery is qualified separately from the private wheel.
+
+The current documented source contract pins Hatchling 1.33.0 and requires its
+observed static metadata 2.5 in both archives. It accepts no 2.6/future version,
+no unqualified import-name/namespace claims, no dynamic metadata, and no
+competing license field; the single License-Expression must equal source and
+LICENSE remains the exact source/wheel license payload. This qualifies the
+observed producer cohort, not every backend release. Historical v1 primitives
+retain their existing 2.1–2.4 metadata contract. The initial f06 full identity
+failure on unsupported 2.5 remains evidence; it was never an admitted release.
