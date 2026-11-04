@@ -406,7 +406,9 @@ _DEFAULT_BRANDED = {
 def _build_alias_map() -> dict[str, str]:
     """Read scitex_dev._ecosystem registry; produce {short: peer_import}."""
     alias: dict[str, str] = dict(_DEFAULT_BRANDED)
-    alias.update({name: EXTERNAL_REEXPORTS[name] for name in ("app", "ui")})
+    alias.update(
+        {name: EXTERNAL_REEXPORTS[name] for name in ("app", "ui", "logging")}
+    )
     try:
         from scitex_dev._ecosystem._core import ECOSYSTEM
     except Exception:
@@ -489,7 +491,7 @@ class _ScitexAliasLoader(Loader):
 
     def exec_module(self, module: ModuleType) -> None:
         # Import machinery assigns the alias spec even for an existing module.
-        # These owned component facades retain the canonical reload identity.
+        # These owned facades retain the canonical reload identity.
         if self._canonical_spec is not None:
             module.__spec__ = self._canonical_spec
         return None
@@ -499,8 +501,8 @@ class _ScitexAliasFinder(MetaPathFinder):
     """Resolve `scitex.<short>[…]` to the peer standalone module.
 
     A real in-tree module/package remains authoritative. The generic finder
-    follows normal path lookup; only SDK app/UI component facades precede it
-    so their physical SDK paths cannot execute twice under an alias name.
+    follows normal path lookup; SDK components and logging/error facades
+    precede it to preserve canonical module metadata and object identity.
     """
 
     def __init__(
@@ -560,10 +562,12 @@ def install_alias_finder(scitex_pkg_path: list) -> None:
     # directories stay authoritative for unmigrated peers.
     from importlib.machinery import PathFinder
 
-    # Only these migrated component facades must precede path lookup: their
-    # SDK package paths would otherwise execute a second copy under scitex.*.
+    # SDK components must not execute a second copy through their physical
+    # package paths. Logging/error aliases also share the canonical package;
+    # replacing its spec would break discovery and reload for other consumers.
     components = _ScitexAliasFinder(
-        {name: alias[name] for name in ("app", "ui")}, scitex_pkg_path,
+        {name: alias[name] for name in ("app", "ui", "logging", "errors")},
+        scitex_pkg_path,
         preserve_metadata=True,
     )
     path_index = next(
