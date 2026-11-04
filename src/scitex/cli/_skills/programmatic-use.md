@@ -34,3 +34,9 @@ name, signature = format_python_signature(json.dumps, multiline=True)
 manufacture command candidates from Python module names or invoke console
 functions to discover their schema. Installed declarations, effective policy,
 parser resolution and authorized execution are separate stages.
+
+CLI and MCP use SciTeX Dev's same public operator-policy resolver with independent
+surface preferences. Each constructed Root CLI retains one snapshot, including
+its Dev view and aliases. The MCP server separately retains its construction
+snapshot across tools and resources. Neither is a process-global preference cache
+or a promise of hot revocation. Use a new CLI/server process after changing policy.

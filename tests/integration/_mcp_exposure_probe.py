@@ -100,6 +100,42 @@ async def inspect(operation, owned):
                 "cloud_owned_result"
             ].outputSchema
             assert tools["cloud_owned_raw"].outputSchema["required"] == ["value"]
+            from click import unstyle
+            from click.testing import CliRunner
+
+            from scitex.cli.mcp import _format_signature, list_tools
+
+            assert "Result" not in unstyle(
+                _format_signature(tools["cloud_owned_untyped_raw"])
+            )
+            assert unstyle(_format_signature(tools["cloud_owned_result"])).endswith(
+                " -> Result"
+            )
+            assert unstyle(_format_signature(tools["cloud_owned_raw"])).endswith(
+                " -> schema-defined output"
+            )
+            assert unstyle(
+                _format_signature(tools["cloud_owned_untyped_raw"])
+            ).endswith(" -> output unspecified")
+            catalog = CliRunner().invoke(list_tools, ["--json"])
+            assert catalog.exit_code == 0, (catalog.output, repr(catalog.exception))
+            payload = json.loads(catalog.output)
+            listed = {
+                row["name"]: row
+                for module in payload["modules"].values()
+                for row in module["tools"]
+            }
+            for name in (
+                "cloud_owned_result",
+                "cloud_owned_raw",
+                "cloud_owned_untyped_raw",
+                "plt_stx_owned_untyped_raw",
+            ):
+                assert listed[name]["output_schema"] == tools[name].outputSchema
+            assert (
+                payload["result_envelope_scope"]
+                == "reference only; each tool retains its own output_schema"
+            )
             assert tools["cloud_owned_untyped_raw"].outputSchema is None
             assert tools["plt_stx_owned_untyped_raw"].outputSchema is None, tools[
                 "plt_stx_owned_untyped_raw"

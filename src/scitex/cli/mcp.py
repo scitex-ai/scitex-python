@@ -5,12 +5,14 @@
 SciTeX MCP CLI - Model Context Protocol server management commands.
 
 Commands:
-- scitex mcp list       List all available MCP tools
-- scitex mcp doctor     Check MCP server health and configuration
-- scitex mcp serve      Start the unified MCP server
+- scitex mcp list-tools    List the admitted MCP tool catalog
+- scitex mcp doctor        Check MCP server health and configuration
+- scitex mcp start         Start the unified MCP server
+- scitex mcp installation  Show MCP client setup
 """
 
 import click
+from scitex_dev import RESULT_SCHEMA as _RESULT_SCHEMA
 
 
 @click.group(invoke_without_command=True)
@@ -52,6 +54,12 @@ def _extract_return_keys(description: str) -> list:
     return re.findall(r"'([a-z_]+)'", match.group(1))
 
 
+def _tool_output_schema(tool_obj):
+    """Read a native or protocol tool's schema without inventing a contract."""
+    schema = getattr(tool_obj, "output_schema", None)
+    return getattr(tool_obj, "outputSchema", None) if schema is None else schema
+
+
 def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> str:
     """Format tool as Python-like function signature with return type."""
     params = []
@@ -70,11 +78,14 @@ def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> 
             else:
                 p = f"{click.style(name, fg='white', bold=True)}: {click.style(ptype, fg='cyan')} = {click.style('None', fg='yellow')}"
             params.append(p)
-    # All MCP tools return standardized Result envelope
-    ret_type = (
-        f" -> {click.style('Result', fg='magenta')}"
-        f"{click.style('{success, data, error, next_steps}', fg='yellow')}"
-    )
+    schema = _tool_output_schema(tool_obj)
+    if schema is None:
+        output = "output unspecified"
+    elif schema == _RESULT_SCHEMA:
+        output = "Result"
+    else:
+        output = "schema-defined output"
+    ret_type = f" -> {click.style(output, fg='magenta')}"
     name_s = click.style(tool_obj.name, fg="green", bold=True)
     if multiline and len(params) > 2:
         param_indent = indent + "    "
@@ -215,10 +226,9 @@ def list_tools(
     if as_json:
         import json
 
-        from scitex_dev.types import RESULT_SCHEMA
-
         output = {
-            "result_envelope": RESULT_SCHEMA,
+            "result_envelope": _RESULT_SCHEMA,
+            "result_envelope_scope": "reference only; each tool retains its own output_schema",
             "summary": summary,
             "total": sum(len(t) for t in modules.values()),
             "modules": {},
@@ -239,6 +249,7 @@ def list_tools(
                         ),
                         "description": tool_obj.description if tool_obj else "",
                         "parameters": schema,
+                        "output_schema": _tool_output_schema(tool_obj),
                     }
                 )
         click.echo(json.dumps(output, indent=2))
@@ -246,10 +257,7 @@ def list_tools(
         total = sum(len(t) for t in modules.values())
         click.secho(f"SciTeX MCP: {summary['name']}", fg="cyan", bold=True)
         click.echo(f"Tools: {total} ({len(modules)} modules)")
-        click.echo(
-            f"Returns: {click.style('Result', fg='magenta')}"
-            f"{click.style('{success, data, error, error_code, context, next_steps}', fg='yellow')}"
-        )
+        click.echo("Returns: per-tool output schema; unspecified when absent.")
         if show_summary:
             click.echo(f"Context: ~{summary['total_context_tokens']:,} tokens")
             click.echo(f"  Instructions: ~{summary['instructions_tokens']:,} tokens")
