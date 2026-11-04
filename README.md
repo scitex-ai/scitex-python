@@ -39,7 +39,7 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 |---|---------|----------|
 | 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides 73 modules under one namespace, accessible via Python API, CLI, and MCP. These modules are standalone packages but loosely coupled through a plugin registry — each works on its own, yet composes into designed synergy (save a figure → auto-exports CSV + YAML recipe → hash-tracked by Clew → citeable in scitex-writer). |
 | 2 | **No verification** -- existing tools address whether work *could* be reproduced, not whether it *has* been verified | **Cryptographic verification** -- Clew builds SHA-256 hash-chain DAGs linking every manuscript claim back to source data |
-| 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **323 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
+| 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **Discoverable MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
 | 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-app](https://github.com/ywatanabe1989/scitex-app) SDK and share via [SciTeX Cloud](https://scitex.ai) |
 | 5 | **Vendor lock-in** -- cloud research tools (Overleaf, Zotero, Mendeley, Colab, GitHub Copilot) keep data on third-party servers and depend on APIs that can disappear overnight or monetize tomorrow | **Open and self-hostable** -- every SciTeX package is AGPL-3.0; the full 39-package ecosystem runs on your own hardware (or SciTeX Cloud which itself is self-hostable); cloud integrations are pluggable extras, not requirements |
 
@@ -170,7 +170,7 @@ Every capability in the SciTeX umbrella is reachable through three surfaces, so 
 |-----------|-------------|---------|
 | **Python API** | `import scitex as stx` | `stx.io.save(fig, "result.png")` |
 | **CLI** | `scitex <group> <command>` | `scitex io convert data.csv data.parquet` |
-| **MCP** | `scitex mcp start` | 323 tools an AI agent calls directly |
+| **MCP** | `scitex mcp start` | Installed provider tools for AI agents |
 
 The Python API is the primary surface; the CLI and MCP server expose the same logic for shells and AI agents. See the [Quick Start](#quick-start) below for runnable Python examples and the [Full MCP reference](./docs/02_MCP_TOOLS.md).
 
@@ -597,14 +597,14 @@ scitex audio speak "Analysis complete"   # Text-to-speech
 scitex notification send "Job finished"  # Multi-backend notification
 scitex template clone research my_proj   # Scaffold a project
 scitex dev ecosystem list                # Check ecosystem versions
-scitex mcp list-tools                    # List all MCP tools (323)
+scitex mcp list-tools                    # Inspect the installed tool catalog
 ```
 
 > **[Full CLI reference](./docs/01_CLI_COMMANDS.md)**
 </details>
 
 <details>
-<summary><strong>MCP Server (323 tools across 23 modules)</strong></summary>
+<summary><strong>MCP Server (installed provider catalog)</strong></summary>
 
 Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotocol.io/).
 
@@ -624,6 +624,7 @@ Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotoco
 ```
 
 > **[Full MCP reference](./docs/02_MCP_TOOLS.md)**
+> **[Context exposure and on-demand discovery](./docs/mcp-context-exposure.md)** — source capability, package switches and upstream FastMCP search. Tool counts depend on installed providers and the selected exposure policy.
 </details>
 
 ## Configuration

@@ -20,19 +20,27 @@ Each helper is best-effort: a missing optional peer logs and is skipped.
 
 from __future__ import annotations
 
-import logging
+import scitex_logging as slogging
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 __all__ = ["register_peer_extras"]
 
 
-def register_peer_extras(mcp) -> None:
+def register_peer_extras(mcp, *, package_policy=None) -> None:
     """Apply every umbrella-side peer adjustment onto the FastMCP server."""
-    _register_figrecipe_plt_stx(mcp)
-    _register_social_core(mcp)
-    _register_linter(mcp)
-    _mount_cloud(mcp)
+    from ._exposure import is_exposed, load_package_policy
+
+    if package_policy is None:
+        package_policy = load_package_policy()
+    if is_exposed("figrecipe", "figrecipe", package_policy):
+        _register_figrecipe_plt_stx(mcp)
+    if is_exposed("socialia", "social", package_policy):
+        _register_social_core(mcp)
+    if is_exposed("scitex-dev", "dev", package_policy):
+        _register_linter(mcp)
+    if is_exposed("scitex-cloud", "cloud", package_policy):
+        _mount_cloud(mcp)
 
 
 def _register_figrecipe_plt_stx(mcp) -> None:
