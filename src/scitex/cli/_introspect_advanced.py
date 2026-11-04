@@ -150,7 +150,10 @@ def register_advanced_commands(group):  # noqa: C901
     @click.option("--max-depth", "-d", type=int, default=10, help="Max subclass depth")
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def class_hierarchy(dotted_path, builtins, max_depth, as_json):
-        """Get class inheritance hierarchy (MRO + subclasses)"""
+        """Get class inheritance hierarchy (MRO + subclasses)
+
+        $ scitex dev introspect hierarchy builtins.dict --json
+        """
         from scitex.introspect import get_class_hierarchy
 
         result = get_class_hierarchy(
@@ -177,7 +180,10 @@ def register_advanced_commands(group):  # noqa: C901
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def type_hints(dotted_path, as_json):
-        """Get detailed type hint analysis"""
+        """Get detailed type hint analysis
+
+        $ scitex dev introspect hints scitex.io.load --json
+        """
         from scitex.introspect import get_type_hints_detailed
 
         result = get_type_hints_detailed(dotted_path)
@@ -203,7 +209,10 @@ def register_advanced_commands(group):  # noqa: C901
     @click.option("--no-categorize", is_flag=True, help="Don't group by category")
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def imports(dotted_path, no_categorize, as_json):
-        """Get all imports from a module (AST-based)"""
+        """Get all imports from a module (AST-based)
+
+        $ scitex dev introspect imports scitex.cli.main --json
+        """
         from scitex.introspect import get_imports
 
         result = get_imports(dotted_path, categorize=not no_categorize)
@@ -234,7 +243,10 @@ def register_advanced_commands(group):  # noqa: C901
     @click.option("--max-depth", "-d", type=int, default=3, help="Max recursion depth")
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def dependencies(dotted_path, recursive, max_depth, as_json):
-        """Get module dependencies"""
+        """Get module dependencies
+
+        $ scitex dev introspect deps scitex.io --json
+        """
         from scitex.introspect import get_dependencies
 
         result = get_dependencies(dotted_path, recursive=recursive, max_depth=max_depth)
@@ -258,7 +270,10 @@ def register_advanced_commands(group):  # noqa: C901
     @click.option("--all", "all_calls", is_flag=True, help="Include external calls")
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def call_graph(dotted_path, timeout, all_calls, as_json):
-        """Get function call graph (with timeout protection)"""
+        """Get function call graph (with timeout protection)
+
+        $ scitex dev introspect calls scitex.io.load --json
+        """
         from scitex.introspect import get_call_graph
 
         result = get_call_graph(

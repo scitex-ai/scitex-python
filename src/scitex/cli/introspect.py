@@ -207,7 +207,10 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
 @click.option("-v", "--verbose", count=True, help="Verbosity: -v +doc, -vv full doc")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def api(dotted_path, max_depth, root_only, verbose, as_json):
-    """List API tree with types and signatures. -v adds docstrings, -vv full docs."""
+    """List API tree with types and signatures. -v adds docstrings, -vv full docs.
+
+    $ scitex dev introspect api scitex --root-only --json
+    """
     import importlib
 
     from scitex.introspect import list_api

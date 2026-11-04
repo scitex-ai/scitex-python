@@ -78,7 +78,10 @@ def audit(ctx, path, as_json, save, checks):
     "--json", "as_json", is_flag=True, help="Output audit-tool availability as JSON."
 )
 def status(as_json):
-    """Show which audit tools are installed."""
+    """Show which audit tools are installed.
+
+    $ scitex dev audit status --json
+    """
     import shutil
 
     tools = {
@@ -119,7 +122,10 @@ def status(as_json):
     "--dry-run", is_flag=True, help="Show what would be done without making changes"
 )
 def install(dry_run):
-    """Install missing audit tools (bandit, pip-audit)."""
+    """Install missing audit tools (bandit, pip-audit).
+
+    $ scitex dev audit install --dry-run
+    """
     import shutil
     import subprocess
 

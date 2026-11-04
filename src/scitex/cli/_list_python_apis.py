@@ -9,7 +9,10 @@ import click
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.pass_context
 def list_python_apis(ctx, verbose, max_depth, as_json):
-    """List SciTeX Python APIs (same operation as dev introspect api scitex)."""
+    """List SciTeX Python APIs (same operation as dev introspect api scitex).
+
+    $ scitex dev list-python-apis --json
+    """
     from .introspect import api
 
     ctx.invoke(

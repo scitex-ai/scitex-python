@@ -157,6 +157,8 @@ def list_tools(
 
     Verbosity: (none) names, -v signatures, -vv +description, -vvv full.
     Signatures are expanded by default; use -c/--compact for single line.
+
+    $ scitex mcp list-tools --json
     """  # noqa: D301
     import warnings
 
@@ -311,7 +313,10 @@ def list_tools(
 @mcp.command("doctor")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed diagnostics")
 def doctor(verbose: bool):
-    """Check MCP server health and configuration."""
+    """Check MCP server health and configuration.
+
+    $ scitex mcp doctor --verbose
+    """
     issues = []
     warnings = []
 
@@ -482,7 +487,10 @@ def _print_help_recursive(ctx):
     "--port", "-p", default=8085, type=int, help="Port to bind (default: 8085)"
 )
 def start(transport: str, host: str, port: int):
-    """Start the unified MCP server."""
+    """Start the unified MCP server.
+
+    $ scitex mcp start
+    """
     try:
         from scitex._mcp import run_server
     except ImportError:
@@ -495,7 +503,10 @@ def start(transport: str, host: str, port: int):
 
 @mcp.command("installation")
 def installation():
-    """Show Claude Desktop configuration for SciTeX MCP server."""
+    """Show Claude Desktop configuration for SciTeX MCP server.
+
+    $ scitex mcp installation
+    """
     import shutil
     import sys
 

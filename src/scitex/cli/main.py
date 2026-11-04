@@ -47,6 +47,14 @@ class LazyGroup(click.Group):
 
             header = cli_metadata(self._metadata_distribution)["header"]
             self.help = f"{header}\n\n{self._metadata_help_body or ''}"
+            if self._exposure_snapshot is not None:
+                policy = self._exposure_snapshot.policy
+                self.help += (
+                    "\n\n\b\nCLI exposure preferences (selected at startup):"
+                    f"\n  Configuration (SCITEX_DEV_CONFIG): {policy.config_path}"
+                    f"\n  Knob state (SCITEX_DEV_KNOB_STATE): {policy.knob_state_path}"
+                    "\n  Inspect selected files: scitex dev cli status --paths"
+                )
 
     def format_help_text(self, ctx, formatter):
         """Refresh the shared metadata header before Click renders help."""

@@ -290,7 +290,10 @@ def open(url, stealth, timeout, background):
     help="Output stored sessions as JSON; not a liveness check.",
 )
 def list(as_json):
-    """List stored browser sessions (scitex browser list --json)."""
+    """List stored browser sessions (scitex browser list --json).
+
+    $ scitex browser list --json
+    """
     if as_json:
         try:
             sessions = _load_sessions()
@@ -319,11 +322,14 @@ def list(as_json):
 @click.argument("browser_id", required=False)
 def show(browser_id):
     """
-    Switch browser to visible/interactive mode
+    Print guidance for making a browser visible/interactive.
 
     \b
     For running browser, enter 's' in terminal.
     For background browser, use: scitex browser show <id>
+    This command prints instructions; it does not change a browser session.
+
+    $ scitex browser show browser-id
     """
     if not browser_id:
         click.echo("For running browser: type 's' + Enter")
@@ -380,11 +386,14 @@ def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, mar
 @click.argument("browser_id", required=False)
 def hide(browser_id):
     """
-    Switch browser to headless/stealth mode
+    Print guidance for hiding a browser in headless/stealth mode.
 
     \b
     For running browser, enter 'h' in terminal.
     For background browser, use: scitex browser hide <id>
+    This command prints instructions; it does not change a browser session.
+
+    $ scitex browser hide browser-id
     """
     if not browser_id:
         click.echo("For running browser: type 'h' + Enter")
