@@ -7,6 +7,10 @@ Allows running: python -m scitex [command]
 
 import sys
 
+import scitex_logging as slogging
+
+logger = slogging.getLogger(__name__)
+
 
 def _check_cli_dependencies():
     """Check CLI dependencies and return missing ones."""
@@ -23,10 +27,10 @@ def main():
     # Check dependencies first
     missing = _check_cli_dependencies()
     if missing:
-        print("SciTeX CLI missing dependencies:")
+        logger.error("SciTeX CLI missing dependencies:")
         for pkg, install in missing:
-            print(f"  - {pkg}: {install}")
-        print("\nOr install all CLI deps: pip install scitex[cli]")
+            logger.error(f"  - {pkg}: {install}")
+        logger.error("\nOr install all CLI deps: pip install scitex[cli]")
         sys.exit(1)
 
     try:
@@ -34,7 +38,7 @@ def main():
 
         cli()
     except ImportError as e:
-        print(f"SciTeX CLI import error: {e}")
+        logger.error(f"SciTeX CLI import error: {e}")
         import traceback
 
         traceback.print_exc()

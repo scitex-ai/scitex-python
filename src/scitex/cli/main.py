@@ -105,7 +105,8 @@ class LazyGroup(click.Group):
         cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
         """
         import importlib
-        import logging
+
+        import scitex_logging as slogging
 
         from ._lazy_subcommands import PeerCliTarget
 
@@ -168,7 +169,7 @@ class LazyGroup(click.Group):
                 module_path_or_candidates.console_script,
             )
         if last_exc is not None:
-            logging.getLogger(__name__).debug(
+            slogging.getLogger(__name__).debug(
                 "Lazy-loaded subcommand %r unavailable (no candidate resolved): %s",
                 cmd_name,
                 last_exc,
