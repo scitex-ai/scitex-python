@@ -50,10 +50,13 @@ class TestDeprecatedAliasExclusion:
         # Arrange
         subcommands = build_lazy_subcommands(_cli_dir())
         # Act
+        from scitex.cli.main import cli
+
         missing_targets = [
             target
-            for target, _remove_in in DEPRECATED_ALIASES.values()
-            if (target[0] if isinstance(target, tuple) else target) not in subcommands
+            for alias, (target, _remove_in) in DEPRECATED_ALIASES.items()
+            if alias in cli.commands
+            and (target[0] if isinstance(target, tuple) else target) not in subcommands
         ]
         # Assert
         assert missing_targets == []

@@ -62,7 +62,17 @@ class DevGroup(LazyGroup):
         names = set(super().list_commands(ctx)) | set(self._owner.list_commands(ctx))
         if isinstance(self._upkeep, click.Group):
             names.update(self._upkeep.list_commands(ctx))
-        return sorted(names - self._blocked)
+        visible = []
+        for name in sorted(names - self._blocked):
+            # Local lazy entries have already passed metadata eligibility.
+            # Do not import them merely to list the composed namespace.
+            if name in self._lazy_subcommands:
+                visible.append(name)
+                continue
+            command = self.get_command(ctx, name)
+            if command is not None and not command.hidden:
+                visible.append(name)
+        return visible
 
     def get_command(self, ctx, name):
         """Resolve an owned command without changing its shared group."""

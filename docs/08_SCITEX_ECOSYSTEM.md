@@ -84,7 +84,8 @@ scitex ssh tunnel --help
 scitex dev skills list --package scitex-dev --json
 ```
 
-Hidden legacy invocations preserve `app`/`ui` → `sdk app`/`sdk ui`,
+Compatibility aliases are registered only when their canonical root namespace
+is available. Hidden legacy invocations preserve `app`/`ui` → `sdk app`/`sdk ui`,
 `todo` → `cards`, `tunnel` → `ssh tunnel`, `notify` → `notification`,
 and `verify` → `clew`, plus the moved developer names. The older double-`dev`
 skill path remains compatible; the public umbrella path is `scitex dev skills`.

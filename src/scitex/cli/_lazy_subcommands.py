@@ -182,6 +182,10 @@ _UMBRELLA_WRAPPERS = frozenset(
         "writer",
     }
 )
+# These adapters import their leaf at module scope. Advertise them only when
+# the leaf is installed; filesystem presence of an umbrella shim is insufficient.
+_WRAPPER_OWNERS = {"web": "scitex-web"}
+
 DEV_COMMANDS = frozenset(
     {
         "audit",
@@ -229,6 +233,7 @@ def build_lazy_subcommands(
     out: dict[str, LazySpec] = {}
     rows = list_cli_providers()
     blocked = reserved_cli_names(rows)
+    installed_owners = {row.distribution for row in rows}
     retired = {name for name, info in ECOSYSTEM.items() if info.get("archived")}
     # App/UI now belong to SDK; Orochi is retired even if an old installed
     # registry predates the decision. These are migration policy, not discovery.
@@ -265,6 +270,9 @@ def build_lazy_subcommands(
 
     for name in _UMBRELLA_WRAPPERS:
         if name in blocked or name not in have_wrapper:
+            continue
+        owner = _WRAPPER_OWNERS.get(name)
+        if owner is not None and owner not in installed_owners:
             continue
         # An explicit leaf target takes precedence over a legacy wrapper.
         explicit = any(r.name == name and r.status == "declared" for r in rows)

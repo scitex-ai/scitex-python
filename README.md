@@ -162,7 +162,7 @@ Downstream (standalone apps — own IO/GUI, unit tests)
 
 **One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [01_ecosystem_01_upstream-and-downstream.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_01_upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [01_ecosystem_02_dependency-and-version-pinning.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_02_dependency-and-version-pinning.md) for dep-pinning.
 
-## Interfaces
+## Five Interfaces
 
 Python, CLI, MCP, Web API, and skills are separate capabilities owned by each
 package. A Python library does not automatically gain a command group or MCP
@@ -673,7 +673,8 @@ scitex dev skills list --help
 
 Developer commands `audit`, `completion`, `introspect`, `linter`,
 `list-python-apis`, `pkg`, and `skills` live under `scitex dev`.
-The old root spellings remain hidden compatibility routes. Likewise, root
+The old root spellings remain hidden compatibility routes when their canonical
+namespace is available. Likewise, root
 `app`/`ui` route to `sdk app`/`sdk ui`, `todo` to `cards`, `tunnel` to
 `ssh tunnel`, `notify` to `notification`, and `verify` to `clew`.
 These CLI routes preserve invocation compatibility; they do not rename

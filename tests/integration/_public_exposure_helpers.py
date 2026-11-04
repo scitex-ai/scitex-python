@@ -80,11 +80,31 @@ if operation=='invoke':
     result={'code':code,'stdout':outpath.read_text(),'stderr':errpath.read_text(),
             'peer_imports':sorted(set(executed)),
             'bootstrap_peer_execution':bootstrap_peer_execution}
+elif operation=='developer-listing':
+    import click
+    from scitex.cli.dev import dev
+    ctx=click.Context(dev)
+    listed=dev.list_commands(ctx)
+    resolved={name:dev.get_command(ctx,name) for name in listed}
+    result={'listed':listed,
+            'unresolved':[name for name,command in resolved.items() if command is None],
+            'hidden':[name for name,command in resolved.items() if command is not None and command.hidden]}
+elif operation=='web-eligibility':
+    from scitex_dev.cli_providers import list_cli_providers
+    from scitex.cli.main import cli
+    result={'installed':any(row.distribution=='scitex-web' for row in list_cli_providers()),
+            'listed':'web' in cli.list_commands(None)}
 elif operation=='owners':
     import click
     from scitex.cli.main import cli
     from scitex_sdk.cli import main as sdk
-    from scitex_cards._cli import main as cards
+    from importlib.metadata import distribution, PackageNotFoundError
+    try:
+        distribution('scitex-cards')
+    except PackageNotFoundError:
+        cards=None
+    else:
+        from scitex_cards._cli import main as cards
     from scitex_clew._cli._main import main as clew
     from scitex_ssh.cli import main as ssh
     from scitex_writer._cli import main_group as writer
@@ -95,7 +115,7 @@ elif operation=='owners':
     dev=cli.get_command(context,'dev')
     upkeep=owner.get_command(click.Context(owner),'dev')
     same={'sdk':cli.get_command(context,'sdk') is sdk,
-          'cards':cli.get_command(context,'cards') is cards,
+          'cards':cli.get_command(context,'cards') is cards and (cards is not None or 'todo' not in cli.commands),
           'clew':cli.get_command(context,'clew') is clew,
           'ssh':cli.get_command(context,'ssh') is ssh,
           'writer':cli.get_command(context,'writer') is writer and writer.name==writer_name,
@@ -140,6 +160,14 @@ elif operation=='python':
 else:
     raise AssertionError('unknown owned probe')
 sys.setprofile(None)
+if request.get('installed_cards'):
+    from importlib.metadata import distribution, PackageNotFoundError
+    try:
+        distribution('scitex-cards')
+    except PackageNotFoundError:
+        result['cards_installed']=False
+    else:
+        result['cards_installed']=True
 if request.get('developer_metadata'):
     from scitex_dev.cli_providers import list_cli_providers
     result['declared_dev_peers']=[r.name for r in list_cli_providers() if r.name in {'newb','resource','template'} and r.status in {'declared','legacy_unknown'}]
@@ -149,7 +177,7 @@ print(json.dumps(result))
 
 def _probe(tmp_path, operation, payload=None):
     """Run the real entry point in a fresh, strictly bounded owned process."""
-    source = str(Path(__file__).resolve().parents[3] / "src")
+    source = str(Path(__file__).resolve().parents[2] / "src")
     environment = {
         key: value
         for key, value in os.environ.items()

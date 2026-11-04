@@ -82,6 +82,7 @@ def test_normal_root_discovery_has_only_public_names(tmp_path, mode):
     if mode == "completion":
         request = {"args": [], "complete": "scitex "}
     # Act
+    request["installed_cards"] = True
     result = _probe(tmp_path, "invoke", request)
     if mode == "json":
         names = set(json.loads(result["stdout"])["data"]["commands"])
@@ -95,9 +96,10 @@ def test_normal_root_discovery_has_only_public_names(tmp_path, mode):
         names = _command_rows(result["stdout"])
     # Assert
     assert (
-        {"sdk", "cards", "clew", "ssh", "dev"} <= names,
+        {"sdk", "clew", "ssh", "dev"} <= names,
         names & (_HIDDEN | _MOVED | _PYTHON_ONLY | _DEV_PEERS),
     ) == (True, set())
+    assert ("cards" in names) == result["cards_installed"]
 
 
 @pytest.mark.parametrize("name", sorted(_MOVED))
@@ -395,3 +397,21 @@ def test_legacy_double_dev_skills_still_resolves_effective_view(tmp_path):
     result = _probe(tmp_path, "invoke", request)
     # Assert
     assert (result["code"], "Usage:" in result["stdout"]) == (0, True), result
+
+
+def test_developer_discovery_lists_only_resolvable_visible_commands(tmp_path):
+    """Auditors must not receive advertised names that resolve to nothing."""
+    # Arrange / Act: use the real installed Dev owner and composed view.
+    result = _probe(tmp_path, "developer-listing")
+    # Assert: retain public maintenance paths while excluding hidden closures.
+    assert {"skills", "completion", "introspect"} <= set(result["listed"])
+    assert result["unresolved"] == []
+    assert result["hidden"] == []
+
+
+def test_web_adapter_requires_its_installed_leaf(tmp_path):
+    """An umbrella wrapper file cannot advertise an unavailable web package."""
+    # Arrange / Act: actual installed distributions, no provider imports.
+    result = _probe(tmp_path, "web-eligibility")
+    # Assert
+    assert result["listed"] == result["installed"]

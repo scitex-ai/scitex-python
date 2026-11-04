@@ -257,7 +257,8 @@ from scitex_dev.ecosystem import deprecated_alias
 
 _reserved_aliases = reserved_cli_names()
 for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
-    if _old not in _reserved_aliases:
+    _canonical = _new[0] if isinstance(_new, tuple) else _new
+    if _old not in _reserved_aliases and _canonical in cli._lazy_subcommands:
         deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
 
 
