@@ -23,7 +23,6 @@ import pytest
 from scitex.cli._lazy_subcommands import (
     CATEGORY_ORDER,
     DEPRECATED_ALIASES,
-    _PEER_CLI_PROBES,
     build_lazy_subcommands,
     command_category,
 )
@@ -54,41 +53,50 @@ class TestDeprecatedAliasExclusion:
         missing_targets = [
             target
             for target, _remove_in in DEPRECATED_ALIASES.values()
-            if target not in subcommands
+            if (target[0] if isinstance(target, tuple) else target) not in subcommands
         ]
         # Assert
         assert missing_targets == []
 
-    def test_figrecipe_and_plt_documented_alias_pair_stays_mounted(self):
-        # plt is a documented identity-alias package, NOT a retired duplicate.
-        pytest.importorskip("scitex_dev")
+    def test_figure_cli_names_follow_shared_owned_eligibility(self):
+        # A console declaration can still be a foreign, unowned alias target.
+        from scitex_dev.cli_providers import list_cli_providers
+
         # Arrange
         subcommands = build_lazy_subcommands(_cli_dir())
+        expected = {
+            row.name
+            for row in list_cli_providers()
+            if row.distribution in {"figrecipe", "scitex-plt"}
+            and row.status in {"declared", "legacy_unknown"}
+        }
         # Act
         mounted = {"figrecipe", "plt"} & set(subcommands)
         # Assert
-        assert mounted == {"figrecipe", "plt"}
+        assert mounted == expected
 
 
-class TestScholarProbe:
-    """scitex-scholar's entry point shape is probed."""
+class TestScholarMetadata:
+    """The exact installed console is authoritative; modules are never guessed."""
 
-    def test_probe_table_includes_scholar_cli_main_shape(self):
+    def test_scholar_has_only_its_owned_canonical_target(self):
         # Arrange
-        probes = _PEER_CLI_PROBES
-        # Act
-        matches = [probe for probe in probes if probe == ("_cli_main", "cli")]
-        # Assert
-        assert matches == [("_cli_main", "cli")]
+        from importlib.metadata import distribution
 
-    def test_scholar_candidates_include_standalone_entry_point(self):
-        pytest.importorskip("scitex_dev")
-        # Arrange
+        owner = distribution("scitex-scholar")
+        (entry,) = (
+            ep
+            for ep in owner.entry_points
+            if ep.group == "console_scripts" and ep.name == "scitex-scholar"
+        )
         subcommands = build_lazy_subcommands(_cli_dir())
         # Act
-        candidates, _attr, _help = subcommands["scholar"]
+        target, _attr, _help = subcommands["scholar"]
         # Assert
-        assert ("scitex_scholar._cli_main", "cli") in tuple(candidates)
+        assert (target.distribution, tuple(target)) == (
+            "scitex-scholar",
+            ((entry.module, entry.attr),),
+        )
 
 
 class TestWriterOverride:
@@ -107,9 +115,7 @@ class TestWriterOverride:
 class TestFallbackHelp:
     """Root help one-liners never degrade to the bare subcommand name."""
 
-    @pytest.mark.parametrize(
-        "sub", ["dataset", "git", "hpc", "newb", "datetime", "social", "tunnel"]
-    )
+    @pytest.mark.parametrize("sub", ["dev", "sdk", "config", "social", "writer"])
     def test_known_peer_help_is_not_the_bare_name(self, sub):
         pytest.importorskip("scitex_dev")
         # Arrange
@@ -186,7 +192,7 @@ def test_sdk_component_alias_uses_actual_sdk_group_offline(tmp_path, component):
     import scitex
 
     source_root = str(Path(scitex.__file__).resolve().parents[1])
-    script = r'''
+    script = r"""
 import sys,json
 sys.path.insert(0,sys.argv[1])
 def guard(event,args):
@@ -200,21 +206,26 @@ from click.testing import CliRunner
 from scitex.cli import cli
 from scitex_sdk.cli import main as sdk
 component=sys.argv[2]
-actual=cli.get_command(click.Context(cli),component)
+sdk_view=cli.get_command(click.Context(cli),"sdk")
+actual=sdk_view.get_command(click.Context(sdk_view),component)
 expected=sdk.get_command(click.Context(sdk),component)
 runner=CliRunner()
-left=runner.invoke(cli,[component,'--help'],prog_name='scitex')
+left=runner.invoke(cli,['sdk',component,'--help'],prog_name='scitex')
 right=runner.invoke(sdk,[component,'--help'],prog_name='scitex-sdk')
 print(json.dumps({'same_sdk_group':actual is expected and expected is not None,
  'umbrella_help':left.exit_code==0 and 'Usage:' in left.output,
  'standalone_help':right.exit_code==0 and 'Usage:' in right.output,
  'retired_imports':[n for n in sys.modules if n.split('.')[0] in {'scitex_app','scitex_ui'}]}))
-'''
+"""
     environment = dict(os.environ, SCITEX_DIR=str(tmp_path / "state"))
     # Act
     child = subprocess.run(
         [sys.executable, "-I", "-c", script, source_root, component],
-        env=environment, capture_output=True, text=True, check=True, timeout=30,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=True,
+        timeout=30,
     )
     result = json.loads(child.stdout)
     # Assert
@@ -230,6 +241,7 @@ def test_unknown_sdk_component_does_not_fall_back_to_sdk_root():
     """A nonexistent child never exposes a different root command tree."""
     # Arrange
     import click
+
     from scitex.cli.main import LazyGroup
 
     root = LazyGroup(
@@ -250,8 +262,9 @@ class TestDeclaredDatabaseEntrypoint:
     def test_database_group_identity(self):
         # Arrange
         import click
-        from scitex.cli.main import cli
         from scitex_db.__main__ import main
+
+        from scitex.cli.main import cli
 
         # Act
         mounted = cli.get_command(click.Context(cli), "db")
@@ -261,6 +274,7 @@ class TestDeclaredDatabaseEntrypoint:
     def test_database_help_uses_declared_group(self):
         # Arrange
         from click.testing import CliRunner
+
         from scitex.cli.main import cli
 
         # Act
@@ -293,6 +307,7 @@ def owned_console_provider(tmp_path):
     (metadata / "METADATA").write_text(
         "Metadata-Version: 2.1\nName: owned-cli-demo\nVersion: 1.0\n"
     )
+    (metadata / "RECORD").write_text("owned_cli_demo/__init__.py,,\n")
     entries = metadata / "entry_points.txt"
     sys.path.insert(0, str(root))
     importlib.invalidate_caches()
@@ -306,12 +321,15 @@ def owned_console_provider(tmp_path):
 
 def test_owned_console_metadata_does_not_import_provider(owned_console_provider):
     # Arrange
-    from scitex.cli._lazy_subcommands import _owned_console_candidates
+    from scitex_dev.cli_providers import list_cli_providers
 
     entries, imported, _called = owned_console_provider
-    entries.write_text("[console_scripts]\nowned-cli-demo = owned_cli_demo:command\n")
+    entries.write_text("[scitex.cli]\ndemo = owned_cli_demo:command\n")
     # Act
-    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    rows = list_cli_providers(path=[entries.parent.parent])
+    candidates = tuple(
+        tuple(row.target.split(":", 1)) for row in rows if row.status == "declared"
+    )
     # Assert
     assert (candidates, imported.exists()) == ((("owned_cli_demo", "command"),), False)
 
@@ -319,20 +337,22 @@ def test_owned_console_metadata_does_not_import_provider(owned_console_provider)
 @pytest.mark.parametrize(
     "declarations",
     [
-        "owned-cli-demo = owned_cli_demo:command\n"
-        "owned_cli_demo = owned_cli_demo:function\n",
-        "owned-cli-demo = foreign_provider:command\n",
-        "owned-cli-demo = owned_cli_demo.bad-path:command\n",
+        "demo = owned_cli_demo:command\ndemo = owned_cli_demo:function\n",
+        "demo = foreign_provider:command\n",
+        "demo = owned_cli_demo.bad-path:command\n",
     ],
 )
 def test_ambiguous_or_foreign_console_refused(owned_console_provider, declarations):
     # Arrange
-    from scitex.cli._lazy_subcommands import _owned_console_candidates
+    from scitex_dev.cli_providers import list_cli_providers
 
     entries, imported, _called = owned_console_provider
-    entries.write_text("[console_scripts]\n" + declarations)
+    entries.write_text("[scitex.cli]\n" + declarations)
     # Act
-    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    rows = list_cli_providers(path=[entries.parent.parent])
+    candidates = tuple(
+        tuple(row.target.split(":", 1)) for row in rows if row.status == "declared"
+    )
     # Assert
     assert (candidates, imported.exists()) == ((), False)
 
@@ -340,12 +360,16 @@ def test_ambiguous_or_foreign_console_refused(owned_console_provider, declaratio
 def test_plain_console_function_never_called(owned_console_provider):
     # Arrange
     import click
-    from scitex.cli._lazy_subcommands import _owned_console_candidates
+    from scitex_dev.cli_providers import list_cli_providers
+
     from scitex.cli.main import LazyGroup
 
     entries, _imported, called = owned_console_provider
-    entries.write_text("[console_scripts]\nowned-cli-demo = owned_cli_demo:function\n")
-    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    entries.write_text("[scitex.cli]\ndemo = owned_cli_demo:function\n")
+    rows = list_cli_providers(path=[entries.parent.parent])
+    candidates = tuple(
+        tuple(row.target.split(":", 1)) for row in rows if row.status == "declared"
+    )
     root = LazyGroup(name="control", lazy_subcommands={"demo": (candidates, "", "")})
     # Act
     result = root.get_command(click.Context(root), "demo")
@@ -356,12 +380,16 @@ def test_plain_console_function_never_called(owned_console_provider):
 def test_owned_click_group_help_never_calls_callback(owned_console_provider):
     # Arrange
     from click.testing import CliRunner
-    from scitex.cli._lazy_subcommands import _owned_console_candidates
+    from scitex_dev.cli_providers import list_cli_providers
+
     from scitex.cli.main import LazyGroup
 
     entries, _imported, _called = owned_console_provider
-    entries.write_text("[console_scripts]\nowned-cli-demo = owned_cli_demo:command\n")
-    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    entries.write_text("[scitex.cli]\ndemo = owned_cli_demo:command\n")
+    rows = list_cli_providers(path=[entries.parent.parent])
+    candidates = tuple(
+        tuple(row.target.split(":", 1)) for row in rows if row.status == "declared"
+    )
     root = LazyGroup(name="control", lazy_subcommands={"demo": (candidates, "", "")})
     # Act
     result = CliRunner().invoke(root, ["demo", "--help"])

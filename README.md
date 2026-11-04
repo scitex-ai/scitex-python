@@ -37,11 +37,11 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 
 | # | Problem | Solution |
 |---|---------|----------|
-| 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides 73 modules under one namespace, accessible via Python API, CLI, and MCP. These modules are standalone packages but loosely coupled through a plugin registry — each works on its own, yet composes into designed synergy (save a figure → auto-exports CSV + YAML recipe → hash-tracked by Clew → citeable in scitex-writer). |
+| 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides scientific Python modules under one namespace, with CLI and MCP surfaces where their owners declare them. Standalone packages compose through provider declarations — each works on its own, yet composes into designed synergy (save a figure → auto-exports CSV + YAML recipe → hash-tracked by Clew → citeable in scitex-writer). |
 | 2 | **No verification** -- existing tools address whether work *could* be reproduced, not whether it *has* been verified | **Cryptographic verification** -- Clew builds SHA-256 hash-chain DAGs linking every manuscript claim back to source data |
-| 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **323 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
+| 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **Discoverable MCP tools** -- installed, enabled providers expose structured operations for agents; the available catalog depends on the environment |
 | 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-sdk](https://github.com/scitex-ai/scitex-sdk) app component and share via [SciTeX Cloud](https://scitex.ai) |
-| 5 | **Vendor lock-in** -- cloud research tools (Overleaf, Zotero, Mendeley, Colab, GitHub Copilot) keep data on third-party servers and depend on APIs that can disappear overnight or monetize tomorrow | **Open and self-hostable** -- every SciTeX package is AGPL-3.0; the full 39-package ecosystem runs on your own hardware (or SciTeX Cloud which itself is self-hostable); cloud integrations are pluggable extras, not requirements |
+| 5 | **Vendor lock-in** -- cloud research tools (Overleaf, Zotero, Mendeley, Colab, GitHub Copilot) keep data on third-party servers and depend on APIs that can disappear overnight or monetize tomorrow | **Open and self-hostable** -- every SciTeX package is AGPL-3.0; the ecosystem can run on your own hardware (or SciTeX Cloud which itself is self-hostable); cloud integrations are pluggable extras, not requirements |
 
 ## SciTeX and Research Workflow
 
@@ -142,7 +142,7 @@ If a single dep hangs, identify it with `pip install -v` and install that packag
 
 ## Architecture — Packages (3-Layer Cascade)
 
-The 33-package ecosystem follows a strict **dependency cascade**: upstream imports middle imports downstream, never the reverse. Downstream apps must work standalone; the umbrella only orchestrates.
+The ecosystem follows a **dependency cascade**: upstream imports middle imports downstream, never the reverse. Downstream apps must work standalone; the umbrella only orchestrates.
 
 ```
 Upstream (orchestration — SOC, integration tests only)
@@ -155,24 +155,35 @@ Middle (shared infrastructure — wraps, doesn't replace)
         ▼
 Downstream (standalone apps — own IO/GUI, unit tests)
     figrecipe, scitex-writer, scitex-scholar, scitex-clew, scitex-notebook,
-    scitex-dataset, scitex-ssh, scitex-container, scitex-browser, scitex-linter,
+    scitex-dataset, scitex-ssh, scitex-container, scitex-browser,
     openalex-local, crossref-local, socialia, + utility leaves
     (scitex-{path,str,dict,logging,types,db,repro,audit,parallel,compat,gists,etc,core})
 ```
 
 **One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [01_ecosystem_01_upstream-and-downstream.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_01_upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [01_ecosystem_02_dependency-and-version-pinning.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_02_dependency-and-version-pinning.md) for dep-pinning.
 
-## Three Interfaces
+## Interfaces
 
-Every capability in the SciTeX umbrella is reachable through three surfaces, so humans and AI agents share one toolkit:
+Python, CLI, MCP, Web API, and skills are separate capabilities owned by each
+package. A Python library does not automatically gain a command group or MCP
+server, and a package need not implement every interface.
 
-| Interface | Entry point | Example |
-|-----------|-------------|---------|
-| **Python API** | `import scitex as stx` | `stx.io.save(fig, "result.png")` |
-| **CLI** | `scitex <group> <command>` | `scitex io convert data.csv data.parquet` |
-| **MCP** | `scitex mcp start` | 323 tools an AI agent calls directly |
+| Surface | Entry point | How to inspect it |
+|---------|-------------|-------------------|
+| Python | `import scitex as stx` | Package API documentation and `scitex dev list-python-apis --help` |
+| CLI | `scitex <group> <command>` | `scitex --help`, then the selected group's `--help` |
+| MCP | `scitex mcp start` | `scitex mcp --help` and the enabled provider catalog |
+| Skills | `scitex dev skills` | `scitex dev skills list --help` |
+| Web API | Owning application's routes | That application's API documentation |
 
-The Python API is the primary surface; the CLI and MCP server expose the same logic for shells and AI agents. See the [Quick Start](#quick-start) below for runnable Python examples and the [Full MCP reference](./docs/02_MCP_TOOLS.md).
+The CLI selects installed provider declarations through Dev's exposure reader.
+Metadata discovery identifies candidates; the selected target must still resolve
+to a supported command object. Explicitly declined exposure is respected rather
+than replaced with a guessed CLI. Python-only packages stay Python-only.
+
+These paths describe this source tree. Check installed help before using them
+with an older release. See the [CLI reference](./docs/01_CLI_COMMANDS.md) and
+[MCP reference](./docs/02_MCP_TOOLS.md).
 
 ## Quick Start
 
@@ -455,15 +466,17 @@ NAT traversal for lab machines — autossh-backed systemd service.
 </details>
 
 <details>
-<summary><strong><code>scitex.linter</code> -- 47-Rule Convention Checker</strong></summary>
+<summary><strong>Developer checks</strong></summary>
 
-```python
-import scitex as stx
-issues = stx.linter.lint_file("src/")
-for i in issues:
-    print(f"{i.filepath}:{i.line} [{i.rule.id}] {i.message}")
+```bash
+scitex dev audit --help
+scitex dev linter --help
+scitex dev skills --help
 ```
-Lints SciTeX projects for ecosystem conventions (`stx.io.save` usage, CONFIGS naming, matplotlib prefs, import hygiene). Complements ruff/flake8.
+
+Developer workflows are grouped under `dev`. The historical `scitex.linter`
+Python import is compatibility information; use the owning Dev implementation
+and its current help for new workflows.
 </details>
 
 <details>
@@ -587,7 +600,8 @@ See [docs/05_ADDITIONAL_MODULES.md](./docs/05_ADDITIONAL_MODULES.md) for full ex
 <summary><strong>CLI Commands</strong></summary>
 
 ```bash
-scitex --help-recursive                  # Show all commands
+scitex --help                            # Discover public command groups
+scitex --help-recursive                  # Inspect resolvable command trees
 scitex scholar crossref-scitex search "topic"   # Search literature (CrossRef 167M+)
 scitex scholar fetch "10.1038/..."       # Download paper by DOI
 scitex stats recommend                   # Suggest statistical tests
@@ -595,28 +609,27 @@ scitex clew status                       # Project verification overview
 scitex clew dag --claims                 # Verify all manuscript claims
 scitex audio speak "Analysis complete"   # Text-to-speech
 scitex notification send "Job finished"  # Multi-backend notification
-scitex template clone research my_proj   # Scaffold a project
+scitex dev template clone research my_proj   # Scaffold a project
 scitex dev ecosystem list                # Check ecosystem versions
-scitex mcp list-tools                    # List all MCP tools (323)
+scitex sdk --help                        # SDK app/UI tooling
+scitex cards --help                      # Task-card workflows
+scitex ssh tunnel --help                 # SSH tunnel workflows
+scitex dev skills list --help            # Canonical Dev skill discovery
+scitex dev completion --help             # Shell completion
+scitex mcp list-tools                    # Inspect the configured MCP catalog
 ```
 
 > **[Full CLI reference](./docs/01_CLI_COMMANDS.md)**
 </details>
 
 <details>
-<summary><strong>MCP Server (323 tools across 23 modules)</strong></summary>
+<summary><strong>MCP server</strong></summary>
 
-Turn AI agents into autonomous researchers via [MCP](https://modelcontextprotocol.io/).
-
-| Category | Tools | | Category | Tools | | Category | Tools |
-|----------|-------|-|----------|-------|-|----------|-------|
-| plt | 73 | | crossref | 15 | | io | 5 |
-| cloud | 50 | | dev | 13 | | template | 4 |
-| writer | 38 | | introspect | 12 | | openalex | 4 |
-| scholar | 22 | | stats | 10 | | linter | 3 |
-| clew | 9 | | dataset | 8 | | social | 3 |
-| project | 6 | | notify | 5 | | tunnel | 3 |
-| docs | 4 | | ui | 2 | | usage | 2 |
+Use [MCP](https://modelcontextprotocol.io/) with the installed providers and
+exposure settings appropriate to your workflow. Provider availability, enabled
+state, advertised tools, and client-loaded context are separate observations.
+Inspect the configured server rather than relying on a fixed tool count. CLI
+command renames do not imply matching changes to Python imports or MCP names.
 
 ```json
 {"mcpServers": {"scitex": {"command": "scitex", "args": ["mcp", "start"],
@@ -639,76 +652,36 @@ source .env.d/entry.src        # 3. Source in shell
 
 ## SciTeX Ecosystem
 
-[`scitex-cloud`](https://github.com/ywatanabe1989/scitex-cloud) is a self-hosted web application that serves as a collaborative research workspace — with a built-in Writer, Scholar, and App Store where researchers build custom tools using [`scitex-app`](https://github.com/ywatanabe1989/scitex-app) SDK and [`scitex-ui`](https://github.com/ywatanabe1989/scitex-ui) components, then share them with the community. A live instance is hosted at [scitex.ai](https://scitex.ai).
+[SciTeX Hub](https://github.com/scitex-ai/scitex-hub) provides the research
+workspace at [scitex.ai](https://scitex.ai). App and UI implementations belong to
+[scitex-sdk](https://github.com/scitex-ai/scitex-sdk); use `scitex sdk --help` for
+its declared CLI in an environment where that provider is installed.
 
-<!-- hook-bypass: line-limit -->
-<details>
-<summary><strong>Full Ecosystem (37 packages, grouped by primary interface)</strong></summary>
+The umbrella composes independent packages without assigning universal
+interface ratings. Installed metadata and each owner's source determine which
+interfaces are available; declaration alone is not an execution check.
 
-Each package exposes the ecosystem via up to six interfaces: Python library, CLI, MCP tools, Claude Code skills, hooks, and HTTP. Ratings: ⭐⭐⭐ = primary / canonical surface, ⭐⭐ = strong secondary, ⭐ = thin, — = not provided. Packages are grouped by their *primary* interface — the one users should reach for first.
+```bash
+scitex --help
+scitex sdk --help
+scitex clew --help
+scitex cards --help
+scitex ssh tunnel --help
+scitex dev --help
+scitex dev skills list --help
+```
 
-### Python-first (library API is primary)
+Developer commands `audit`, `completion`, `introspect`, `linter`,
+`list-python-apis`, `pkg`, and `skills` live under `scitex dev`.
+The old root spellings remain hidden compatibility routes. Likewise, root
+`app`/`ui` route to `sdk app`/`sdk ui`, `todo` to `cards`, `tunnel` to
+`ssh tunnel`, `notify` to `notification`, and `verify` to `clew`.
+These CLI routes preserve invocation compatibility; they do not rename
+Python imports or guarantee that an optional provider is installed.
 
-| Package | Module | Interfaces | Description |
-|---------|--------|-----------|-------------|
-| [crossref-local](https://github.com/ywatanabe1989/crossref-local) | `stx.scholar` | Py ⭐⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Offline, zero-API-key DOI lookup + full-text search over the CrossRef corpus |
-| [openalex-local](https://github.com/ywatanabe1989/openalex-local) | `stx.scholar` | Py ⭐⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Offline, zero-API-key search over the full OpenAlex academic corpus |
-| [scitex-browser](https://github.com/ywatanabe1989/scitex-browser) | `stx.browser` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Playwright wrappers for scientific web scraping + AI-agent browsing |
-| [scitex-compat](https://github.com/ywatanabe1989/scitex-compat) | `stx.compat` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Backward-compatibility shims for deprecated SciTeX APIs |
-| [scitex-core](https://github.com/ywatanabe1989/scitex-core) | `stx.core` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Foundation layer for the SciTeX ecosystem |
-| [scitex-dataset](https://github.com/ywatanabe1989/scitex-dataset) | `stx.dataset` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified dataset-discovery API across 7 scientific repositories |
-| [scitex-db](https://github.com/ywatanabe1989/scitex-db) | `stx.db` | Py ⭐⭐⭐ · CLI ⭐ · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Relational-DB wrapper for scientific Python |
-| [scitex-dict](https://github.com/ywatanabe1989/scitex-dict) | `stx.dict` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Dictionary utilities for scientific Python |
-| [scitex-etc](https://github.com/ywatanabe1989/scitex-etc) | `stx.etc` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Miscellaneous SciTeX utilities |
-| [scitex-gists](https://github.com/ywatanabe1989/scitex-gists) | `stx.gists` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | SigmaPlot v12 macro snippets as printable Python functions |
-| [scitex-logging](https://github.com/ywatanabe1989/scitex-logging) | `stx.logging` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Enhanced Python logging + warnings + exceptions for SciTeX |
-| [scitex-parallel](https://github.com/ywatanabe1989/scitex-parallel) | `stx.parallel` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Minimal thread-pool parallel execution for scientific Python |
-| [scitex-path](https://github.com/ywatanabe1989/scitex-path) | `stx.path` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Project-aware path utilities for scientific Python |
-| [scitex-plt](https://github.com/ywatanabe1989/scitex-plt) | `stx.plt` | Py ⭐⭐⭐ · CLI — · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Publication-ready plotting (thin wrapper around figrecipe) |
-| [scitex-repro](https://github.com/ywatanabe1989/scitex-repro) | `stx.repro` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Reproducibility helpers for scientific Python experiments |
-| [scitex-stats](https://github.com/ywatanabe1989/scitex-stats) | `stx.stats` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Publication-ready statistical testing for 23 tests |
-| [scitex-str](https://github.com/ywatanabe1989/scitex-str) | `stx.str` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Text-processing utilities for scientific Python |
-| [scitex-types](https://github.com/ywatanabe1989/scitex-types) | `stx.types` | Py ⭐⭐⭐ · CLI — · MCP — · Skills ⭐ · Hook — · HTTP — | Type aliases and runtime type guards for scientific Python |
-
-### CLI-first
-
-| Package | Module | Interfaces | Description |
-|---------|--------|-----------|-------------|
-| [scitex-agent-container](https://github.com/ywatanabe1989/scitex-agent-container) | `stx.agent_container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Declarative YAML-based AI agent lifecycle management (tmux/screen/SSH) |
-| [scitex-sdk](https://github.com/scitex-ai/scitex-sdk) | `stx.app` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | App-developer SDK for SciTeX workspace apps |
-| [scitex-audit](https://github.com/ywatanabe1989/scitex-audit) | `stx.audit` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐ · Hook — · HTTP — | Unified repo security scanner for scientific Python projects |
-| [scitex-clew](https://github.com/ywatanabe1989/scitex-clew) | `stx.clew` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Hash-based reproducibility verification for scientific pipelines |
-| [scitex-container](https://github.com/ywatanabe1989/scitex-container) | `stx.container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified container management for Apptainer/Singularity + Docker |
-| [scitex-dev](https://github.com/ywatanabe1989/scitex-dev) | `stx.dev` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Developer utilities for maintaining the whole SciTeX ecosystem |
-| [scitex-notebook](https://github.com/ywatanabe1989/scitex-notebook) | `stx.notebook` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐⭐ · Hook — · HTTP — | Jupyter notebook reproducibility — verify, compile to DAG, convert to script |
-| [scitex-ssh](https://github.com/ywatanabe1989/scitex-ssh) | `stx.tunnel` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | SSH primitives (exec/copy/attach) plus gated, auto-reconnecting reverse tunnels for NAT traversal |
-
-### MCP-first
-
-| Package | Module | Interfaces | Description |
-|---------|--------|-----------|-------------|
-| [scitex-audio](https://github.com/ywatanabe1989/scitex-audio) | `stx.audio` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified text-to-speech with automatic backend fallback |
-| [socialia](https://github.com/ywatanabe1989/socialia) | `stx.social` | Py ⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified posting + analytics client for 6 social platforms |
-
-### Hook-first
-
-| Package | Module | Interfaces | Description |
-|---------|--------|-----------|-------------|
-| [scitex-linter](https://github.com/ywatanabe1989/scitex-linter) | `stx.linter` | Py ⭐ · CLI ⭐⭐ · MCP ⭐ · Skills ⭐⭐ · Hook ⭐⭐⭐ · HTTP — | AST-based linter for reproducible-research Python (pre-commit hook) |
-
-### Mixed (multiple equally-primary interfaces)
-
-| Package | Module | Interfaces | Description |
-|---------|--------|-----------|-------------|
-| [figrecipe](https://github.com/ywatanabe1989/figrecipe) | `stx.plt` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Publication-ready matplotlib figures with mm-precision layouts |
-| [scitex-cloud](https://github.com/ywatanabe1989/scitex-cloud) | `stx.cloud` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | SciTeX Cloud operational surface (55 MCP tools) |
-| [scitex-io](https://github.com/ywatanabe1989/scitex-io) | `stx.io` | Py ⭐⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐⭐ · Hook — · HTTP — | Universal one-call file I/O for 30+ scientific formats |
-| [scitex-notification](https://github.com/ywatanabe1989/scitex-notification) | `stx.notification` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | One-call alerting across 9 backends (audio/desktop/email/Telegram/...) |
-| [scitex-orochi](https://github.com/ywatanabe1989/scitex-orochi) | `stx.orochi` | Py ⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Agent Communication Hub — real-time WebSocket messaging between agents |
-| [scitex-scholar](https://github.com/ywatanabe1989/scitex-scholar) | `stx.scholar` | Py ⭐⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | End-to-end scientific-literature toolkit |
-| [SDK UI component](https://github.com/scitex-ai/scitex-sdk) | `stx.ui` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Shared frontend framework for SciTeX web apps |
-| [scitex-writer](https://github.com/ywatanabe1989/scitex-writer) | `stx.writer` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | End-to-end LaTeX manuscript toolchain (45 MCP tools) |
-</details>
+See the [ecosystem guide](./docs/08_SCITEX_ECOSYSTEM.md) for ownership and
+interface discovery, and the [CLI reference](./docs/01_CLI_COMMANDS.md) for
+canonical command paths.
 
 ## Part of SciTeX
 

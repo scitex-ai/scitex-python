@@ -32,7 +32,7 @@ def print_help_recursive(ctx, group: click.Group) -> None:
 
     for name in sorted(group.list_commands(ctx) or []):
         cmd = group.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
         click.secho(f"━━━ scitex {group.name} {name} ━━━", fg="cyan", bold=True)
@@ -42,7 +42,7 @@ def print_help_recursive(ctx, group: click.Group) -> None:
             if isinstance(cmd, click.Group):
                 for sub_name in sorted(cmd.list_commands(sub_ctx) or []):
                     sub_cmd = cmd.get_command(sub_ctx, sub_name)
-                    if sub_cmd is None:
+                    if sub_cmd is None or sub_cmd.hidden:
                         continue
                     click.echo()
                     click.secho(
@@ -121,11 +121,15 @@ def group_to_json(ctx, group: click.Group) -> None:
     """
     from scitex_dev import Result
 
-    cmds = {}
-    for name in sorted(group.list_commands(ctx) or []):
-        cmd = group.get_command(ctx, name)
-        if cmd:
-            cmds[name] = cmd.get_short_help_str(limit=150)
+    summaries = getattr(group, "command_summaries", None)
+    if summaries is not None:
+        cmds = dict(summaries(ctx))
+    else:
+        cmds = {}
+        for name in sorted(group.list_commands(ctx) or []):
+            cmd = group.get_command(ctx, name)
+            if cmd is not None and not cmd.hidden:
+                cmds[name] = cmd.get_short_help_str(limit=150)
     click.echo(Result(success=True, data={"commands": cmds}).to_json())
     ctx.exit(0)
 
@@ -175,7 +179,7 @@ def help_recursive_to_json(ctx, group: click.Group) -> None:
             subs = {}
             for name in sorted(cmd.list_commands(parent_ctx) or []):
                 sub_cmd = cmd.get_command(parent_ctx, name)
-                if sub_cmd:
+                if sub_cmd is not None and not sub_cmd.hidden:
                     with click.Context(
                         sub_cmd, info_name=name, parent=parent_ctx
                     ) as sub_ctx:
