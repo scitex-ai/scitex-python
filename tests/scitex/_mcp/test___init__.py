@@ -238,3 +238,60 @@ def test_peer_extras_registration_folds_in_brand_renamed_tools():
 
 
 # EOF
+
+
+@pytest.mark.parametrize("namespace", ["app", "ui"])
+def test_sdk_component_registry_reuses_actual_owned_server(namespace):
+    """Compatibility namespaces resolve the SDK's real server objects."""
+    # Arrange
+    import importlib
+
+    entrypoint = _entrypoint()
+    row = next(r for r in entrypoint._iter_registry() if r[2] == namespace)
+    expected = importlib.import_module("scitex_sdk." + namespace + "._mcp.server").mcp
+    # Act
+    actual = entrypoint._resolve_peer_mcp(row[1])
+    # Assert
+    assert (row[0], actual is expected) == ("scitex-sdk", True)
+
+
+def test_sdk_component_catalog_preserves_actual_namespaced_leaf_tools():
+    """Only tool metadata is enumerated; no business tool is invoked."""
+    # Arrange
+    import importlib
+    from fastmcp import FastMCP
+
+    entrypoint = _entrypoint()
+    rows = [r for r in entrypoint._iter_registry() if r[2] in {"app", "ui"}]
+    expected = {
+        namespace + "_" + name
+        for _, module, namespace in rows
+        for name in entrypoint.get_tools_sync(
+            importlib.import_module(module + "._mcp.server").mcp
+        )
+    }
+    target = FastMCP("owned-sdk-catalog-control")
+    # Act
+    entrypoint.register_all_tools(target, iter_registry=lambda: rows)
+    actual = {
+        n for n in entrypoint.get_tools_sync(target)
+        if n.startswith(("app_", "ui_"))
+    }
+    # Assert
+    assert (len(rows), bool(expected), actual) == (2, True, expected)
+
+
+def test_sdk_component_namespace_optout_preserves_other_component(monkeypatch):
+    """The existing APP namespace switch does not suppress SDK UI tools."""
+    # Arrange
+    from fastmcp import FastMCP
+
+    entrypoint = _entrypoint()
+    rows = [r for r in entrypoint._iter_registry() if r[2] in {"app", "ui"}]
+    monkeypatch.setenv("SCITEX_MCP_USE_APP", "0")
+    target = FastMCP("owned-sdk-namespace-control")
+    # Act
+    entrypoint.register_all_tools(target, iter_registry=lambda: rows)
+    names = entrypoint.get_tools_sync(target)
+    # Assert
+    assert (any(n.startswith("app_") for n in names), any(n.startswith("ui_") for n in names)) == (False, True)

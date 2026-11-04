@@ -208,7 +208,17 @@ def _iter_registry() -> Iterable[tuple[str, str, str]]:
             continue
         namespace = info.get("umbrella_subcommand", pip_name.removeprefix("scitex-"))
         namespace = _NAMESPACE_ALIASES.get(namespace, namespace)
+        if namespace in {"app", "ui"}:
+            continue  # Component facades below belong to the SDK distribution.
         yield pip_name, import_name, namespace
+
+    owner = "scitex-sdk"
+    info = ECOSYSTEM.get(owner)
+    if info is not None and not _mount_skip(owner, info):
+        from scitex.re_export import EXTERNAL_REEXPORTS
+
+        for namespace in ("app", "ui"):
+            yield owner, EXTERNAL_REEXPORTS[namespace], namespace
 
 
 def _resolve_one_peer_bounded(
