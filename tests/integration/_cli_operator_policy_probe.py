@@ -1,11 +1,22 @@
 """Guarded real Click/installed-metadata fixtures for CLI operator preferences."""
 
+import faulthandler
 import importlib
 import json
 import os
 import re
 import sys
+import time
 from pathlib import Path
+
+_STARTED = time.monotonic()
+
+
+def _phase(name):
+    sys.stderr.write(
+        f"[cli-policy-probe] phase={name} elapsed={time.monotonic() - _STARTED:.6f}s\n"
+    )
+    sys.stderr.flush()
 
 
 def provider(
@@ -45,6 +56,7 @@ def names(result, mode):
 
 
 def main():
+    _phase("fixture:start")
     source, directory, operation = sys.argv[1:]
     owned = Path(directory).resolve()
     sys.path.insert(0, source)
@@ -149,10 +161,16 @@ def main():
                 raise AssertionError("CLI inspection attempted an unowned mutation")
 
     sys.addaudithook(guard)
+    _phase("guard-ready")
+    _phase("click-import:start")
     from click import ClickException
     from click.testing import CliRunner
 
+    _phase("click-import:done")
+    _phase("root-import:start")
     import scitex
+
+    _phase("root-import:done")
 
     peers = (
         "scitex_sdk",
@@ -180,9 +198,11 @@ def main():
             reads.append(filename)
 
     sys.setprofile(profile)
+    _phase("cli-import:start")
     try:
         module = importlib.import_module("scitex.cli.main")
     except ClickException as error:
+        _phase("cli-import:refused")
         assert operation in {"malformed", "malformed_config"}
         assert not events and not (site / "imported").exists()
         sys.setprofile(None)
@@ -190,17 +210,33 @@ def main():
             json.dumps({"malformed_refused": True, "error": type(error).__name__})
             + "\n"
         )
+        sys.stdout.flush()
+        _phase("result-written")
         return
-    assert operation not in {"malformed", "malformed_config"}, (
-        "malformed preference was not refused"
-    )
+    _phase("cli-import:done")
+    assert operation not in {
+        "malformed",
+        "malformed_config",
+    }, "malformed preference was not refused"
     cli = module.cli
     runner = CliRunner()
 
+    invocation, inspection = 0, 0
+
     def invoke(group, arguments, **kwargs):
-        return runner.invoke(group, arguments, prog_name="scitex", **kwargs)
+        nonlocal invocation
+        invocation += 1
+        current = invocation
+        _phase(f"invoke-{current}:start")
+        try:
+            return runner.invoke(group, arguments, prog_name="scitex", **kwargs)
+        finally:
+            _phase(f"invoke-{current}:done")
 
     def inspect(group):
+        nonlocal inspection
+        inspection += 1
+        current = inspection
         result = {}
         for mode, arguments in [
             ("help", ["--help"]),
@@ -218,7 +254,9 @@ def main():
                 if mode == "completion"
                 else {}
             )
+            _phase(f"inspect-{current}:{mode}:start")
             value = invoke(group, arguments, **options)
+            _phase(f"inspect-{current}:{mode}:done")
             assert value.exit_code == 0, value.output
             result[mode] = names(value, mode)
         assert result["help"] == result["json"] == result["completion"]
@@ -253,7 +291,9 @@ def main():
             )
         if operation == "reverse_snapshot":
             state.write_text("{}")
+            _phase("reload-second-root:start")
             updated = importlib.reload(module).cli
+            _phase("reload-second-root:done")
             assert {"sdk", "dev", "owned"}.issubset(inspect(updated))
             assert inspect(cli) == initial
             dev = updated.get_command(None, "dev")
@@ -282,9 +322,13 @@ def main():
         echoed = invoke(cli, ["owned", "echo", "--exit-code", "7"])
         assert (echoed.exit_code, echoed.output) == (7, "owned-default\n")
         if operation == "snapshot":
+            _phase("snapshot-first-dev:start")
             first_dev = cli.get_command(None, "dev")
+            _phase("snapshot-first-dev:done")
             first_owner = first_dev._owner
+            _phase("snapshot-first-introspect:start")
             assert first_dev.get_command(None, "introspect") is not None
+            _phase("snapshot-first-introspect:done")
             assert len(reads) == 1
             state.write_text(
                 json.dumps(
@@ -298,7 +342,9 @@ def main():
                 )
             )
             assert inspect(cli) == initial
+            _phase("reload-second-root:start")
             updated = importlib.reload(module).cli
+            _phase("reload-second-root:done")
             assert len(reads) == 2
             new_names = inspect(updated)
             assert (
@@ -324,7 +370,9 @@ def main():
                     repr(original.exception),
                 )
             state.write_text(json.dumps({"cli": {"scitex-dev": False}}))
+            _phase("reload-third-root:start")
             third = importlib.reload(module).cli
+            _phase("reload-third-root:done")
             assert len(reads) == 3 and "dev" not in inspect(third)
             for path in [
                 ["skills", "--help"],
@@ -358,6 +406,16 @@ def main():
         + "\n"
     )
 
+    sys.stdout.flush()
+    _phase("result-written")
+
 
 if __name__ == "__main__":
-    main()
+    # Diagnostic only: the parent still enforces its unchanged 50-second limit.
+    # Register before fixture/Click/Root imports; no locals or environment dump.
+    _phase("bootstrap")
+    faulthandler.dump_traceback_later(45, repeat=False, file=sys.stderr)
+    try:
+        main()
+    finally:
+        faulthandler.cancel_dump_traceback_later()

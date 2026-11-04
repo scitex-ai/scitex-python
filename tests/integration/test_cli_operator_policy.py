@@ -2,11 +2,40 @@
 
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+
+
+def _run_probe(*args, **kwargs):
+    """Keep the original failure while exposing bounded phase/stack diagnostics."""
+    try:
+        return subprocess.run(*args, **kwargs)
+    except subprocess.TimeoutExpired as error:
+        stderr = error.stderr or b""
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode("utf-8", errors="replace")
+        # Do not echo arbitrary child logs, stdout, arguments or configuration.
+        patterns = (
+            r"\[cli-policy-probe\] phase=[a-z0-9:_-]+ elapsed=[0-9.]+s",
+            r"Timeout \(\d+:\d+:\d+\)!",
+            r"(?:Thread|Current thread) 0x[0-9a-fA-F]+ \(most recent call first\):",
+            r'  File "[^"\r\n]+", line [0-9]+ in [^\r\n]+',
+            r"  <no Python frame>",
+        )
+        lines = [
+            line
+            for line in stderr[-16384:].splitlines()
+            if any(re.fullmatch(pattern, line) for pattern in patterns)
+        ]
+        diagnostic = "\n".join(lines) or "<no phase/stack diagnostics captured>"
+        sys.stderr.write("CLI operator probe timeout diagnostics (bounded):\n")
+        sys.stderr.write(diagnostic + "\n")
+        sys.stderr.flush()
+        raise
 
 
 @pytest.mark.parametrize(
@@ -37,7 +66,7 @@ def test_cli_operator_preferences_use_frozen_actual_owner_view(tmp_path, operati
     }
     environment["COVERAGE_FILE"] = str(tmp_path / ".coverage")
     # Act
-    result = subprocess.run(
+    result = _run_probe(
         [
             sys.executable,
             "-I",
