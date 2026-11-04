@@ -239,6 +239,12 @@ def main():
         ]:
             assert invoke(cli, path).exit_code != 0
         assert not (site / "imported").exists()
+        # CLI admission never disables an independent explicit Python import.
+        if operation == "declined":
+            assert importlib.import_module("owned_cli").main.name == "main"
+            assert importlib.import_module("scitex.app") is importlib.import_module(
+                "scitex_sdk.app"
+            )
         if operation == "reverse_snapshot":
             state.write_text("{}")
             updated = importlib.reload(module).cli
