@@ -798,7 +798,7 @@ clew = ["scitex-clew==0.21.0"]
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer==2.43.19",  # Core writer package (single source of truth)
+    "scitex-writer==2.43.20",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -964,7 +964,7 @@ dev = [
     "scitex-ssh==1.1.0",
     "scitex-stats==0.2.24",
     "scitex-sdk[gui]>=0.3.17",
-    "scitex-writer==2.43.19",
+    "scitex-writer==2.43.20",
     "seaborn",
     "selenium",
     "setuptools",
