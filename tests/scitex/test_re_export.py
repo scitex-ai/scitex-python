@@ -216,3 +216,103 @@ class TestSdkOwnedCompatibilityFacades:
 
         # Assert
         assert actual == ui.__version__
+
+
+def test_sdk_deep_aliases_retain_real_module_metadata_and_objects(tmp_path):
+    """Deep imports reuse SDK modules and preserve canonical reload semantics."""
+    # Arrange
+    import json
+    import os
+    import subprocess
+    from pathlib import Path
+
+    import scitex
+
+    script = r'''
+import sys,json,importlib
+sys.path.insert(0,sys.argv[1])
+def guard(event,args):
+    if event=='import' and args[0].split('.')[0] in {'scitex_app','scitex_ui'}:
+        raise RuntimeError('retired module import')
+    if event in {'socket.bind','socket.connect','socket.getaddrinfo'}:
+        raise RuntimeError('identity controls must remain offline')
+sys.addaudithook(guard)
+import scitex
+from scitex_sdk import app
+rows=[]
+for alias,target in [('scitex.app.embed','scitex_sdk.app.embed'),('scitex.app._django','scitex_sdk.app._django'),('scitex.ui.branding','scitex_sdk.ui.branding')]:
+    real=importlib.import_module(target);spec=real.__spec__;name=real.__name__;package=real.__package__;loader=real.__loader__
+    facade=importlib.import_module(alias)
+    rows.append(facade is real and real.__spec__ is spec and real.__name__==name and real.__package__==package and real.__loader__ is loader)
+from scitex.app._django import ScitexAppConfig
+from scitex_sdk.app._django import ScitexAppConfig as CanonicalConfig
+class_identity=ScitexAppConfig is CanonicalConfig
+from scitex.app.embed import run_standalone
+from scitex_sdk.app.embed import run_standalone as canonical_launcher
+function_identity=run_standalone is canonical_launcher
+module=importlib.import_module('scitex.app.embed')
+reload_identity=importlib.reload(module) is module and module.__spec__.name=='scitex_sdk.app.embed'
+print(json.dumps({'module_metadata':rows,'class_identity':class_identity,'function_identity':function_identity,'reload_identity':reload_identity}))
+'''
+    root = str(Path(scitex.__file__).resolve().parents[1])
+    # Act
+    child = subprocess.run(
+        [sys.executable, "-I", "-c", script, root],
+        env=dict(os.environ, SCITEX_DIR=str(tmp_path / "state")),
+        capture_output=True, text=True, check=True, timeout=30,
+    )
+    # Assert
+    assert json.loads(child.stdout) == {
+        "module_metadata": [True, True, True],
+        "class_identity": True,
+        "function_identity": True,
+        "reload_identity": True,
+    }
+
+
+@pytest.mark.parametrize("kind", ["module", "package"])
+def test_sdk_component_finder_preserves_actual_in_tree_module(tmp_path, kind):
+    """An owned real module/package keeps precedence over a migrated facade."""
+    # Arrange
+    from scitex.re_export import EXTERNAL_REEXPORTS, _ScitexAliasFinder
+
+    if kind == "module":
+        (tmp_path / "app.py").write_text("OWNED = True\n")
+    else:
+        (tmp_path / "app").mkdir()
+        (tmp_path / "app" / "__init__.py").write_text("OWNED = True\n")
+    finder = _ScitexAliasFinder(
+        {"app": EXTERNAL_REEXPORTS["app"]}, [str(tmp_path)], preserve_metadata=True
+    )
+    # Act
+    actual = finder.find_spec("scitex.app", None)
+    # Assert
+    assert actual is None
+
+
+def test_umbrella_import_does_not_load_sdk_gui(tmp_path):
+    """Registering owned aliases does not eagerly start the SDK GUI stack."""
+    # Arrange
+    import json
+    import os
+    import subprocess
+    from pathlib import Path
+
+    import scitex
+
+    script = r'''
+import sys,json
+sys.path.insert(0,sys.argv[1])
+import scitex
+prefixes=('django','scitex_sdk.cli','scitex_sdk.app._django','scitex_sdk.ui._cli')
+print(json.dumps([n for n in sys.modules if any(n==p or n.startswith(p+'.') for p in prefixes)]))
+'''
+    root = str(Path(scitex.__file__).resolve().parents[1])
+    # Act
+    child = subprocess.run(
+        [sys.executable, "-I", "-c", script, root],
+        env=dict(os.environ, SCITEX_DIR=str(tmp_path / "state")),
+        capture_output=True, text=True, check=True, timeout=30,
+    )
+    # Assert
+    assert json.loads(child.stdout) == []

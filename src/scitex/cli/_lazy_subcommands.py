@@ -93,6 +93,7 @@ _FALLBACK_HELP: Dict[str, str] = {
     "web": "Web utilities.",
     # registry peers (fallback when the peer is not installed)
     "app": "SciTeX App SDK — write-once interface for local + cloud apps.",
+    "ui": "Shared UI shell, components, and application tooling.",
     "audio": "Text-to-speech with multiple backends for scientific work.",
     "browser": "Browser automation for scholarly paper access.",
     "clew": "Verifiable knowledge graph for scientific experiments.",
@@ -169,6 +170,25 @@ def _peer_cli_candidates(import_name: str) -> tuple[tuple[str, str], ...]:
     return tuple((f"{import_name}.{sub}", attr) for sub, attr in _PEER_CLI_PROBES)
 
 
+def _sdk_component_cli_candidates(namespace: str) -> tuple[tuple[str, str], ...]:
+    """Select a canonical SDK component through its declared console entry point."""
+    from importlib.metadata import PackageNotFoundError, distribution
+
+    from scitex.re_export import EXTERNAL_REEXPORTS
+
+    owner, _, component = EXTERNAL_REEXPORTS[namespace].rpartition(".")
+    if owner != "scitex_sdk" or component != namespace:
+        return ()
+    try:
+        entries = distribution("scitex-sdk").entry_points
+    except PackageNotFoundError:
+        return ()
+    roots = [e for e in entries if e.group == "console_scripts" and e.name == "scitex-sdk"]
+    if len(roots) != 1 or not roots[0].attr or roots[0].module.split(".")[0] != owner:
+        return ()
+    return ((roots[0].module, roots[0].attr + "::" + component),)
+
+
 def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
     """Build the umbrella's lazy-subcommand dict.
 
@@ -212,6 +232,15 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
             out[sub] = (f"scitex.cli.{attr}", attr, help_text)
         else:
             out[sub] = (_peer_cli_candidates(imp), attr, help_text)
+
+    # Owned facades do not depend on retired peer registry records remaining.
+    # Resolve the SDK's composed groups rather than duplicating its commands.
+    for namespace in ("app", "ui"):
+        if namespace not in have_wrapper:
+            out[namespace] = (
+                _sdk_component_cli_candidates(namespace), namespace,
+                _FALLBACK_HELP[namespace],
+            )
 
     # 2. scitex-internal wrappers (no peer in the registry).
     registered_attrs = {

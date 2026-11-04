@@ -40,7 +40,7 @@ This repository provides `scitex`, the orchestration layer of the SciTeX ecosyst
 | 1 | **Fragmented tools** -- literature search, statistics, figures, and writing each require separate tools with incompatible formats | **Unified toolkit** -- `import scitex as stx` provides 73 modules under one namespace, accessible via Python API, CLI, and MCP. These modules are standalone packages but loosely coupled through a plugin registry — each works on its own, yet composes into designed synergy (save a figure → auto-exports CSV + YAML recipe → hash-tracked by Clew → citeable in scitex-writer). |
 | 2 | **No verification** -- existing tools address whether work *could* be reproduced, not whether it *has* been verified | **Cryptographic verification** -- Clew builds SHA-256 hash-chain DAGs linking every manuscript claim back to source data |
 | 3 | **AI agents lack context** -- general-purpose LLMs cannot operate across the full research lifecycle without domain-specific tools | **323 MCP tools** -- AI agents run statistics, create figures, search literature, and compile manuscripts through structured tool calls |
-| 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-app](https://github.com/ywatanabe1989/scitex-app) SDK and share via [SciTeX Cloud](https://scitex.ai) |
+| 4 | **No custom tooling** -- every lab needs domain-specific tools, but building and sharing them requires deep infrastructure knowledge | **App Maker and Store** -- researchers create custom apps with [scitex-sdk](https://github.com/scitex-ai/scitex-sdk) app component and share via [SciTeX Cloud](https://scitex.ai) |
 | 5 | **Vendor lock-in** -- cloud research tools (Overleaf, Zotero, Mendeley, Colab, GitHub Copilot) keep data on third-party servers and depend on APIs that can disappear overnight or monetize tomorrow | **Open and self-hostable** -- every SciTeX package is AGPL-3.0; the full 39-package ecosystem runs on your own hardware (or SciTeX Cloud which itself is self-hostable); cloud integrations are pluggable extras, not requirements |
 
 ## SciTeX and Research Workflow
@@ -150,7 +150,7 @@ Upstream (orchestration — SOC, integration tests only)
         │ imports / re-exposes
         ▼
 Middle (shared infrastructure — wraps, doesn't replace)
-    scitex-io, scitex-stats, scitex-app, scitex-ui, scitex-audio, scitex-dev
+    scitex-io, scitex-stats, scitex-sdk (app + UI), scitex-audio, scitex-dev
         │ integrates / wraps via plugin registry
         ▼
 Downstream (standalone apps — own IO/GUI, unit tests)
@@ -675,7 +675,7 @@ Each package exposes the ecosystem via up to six interfaces: Python library, CLI
 | Package | Module | Interfaces | Description |
 |---------|--------|-----------|-------------|
 | [scitex-agent-container](https://github.com/ywatanabe1989/scitex-agent-container) | `stx.agent_container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Declarative YAML-based AI agent lifecycle management (tmux/screen/SSH) |
-| [scitex-app](https://github.com/ywatanabe1989/scitex-app) | `stx.app` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | App-developer SDK for SciTeX workspace apps |
+| [scitex-sdk](https://github.com/scitex-ai/scitex-sdk) | `stx.app` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | App-developer SDK for SciTeX workspace apps |
 | [scitex-audit](https://github.com/ywatanabe1989/scitex-audit) | `stx.audit` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐ · Hook — · HTTP — | Unified repo security scanner for scientific Python projects |
 | [scitex-clew](https://github.com/ywatanabe1989/scitex-clew) | `stx.clew` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Hash-based reproducibility verification for scientific pipelines |
 | [scitex-container](https://github.com/ywatanabe1989/scitex-container) | `stx.container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified container management for Apptainer/Singularity + Docker |
@@ -706,7 +706,7 @@ Each package exposes the ecosystem via up to six interfaces: Python library, CLI
 | [scitex-notification](https://github.com/ywatanabe1989/scitex-notification) | `stx.notification` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | One-call alerting across 9 backends (audio/desktop/email/Telegram/...) |
 | [scitex-orochi](https://github.com/ywatanabe1989/scitex-orochi) | `stx.orochi` | Py ⭐⭐ · CLI ⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Agent Communication Hub — real-time WebSocket messaging between agents |
 | [scitex-scholar](https://github.com/ywatanabe1989/scitex-scholar) | `stx.scholar` | Py ⭐⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | End-to-end scientific-literature toolkit |
-| [scitex-ui](https://github.com/ywatanabe1989/scitex-ui) | `stx.ui` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Shared frontend framework for SciTeX web apps |
+| [SDK UI component](https://github.com/scitex-ai/scitex-sdk) | `stx.ui` | Py ⭐⭐ · CLI ⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP ⭐⭐ | Shared frontend framework for SciTeX web apps |
 | [scitex-writer](https://github.com/ywatanabe1989/scitex-writer) | `stx.writer` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | End-to-end LaTeX manuscript toolchain (45 MCP tools) |
 </details>
 

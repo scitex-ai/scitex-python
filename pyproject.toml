@@ -83,7 +83,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-sdk>=0.3.17",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.62.2",
+    "scitex-dev==0.62.11",
     "scitex-io==0.3.3",
     "scitex-stats==0.2.24",
     "scitex-audio==0.3.0",
@@ -101,7 +101,7 @@ dependencies = [
     "scitex-genai==0.1.1",
     "scitex-gists==0.1.8",
     "scitex-audit==0.2.0",
-    "scitex-logging==0.2.2",
+    "scitex-logging==0.2.4",
     "scitex-dict==0.1.8",
     "scitex-browser==0.1.15",
     "scitex-str==0.1.12",
@@ -117,7 +117,7 @@ dependencies = [
     # scitex-audit; scitex-python's main deps no longer pull the
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
-    "figrecipe==0.29.9",
+    "figrecipe==0.44.2",
     "scitex-sdk[gui]>=0.3.17",
 ]
 
@@ -462,7 +462,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
-    "scitex-logging==0.2.2",
+    "scitex-logging==0.2.4",
 ]
 
 # Media Module - Media display utilities (always available: scitex-etc is a
@@ -560,7 +560,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.29.9",
+    "figrecipe==0.44.2",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
@@ -798,7 +798,7 @@ clew = ["scitex-clew==0.21.0"]
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer==2.24.1",  # Core writer package (single source of truth)
+    "scitex-writer==2.43.19",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -865,7 +865,7 @@ dev = [
     "crossref-local==0.7.6",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.29.9",
+    "figrecipe==0.44.2",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -955,7 +955,7 @@ dev = [
     # `pip install scitex[cloud]` when scitex-hub is available.
     "scitex-container==0.2.1",
     "scitex-dataset==0.7.1",
-    "scitex-dev==0.62.2",
+    "scitex-dev==0.62.11",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
@@ -964,7 +964,7 @@ dev = [
     "scitex-ssh==1.1.0",
     "scitex-stats==0.2.24",
     "scitex-sdk[gui]>=0.3.17",
-    "scitex-writer==2.24.1",
+    "scitex-writer==2.43.19",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1091,7 +1091,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.62.2"]
+linter = ["scitex-dev==0.62.11"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 

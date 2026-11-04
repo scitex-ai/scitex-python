@@ -172,3 +172,73 @@ class TestCommandCategories:
 
 
 # EOF
+
+
+@pytest.mark.parametrize("component", ["app", "ui"])
+def test_sdk_component_alias_uses_actual_sdk_group_offline(tmp_path, component):
+    """Aliases retain the SDK's composed groups without retired imports."""
+    # Arrange
+    import json
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    import scitex
+
+    source_root = str(Path(scitex.__file__).resolve().parents[1])
+    script = r'''
+import sys,json
+sys.path.insert(0,sys.argv[1])
+def guard(event,args):
+    if event=='import' and args[0].split('.')[0] in {'scitex_app','scitex_ui'}:
+        raise RuntimeError('retired imports are forbidden')
+    if event in {'socket.bind','socket.connect','socket.getaddrinfo'}:
+        raise RuntimeError('help must stay offline')
+sys.addaudithook(guard)
+import click
+from click.testing import CliRunner
+from scitex.cli import cli
+from scitex_sdk.cli import main as sdk
+component=sys.argv[2]
+actual=cli.get_command(click.Context(cli),component)
+expected=sdk.get_command(click.Context(sdk),component)
+runner=CliRunner()
+left=runner.invoke(cli,[component,'--help'],prog_name='scitex')
+right=runner.invoke(sdk,[component,'--help'],prog_name='scitex-sdk')
+print(json.dumps({'same_sdk_group':actual is expected and expected is not None,
+ 'umbrella_help':left.exit_code==0 and 'Usage:' in left.output,
+ 'standalone_help':right.exit_code==0 and 'Usage:' in right.output,
+ 'retired_imports':[n for n in sys.modules if n.split('.')[0] in {'scitex_app','scitex_ui'}]}))
+'''
+    environment = dict(os.environ, SCITEX_DIR=str(tmp_path / "state"))
+    # Act
+    child = subprocess.run(
+        [sys.executable, "-I", "-c", script, source_root, component],
+        env=environment, capture_output=True, text=True, check=True, timeout=30,
+    )
+    result = json.loads(child.stdout)
+    # Assert
+    assert result == {
+        "same_sdk_group": True,
+        "umbrella_help": True,
+        "standalone_help": True,
+        "retired_imports": [],
+    }
+
+
+def test_unknown_sdk_component_does_not_fall_back_to_sdk_root():
+    """A nonexistent child never exposes a different root command tree."""
+    # Arrange
+    import click
+    from scitex.cli.main import LazyGroup
+
+    root = LazyGroup(
+        name="owned-control",
+        lazy_subcommands={
+            "missing": ((("scitex_sdk.cli", "main::missing-component"),), "unused", "")
+        },
+    )
+    # Act
+    actual = root.get_command(click.Context(root), "missing")
+    # Assert
+    assert actual is None

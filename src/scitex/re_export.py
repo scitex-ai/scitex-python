@@ -406,6 +406,7 @@ _DEFAULT_BRANDED = {
 def _build_alias_map() -> dict[str, str]:
     """Read scitex_dev._ecosystem registry; produce {short: peer_import}."""
     alias: dict[str, str] = dict(_DEFAULT_BRANDED)
+    alias.update({name: EXTERNAL_REEXPORTS[name] for name in ("app", "ui")})
     try:
         from scitex_dev._ecosystem._core import ECOSYSTEM
     except Exception:
@@ -462,11 +463,16 @@ def _make_missing_peer_stub(short: str, peer: str) -> ModuleType:
 class _ScitexAliasLoader(Loader):
     """Loader that binds `scitex.<short>[…]` to the peer module."""
 
-    def __init__(self, fullname: str, peer: str, short: str, sub: Optional[str]):
+    def __init__(
+        self, fullname: str, peer: str, short: str, sub: Optional[str],
+        *, preserve_metadata: bool = False,
+    ):
         self._fullname = fullname
         self._peer = peer
         self._short = short
         self._sub = sub  # None for top-level alias; "utils.helpers" for deep
+        self._preserve_metadata = preserve_metadata
+        self._canonical_spec = None
 
     def create_module(self, spec: ModuleSpec) -> Optional[ModuleType]:
         target_name = self._peer if self._sub is None else f"{self._peer}.{self._sub}"
@@ -477,24 +483,32 @@ class _ScitexAliasLoader(Loader):
                 return _make_missing_peer_stub(self._short, self._peer)
             # Sub-import failure on a present peer = real ImportError surface
             raise
+        if self._preserve_metadata:
+            self._canonical_spec = mod.__spec__
         return mod
 
     def exec_module(self, module: ModuleType) -> None:
-        # `create_module` already returned a fully-initialized peer module;
-        # nothing left to execute.
+        # Import machinery assigns the alias spec even for an existing module.
+        # These owned component facades retain the canonical reload identity.
+        if self._canonical_spec is not None:
+            module.__spec__ = self._canonical_spec
         return None
 
 
 class _ScitexAliasFinder(MetaPathFinder):
     """Resolve `scitex.<short>[…]` to the peer standalone module.
 
-    Skipped when the in-tree `scitex/<short>/` directory exists — that's the
-    "migration not started yet" escape hatch. Installation order matters: this
-    finder must come AFTER the default path-based finders so on-disk dirs win.
+    A real in-tree module/package remains authoritative. The generic finder
+    follows normal path lookup; only SDK app/UI component facades precede it
+    so their physical SDK paths cannot execute twice under an alias name.
     """
 
-    def __init__(self, alias: Mapping[str, str], scitex_pkg_path: list):
+    def __init__(
+        self, alias: Mapping[str, str], scitex_pkg_path: list,
+        *, preserve_metadata: bool = False,
+    ):
         self._alias = dict(alias)
+        self._preserve_metadata = preserve_metadata
         # Resolve in-tree directory presence ONCE at construction; the umbrella
         # package layout doesn't change during a process lifetime.
         from pathlib import Path
@@ -507,6 +521,8 @@ class _ScitexAliasFinder(MetaPathFinder):
             for child in p.iterdir():
                 if child.is_dir() and (child / "__init__.py").exists():
                     self._intree.add(child.name)
+                elif child.is_file() and child.suffix == ".py":
+                    self._intree.add(child.stem)
 
     def find_spec(self, fullname: str, path, target=None) -> Optional[ModuleSpec]:
         if not fullname.startswith("scitex."):
@@ -523,7 +539,9 @@ class _ScitexAliasFinder(MetaPathFinder):
         sub = rest[len(short) + 1 :] if "." in rest else None
         return ModuleSpec(
             fullname,
-            _ScitexAliasLoader(fullname, peer, short, sub),
+            _ScitexAliasLoader(
+                fullname, peer, short, sub, preserve_metadata=self._preserve_metadata
+            ),
             is_package=(sub is None),
         )
 
@@ -540,6 +558,19 @@ def install_alias_finder(scitex_pkg_path: list) -> None:
     finder = _ScitexAliasFinder(alias, scitex_pkg_path)
     # Append (not insert) so default finders win first → real `scitex/<short>/`
     # directories stay authoritative for unmigrated peers.
+    from importlib.machinery import PathFinder
+
+    # Only these migrated component facades must precede path lookup: their
+    # SDK package paths would otherwise execute a second copy under scitex.*.
+    components = _ScitexAliasFinder(
+        {name: alias[name] for name in ("app", "ui")}, scitex_pkg_path,
+        preserve_metadata=True,
+    )
+    path_index = next(
+        (i for i, entry in enumerate(sys.meta_path) if entry is PathFinder),
+        len(sys.meta_path),
+    )
+    sys.meta_path.insert(path_index, components)
     sys.meta_path.append(finder)
     _INSTALLED = True
 

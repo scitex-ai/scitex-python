@@ -112,7 +112,12 @@ class LazyGroup(click.Group):
             except ImportError as exc:
                 last_exc = exc
                 continue
-            cmd = getattr(mod, attr, None)
+            root_attr, selector, component = attr.partition("::")
+            cmd = getattr(mod, root_attr, None)
+            if selector:
+                if not component or "::" in component or not isinstance(cmd, click.Group):
+                    continue
+                cmd = cmd.get_command(click.Context(cmd), component)
             # Only a click command/group is mountable. Some peers expose a
             # plain ``def main(argv)`` console-script function at a probed
             # location (e.g. scitex_writer._cli.main) — returning it would
