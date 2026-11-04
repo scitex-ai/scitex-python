@@ -30,6 +30,15 @@ def load_cli_snapshot() -> CliExposureSnapshot:
         ) from error
     retired = {name for name, info in ECOSYSTEM.items() if info.get("archived")}
     retired.update({"scitex-app", "scitex-ui", "scitex-orochi", "scitex-audit"})
-    return CliExposureSnapshot(
-        tuple(list_cli_providers()), load_exposure_policy(), frozenset(retired)
-    )
+    rows = tuple(list_cli_providers())
+    try:
+        policy = load_exposure_policy()
+    except (TypeError, ValueError) as error:
+        from click import ClickException
+
+        raise ClickException(
+            "CLI exposure preferences are invalid. Check boolean surface settings "
+            "in SCITEX_DEV_CONFIG and SCITEX_DEV_KNOB_STATE "
+            "(or their SciTeX Dev default files)."
+        ) from error
+    return CliExposureSnapshot(rows, policy, frozenset(retired))
