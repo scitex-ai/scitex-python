@@ -36,7 +36,7 @@ scitex.notebook    → scitex_notebook
 scitex.notification → scitex_notification
 scitex.audio       → scitex_audio
 scitex.dataset     → scitex_dataset
-scitex.app         → scitex_app
+scitex.app         → scitex_sdk.app
 scitex.audit       → scitex_audit
 scitex.compat      → scitex_compat
 scitex.repro       → scitex_repro

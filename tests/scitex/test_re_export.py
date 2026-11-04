@@ -179,3 +179,40 @@ class TestExternalFallback:
         module = importlib.import_module("scitex.security")
         # Assert
         assert hasattr(module, "check_github_alerts")
+
+
+class TestSdkOwnedCompatibilityFacades:
+    """Public umbrella facades resolve to the installed SDK implementation."""
+
+    def test_app_files_api_preserves_sdk_object_identity(self):
+        # Arrange
+        import scitex
+        from scitex_sdk import app
+
+        # Act
+        actual = scitex.app.get_files
+
+        # Assert
+        assert actual is app.get_files
+
+    def test_app_launcher_preserves_sdk_object_identity(self):
+        # Arrange
+        import scitex.app.embed as facade
+        from scitex_sdk.app import embed
+
+        # Act
+        actual = facade.run_standalone
+
+        # Assert
+        assert actual is embed.run_standalone
+
+    def test_ui_module_preserves_sdk_version_owner(self):
+        # Arrange
+        import scitex
+        from scitex_sdk import ui
+
+        # Act
+        actual = scitex.ui.__version__
+
+        # Assert
+        assert actual == ui.__version__

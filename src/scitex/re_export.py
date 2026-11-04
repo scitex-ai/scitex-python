@@ -275,7 +275,7 @@ EXTERNAL_REEXPORTS = {
     "pd": "scitex_pd",
     "resource": "scitex_resource",
     "sh": "scitex_sh",
-    "ui": "scitex_ui",
+    "ui": "scitex_sdk.ui",
     "web": "scitex_web",
     "writer": "scitex_writer",
     "io": "scitex_io",  # in-tree dir removed (#289); pure re-export of scitex_io
@@ -291,7 +291,7 @@ EXTERNAL_REEXPORTS = {
     "audit": "scitex_audit",
     "compat": "scitex_compat",
     "repro": "scitex_repro",
-    "app": "scitex_app",
+    "app": "scitex_sdk.app",
     "scholar": "scitex_scholar",
     "dict": "scitex_dict",
     "notebook": "scitex_notebook",
