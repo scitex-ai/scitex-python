@@ -110,3 +110,9 @@ ordinary ignore negations retain Hatch's existing meaning. The explicit Git
 `docs/sphinx` input closure remains the only ignored-source inclusion exception.
 A no-Git extracted sdist supplies physical construction paths only. Neither its
 paths nor its bundled HTML replace independent immutable-Git verification.
+
+Napoleon does not force inclusion of documented special-name members. This
+keeps the existing private-member filter effective for installation-specific
+internal data such as `__DIR__`; public functions/data and the existing
+constructor documentation setting are retained. Generated HTML and search
+indices are compared directly, without rewriting installation paths.
