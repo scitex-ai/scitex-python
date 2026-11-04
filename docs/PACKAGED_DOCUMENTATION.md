@@ -6,6 +6,8 @@ sdist carries the same bundle under `src/` and the original Sphinx sources.
 The wheel build from an sdist regenerates the bundle rather than accepting
 copied HTML. Generated HTML remains ignored and is never tracked in Git.
 
+The shared build/publisher provisioning helper creates a new owned environment
+for each stage; it never executes credentials or uploads in local qualification.
 The custom Hatch hook uses `require-runtime-dependencies` to obtain the
 project's canonical runtime requirements. Its documentation tools are explicit
 build requirements. The native producer obtains both targets' requirements
@@ -18,18 +20,26 @@ It reconstructs selected ordinary source from immutable Git blobs and invokes
 the Git-bound producer again in a clean directory. The generated files must
 match both archives byte for byte; an artifact-provided manifest or digest is
 never an authority for accepting documentation. The receipt binds the producer
-digest, exact source-input inventory, installed toolchain RECORD bytes, Python
+digest, exact source-input inventory, installed toolchain RECORD-verified canonical bytes, Python/stdlib
 identity, trusted invocation and actual output size. The installed toolchain
-must be unchanged before/after replay. Existing whole ordinary source,
+must be unchanged before/after replay. Only installer-generated Python
+shebang paths may normalize, after resolving their interpreter to the exact
+qualified executable; entrypoint bodies and code/data remain exact. CPU
+constraints/affinity are separate observations, stable within a replay, never
+a substitute for exact regenerated HTML. Existing whole ordinary source,
 RECORD, archive membership, containment, link, file-size and expansion checks
-remain mandatory. The admitted release SIF identity remains required; local
+remain mandatory. The current native producer explicitly requires derived docs and a v2 proof;
+historical v1 primitives remain independently testable without granting them
+current production admission. The admitted release SIF identity remains required; local
 prototype evidence alone does not establish qualification in that SIF.
 
 This is a static documentation build. Existing mocked imports remain mocked,
 notebooks never execute, and the plot directive never evaluates examples.
-After fixed local platform/font discovery, the producer refuses outbound
+After fixed local platform/font discovery, the Python audit guard refuses outbound
 network, child execution and reads outside its source, runtime and private
-scratch roots; caught refusals still fail the build. External intersphinx
+scratch roots; runtime CPU-cgroup reads are observed separately. Private
+scratch is the only writable root. Refusals fail the build even through normal
+Sphinx warning handlers; this is a trusted-code build guard, not an OS sandbox. External intersphinx
 inventories are disabled for this offline bundle. Ordinary Sphinx warnings
 remain visible, matching the existing build policy: successful rendering is
 not complete runtime/API verification. Release comes from the source
@@ -43,6 +53,8 @@ tamper/source-mismatch/path rejection controls, and real installed discovery
 and HTTP serving from a clean directory with no checkout import path.
 
 This prototype is not pushed, released or installed into any live runtime.
-The existing frozen metadata test fixture must be reconciled truthfully with
-its actual immutable source before the complete release-boundary test suite
-can be called qualified. Preserve the initial and baseline failures.
+The historical frozen metadata fixture is bound to actual commit 644558f8,
+with its genuine Hatch 1.27 headers verified byte for byte. Its 97 unchanged
+assertions exercise legacy primitives against the current helper. They are
+separate from current v2 producer qualification. Preserve the original 2061
+baseline and inaccurate-f34-comment evidence.
