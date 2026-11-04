@@ -50,6 +50,13 @@ class SphinxBundleTests(unittest.TestCase):
                 stream.write("\n.. image:: _static/fixture.png\n")
             with (root / "docs/sphinx/conf.py").open("a") as stream:
                 stream.write('html_static_path = ["_static"]\n')
+            # An ignored earlier alias must not consume the real directory inode.
+            (root / "real-docs").mkdir()
+            (root / "real-docs/authored.md").write_text("owned ordinary tracked source")
+            (root / ".claude").mkdir()
+            (root / ".claude/agents").symlink_to("../real-docs", target_is_directory=True)
+            (root / "ignored.txt").write_text("tracked but ignored non-documentation")
+            (root / "keep.tmp").write_text("negated ignore remains selected")
             (root / "src/scitex").mkdir(parents=True)
             (root / "src/scitex/__init__.py").write_text("")
             (root / "build_hooks").mkdir()
@@ -67,7 +74,7 @@ class SphinxBundleTests(unittest.TestCase):
             subprocess.run(["git", "init", "--quiet", "--template=", str(root)], check=True, env=git_env, timeout=7)
             subprocess.run(["git", "-C", str(root), "add", "."], check=True, env=git_env, timeout=7)
             with (root / ".gitignore").open("a") as stream:
-                stream.write("*.png\n")  # Existing cached image becomes ignored.
+                stream.write("*.png\n.claude/\nignored.txt\n*.tmp\n!keep.tmp\n")  # Tracked inputs become ignored.
             result = subprocess.run(
                 [sys.executable, "-I", "-B", "-m", "build", "--no-isolation", str(root)],
                 env={"PATH": os.defpath, "HOME": str(root / "home"), "TMPDIR": str(scratch), "PYTHONDONTWRITEBYTECODE": "1"},
@@ -80,6 +87,11 @@ class SphinxBundleTests(unittest.TestCase):
                 html = wheel.read("scitex/_sphinx_html/index.html")
                 wheel_docs = {name: wheel.read(name) for name in names if name.startswith("scitex/_sphinx_html/")}
             with tarfile.open(next((root / "dist").glob("*.tar.gz"))) as sdist:
+                archive_names = set(sdist.getnames())
+                assert "scitex-1.0.0/real-docs/authored.md" in archive_names
+                assert "scitex-1.0.0/ignored.txt" not in archive_names
+                assert "scitex-1.0.0/keep.tmp" in archive_names
+                assert not any("/.claude/" in name for name in archive_names)
                 sdist_docs = {item.name.removeprefix("scitex-1.0.0/src/"): sdist.extractfile(item).read() for item in sdist.getmembers() if item.isfile() and "/src/scitex/_sphinx_html/" in item.name}
             assert len(names) == len(set(names)) and names.count("scitex/_sphinx_html/index.html") == 1 and b"Owned normal PEP517 page" in html and wheel_docs == sdist_docs
 

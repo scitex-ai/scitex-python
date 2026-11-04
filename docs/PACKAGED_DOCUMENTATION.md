@@ -100,3 +100,13 @@ LICENSE remains the exact source/wheel license payload. This qualifies the
 observed producer cohort, not every backend release. Historical v1 primitives
 retain their existing 2.1–2.4 metadata contract. The initial f06 full identity
 failure on unsupported 2.5 remains evidence; it was never an admitted release.
+
+Normal sdist construction also reserves regular tracked lexical source files
+selected by the pinned Hatch configuration, without following directory links.
+This prevents an earlier ignored symlink alias from consuming a real directory
+inode in Hatch's native traversal. Tracked ignored non-documentation files stay
+excluded, including when the same source directory has an ignored alias;
+ordinary ignore negations retain Hatch's existing meaning. The explicit Git
+`docs/sphinx` input closure remains the only ignored-source inclusion exception.
+A no-Git extracted sdist supplies physical construction paths only. Neither its
+paths nor its bundled HTML replace independent immutable-Git verification.

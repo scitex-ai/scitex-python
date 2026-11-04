@@ -14,16 +14,12 @@ import sys
 import tempfile
 
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
+from hatchling.builders.constants import EXCLUDED_DIRECTORIES
 
 
-def documentation_inputs(root: Path) -> list[Path]:
-    """Tracked doc inputs in Git; an sdist's tree is construction input only.
-
-    Ignored-but-tracked static assets must survive sdist construction. The
-    external verifier derives this inventory again from immutable Git blobs.
-    """
+def source_candidates(root: Path, subtree: str = "") -> list[Path]:
+    """Tracked lexical Git paths, or physical construction paths without Git."""
     root = root.resolve(strict=True)
-    source = root / "docs/sphinx"
     if (root / ".git").exists() or (root / ".git").is_symlink():
         env = {"PATH": os.defpath, "GIT_CONFIG_NOSYSTEM": "1",
                "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_OPTIONAL_LOCKS": "0"}
@@ -33,21 +29,57 @@ def documentation_inputs(root: Path) -> list[Path]:
         if Path(top).resolve() != root:
             raise ValueError("documentation Git root differs")
         raw = subprocess.check_output(
-            ["git", "-C", str(root), "ls-files", "--cached", "-z", "--", "docs/sphinx"],
+            ["git", "-C", str(root), "ls-files", "--cached", "-z", "--", subtree or "."],
             env=env, timeout=15,
         )
-        paths = [root / name.decode() for name in set(raw.split(b"\0")) if name]
-    else:
-        paths = [path for path in source.rglob("*") if not path.is_dir() or path.is_symlink()]
+        return sorted(root / os.fsdecode(name) for name in set(raw.split(b"\0")) if name)
+    # Archive paths are construction inputs only, never external identity authority.
+    paths = []
+    for directory, dirs, files in os.walk(root / subtree, followlinks=False):
+        dirs[:] = [name for name in dirs if not (Path(directory) / name).is_symlink()]
+        paths.extend(Path(directory) / name for name in files)
+    return sorted(paths)
+
+
+def contained_regular(path: Path, root: Path) -> None:
+    if (not path.resolve(strict=True).is_relative_to(root)
+            or not path.is_file()
+            or any(parent.is_symlink() for parent in (path, *path.parents)
+                   if parent.is_relative_to(root))):
+        raise ValueError("source input is not a contained regular file")
+
+
+def documentation_inputs(root: Path) -> list[Path]:
+    """Explicit tracked ignored docs survive normal source construction."""
+    root = root.resolve(strict=True)
+    source = root / "docs/sphinx"
+    paths = source_candidates(root, "docs/sphinx")
     if not paths:
         raise ValueError("documentation source input inventory is empty")
     for path in paths:
-        if (not path.resolve(strict=True).is_relative_to(source.resolve(strict=True))
-                or not path.is_file()
-                or any(parent.is_symlink() for parent in (path, *path.parents)
-                       if parent.is_relative_to(root))):
-            raise ValueError("documentation source input is not a contained regular file")
-    return sorted(paths)
+        contained_regular(path, root)
+        if not path.is_relative_to(source):
+            raise ValueError("documentation source input escapes its source root")
+    return paths
+
+
+def ordinary_source_inputs(root: Path, config) -> list[Path]:
+    """Use pinned Hatch selection without following directory aliases."""
+    root = root.resolve(strict=True)
+    selected = []
+    for path in source_candidates(root):
+        # Native Hatch retains deliberate literal links; external proof validates them.
+        if path.is_symlink() or path.is_dir():
+            continue
+        contained_regular(path, root)
+        relative = path.relative_to(root)
+        if any(parent.name in EXCLUDED_DIRECTORIES or config.directory_is_excluded(
+                parent.name, parent.parent.as_posix() if parent.parent != Path(".") else "")
+               for parent in relative.parents if parent != Path(".")):
+            continue
+        if config.include_path(relative.as_posix(), is_package=(path.parent / "__init__.py").is_file()):
+            selected.append(path)
+    return selected
 
 
 # No notebook/plot execution, subprocesses, or outbound sockets during autodoc.
@@ -144,10 +176,18 @@ class CustomBuildHook(BuildHookInterface):
         # entries, while still deriving every member from this fresh build.
         targets = set(build_data["force_include"].values())
         if self.target_name == "sdist":
-            for path in documentation_inputs(Path(self.root)):
+            # Reserve selected regular files before native safe_walk can lose a
+            # directory inode through an earlier ignored symlink alias.
+            source_files = set(ordinary_source_inputs(Path(self.root), self.build_config))
+            source_files.update(documentation_inputs(Path(self.root)))
+            for path in sorted(source_files):
                 target = path.relative_to(Path(self.root).resolve()).as_posix()
                 if target in targets:
-                    raise ValueError("documentation source target collision")
+                    same = any(Path(source).resolve() == path.resolve() and value == target
+                               for source, value in build_data["force_include"].items())
+                    if not same:
+                        raise ValueError("documentation source target collision")
+                    continue
                 targets.add(target)
                 build_data["force_include"][str(path)] = target
         for path in sorted(output.rglob("*")):
