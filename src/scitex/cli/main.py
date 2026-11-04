@@ -31,14 +31,20 @@ class LazyGroup(click.Group):
         # {name: (module_path, attr_name, short_help)}
         self._lazy_subcommands = lazy_subcommands or {}
         self._metadata_distribution = metadata_distribution
+        self._metadata_help_body = self.help
+        self._refresh_metadata_help()
 
-    def format_help_text(self, ctx, formatter):
-        """Render installed identity through the shared header renderer."""
+    def _refresh_metadata_help(self):
+        """Keep stored and rendered help on the same installed identity."""
         if self._metadata_distribution:
             from ._metadata import cli_metadata
 
-            formatter.write_paragraph()
-            formatter.write_text(cli_metadata(self._metadata_distribution)["header"])
+            header = cli_metadata(self._metadata_distribution)["header"]
+            self.help = f"{header}\n\n{self._metadata_help_body or ''}"
+
+    def format_help_text(self, ctx, formatter):
+        """Refresh the shared metadata header before Click renders help."""
+        self._refresh_metadata_help()
         super().format_help_text(ctx, formatter)
 
     def list_commands(self, ctx):
