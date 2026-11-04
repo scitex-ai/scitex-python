@@ -103,7 +103,19 @@ class CustomBuildHook(BuildHookInterface):
             "scitex/_sphinx_html" if self.target_name == "wheel"
             else "src/scitex/_sphinx_html"
         )
-        build_data["force_include"][str(output)] = destination
+        # Hatch reserves destinations for forced FILES, not external
+        # directories. This overrides copied sdist HTML without duplicate ZIP
+        # entries, while still deriving every member from this fresh build.
+        targets = set(build_data["force_include"].values())
+        for path in sorted(output.rglob("*")):
+            if path.is_symlink() or not (path.is_file() or path.is_dir()):
+                raise ValueError("unsafe generated documentation member")
+            if path.is_file():
+                target = destination + "/" + path.relative_to(output).as_posix()
+                if target in targets:
+                    raise ValueError("generated documentation target collision")
+                targets.add(target)
+                build_data["force_include"][str(path)] = target
 
     def finalize(self, version, build_data, artifact_path):
         self._temporary.cleanup()

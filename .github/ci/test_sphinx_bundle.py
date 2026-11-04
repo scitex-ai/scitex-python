@@ -4,6 +4,9 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import subprocess
+import os
+import sys
+import zipfile
 import unittest
 
 
@@ -21,6 +24,36 @@ def source_at(root, text):
 
 
 class SphinxBundleTests(unittest.TestCase):
+    def test_real_pep517_wheel_from_sdist_has_one_copy_of_generated_docs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "source"
+            root.mkdir()
+            source_at(root, "Owned normal PEP517 page\n========================\n")
+            (root / "src/scitex").mkdir(parents=True)
+            (root / "src/scitex/__init__.py").write_text("")
+            (root / "build_hooks").mkdir()
+            (root / "build_hooks/sphinx_bundle.py").write_bytes((ROOT / "build_hooks/sphinx_bundle.py").read_bytes())
+            (root / ".gitignore").write_text("src/scitex/_sphinx_html/\n/dist\n")
+            (root / "pyproject.toml").write_text(
+                '[build-system]\nrequires = ["hatchling==1.33.0"]\nbuild-backend = "hatchling.build"\n'
+                '[project]\nname = "scitex"\nversion = "1.0.0"\n'
+                '[tool.hatch.build.hooks.custom]\npath = "build_hooks/sphinx_bundle.py"\n'
+                '[tool.hatch.build.targets.wheel]\nartifacts = ["src/scitex/_sphinx_html/**"]\n'
+            )
+            scratch = Path(temporary) / "scratch"
+            scratch.mkdir()
+            result = subprocess.run(
+                [sys.executable, "-I", "-B", "-m", "build", "--no-isolation", str(root)],
+                env={"PATH": os.defpath, "HOME": str(root / "home"), "TMPDIR": str(scratch), "PYTHONDONTWRITEBYTECODE": "1"},
+                capture_output=True, text=True, timeout=30,
+            )
+            if result.returncode:
+                self.fail(result.stdout + result.stderr)
+            with zipfile.ZipFile(next((root / "dist").glob("*.whl"))) as wheel:
+                names = wheel.namelist()
+                html = wheel.read("scitex/_sphinx_html/index.html")
+            assert len(names) == len(set(names)) and names.count("scitex/_sphinx_html/index.html") == 1 and b"Owned normal PEP517 page" in html
+
     def test_current_producer_admission_refuses_real_legacy_source_frame(self):
         historical_spec = importlib.util.spec_from_file_location(
             "owned_historical_boundary_fixture", ROOT / ".github/ci/test_release_identity.py"
