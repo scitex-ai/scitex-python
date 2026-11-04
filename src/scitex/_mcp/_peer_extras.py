@@ -8,8 +8,8 @@ server verbatim. A few peers need brand-naming or tool-name adjustments
 that the generic loop cannot express:
 
 * figrecipe ``fr_*`` tools -> re-exposed as ``plt_stx_*`` (scitex branding).
-* socialia core tools -> registered as ``social_*`` (a curated subset:
-  post/delete/status), in addition to the full ``socialia_*`` mount.
+* socialia tools -> delegated to its complete leaf-owned compatibility catalog,
+  in addition to the full ``socialia_*`` namespace mount.
 * scitex_dev.linter MCP tools -> ``linter_*`` (engine moved out of the
   archived scitex-linter package).
 * scitex_cloud -> optional mount under ``cloud`` (not in the ecosystem
@@ -53,16 +53,16 @@ def _register_figrecipe_plt_stx(mcp) -> None:
 
 
 def _register_social_core(mcp) -> None:
-    """Register socialia's core social_* tools (post/delete/status)."""
+    """Register Socialia's complete leaf-owned compatibility tool catalog."""
     try:
-        from socialia._mcp.tools import social
+        from socialia._mcp.tools import register_all_tools
     except ImportError:
         logger.debug("socialia not installed — social_* tools skipped")
         return
     try:
-        social.register_tools(mcp)
+        register_all_tools(mcp)
     except Exception as exc:  # noqa: BLE001 — diagnostic, never fatal
-        logger.warning("socialia core social_* registration failed: %s", exc)
+        logger.warning("socialia compatibility registration failed: %s", exc)
 
 
 def _register_linter(mcp) -> None:
