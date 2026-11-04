@@ -25,6 +25,30 @@ def source_at(root, text):
 
 
 class SphinxBundleTests(unittest.TestCase):
+    def test_actual_napoleon_config_hides_private_path_and_keeps_public_members(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source_at(root, "Owned public API\n================\n\n.. automodule:: scitex\n   :members:\n")
+            (root / "docs/sphinx/conf.py").write_bytes((ROOT / "docs/sphinx/conf.py").read_bytes())
+            (root / "pyproject.toml").write_text('[project]\nversion = "2.30.9"\n')
+            package = root / "src/scitex"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text(
+                '\"\"\"Owned real autodoc fixture.\"\"\"\n'
+                '__version__ = "2.30.9"\n'
+                '__DIR__ = "/owned/private/installation/path"\n'
+                '\"\"\"Private installation directory.\"\"\"\n'
+                'PUBLIC_VALUE = 17\n'
+                '\"\"\"Public documented data.\"\"\"\n'
+                'def public_function(value=1):\n'
+                '    \"\"\"Public documented function.\"\"\"\n'
+                '    return value\n'
+            )
+            PRODUCER.build_bundle(root, root / "output")
+            html = (root / "output/index.html").read_text()
+            assert "scitex.__DIR__" not in html and "/owned/private/installation/path" not in html
+            assert "scitex.public_function" in html and "scitex.PUBLIC_VALUE" in html
+
     def test_actual_config_refuses_installed_root_as_documented_source(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
