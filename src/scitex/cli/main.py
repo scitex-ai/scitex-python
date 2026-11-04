@@ -24,10 +24,22 @@ class LazyGroup(click.Group):
     help display or tab completion. This makes CLI startup instant.
     """
 
-    def __init__(self, *args, lazy_subcommands=None, **kwargs):
+    def __init__(
+        self, *args, lazy_subcommands=None, metadata_distribution=None, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         # {name: (module_path, attr_name, short_help)}
         self._lazy_subcommands = lazy_subcommands or {}
+        self._metadata_distribution = metadata_distribution
+
+    def format_help_text(self, ctx, formatter):
+        """Render installed identity through the shared header renderer."""
+        if self._metadata_distribution:
+            from ._metadata import cli_metadata
+
+            formatter.write_paragraph()
+            formatter.write_text(cli_metadata(self._metadata_distribution)["header"])
+        super().format_help_text(ctx, formatter)
 
     def list_commands(self, ctx):
         """List all available commands."""
@@ -190,6 +202,7 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 @click.group(
     cls=LazyGroup,
     lazy_subcommands=_LAZY_SUBCOMMANDS,
+    metadata_distribution="scitex",
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )

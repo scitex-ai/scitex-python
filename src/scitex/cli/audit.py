@@ -8,7 +8,19 @@ import sys
 import click
 
 
-@click.group(invoke_without_command=True)
+class AuditGroup(click.Group):
+    """Prefer known command tokens; explicit ./name remains an audit path."""
+
+    def parse_args(self, ctx, args):
+        """Insert the default scan path before a registered command token."""
+        parsed, remaining, _ = self.make_parser(ctx).parse_args(args=list(args))
+        if parsed.get("path") in self.commands:
+            position = len(args) - len(remaining) - 1
+            args = [*args[:position], ".", *args[position:]]
+        return super().parse_args(ctx, args)
+
+
+@click.group(cls=AuditGroup, invoke_without_command=True)
 @click.argument("path", default=".", required=False, type=click.Path(exists=True))
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
 @click.option("--save", "-s", type=click.Path(), help="Save report to file.")
@@ -62,7 +74,10 @@ def audit(ctx, path, as_json, save, checks):
 
 
 @audit.command()
-def status():
+@click.option(
+    "--json", "as_json", is_flag=True, help="Output audit-tool availability as JSON."
+)
+def status(as_json):
     """Show which audit tools are installed."""
     import shutil
 
@@ -72,6 +87,21 @@ def status():
         "pip-audit": ("deps", "pip install pip-audit"),
         "gh": ("github", "https://cli.github.com/"),
     }
+
+    if as_json:
+        import json
+
+        available = {}
+        for tool, (check_name, install_hint) in tools.items():
+            path = shutil.which(tool)
+            available[tool] = {
+                "installed": path is not None,
+                "path": path,
+                "check": check_name,
+                "install_hint": install_hint,
+            }
+        click.echo(json.dumps({"tools": available}))
+        return
 
     click.secho("Audit Tool Status", bold=True)
     for tool, (check_name, install_hint) in tools.items():

@@ -204,7 +204,10 @@ def init_config(dry_run):
 
 @config.command("show")
 @click.argument("path_name")
-def show_path(path_name):
+@click.option(
+    "--json", "as_json", is_flag=True, help="Output the configured path as JSON."
+)
+def show_path(path_name, as_json):
     """
     Show a specific configured path.
 
@@ -226,7 +229,12 @@ def show_path(path_name):
 
     if hasattr(paths, path_name):
         path = getattr(paths, path_name)
-        click.echo(str(path))
+        if as_json:
+            import json
+
+            click.echo(json.dumps({"name": path_name, "path": str(path)}))
+        else:
+            click.echo(str(path))
     else:
         available = list(paths.list_all().keys())
         click.secho(f"Unknown path: {path_name}", fg="red", err=True)

@@ -130,7 +130,13 @@ def group_to_json(ctx, group: click.Group) -> None:
             cmd = group.get_command(ctx, name)
             if cmd is not None and not cmd.hidden:
                 cmds[name] = cmd.get_short_help_str(limit=150)
-    click.echo(Result(success=True, data={"commands": cmds}).to_json())
+    data = {"commands": cmds}
+    distribution = getattr(group, "_metadata_distribution", None)
+    if distribution:
+        from ._metadata import cli_metadata
+
+        data["metadata"] = cli_metadata(distribution)
+    click.echo(Result(success=True, data=data).to_json())
     ctx.exit(0)
 
 
@@ -194,6 +200,11 @@ def help_recursive_to_json(ctx, group: click.Group) -> None:
     parent_ctx = click.Context(group, info_name=group_name, parent=fake_parent)
 
     tree = _cmd_to_dict(group, parent_ctx)
+    distribution = getattr(group, "_metadata_distribution", None)
+    if distribution:
+        from ._metadata import cli_metadata
+
+        tree["metadata"] = cli_metadata(distribution)
     tree["name"] = f"scitex {group_name}" if group_name != "cli" else "scitex"
 
     click.echo(Result(success=True, data=tree).to_json())
