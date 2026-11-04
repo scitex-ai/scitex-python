@@ -8,6 +8,12 @@
 import os
 import sys
 import types
+import re
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10 source builds
+    import tomli as tomllib
+from pathlib import Path
 
 # Stub `mcp` / `fastmcp` BEFORE any `import scitex` so autodoc never triggers
 # the broken pydantic schema generation in mcp.types.TaskMetadata. Real mcp is
@@ -21,7 +27,8 @@ for _name in ("mcp", "mcp.types", "mcp.server", "mcp.client", "fastmcp"):
             _mod.__path__ = []  # mark as package
         sys.modules[_name] = _mod
 
-sys.path.insert(0, os.path.abspath("../../src"))
+_root = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_root / "src"))
 
 # -- Project information -----------------------------------------------------
 
@@ -29,12 +36,9 @@ project = "SciTeX"
 copyright = "2024-2026, Yusuke Watanabe"
 author = "Yusuke Watanabe"
 
-try:
-    from scitex.__version__ import __version__
-
-    release = __version__
-except ImportError:
-    release = "2.24.0"
+release = tomllib.loads((_root / "pyproject.toml").read_text())["project"]["version"]
+if not isinstance(release, str) or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", release):
+    raise ValueError("Sphinx project release identity is missing or malformed")
 
 # -- General configuration ---------------------------------------------------
 
@@ -211,6 +215,9 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "torch": ("https://pytorch.org/docs/stable/", None),
 }
+
+if os.environ.get("SCITEX_DOCS_STATIC") == "1":
+    intersphinx_mapping = {}  # Offline static bundle; no remote inventory fetch.
 
 
 # -- Hide private/internal members from autodoc --------------------------------

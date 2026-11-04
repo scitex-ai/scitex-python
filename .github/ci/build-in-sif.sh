@@ -123,14 +123,27 @@ mkdir "$TMPDIR/site" "$TMPDIR/wheel-site"
 unset VIRTUAL_ENV PYTHONHOME PYTHONPATH || true
 export PATH="/opt/venv-$V/bin:$PATH"
 command -v uv >/dev/null
-# The reviewed project declares hatchling as its sole PEP517 backend. Install
-# the complete frontend/backend normally into an exclusive target, then build
-# from the sdist without creating another virtual environment.
-"$PY" -c 'import tomllib; x=tomllib.load(open("pyproject.toml","rb")); assert x["build-system"] == {"requires":["hatchling"],"build-backend":"hatchling.build"}'
-uv pip install --python "$PY" --target="$TMPDIR/site" build hatchling
-export PYTHONPATH="$TMPDIR/site"
+# The reviewed Hatch producer requires the canonical runtime metadata closure
+# for autodoc. Use Hatch's real PEP517 requirements API; never copy peer lists.
+"$PY" -c 'import tomllib; x=tomllib.load(open("pyproject.toml","rb")); assert x["build-system"] == {"requires":["hatchling==1.33.0"],"build-backend":"hatchling.build"}'
+uv venv --python "$PY" "$TMPDIR/docs-env"
+DOC_PY="$TMPDIR/docs-env/bin/python"
+uv pip install --python "$DOC_PY" build hatchling==1.33.0
+"$DOC_PY" -B - "$TMPDIR/docs-requirements.txt" <<'PYDOC'
+import sys
+from pathlib import Path
+from packaging.requirements import Requirement
+from hatchling.build import get_requires_for_build_sdist, get_requires_for_build_wheel
+requirements = sorted(set(get_requires_for_build_sdist() + get_requires_for_build_wheel()))
+for raw in requirements:
+    requirement = Requirement(raw)
+    if "\n" in raw or "\r" in raw or requirement.url is not None:
+        raise ValueError("unreviewed documentation build requirement")
+Path(sys.argv[1]).write_text("\n".join(requirements) + "\n")
+PYDOC
+uv pip install --python "$DOC_PY" -r "$TMPDIR/docs-requirements.txt"
 [ ! -e dist ] && [ ! -L dist ] || { echo "::error::stale release output refused"; exit 1; }
-"$PY" -m build --no-isolation --outdir dist
+"$DOC_PY" -B -m build --no-isolation --outdir dist
 WHEELS=(dist/*.whl)
 [ "${#WHEELS[@]}" -eq 1 ] && [ -f "${WHEELS[0]}" ]
 # Resolve the actual wheel's full runtime dependencies into a fresh target.
@@ -149,7 +162,7 @@ assert Path(cli.__file__).resolve().is_relative_to(site)
 assert umbrella.__version__ == __import__("os").environ["RELEASE_TAG"][1:]
 print("Actual isolated whole-wheel umbrella and CLI origins passed")
 PY
-"$PY" -I -S -B .github/ci/release-identity.py write-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT"
+"$DOC_PY" -I -B .github/ci/release-identity.py write-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT"
 }
 
 run_owned_body
