@@ -242,3 +242,128 @@ def test_unknown_sdk_component_does_not_fall_back_to_sdk_root():
     actual = root.get_command(click.Context(root), "missing")
     # Assert
     assert actual is None
+
+
+class TestDeclaredDatabaseEntrypoint:
+    """The installed leaf's real console group is the umbrella group."""
+
+    def test_database_group_identity(self):
+        # Arrange
+        import click
+        from scitex.cli.main import cli
+        from scitex_db.__main__ import main
+
+        # Act
+        mounted = cli.get_command(click.Context(cli), "db")
+        # Assert
+        assert mounted is main
+
+    def test_database_help_uses_declared_group(self):
+        # Arrange
+        from click.testing import CliRunner
+        from scitex.cli.main import cli
+
+        # Act
+        result = CliRunner().invoke(cli, ["db", "--help"])
+        # Assert
+        assert result.exit_code == 0, result.output
+
+
+@pytest.fixture
+def owned_console_provider(tmp_path):
+    """Publish real, private installed metadata; never patch the metadata API."""
+    import importlib
+    import sys
+
+    root = tmp_path / "installed"
+    root.mkdir()
+    package = root / "owned_cli_demo"
+    package.mkdir()
+    imported, called = tmp_path / "imported", tmp_path / "called"
+    (package / "__init__.py").write_text(
+        "from pathlib import Path\nimport click\n"
+        f"Path({str(imported)!r}).touch()\n"
+        "@click.group()\ndef command():\n"
+        "    raise AssertionError('business callback must not execute')\n"
+        "def function():\n"
+        f"    Path({str(called)!r}).touch()\n"
+    )
+    metadata = root / "owned_cli_demo-1.0.dist-info"
+    metadata.mkdir()
+    (metadata / "METADATA").write_text(
+        "Metadata-Version: 2.1\nName: owned-cli-demo\nVersion: 1.0\n"
+    )
+    entries = metadata / "entry_points.txt"
+    sys.path.insert(0, str(root))
+    importlib.invalidate_caches()
+    try:
+        yield entries, imported, called
+    finally:
+        sys.path.remove(str(root))
+        sys.modules.pop("owned_cli_demo", None)
+        importlib.invalidate_caches()
+
+
+def test_owned_console_metadata_does_not_import_provider(owned_console_provider):
+    # Arrange
+    from scitex.cli._lazy_subcommands import _owned_console_candidates
+
+    entries, imported, _called = owned_console_provider
+    entries.write_text("[console_scripts]\nowned-cli-demo = owned_cli_demo:command\n")
+    # Act
+    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    # Assert
+    assert (candidates, imported.exists()) == ((("owned_cli_demo", "command"),), False)
+
+
+@pytest.mark.parametrize(
+    "declarations",
+    [
+        "owned-cli-demo = owned_cli_demo:command\n"
+        "owned_cli_demo = owned_cli_demo:function\n",
+        "owned-cli-demo = foreign_provider:command\n",
+        "owned-cli-demo = owned_cli_demo.bad-path:command\n",
+    ],
+)
+def test_ambiguous_or_foreign_console_refused(owned_console_provider, declarations):
+    # Arrange
+    from scitex.cli._lazy_subcommands import _owned_console_candidates
+
+    entries, imported, _called = owned_console_provider
+    entries.write_text("[console_scripts]\n" + declarations)
+    # Act
+    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    # Assert
+    assert (candidates, imported.exists()) == ((), False)
+
+
+def test_plain_console_function_never_called(owned_console_provider):
+    # Arrange
+    import click
+    from scitex.cli._lazy_subcommands import _owned_console_candidates
+    from scitex.cli.main import LazyGroup
+
+    entries, _imported, called = owned_console_provider
+    entries.write_text("[console_scripts]\nowned-cli-demo = owned_cli_demo:function\n")
+    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    root = LazyGroup(name="control", lazy_subcommands={"demo": (candidates, "", "")})
+    # Act
+    result = root.get_command(click.Context(root), "demo")
+    # Assert
+    assert (result, called.exists()) == (None, False)
+
+
+def test_owned_click_group_help_never_calls_callback(owned_console_provider):
+    # Arrange
+    from click.testing import CliRunner
+    from scitex.cli._lazy_subcommands import _owned_console_candidates
+    from scitex.cli.main import LazyGroup
+
+    entries, _imported, _called = owned_console_provider
+    entries.write_text("[console_scripts]\nowned-cli-demo = owned_cli_demo:command\n")
+    candidates = _owned_console_candidates("owned-cli-demo", "owned_cli_demo")
+    root = LazyGroup(name="control", lazy_subcommands={"demo": (candidates, "", "")})
+    # Act
+    result = CliRunner().invoke(root, ["demo", "--help"])
+    # Assert
+    assert result.exit_code == 0, result.output

@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """Registry-driven lazy-subcommand wiring for the umbrella ``scitex`` CLI.
 
-Single source of truth: the scitex-dev ecosystem registry
-(``scitex_dev._ecosystem._core.ECOSYSTEM``). Every peer with
-``umbrella_subcommand=X`` is expected to ship an umbrella-side click
-group at ``scitex.cli.<X>:<X>`` (X with underscores for hyphenated
-names). The builder iterates the registry, filters to subcommands
-whose wrapper file actually exists in ``scitex/cli/``, and merges in
-non-conventional overrides + aliases.
+Peer ownership comes from the scitex-dev ecosystem registry. Existing
+umbrella wrappers take precedence; other peers prefer an unambiguous canonical
+console entrypoint declared by their owning installed distribution, then
+conventional module candidates. Metadata discovery does not import providers;
+the lazy loader accepts Click objects without invoking console functions.
 
 Pulled out of ``scitex/cli/main.py`` to keep that orchestrator file
 under the project's 512-line cap.
@@ -170,6 +168,51 @@ def _peer_cli_candidates(import_name: str) -> tuple[tuple[str, str], ...]:
     return tuple((f"{import_name}.{sub}", attr) for sub, attr in _PEER_CLI_PROBES)
 
 
+def _owned_console_candidates(
+    pip_name: str,
+    import_name: str,
+) -> tuple[tuple[str, str], ...] | None:
+    """Read one canonical owner's console target without importing its code.
+
+    ``None`` means no canonical declaration exists; an empty tuple refuses
+    conflicting or foreign declarations rather than guessing another owner.
+    """
+    from importlib.metadata import PackageNotFoundError, distribution
+
+    from packaging.utils import canonicalize_name
+
+    try:
+        owner = distribution(pip_name)
+    except PackageNotFoundError:
+        return None
+    expected = canonicalize_name(pip_name)
+    if canonicalize_name(owner.metadata.get("Name", "")) != expected:
+        return ()
+    entries = [
+        entry
+        for entry in owner.entry_points
+        if entry.group == "console_scripts"
+        and canonicalize_name(entry.name) == expected
+    ]
+    if not entries:
+        return None
+    if len(entries) != 1:
+        return ()
+    try:
+        module, attr = entries[0].module, entries[0].attr
+    except (AttributeError, ValueError):
+        return ()
+    if (
+        not module
+        or not all(part.isidentifier() for part in module.split("."))
+        or not attr
+        or not attr.isidentifier()
+        or not (module == import_name or module.startswith(import_name + "."))
+    ):
+        return ()
+    return ((module, attr),)
+
+
 def _sdk_component_cli_candidates(namespace: str) -> tuple[tuple[str, str], ...]:
     """Select a canonical SDK component through its declared console entry point."""
     from importlib.metadata import PackageNotFoundError, distribution
@@ -231,7 +274,12 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         if attr in have_wrapper:
             out[sub] = (f"scitex.cli.{attr}", attr, help_text)
         else:
-            out[sub] = (_peer_cli_candidates(imp), attr, help_text)
+            declared = _owned_console_candidates(pip_name, imp)
+            guessed = _peer_cli_candidates(imp)
+            candidates = guessed if declared is None else (
+                tuple(dict.fromkeys(declared + guessed)) if declared else ()
+            )
+            out[sub] = (candidates, attr, help_text)
 
     # Owned facades do not depend on retired peer registry records remaining.
     # Resolve the SDK's composed groups rather than duplicating its commands.
