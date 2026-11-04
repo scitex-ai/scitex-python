@@ -37,16 +37,26 @@ namespace; it cannot re-enable a declined owner.
 
 The optional search discovery mode reduces the exposed definitions after
 registration. It does not defer provider imports or authorize their operations.
+Set `SCITEX_MCP_DISCOVERY=search` on the umbrella server to advertise discovery
+tools instead of the full catalog. `SCITEX_MCP_SEARCH_LIMIT` sets the maximum
+matches per search (a positive integer; default `5`). The default mode is `full`,
+which preserves clients that expect the complete tool listing.
 
 ## Local client configuration
 
-The package declares the stdio console entry point `scitex-mcp-server`:
+The package declares the stdio console entry point `scitex-mcp-server`. This
+example enables search mode; omit `env` to retain the default full catalog.
+These settings describe this source tree; older releases may not support them.
 
 ```json
 {
   "mcpServers": {
     "scitex": {
-      "command": "scitex-mcp-server"
+      "command": "scitex-mcp-server",
+      "env": {
+        "SCITEX_MCP_DISCOVERY": "search",
+        "SCITEX_MCP_SEARCH_LIMIT": "5"
+      }
     }
   }
 }
