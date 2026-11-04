@@ -202,19 +202,84 @@ DEV_PEERS = frozenset(
 )
 
 
-def reserved_cli_names(rows=None):
-    """Read names that no alias or adapter may recreate in this projection."""
-    from scitex_dev.cli_providers import list_cli_providers
+# Actual operation delegation, not ownership inferred from a command spelling.
+# Config/convert/pkg/completion/mcp are Root-owned compositions over libraries.
+_WORKFLOW_OWNERS = {
+    "browser": "scitex-browser",
+    "dev": "scitex-dev",
+    "docs": "scitex-dev",
+    "event": "scitex-events",
+    "repro": "scitex-repro",
+    "resource": "scitex-resource",
+    "social": "socialia",
+    "template": "scitex-template",
+    "tex": "scitex-tex",
+    "web": "scitex-web",
+    "writer": "scitex-writer",
+    "audit": "scitex-audit",
+    "introspect": "scitex-introspect",
+    "list-python-apis": "scitex-introspect",
+    "linter": "scitex-dev",
+    "skills": "scitex-dev",
+}
 
-    return {
+
+def _native_candidate(row, retired):
+    return bool(
         row.name
-        for row in (list_cli_providers() if rows is None else rows)
+        and row.target
+        and row.status in {"declared", "legacy_unknown"}
+        and row.distribution not in retired
+        and not (row.name in DEPRECATED_ALIASES and row.name not in DEV_PEERS)
+        and row.name not in DEV_COMMANDS
+        and row.name != "dev"
+    )
+
+
+def workflow_enabled(name, snapshot):
+    """Require Root's composition preference and any actual domain delegate."""
+    return snapshot.allows("scitex") and snapshot.allows(
+        _WORKFLOW_OWNERS.get(name, "scitex")
+    )
+
+
+def reserved_cli_names(rows=None, *, snapshot=None, namespace="root"):
+    """Reserve declarations and declined actual routes, never a guessed namespace."""
+    if snapshot is None and rows is None:
+        from ._exposure import load_cli_snapshot
+
+        snapshot = load_cli_snapshot()
+    if rows is None:
+        rows = snapshot.rows
+    blocked = {
+        row.name
+        for row in rows
         if row.name and row.status in {"none", "invalid", "ambiguous"}
     }
+    if snapshot is not None:
+        eligible = [
+            row
+            for row in rows
+            if _native_candidate(row, snapshot.retired)
+            and (namespace == "root" or row.name in DEV_PEERS)
+        ]
+        blocked.update(
+            row.name for row in eligible if not snapshot.allows(row.distribution)
+        )
+        native_enabled = {
+            row.name for row in eligible if snapshot.allows(row.distribution)
+        }
+        workflows = {*_UMBRELLA_WRAPPERS, *DEV_COMMANDS, "linter", "skills"}
+        blocked.update(
+            name
+            for name in workflows
+            if name not in native_enabled and not workflow_enabled(name, snapshot)
+        )
+    return blocked
 
 
 def build_lazy_subcommands(
-    cli_dir: str, *, namespace: str = "root"
+    cli_dir: str, *, namespace: str = "root", snapshot=None
 ) -> dict[str, LazySpec]:
     """Project installed CLI declarations; never invent a CLI from a registry row.
 
@@ -226,18 +291,15 @@ def build_lazy_subcommands(
     if namespace not in {"root", "dev"}:
         raise ValueError("CLI namespace must be root or dev")
 
-    from scitex_dev._ecosystem._core import ECOSYSTEM
-    from scitex_dev.cli_providers import list_cli_providers
+    from ._exposure import load_cli_snapshot
 
     have_wrapper = _wrapper_inventory(cli_dir)
     out: dict[str, LazySpec] = {}
-    rows = list_cli_providers()
-    blocked = reserved_cli_names(rows)
+    snapshot = load_cli_snapshot() if snapshot is None else snapshot
+    rows = snapshot.rows
+    blocked = reserved_cli_names(rows, snapshot=snapshot, namespace=namespace)
     installed_owners = {row.distribution for row in rows}
-    retired = {name for name, info in ECOSYSTEM.items() if info.get("archived")}
-    # App/UI now belong to SDK; Orochi is retired even if an old installed
-    # registry predates the decision. These are migration policy, not discovery.
-    retired.update({"scitex-app", "scitex-ui", "scitex-orochi", "scitex-audit"})
+    retired = snapshot.retired
     for row in rows:
         if not row.name or row.name in blocked or not row.target:
             continue
@@ -269,7 +331,11 @@ def build_lazy_subcommands(
         )
 
     for name in _UMBRELLA_WRAPPERS:
-        if name in blocked or name not in have_wrapper:
+        if (
+            name in blocked
+            or name not in have_wrapper
+            or not workflow_enabled(name, snapshot)
+        ):
             continue
         owner = _WRAPPER_OWNERS.get(name)
         if owner is not None and owner not in installed_owners:

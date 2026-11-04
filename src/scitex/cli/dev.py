@@ -7,6 +7,7 @@ import click
 
 from ._lazy_subcommands import build_lazy_subcommands, reserved_cli_names
 from .main import LazyGroup
+from .main import cli as root_cli
 
 _LOCAL = {
     name: (f"scitex.cli.{name}", name, help_text)
@@ -22,7 +23,6 @@ _LOCAL["list-python-apis"] = (
     "list_python_apis",
     "List SciTeX Python APIs.",
 )
-_LOCAL.update(build_lazy_subcommands(str(Path(__file__).parent), namespace="dev"))
 
 
 class DevGroup(LazyGroup):
@@ -32,13 +32,23 @@ class DevGroup(LazyGroup):
     to Dev's canonical group, rather than the old second umbrella inventory.
     """
 
-    def __init__(self):
+    def __init__(self, snapshot=None):
         from scitex_dev._cli import main as owner
         from scitex_dev.ecosystem import deprecated_alias
 
+        snapshot = root_cli._exposure_snapshot if snapshot is None else snapshot
+        self._exposure_snapshot = snapshot
         self._owner = owner
         self._upkeep = owner.get_command(None, "dev")
-        self._blocked = reserved_cli_names()
+        self._blocked = reserved_cli_names(snapshot=snapshot, namespace="dev")
+        local = {
+            name: spec for name, spec in _LOCAL.items() if name not in self._blocked
+        }
+        local.update(
+            build_lazy_subcommands(
+                str(Path(__file__).parent), namespace="dev", snapshot=snapshot
+            )
+        )
         super().__init__(
             name="dev",
             callback=owner.callback,
@@ -46,7 +56,8 @@ class DevGroup(LazyGroup):
             context_settings=dict(owner.context_settings),
             invoke_without_command=True,
             add_help_option=False,
-            lazy_subcommands=_LOCAL,
+            lazy_subcommands=local,
+            exposure_snapshot=snapshot,
             help="Developer tools, audits, package checks, skills, and completion.",
         )
         deprecated_alias(
@@ -56,6 +67,10 @@ class DevGroup(LazyGroup):
             target_name="dev",
             remove_in="3.0",
         )
+
+    def with_exposure(self, snapshot):
+        """Bind a fresh Root construction without mutating the shared Dev owner."""
+        return self if snapshot is self._exposure_snapshot else type(self)(snapshot)
 
     def list_commands(self, ctx):
         """List the shared domain and flattened maintenance workflows."""

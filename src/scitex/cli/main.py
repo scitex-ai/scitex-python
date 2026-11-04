@@ -25,11 +25,17 @@ class LazyGroup(click.Group):
     """
 
     def __init__(
-        self, *args, lazy_subcommands=None, metadata_distribution=None, **kwargs
+        self,
+        *args,
+        lazy_subcommands=None,
+        metadata_distribution=None,
+        exposure_snapshot=None,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         # {name: (module_path, attr_name, short_help)}
         self._lazy_subcommands = lazy_subcommands or {}
+        self._exposure_snapshot = exposure_snapshot
         self._metadata_distribution = metadata_distribution
         self._metadata_help_body = self.help
         self._refresh_metadata_help()
@@ -169,6 +175,12 @@ class LazyGroup(click.Group):
             # 'make_context'). Skip non-commands and keep probing.
             # (click.Group is not a click.Command subclass until click 9,
             # so check both; avoids the deprecated click.BaseCommand.)
+            if (
+                mod_path == "scitex.cli.dev"
+                and root_attr == "dev"
+                and self._exposure_snapshot is not None
+            ):
+                cmd = cmd.with_exposure(self._exposure_snapshot)
             if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
             if (
@@ -196,18 +208,23 @@ class LazyGroup(click.Group):
 
 
 # Registry-driven subcommand wiring. See ``_lazy_subcommands.py``.
+from ._exposure import load_cli_snapshot
 from ._lazy_subcommands import (
     DEPRECATED_ALIASES,
     build_lazy_subcommands,
     reserved_cli_names,
 )
 
-_LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
+_CLI_EXPOSURE = load_cli_snapshot()
+_LAZY_SUBCOMMANDS = build_lazy_subcommands(
+    os.path.dirname(__file__), snapshot=_CLI_EXPOSURE
+)
 
 
 @click.group(
     cls=LazyGroup,
     lazy_subcommands=_LAZY_SUBCOMMANDS,
+    exposure_snapshot=_CLI_EXPOSURE,
     metadata_distribution="scitex",
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
@@ -257,7 +274,7 @@ def cli(ctx, help_recursive, as_json):
         if as_json:
             from . import help_recursive_to_json
 
-            help_recursive_to_json(ctx, cli)
+            help_recursive_to_json(ctx, ctx.command)
         else:
             _print_help_recursive(ctx)
         ctx.exit(0)
@@ -265,7 +282,7 @@ def cli(ctx, help_recursive, as_json):
         if as_json:
             from . import group_to_json
 
-            group_to_json(ctx, cli)
+            group_to_json(ctx, ctx.command)
         else:
             click.echo(ctx.get_help())
 
@@ -275,7 +292,7 @@ def cli(ctx, help_recursive, as_json):
 # the metadata policy cannot be reintroduced even as compatibility aliases.
 from scitex_dev.ecosystem import deprecated_alias
 
-_reserved_aliases = reserved_cli_names()
+_reserved_aliases = reserved_cli_names(snapshot=_CLI_EXPOSURE)
 for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
     _canonical = _new[0] if isinstance(_new, tuple) else _new
     if _old not in _reserved_aliases and _canonical in cli._lazy_subcommands:
@@ -300,10 +317,10 @@ def _print_help_recursive(ctx):
     """Print help for all commands recursively."""
     # Show main CLI help first
     click.secho("━━━ scitex ━━━", fg="cyan", bold=True)
-    click.echo(cli.get_help(ctx))
+    click.echo(ctx.command.get_help(ctx))
 
     # Show help for each command using Click's internal help generation
-    command_paths = _get_all_command_paths(cli)
+    command_paths = _get_all_command_paths(ctx.command)
     for cmd_path, cmd in command_paths:
         click.echo()
         click.secho(f"━━━ scitex {cmd_path} ━━━", fg="cyan", bold=True)
