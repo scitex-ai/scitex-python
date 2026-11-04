@@ -71,6 +71,7 @@ logging.getLogger().setLevel(logging.WARNING)
 sys.path.insert(0, sys.argv[1])
 from scitex.helpers._install_guide import show_install_guide
 show_install_guide('cli')
+assert logging.getLogger().level == logging.WARNING
 """
     env = {
         key: value for key, value in os.environ.items() if not key.startswith("SCITEX_")
