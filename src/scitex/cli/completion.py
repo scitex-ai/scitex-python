@@ -20,6 +20,7 @@ under the 512-line cap.
 
 import os
 import sys
+from pathlib import Path
 
 import click
 
@@ -157,7 +158,10 @@ def completion_install(shell, dry_run):
 
 
 @completion.command("status")
-def completion_status():
+@click.option(
+    "--json", "as_json", is_flag=True, help="Output completion status as JSON."
+)
+def completion_status(as_json):
     """
     Check shell completion installation status.
 
@@ -175,6 +179,29 @@ def completion_status():
 
     shell = _detect_shell() or "unknown"
     rc_file = _get_rc_file(shell) if shell != "unknown" else "N/A"
+
+    if as_json:
+        import json
+
+        try:
+            installed = (
+                rc_file != "N/A"
+                and os.path.exists(rc_file)
+                and ("scitex tab completion" in Path(rc_file).read_text())
+            )
+        except (OSError, UnicodeError) as exc:
+            raise click.ClickException("Cannot read shell completion status.") from exc
+        click.echo(
+            json.dumps(
+                {
+                    "shell": shell,
+                    "config": rc_file,
+                    "installed": installed,
+                    "cli_path": shutil.which("scitex"),
+                }
+            )
+        )
+        return
 
     click.secho("Shell Completion Status", fg="cyan", bold=True)
     click.echo(f"  Shell: {shell}")

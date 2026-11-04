@@ -283,8 +283,28 @@ def open(url, stealth, timeout, background):
 
 
 @browser.command()
-def list():
-    """List browser sessions."""
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output stored sessions as JSON; not a liveness check.",
+)
+def list(as_json):
+    """List stored browser sessions (scitex browser list --json)."""
+    if as_json:
+        try:
+            sessions = _load_sessions()
+            if not isinstance(sessions, dict) or any(
+                not isinstance(info, dict) for info in sessions.values()
+            ):
+                raise ValueError("expected a session object containing session objects")
+            output = json.dumps({"sessions": sessions}, allow_nan=False)
+        except (OSError, ValueError, TypeError) as exc:
+            raise click.ClickException(
+                "Cannot read browser session inventory as JSON."
+            ) from exc
+        click.echo(output)
+        return
     sessions = _load_sessions()
     if not sessions:
         click.echo("No browser sessions found")
