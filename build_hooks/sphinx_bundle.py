@@ -26,6 +26,10 @@ from pathlib import Path
 platform.uname().processor
 # Matplotlib discovers local fonts once; no plots are evaluated.
 import matplotlib.font_manager
+# Builtin MIME mappings suffice for static assets; ignore host /etc overlays.
+import mimetypes
+mimetypes.knownfiles = []
+mimetypes.init()
 root = Path(sys.argv.pop(1)).resolve()
 allowed = (root, Path(sys.prefix).resolve(), Path(sys.base_prefix).resolve(),
            Path(__import__("os").environ["HOME"]).parent.resolve())
@@ -59,6 +63,7 @@ def build_bundle(root: Path, output: Path) -> None:
         env = {
             "PATH": os.defpath,
             "HOME": str(scratch / "home"),
+            "TMPDIR": str(scratch),
             "XDG_CACHE_HOME": str(scratch / "cache"),
             "MPLCONFIGDIR": str(scratch / "matplotlib"),
             "LANG": "C.UTF-8",
