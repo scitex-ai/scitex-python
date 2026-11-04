@@ -29,18 +29,32 @@ def _environment(owned):
 
 
 @pytest.mark.parametrize("flag", ["--help", "--json"])
-@pytest.mark.parametrize("malformed", ["config", "state"])
+@pytest.mark.parametrize(
+    "malformed",
+    [
+        "config",
+        "state",
+        "packages_scalar",
+        "packages_null",
+        "package_entry",
+        "package_name",
+    ],
+)
 def test_real_module_startup_reports_invalid_preferences_without_traceback(
     tmp_path, flag, malformed
 ):
     # Arrange: ordinary python -m uses actual source and owned preference files.
     root = Path(__file__).resolve().parents[2]
     config, state = tmp_path / "config.yaml", tmp_path / "knobs.json"
-    config.write_text(
-        "packages:\n  - name: scitex-dev\n    cli_enabled: not-a-boolean\n"
-        if malformed == "config"
-        else "packages: []\n"
-    )
+    configurations = {
+        "config": "packages:\n  - name: scitex-dev\n    cli_enabled: not-a-boolean\n",
+        "state": "packages: []\n",
+        "packages_scalar": "packages: not-a-list\n",
+        "packages_null": "packages: null\n",
+        "package_entry": "packages: [invalid-entry]\n",
+        "package_name": "packages:\n  - cli_enabled: false\n",
+    }
+    config.write_text(configurations[malformed])
     state.write_text(
         json.dumps({"cli": {"scitex-dev": "false"}}) if malformed == "state" else "{}"
     )

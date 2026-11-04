@@ -37,7 +37,8 @@ def load_cli_snapshot() -> CliExposureSnapshot:
         from click import ClickException
 
         raise ClickException(
-            "CLI exposure preferences are invalid. Check boolean surface settings "
+            "CLI exposure preferences are invalid. Check package configuration "
+            "and boolean surface settings "
             "in SCITEX_DEV_CONFIG and SCITEX_DEV_KNOB_STATE "
             "(or their SciTeX Dev default files)."
         ) from error
