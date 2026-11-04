@@ -28,11 +28,12 @@ Usage:
 from __future__ import annotations
 
 import importlib
-import logging
 import os
 import threading
 import warnings
 from typing import Iterable
+
+import scitex_logging as slogging
 
 # Load environment variables from SCITEX_ENV_SRC early.
 from scitex.helpers import load_scitex_env
@@ -43,7 +44,7 @@ from scitex_dev import try_import_optional
 
 from ._compat import get_tools_sync, mounted_namespaces, safe_mount
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 FastMCP = try_import_optional("fastmcp", "FastMCP", pkg="scitex")
 FASTMCP_AVAILABLE = FastMCP is not None
@@ -295,7 +296,9 @@ def _resolve_peers_bounded(
     return resolved, skipped
 
 
-def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
+def register_all_tools(
+    mcp, *, iter_registry=None, peer_timeout=None, package_policy=None
+) -> None:
     """Mount every peer's FastMCP onto the umbrella, then fold in extras.
 
     Order:
@@ -309,7 +312,9 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
          socialia social_*, linter, optional cloud mount).
       3. Umbrella-only inline tools (no peer owns them).
 
-    Each peer is gated by ``SCITEX_MCP_USE_<NAMESPACE>=0`` (default enabled).
+    Each peer honors Dev's resolved package MCP switch and
+    ``SCITEX_MCP_USE_<NAMESPACE>=0``. Environment enablement cannot override
+    a disabled package. Disabled peers are not imported or mounted.
 
     Args:
         mcp: the umbrella FastMCP server to mount onto.
@@ -319,15 +324,21 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
             with hand-rolled fixture peers instead of patching module globals.
         peer_timeout: injectable per-peer resolve budget in seconds; defaults
             to :func:`_peer_timeout` (the ``SCITEX_MCP_PEER_TIMEOUT`` env var).
+        package_policy: optional resolved owner-to-enabled mapping for hosts
+            and tests. Defaults to the existing SciTeX Dev configuration.
     """
     iter_registry = iter_registry if iter_registry is not None else _iter_registry
     timeout = peer_timeout if peer_timeout is not None else _peer_timeout()
+    from ._exposure import is_exposed, load_package_policy
+
+    if package_policy is None:
+        package_policy = load_package_policy()
     mounted: set[str] = set()
 
     peers = [
         (import_name, namespace)
-        for _pip, import_name, namespace in iter_registry()
-        if _is_enabled(namespace)
+        for pip, import_name, namespace in iter_registry()
+        if is_exposed(pip, namespace, package_policy)
     ]
 
     resolved, skipped = _resolve_peers_bounded(peers, timeout)
@@ -352,8 +363,9 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
     from ._peer_extras import register_peer_extras
     from ._umbrella_tools import register_umbrella_tools
 
-    register_peer_extras(mcp)
-    register_umbrella_tools(mcp)
+    register_peer_extras(mcp, package_policy=package_policy)
+    if is_exposed("scitex", "scitex", package_policy):
+        register_umbrella_tools(mcp)
 
     if mounted:
         logger.info(
@@ -426,6 +438,10 @@ if FASTMCP_AVAILABLE:
     from ._resources import register_resources
 
     register_resources(mcp)
+
+    from ._exposure import configure_discovery
+
+    configure_discovery(mcp)
 else:
     mcp = None
 
@@ -439,19 +455,17 @@ def run_server(
     if not FASTMCP_AVAILABLE:
         import sys
 
-        print("=" * 60)
-        print("Requires 'fastmcp' package: pip install fastmcp")
-        print("=" * 60)
+        logger.error("Requires 'fastmcp' package: pip install fastmcp")
         sys.exit(1)
 
     if transport == "stdio":
         mcp.run(transport="stdio")
     elif transport == "sse":
-        print(f"Starting scitex MCP (SSE) on {host}:{port}")
-        print(f"Remote: ssh -R {port}:localhost:{port} remote-host")
+        logger.info("Starting scitex MCP (SSE) on %s:%s", host, port)
+        logger.info("Remote: ssh -R %s:localhost:%s remote-host", port, port)
         mcp.run(transport="sse", host=host, port=port)
     elif transport == "http":
-        print(f"Starting scitex MCP (HTTP) on {host}:{port}")
+        logger.info("Starting scitex MCP (HTTP) on %s:%s", host, port)
         mcp.run(transport="streamable-http", host=host, port=port)
     else:
         raise ValueError(f"Unknown transport: {transport}")
