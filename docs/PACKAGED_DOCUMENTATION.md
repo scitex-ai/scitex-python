@@ -58,3 +58,19 @@ with its genuine Hatch 1.27 headers verified byte for byte. Its 97 unchanged
 assertions exercise legacy primitives against the current helper. They are
 separate from current v2 producer qualification. Preserve the original 2061
 baseline and inaccurate-f34-comment evidence.
+
+After installation, the existing public discovery API locates the bundle
+without a checkout:
+
+```python
+from scitex_dev import get_docs
+html_directory = get_docs(package="scitex", format="html")
+```
+
+The normal frontend builds both targets (`python -m build`); qualified local
+runs use a fresh provisioned environment with `--no-isolation` and the same
+PEP517 dependency API. Per-file Hatch inclusion replaces copied sdist HTML with
+fresh output exactly once. Offline building does not imply fully offline
+browser rendering: the existing MathJax configuration emits external CDN
+script references. Local serving checks bundled HTML/assets, not availability
+or execution of that third-party JavaScript.
