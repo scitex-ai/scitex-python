@@ -122,7 +122,9 @@ def main():
     elif operation == "metadata_none":
         state.write_text(json.dumps({"cli": {"scitex-owned-cli": True}}))
     elif operation == "malformed_config":
-        config.write_text("packages: not-a-list\n")
+        config.write_text(
+            "packages:\n  - name: scitex-dev\n    cli_enabled: not-a-boolean\n"
+        )
     elif operation == "malformed":
         state.write_text(json.dumps({"cli": {"scitex-owned-cli": "false"}}))
 
@@ -147,6 +149,7 @@ def main():
                 raise AssertionError("CLI inspection attempted an unowned mutation")
 
     sys.addaudithook(guard)
+    from click import ClickException
     from click.testing import CliRunner
 
     import scitex
@@ -179,7 +182,7 @@ def main():
     sys.setprofile(profile)
     try:
         module = importlib.import_module("scitex.cli.main")
-    except (ValueError, TypeError) as error:
+    except ClickException as error:
         assert operation in {"malformed", "malformed_config"}
         assert not events and not (site / "imported").exists()
         sys.setprofile(None)
@@ -188,6 +191,9 @@ def main():
             + "\n"
         )
         return
+    assert operation not in {"malformed", "malformed_config"}, (
+        "malformed preference was not refused"
+    )
     cli = module.cli
     runner = CliRunner()
 

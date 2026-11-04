@@ -342,7 +342,16 @@ def build_lazy_subcommands(
             continue
         # An explicit leaf target takes precedence over a legacy wrapper.
         explicit = any(r.name == name and r.status == "declared" for r in rows)
-        if explicit:
+        # This exact owner still needs Root's filtered Dev composition,
+        # rather than mounting the raw owner group and bypassing its scope.
+        canonical_dev = name == "dev" and any(
+            row.name == "dev"
+            and row.status == "declared"
+            and row.distribution == "scitex-dev"
+            and row.target == "scitex_dev._cli:main"
+            for row in rows
+        )
+        if explicit and not canonical_dev:
             continue
         out[name] = (f"scitex.cli.{name}", name, _FALLBACK_HELP.get(name, name))
     # Deprecated spellings are added only as hidden, lazy canonical aliases.
