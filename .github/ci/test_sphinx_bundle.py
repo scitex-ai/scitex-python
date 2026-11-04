@@ -7,6 +7,7 @@ import subprocess
 import os
 import sys
 import zipfile
+import tarfile
 import unittest
 
 
@@ -24,11 +25,31 @@ def source_at(root, text):
 
 
 class SphinxBundleTests(unittest.TestCase):
+    def test_actual_config_refuses_installed_root_as_documented_source(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source_at(root, "Owned\n=====\n\n.. automodule:: scitex\n")
+            (root / "docs/sphinx/conf.py").write_bytes((ROOT / "docs/sphinx/conf.py").read_bytes())
+            (root / "pyproject.toml").write_text('[project]\nversion = "2.30.9"\n')
+            driver = "import runpy,sys; from pathlib import Path; m=runpy.run_path(sys.argv[1]); m['build_bundle'](Path(sys.argv[2]),Path(sys.argv[3]))"
+            result = subprocess.run(
+                [sys.executable, "-I", "-B", "-c", driver, str(ROOT / "build_hooks/sphinx_bundle.py"), str(root), str(root / "output")],
+                capture_output=True, text=True, timeout=30,
+            )
+            assert result.returncode != 0 and "instead of trusted source" in result.stderr and not (root / "output").exists()
+
     def test_real_pep517_wheel_from_sdist_has_one_copy_of_generated_docs(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "source"
             root.mkdir()
             source_at(root, "Owned normal PEP517 page\n========================\n")
+            static = root / "docs/sphinx/_static"
+            static.mkdir()
+            (static / "fixture.png").write_bytes((ROOT / "docs/sphinx/_static/workflow.png").read_bytes())
+            with (root / "docs/sphinx/index.rst").open("a") as stream:
+                stream.write("\n.. image:: _static/fixture.png\n")
+            with (root / "docs/sphinx/conf.py").open("a") as stream:
+                stream.write('html_static_path = ["_static"]\n')
             (root / "src/scitex").mkdir(parents=True)
             (root / "src/scitex/__init__.py").write_text("")
             (root / "build_hooks").mkdir()
@@ -37,11 +58,16 @@ class SphinxBundleTests(unittest.TestCase):
             (root / "pyproject.toml").write_text(
                 '[build-system]\nrequires = ["hatchling==1.33.0"]\nbuild-backend = "hatchling.build"\n'
                 '[project]\nname = "scitex"\nversion = "1.0.0"\n'
-                '[tool.hatch.build.hooks.custom]\npath = "build_hooks/sphinx_bundle.py"\n'
+                '[tool.hatch.build.hooks.custom]\npath = "build_hooks/sphinx_bundle.py"\nsource-input-root = "docs/sphinx"\n'
                 '[tool.hatch.build.targets.wheel]\nartifacts = ["src/scitex/_sphinx_html/**"]\n'
             )
             scratch = Path(temporary) / "scratch"
             scratch.mkdir()
+            git_env = {"PATH": os.defpath, "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": "/dev/null"}
+            subprocess.run(["git", "init", "--quiet", "--template=", str(root)], check=True, env=git_env, timeout=7)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True, env=git_env, timeout=7)
+            with (root / ".gitignore").open("a") as stream:
+                stream.write("*.png\n")  # Existing cached image becomes ignored.
             result = subprocess.run(
                 [sys.executable, "-I", "-B", "-m", "build", "--no-isolation", str(root)],
                 env={"PATH": os.defpath, "HOME": str(root / "home"), "TMPDIR": str(scratch), "PYTHONDONTWRITEBYTECODE": "1"},
@@ -52,7 +78,10 @@ class SphinxBundleTests(unittest.TestCase):
             with zipfile.ZipFile(next((root / "dist").glob("*.whl"))) as wheel:
                 names = wheel.namelist()
                 html = wheel.read("scitex/_sphinx_html/index.html")
-            assert len(names) == len(set(names)) and names.count("scitex/_sphinx_html/index.html") == 1 and b"Owned normal PEP517 page" in html
+                wheel_docs = {name: wheel.read(name) for name in names if name.startswith("scitex/_sphinx_html/")}
+            with tarfile.open(next((root / "dist").glob("*.tar.gz"))) as sdist:
+                sdist_docs = {item.name.removeprefix("scitex-1.0.0/src/"): sdist.extractfile(item).read() for item in sdist.getmembers() if item.isfile() and "/src/scitex/_sphinx_html/" in item.name}
+            assert len(names) == len(set(names)) and names.count("scitex/_sphinx_html/index.html") == 1 and b"Owned normal PEP517 page" in html and wheel_docs == sdist_docs
 
     def test_current_producer_admission_refuses_real_legacy_source_frame(self):
         historical_spec = importlib.util.spec_from_file_location(

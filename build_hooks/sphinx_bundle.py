@@ -16,6 +16,40 @@ import tempfile
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 
+def documentation_inputs(root: Path) -> list[Path]:
+    """Tracked doc inputs in Git; an sdist's tree is construction input only.
+
+    Ignored-but-tracked static assets must survive sdist construction. The
+    external verifier derives this inventory again from immutable Git blobs.
+    """
+    root = root.resolve(strict=True)
+    source = root / "docs/sphinx"
+    if (root / ".git").exists() or (root / ".git").is_symlink():
+        env = {"PATH": os.defpath, "GIT_CONFIG_NOSYSTEM": "1",
+               "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_OPTIONAL_LOCKS": "0"}
+        top = subprocess.check_output(
+            ["git", "-C", str(root), "rev-parse", "--show-toplevel"], env=env, timeout=15
+        ).decode().strip()
+        if Path(top).resolve() != root:
+            raise ValueError("documentation Git root differs")
+        raw = subprocess.check_output(
+            ["git", "-C", str(root), "ls-files", "--cached", "-z", "--", "docs/sphinx"],
+            env=env, timeout=15,
+        )
+        paths = [root / name.decode() for name in set(raw.split(b"\0")) if name]
+    else:
+        paths = [path for path in source.rglob("*") if not path.is_dir() or path.is_symlink()]
+    if not paths:
+        raise ValueError("documentation source input inventory is empty")
+    for path in paths:
+        if (not path.resolve(strict=True).is_relative_to(source.resolve(strict=True))
+                or not path.is_file()
+                or any(parent.is_symlink() for parent in (path, *path.parents)
+                       if parent.is_relative_to(root))):
+            raise ValueError("documentation source input is not a contained regular file")
+    return sorted(paths)
+
+
 # No notebook/plot execution, subprocesses, or outbound sockets during autodoc.
 # This is a static/mock documentation build, not runtime API qualification.
 SPHINX_DRIVER = '''
@@ -96,6 +130,8 @@ class CustomBuildHook(BuildHookInterface):
     """Rebuild even from an sdist; never accept the sdist's copied HTML."""
 
     def initialize(self, version, build_data):
+        if self.config.get("source-input-root") != "docs/sphinx":
+            raise ValueError("reviewed documentation source root differs")
         self._temporary = tempfile.TemporaryDirectory(prefix="scitex-doc-bundle-")
         output = Path(self._temporary.name) / "html"
         build_bundle(Path(self.root), output)
@@ -107,6 +143,13 @@ class CustomBuildHook(BuildHookInterface):
         # directories. This overrides copied sdist HTML without duplicate ZIP
         # entries, while still deriving every member from this fresh build.
         targets = set(build_data["force_include"].values())
+        if self.target_name == "sdist":
+            for path in documentation_inputs(Path(self.root)):
+                target = path.relative_to(Path(self.root).resolve()).as_posix()
+                if target in targets:
+                    raise ValueError("documentation source target collision")
+                targets.add(target)
+                build_data["force_include"][str(path)] = target
         for path in sorted(output.rglob("*")):
             if path.is_symlink() or not (path.is_file() or path.is_dir()):
                 raise ValueError("unsafe generated documentation member")

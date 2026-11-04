@@ -335,8 +335,11 @@ PUBLIC_LINKS = {
     ("examples/_legacy/stats/statsz.py"): ("../scitex/io/bundle/statsz.py"),
 }
 
+DOC_IGNORE_SHA256 = "9ac10ad59a7ce9071fb89211853129e8747a00314450c6ccf05582bb40046624"
+
 DOC_HOOK = {
     "path": "build_hooks/sphinx_bundle.py",
+    "source-input-root": "docs/sphinx",
     "require-runtime-dependencies": True,
     "dependencies": [
         "sphinx==8.1.3", "sphinx-rtd-theme==3.1.0", "myst-parser==4.0.1",
@@ -398,7 +401,8 @@ def selected_paths(entries, project, ignore_raw):
         raise ValueError("reviewed documentation backend changed")
     if any(name.startswith(DOC_PREFIX) for name in entries):
         raise ValueError("derived documentation must not be tracked source")
-    if hashlib.sha256(ignore_raw).hexdigest() != IGNORE_SHA256:
+    expected_ignore = DOC_IGNORE_SHA256 if build == documented else IGNORE_SHA256
+    if hashlib.sha256(ignore_raw).hexdigest() != expected_ignore:
         raise ValueError("reviewed umbrella ignore selection changed")
     with tempfile.TemporaryDirectory(prefix="scitex-release-selector-") as temporary:
         root = Path(temporary)
@@ -442,6 +446,11 @@ def selected_paths(entries, project, ignore_raw):
         and PurePosixPath(name).name != ".DS_Store"
         and not (set(PurePosixPath(name).parts[:-1]) & SKIP_DIRS)
     }
+    if build == documented:
+        doc_inputs = {name for name in entries if name.startswith("docs/sphinx/")}
+        if not doc_inputs or any(entries[name][0] not in {"100644", "100755"} for name in doc_inputs):
+            raise ValueError("documentation source inputs are not regular Git blobs")
+        selected.update(doc_inputs)
     wheel = {
         name.removeprefix("src/"): name
         for name in selected

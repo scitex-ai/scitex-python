@@ -74,3 +74,20 @@ fresh output exactly once. Offline building does not imply fully offline
 browser rendering: the existing MathJax configuration emits external CDN
 script references. Local serving checks bundled HTML/assets, not availability
 or execution of that third-party JavaScript.
+
+Document source inputs include the complete immutable Git `docs/sphinx/`
+subtree, including tracked images that ordinary VCS-ignore selection omits.
+The sdist hook uses a NUL-safe cached Git inventory and per-file inclusion;
+when constructing a wheel from an sdist without Git, its contained regular
+source tree is construction input only. External v2 verification independently
+selects and hashes the exact Git doc subtree and regenerates the bundle. A
+source archive's inventory or copied HTML never supplies expected proof bytes.
+
+The current normal runtime dependency closure brings public `scitex==2.29.3`
+through `scitex-core==0.2.8`. Rendering explicitly uses the admitted source
+code overlay and source project release `2.30.9`; installed metadata and the
+source module's metadata-derived version are observed without relabeling.
+The origin observer rejects documented/imported Root namespace files or
+function code from the installed umbrella, and reports module origins plus
+unverified declared modules. This is not a current installed-runtime identity
+claim. Actual installed delivery is qualified separately from the private wheel.
