@@ -30,6 +30,7 @@ elif operation == 'metadata':
     print(json.dumps({'exit':result.exit_code,'metadata':payload['metadata'],
                       'header_in_help':' '.join(expected['header'].split()) in ' '.join(help_result.stdout.split()),
                       'metadata_equal':payload['metadata']==expected,
+                      'stored_help_has_header':cli.help.startswith(expected['header']),
                       'version':metadata.version('scitex'),
                       'summary':metadata.metadata('scitex').get('Summary'),
                       'help_exit':help_result.exit_code}))
@@ -104,7 +105,7 @@ def test_owned_distribution_identity_is_shared_by_help_and_json(tmp_path, summar
     assert (
         observed["exit"],
         observed["help_exit"],
-        observed["metadata_equal"],
+        observed["metadata_equal"] and observed["stored_help_has_header"],
         observed["header_in_help"],
         observed["metadata"]["version"],
         observed["metadata"]["summary"],
@@ -126,7 +127,7 @@ def test_actual_installed_identity_is_shared_by_help_and_json(tmp_path):
     # Assert
     assert (
         observed["exit"],
-        observed["metadata_equal"],
+        observed["metadata_equal"] and observed["stored_help_has_header"],
         observed["header_in_help"],
         observed["metadata"]["version"],
         observed["metadata"]["summary"],
