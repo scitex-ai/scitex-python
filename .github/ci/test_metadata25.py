@@ -29,7 +29,7 @@ def inserted(header):
 class StaticMetadata25Tests(unittest.TestCase):
     def test_actual_normal_backend_headers_bind_full_source_contract(self):
         result = RELEASE.metadata_source_identity(RAW, RAW, ENTRY_POINTS, PROJECT, required_version="2.5")
-        assert result == {"runtime_requirements": 631, "extras": 77, "entry_point_groups": 3}
+        assert result == {"runtime_requirements": 633, "extras": 77, "entry_point_groups": 3}
 
     def test_qualified_profile_refuses_downgrade_future_duplicate_and_unknown(self):
         for version in (b"2.4", b"2.6", b"3.0", b"unknown"):

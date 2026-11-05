@@ -27,10 +27,10 @@ def event(ctx, as_json):
     \b
     Examples:
       scitex event emit --type test_complete --project figrecipe --status success
-      scitex event latest
-      scitex event latest --type test_complete
-      scitex event history --limit 10
-      scitex event types
+      scitex event get-latest
+      scitex event get-latest --type test_complete
+      scitex event list-history --limit 10
+      scitex event list-types
     """
     if ctx.invoked_subcommand is None:
         if as_json:
@@ -70,32 +70,55 @@ def emit_cmd(event_type, project, status, source, payload):
     click.echo(json.dumps(ev.to_dict(), indent=2))
 
 
-@event.command("latest")
+@event.command("get-latest")
 @click.option("--type", "event_type", default=None, help="Filter by event type")
-def latest_cmd(event_type):
+@click.option(
+    "--json", "as_json", is_flag=True, help="Return a structured Result envelope."
+)
+def latest_cmd(event_type, as_json):
     """Show the latest event.
 
-    $ scitex event latest --type test_complete
+    $ scitex event get-latest --type test_complete
     """
     from scitex.events import latest
 
     data = latest(event_type)
-    if data is None:
+    if as_json:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=data is not None,
+                data={"event": data},
+                error="No events found." if data is None else None,
+            ).to_json()
+        )
+    elif data is not None:
+        click.echo(json.dumps(data, indent=2))
+    else:
         click.echo("No events found.")
+    if data is None:
         raise SystemExit(1)
-    click.echo(json.dumps(data, indent=2))
 
 
-@event.command("history")
+@event.command("list-history")
 @click.option("--limit", default=20, help="Max events to show")
-def history_cmd(limit):
+@click.option(
+    "--json", "as_json", is_flag=True, help="Return a structured Result envelope."
+)
+def history_cmd(limit, as_json):
     """Show recent event history.
 
-    $ scitex event history --limit 10
+    $ scitex event list-history --limit 10
     """
     from scitex.events import history
 
     events = history(limit=limit)
+    if as_json:
+        from scitex_dev import Result
+
+        click.echo(Result(success=True, data={"events": events}).to_json())
+        return
     if not events:
         click.echo("No event history.")
         return
@@ -106,21 +129,39 @@ def history_cmd(limit):
         )
 
 
-@event.command("types")
-def types_cmd():
+@event.command("list-types")
+@click.option(
+    "--json", "as_json", is_flag=True, help="Return a structured Result envelope."
+)
+def types_cmd(as_json):
     """List known event types.
 
-    $ scitex event types
+    $ scitex event list-types
     """
     from scitex.events import get_type_info, list_types
 
-    for t in list_types():
+    names = list_types()
+    if as_json:
+        from scitex_dev import Result
+
+        entries = [{"name": name, **get_type_info(name)} for name in names]
+        click.echo(Result(success=True, data={"types": entries}).to_json())
+        return
+    for t in names:
         info = get_type_info(t)
         desc = info.get("description", "")
         keys = ", ".join(info.get("payload_keys", []))
         click.echo(f"  {t:20s} {desc}")
         if keys:
             click.echo(f"  {'':20s} payload: {keys}")
+
+
+# Preserve established read routes and their text/argv behavior during migration.
+from scitex_dev.ecosystem import deprecated_alias
+
+deprecated_alias(event, "latest", target=("get-latest",), remove_in="3.0")
+deprecated_alias(event, "history", target=("list-history",), remove_in="3.0")
+deprecated_alias(event, "types", target=("list-types",), remove_in="3.0")
 
 
 # EOF

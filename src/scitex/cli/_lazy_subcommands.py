@@ -182,9 +182,11 @@ _UMBRELLA_WRAPPERS = frozenset(
         "writer",
     }
 )
-# These adapters import their leaf at module scope. Advertise them only when
-# the leaf is installed; filesystem presence of an umbrella shim is insufficient.
-_WRAPPER_OWNERS = {"web": "scitex-web"}
+# Require the actual installed domain owner even for call-time imports. An
+# umbrella wrapper file alone does not establish a usable optional workflow.
+# An absent native CLI declaration still provides installed-distribution proof:
+# Root composes the Python-only events provider without inventing a leaf CLI.
+_WRAPPER_OWNERS = {"web": "scitex-web", "event": "scitex-events"}
 
 DEV_COMMANDS = frozenset(
     {

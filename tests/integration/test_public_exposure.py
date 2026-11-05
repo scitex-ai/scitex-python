@@ -417,6 +417,16 @@ def test_web_adapter_requires_its_installed_leaf(tmp_path):
     assert result["listed"] == result["installed"]
 
 
+def test_event_adapter_requires_its_installed_provider(tmp_path):
+    """Root's composition needs the real Python provider, not a leaf CLI."""
+    # Arrange
+    operation = "event-eligibility"
+    # Act
+    result = _probe(tmp_path, operation)
+    # Assert
+    assert result["listed"] == result["installed"]
+
+
 def test_registered_developer_aliases_have_actual_canonical_targets(tmp_path):
     """Missing optional owners must not leave broken legacy routes behind."""
     result = _probe(tmp_path, "developer-aliases")

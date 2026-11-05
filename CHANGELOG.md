@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.30.9] - Unreleased
 
 ### Changed
+- Install the real scitex-events provider through `[events]` and `[all]`.
+  Expose event workflows only when their domain owner is installed. Normalize
+  reads to `get-latest`, `list-history` and `list-types`, with structured JSON
+  and hidden compatibility routes preserving earlier text and arguments.
 - Organize public CLI routes under SDK, Cards, Clew, SSH and Dev namespaces,
   retaining hidden compatibility routes for older invocations. Keep Python,
   CLI, MCP, skills and Web API exposure independent and provider-owned.

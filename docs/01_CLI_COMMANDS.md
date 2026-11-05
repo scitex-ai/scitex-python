@@ -138,3 +138,20 @@ run without an interactive prompt. `--dry-run` takes priority. Documentation
 build errors produce a nonzero exit and `success: false` with `--json`, including
 errors returned for an individual Sphinx builder. A successful build does not
 establish that every documented example has been executed.
+
+## File-backed event notifications in this source
+
+The upcoming 2.30.9 `[events]` extra installs `scitex-events`; `[all]` includes
+it as well. The owner provides the Python API and skills, and the umbrella adds
+these CLI workflows when the provider is installed:
+
+```bash
+scitex event get-latest --type test_complete --json
+scitex event list-history --limit 10 --json
+scitex event list-types --json
+```
+
+The older `latest`, `history` and `types` routes remain hidden compatibility
+paths, preserving their text output and options. Explicit `--json` returns the
+shared Result envelope. Local event writes use the provider's validated event
+types and state-directory configuration; an outbound webhook is optional.

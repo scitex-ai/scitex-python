@@ -109,3 +109,13 @@ applies first; search does not grant permission or defer provider imports. The
 unconfigured mode remains `full` for compatibility. Use the environment of the
 same MCP server process to select search mode; filtering a CLI listing alone
 will not change what an MCP client receives.
+
+## Event workflows in this source
+
+The upcoming 2.30.9 `[events]` extra installs the Python-only `scitex-events`
+provider; `[all]` includes it. Root adds the optional `event` CLI composition
+when that owner is installed. Use `get-latest`, `list-history` or `list-types`
+with `--json` for the shared Result envelope. The older `latest`, `history`
+and `types` routes remain hidden compatibility paths with their existing
+text output and options. Consult the installed provider's skill for local
+state paths, validated event types and optional outbound delivery.

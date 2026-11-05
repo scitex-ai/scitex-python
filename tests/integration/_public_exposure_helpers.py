@@ -100,11 +100,12 @@ elif operation=='developer-aliases':
                           if command is not None and dev.get_command(click.Context(dev),name) is None],
             'absent':[name for name in DEV_PEERS
                       if dev.get_command(click.Context(dev),name) is None]}
-elif operation=='web-eligibility':
+elif operation in {'web-eligibility','event-eligibility'}:
     from scitex_dev.cli_providers import list_cli_providers
     from scitex.cli.main import cli
-    result={'installed':any(row.distribution=='scitex-web' for row in list_cli_providers()),
-            'listed':'web' in cli.list_commands(None)}
+    name,owner=('event','scitex-events') if operation=='event-eligibility' else ('web','scitex-web')
+    result={'installed':any(row.distribution==owner for row in list_cli_providers()),
+            'listed':name in cli.list_commands(None)}
 elif operation=='owners':
     import click
     from scitex.cli.main import cli

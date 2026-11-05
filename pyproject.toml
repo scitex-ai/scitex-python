@@ -388,7 +388,7 @@ etc = [
 
 # Events Module - Event system
 # Use: pip install scitex[events]
-events = []
+events = ["scitex-events==0.1.8"]
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]
