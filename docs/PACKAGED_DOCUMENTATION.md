@@ -45,7 +45,8 @@ prototype evidence alone does not establish qualification in that SIF.
 This is a static documentation build. Existing mocked imports remain mocked,
 notebooks never execute, and the plot directive never evaluates examples.
 The child uses UTC and initializes the trusted Sphinx toolchain, including
-Babel's local-zone lookup, before loading project configuration. After this
+Babel's local-zone lookup and dateutil's two UTC aliases used by Pandas,
+before loading project configuration. After this
 fixed bootstrap and local platform/font discovery, the Python audit guard refuses outbound
 network, child execution and reads outside its source, runtime and private
 scratch roots; runtime CPU-cgroup reads are observed separately. Private

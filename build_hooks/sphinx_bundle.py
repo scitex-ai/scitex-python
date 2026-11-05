@@ -113,6 +113,10 @@ mimetypes.init()
 # Initialize the trusted toolchain (including Babel's local-zone lookup) before
 # guarding project configuration and autodoc. No project has been loaded yet.
 from sphinx.cmd.build import main
+# Pandas initializes these two fixed UTC aliases through dateutil separately
+# from Babel/ZoneInfo. Keep their read-only timezone bootstrap outside autodoc.
+from dateutil.tz import gettz
+utc_timezones = tuple(gettz(name) for name in ("UTC", "Etc/UTC"))
 root = Path(sys.argv.pop(1)).resolve()
 allowed = (root, Path(sys.prefix).resolve(), Path(sys.base_prefix).resolve(),
            *runtime_paths, *runtime_data_paths,
