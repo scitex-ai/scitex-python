@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand
 
 
 @click.group(
@@ -188,7 +189,14 @@ def to_vec(tex_file, fmt, output):
     )
 
 
-@tex.command("format-vector")
+@tex.command(
+    "format-vector",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Format text as LaTeX vector notation.",
+        examples=(Example("{prog} AB --json", "Return vector notation as JSON."),),
+    ),
+)
 @click.argument("text")
 @click.option(
     "--json", "as_json", is_flag=True, help="Return a structured Result envelope."
@@ -211,7 +219,22 @@ def format_vector(text, as_json):
         click.echo(vector)
 
 
-@tex.command("render-preview")
+@tex.command(
+    "render-preview",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Render mathematical expressions to a PNG and reproducible recipe.",
+        examples=(
+            Example(
+                "{prog} 'x^2' --output preview.png --yes", "Save a validated preview."
+            ),
+            Example(
+                "{prog} 'x^2' --output preview.png --dry-run",
+                "Preview without writing.",
+            ),
+        ),
+    ),
+)
 @click.argument("expressions", nargs=-1, required=True)
 @click.option(
     "--output",
