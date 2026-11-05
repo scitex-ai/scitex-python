@@ -94,11 +94,6 @@ def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> 
     return f"{indent}{name_s}({', '.join(params)}){ret_type}"
 
 
-def _estimate_tokens(text: str) -> int:
-    """Estimate token count (rough: ~4 chars per token)."""
-    return len(text) // 4 if text else 0
-
-
 def _get_all_tools(mcp_server) -> dict:
     """Get ALL tools including mounted sub-servers (crossref, openalex)."""
     from scitex._mcp import get_tools_sync
@@ -107,34 +102,42 @@ def _get_all_tools(mcp_server) -> dict:
 
 
 def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
-    """Get MCP server summary statistics."""
-    import json as json_mod
+    """Measure admitted metadata without guessing tokens or client context."""
+    from scitex_dev.context import measure_context
 
     if all_tools is None:
         all_tools = _get_all_tools(mcp_server)
-    tools = list(all_tools.values())
     instructions = getattr(mcp_server, "instructions", "") or ""
-    total_desc = sum(len(t.description or "") for t in tools)
-    total_params = sum(
-        (
-            len(json_mod.dumps(t.parameters))
-            if hasattr(t, "parameters") and t.parameters
-            else 0
-        )
-        for t in tools
-    )
+    definitions = []
+    for tool in all_tools.values():
+        parameters = getattr(tool, "parameters", None)
+        if parameters is None:
+            parameters = getattr(tool, "inputSchema", {})
+        definition = {
+            "name": tool.name,
+            "description": getattr(tool, "description", None) or "",
+            "inputSchema": parameters,
+        }
+        output_schema = _tool_output_schema(tool)
+        if output_schema is not None:
+            definition["outputSchema"] = output_schema
+        definitions.append(definition)
+    measurement = measure_context(tools=definitions, instructions=instructions)
 
     return {
         "name": getattr(mcp_server, "name", "unknown"),
-        "tool_count": len(tools),
-        "instructions_tokens": _estimate_tokens(instructions),
-        "descriptions_tokens": _estimate_tokens("x" * total_desc),
-        "schemas_tokens": _estimate_tokens("x" * total_params),
-        "total_context_tokens": (
-            _estimate_tokens(instructions)
-            + _estimate_tokens("x" * total_desc)
-            + _estimate_tokens("x" * total_params)
+        "tool_count": len(definitions),
+        "context_measurement": measurement,
+        "context_measurement_scope": (
+            "Admitted tool names, descriptions, input/output schemas and server "
+            "instructions; annotations, protocol framing and client context "
+            "are not measured."
         ),
+        # Preserve legacy keys while making their unmeasured status explicit.
+        "instructions_tokens": None,
+        "descriptions_tokens": None,
+        "schemas_tokens": None,
+        "total_context_tokens": None,
     }
 
 
@@ -149,7 +152,12 @@ def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
     help="Filter by module (audio, canvas, capture, dataset, diagram, plt, scholar, stats, template, ui, writer)",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-@click.option("--summary", "show_summary", is_flag=True, help="Show context summary")
+@click.option(
+    "--summary",
+    "show_summary",
+    is_flag=True,
+    help="Show normalized metadata size; tokens and client context are not measured.",
+)
 def list_tools(
     verbose: int, compact: bool, module: str, as_json: bool, show_summary: bool
 ):
@@ -261,10 +269,16 @@ def list_tools(
         click.echo(f"Tools: {total} ({len(modules)} modules)")
         click.echo("Returns: per-tool output schema; unspecified when absent.")
         if show_summary:
-            click.echo(f"Context: ~{summary['total_context_tokens']:,} tokens")
-            click.echo(f"  Instructions: ~{summary['instructions_tokens']:,} tokens")
-            click.echo(f"  Descriptions: ~{summary['descriptions_tokens']:,} tokens")
-            click.echo(f"  Schemas: ~{summary['schemas_tokens']:,} tokens")
+            measured = summary["context_measurement"]["total"]
+            click.echo(
+                f"Admitted metadata fields: {measured['characters']:,} characters, "
+                f"{measured['utf8_bytes']:,} UTF-8 bytes"
+            )
+            click.echo("Tokens and total client context: not measured.")
+            if module:
+                click.echo(
+                    "The summary covers all admitted tools; --module filters this listing."
+                )
         click.echo()
 
         for mod, tool_list in sorted(modules.items()):

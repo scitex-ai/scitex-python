@@ -81,3 +81,24 @@ that its target can execute; inspect the selected provider's help and skill.
 
 See `docs/01_CLI_COMMANDS.md` and `docs/08_SCITEX_ECOSYSTEM.md` in the source
 repository for the command layout and ownership rules.
+
+## Metadata size and search mode in this source
+
+`scitex mcp list-tools --summary` reports normalized Unicode characters and
+UTF-8 bytes through Dev's shared measurement API. It measures admitted tool
+names, descriptions, input/output schemas and server instructions. Annotations,
+protocol framing, vendor token counts and a client's complete context are not
+measured. Legacy token-count keys in JSON are null. `--module` filters the
+listing, while the summary still covers the admitted server catalog.
+
+To advertise search and invocation tools instead of the full catalog:
+
+```bash
+SCITEX_MCP_DISCOVERY=search scitex mcp start --transport stdio
+```
+
+This source uses FastMCP's existing search transform. Package admission still
+applies first; search does not grant permission or defer provider imports. The
+unconfigured mode remains `full` for compatibility. Use the environment of the
+same MCP server process to select search mode; filtering a CLI listing alone
+will not change what an MCP client receives.
