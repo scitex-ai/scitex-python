@@ -37,13 +37,11 @@ Usage:
     # Run comprehensive class import tests
     pytest tests/custom/test_imports.py::TestComprehensiveClassImports -v
 
-    # Run manual test runner (quick sample)
+    # Run this module through the normal pytest runner
     python tests/custom/test_imports.py
 
-Statistics:
-- ~1129 modules discovered and tested
-- ~889 functions tested for importability
-- ~1122 classes tested for importability
+Inventories are discovered from the active package; counts vary with its source
+and installed dependencies.
 
 This helps catch:
 - Circular import errors
@@ -106,21 +104,55 @@ class TestCoreImports:
 class TestLazyImports:
     """Test that lazy-loaded modules don't get imported at module load time."""
 
+    def test_lazy_probe_preserves_parent_module_cache(self, monkeypatch):
+        """An import probe must not remove modules from its caller."""
+        from types import ModuleType
+
+        name = "torch_owned_parent_probe"
+        marker = ModuleType(name)
+        monkeypatch.setitem(sys.modules, name, marker)
+        self.test_torch_not_imported_at_module_level()
+        assert sys.modules.get(name) is marker
+
     def test_torch_not_imported_at_module_level(self):
-        """Test that torch is not imported when loading scitex.types."""
-        # Clear torch from sys.modules if it exists
-        torch_modules = [m for m in sys.modules if m.startswith("torch")]
-        for module in torch_modules:
-            del sys.modules[module]
+        """Root's lazy types handle must not import torch in a fresh process."""
+        import os
+        import subprocess
+        import tempfile
 
-        # Import scitex.types
-        from scitex import types  # noqa: F401
-
-        # torch should still not be in sys.modules
-        # (it might be if used elsewhere, but not from the types module)
-        assert "torch" not in sys.modules or torch_modules, (
-            "torch should not be imported at types module level"
+        project = Path(__file__).resolve().parents[2]
+        script = (
+            "import sys; from pathlib import Path; "
+            "assert 'torch' not in sys.modules; "
+            "sys.path.insert(0, sys.argv[1]); "
+            "import scitex; "
+            "assert Path(scitex.__file__).resolve() == "
+            "(Path(sys.argv[1]) / 'scitex/__init__.py').resolve(); "
+            "from scitex import types; "
+            "assert types is not None; "
+            "assert 'torch' not in sys.modules"
         )
+        with tempfile.TemporaryDirectory() as temporary:
+            env = {
+                "PATH": os.defpath,
+                "HOME": temporary,
+                "TMPDIR": temporary,
+                "LANG": "C.UTF-8",
+                "SCITEX_DIR": str(Path(temporary) / "scitex"),
+                "SCITEX_ENV_SRC": str(Path(temporary) / "no-env-file"),
+            }
+            for name in ("COVERAGE_PROCESS_START", "COVERAGE_FILE"):
+                if name in os.environ:
+                    env[name] = os.environ[name]
+            result = subprocess.run(
+                [sys.executable, "-I", "-B", "-c", script, str(project / "src")],
+                cwd=project,
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+        assert result.returncode == 0, result.stdout + result.stderr
 
 
 class TestIsArrayLike:
@@ -281,6 +313,11 @@ def discover_module_exports(  # noqa: C901
             try:
                 obj = getattr(module, name)
 
+                # Noncallable lazy exports do not need an origin lookup; that
+                # lookup can initialize an unrelated backend during collection.
+                if not (inspect.isfunction(obj) or inspect.isclass(obj)):
+                    continue
+
                 # Check if it's defined in this module (not imported)
                 if hasattr(obj, "__module__"):
                     # Only include if it's from this module or a submodule
@@ -298,6 +335,44 @@ def discover_module_exports(  # noqa: C901
 
     except ImportError:
         return [], []
+
+
+def test_export_discovery_does_not_resolve_noncandidate_origins(monkeypatch):
+    """A lazy object's origin is irrelevant when it is not a function/class."""
+    from types import ModuleType
+
+    touched = []
+
+    class LazyOrigin:
+        def __getattribute__(self, name):
+            if name == "__module__":
+                touched.append(name)
+                return "unrelated_owner"
+            return object.__getattribute__(self, name)
+
+    def public_func():
+        pass
+
+    class PublicClass:
+        pass
+
+    owner = "owned_import_inventory"
+    public_func.__module__ = owner
+    PublicClass.__module__ = owner
+    module = ModuleType(owner)
+    module.public_func = public_func
+    module.PublicClass = PublicClass
+    module.lazy_value = LazyOrigin()
+    original_import = importlib.import_module
+    monkeypatch.setattr(
+        importlib,
+        "import_module",
+        lambda name, *args, **kwargs: (
+            module if name == owner else original_import(name, *args, **kwargs)
+        ),
+    )
+    assert discover_module_exports(owner) == (["public_func"], ["PublicClass"])
+    assert not touched
 
 
 # Generate test parameters at module level for pytest parametrization
@@ -448,97 +523,9 @@ class TestTopLevelImports:
                         raise
 
 
-def run_tests():  # noqa: C901
-    """Run all tests manually without pytest."""
-    tests_passed = 0
-    tests_failed = 0
-    tests_skipped = 0
-
-    def run_test_class(test_class, class_name):
-        """Helper function to run all tests in a class."""
-        nonlocal tests_passed, tests_failed, tests_skipped
-        test_instance = test_class()
-        for method_name in dir(test_instance):
-            if method_name.startswith("test_"):
-                try:
-                    method = getattr(test_instance, method_name)
-                    method()
-                    print(f"✓ {class_name}.{method_name}")
-                    tests_passed += 1
-                except ImportError as e:
-                    if any(
-                        dep in str(e)
-                        for dep in ["torch", "playwright", "selenium", "crawl4ai"]
-                    ):
-                        print(f"⊗ {class_name}.{method_name} (skipped: {e})")
-                        tests_skipped += 1
-                    else:
-                        print(f"✗ {class_name}.{method_name}: {e}")
-                        tests_failed += 1
-                except Exception as e:
-                    print(f"✗ {class_name}.{method_name}: {e}")
-                    tests_failed += 1
-
-    # Test core imports
-    print("\n=== Testing Core Imports ===")
-    run_test_class(TestCoreImports, "TestCoreImports")
-
-    # Test lazy imports
-    print("\n=== Testing Lazy Imports ===")
-    run_test_class(TestLazyImports, "TestLazyImports")
-
-    # Test is_array_like
-    print("\n=== Testing is_array_like Function ===")
-    run_test_class(TestIsArrayLike, "TestIsArrayLike")
-
-    # Test stx_joyplot lazy import
-    print("\n=== Testing stx_joyplot Lazy Import ===")
-    run_test_class(TestPlotJoyplotLazyImport, "TestPlotJoyplotLazyImport")
-
-    # Test top-level imports
-    print("\n=== Testing Top-Level Imports ===")
-    run_test_class(TestTopLevelImports, "TestTopLevelImports")
-
-    # Comprehensive module import tests
-    print("\n=== Testing Comprehensive Module Imports ===")
-    print("Discovering modules...")
-    modules = discover_scitex_modules()
-    print(f"Found {len(modules)} modules to test")
-
-    for i, module_name in enumerate(modules[:10], 1):  # Test first 10 for quick run
-        try:
-            importlib.import_module(module_name)
-            print(f"✓ [{i}/{min(10, len(modules))}] {module_name}")
-            tests_passed += 1
-        except ImportError as e:
-            if any(
-                dep in str(e) for dep in ["torch", "playwright", "selenium", "crawl4ai"]
-            ):
-                print(f"⊗ [{i}/{min(10, len(modules))}] {module_name} (skipped)")
-                tests_skipped += 1
-            else:
-                print(f"✗ [{i}/{min(10, len(modules))}] {module_name}: {e}")
-                tests_failed += 1
-        except Exception as e:
-            print(f"✗ [{i}/{min(10, len(modules))}] {module_name}: {e}")
-            tests_failed += 1
-
-    # Summary
-    print(f"\n{'=' * 60}")
-    print(f"{'Test Summary':^60}")
-    print(f"{'=' * 60}")
-    print(f"  Passed:  {tests_passed:>5}")
-    print(f"  Failed:  {tests_failed:>5}")
-    print(f"  Skipped: {tests_skipped:>5}")
-    print(f"  Total:   {tests_passed + tests_failed + tests_skipped:>5}")
-    print(f"{'=' * 60}")
-
-    if tests_failed == 0:
-        print("\n✓ All tests passed!")
-    else:
-        print(f"\n✗ {tests_failed} test(s) failed")
-
-    return tests_failed == 0
+def run_tests():
+    """Keep the script entrypoint on the same collection and fixtures as CI."""
+    return pytest.main([str(Path(__file__).resolve()), "-v"]) == 0
 
 
 if __name__ == "__main__":
