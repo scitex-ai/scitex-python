@@ -1,58 +1,43 @@
 ---
 description: |
-  [TOPIC] CLI reference — scitex umbrella
-  [DETAILS] `scitex` console entry dispatches to per-package CLIs (`scitex io ...`, `scitex plt ...`, `scitex scholar ...`); the umbrella itself adds version + MCP server entry points.
+  [TOPIC] CLI and MCP — scitex umbrella
+  [DETAILS] Inspect installed command help, distinguish metadata discovery from execution, and start the MCP server explicitly with stdio. Preserve release-specific compatibility limits.
 tags: [scitex-cli-reference]
 ---
 
-# CLI reference — scitex
-
-The `scitex` console script is a thin dispatcher. For per-package
-sub-commands, refer to the sister-package skill (e.g. `scitex-scholar`
-documents `scitex scholar bibtex ...`).
-
-## Top-level commands
+# CLI and MCP — scitex
 
 ```bash
-scitex --version            # umbrella version
-scitex --help               # list available sub-commands
-scitex mcp                  # umbrella MCP server entry
+scitex --version
+scitex --help
+scitex mcp --help
+scitex mcp start --help
 ```
 
-## Sub-command dispatch
+The available groups depend on the installed release and providers. Inspect the
+selected group's help instead of inferring a command from a Python module name.
+Help success verifies parsing/discovery, not the operation itself.
 
-Each installed sister package contributes its own sub-command tree. The
-exact subset depends on what you have installed:
+## MCP
 
 ```bash
-scitex scholar ...          # literature management
-scitex writer  ...          # manuscript compilation
-scitex cloud   ...          # SciTeX Cloud
-scitex notebook ...         # notebook reproducibility
-scitex container ...        # container management
-scitex io ...               # I/O helpers
-# ...
+scitex mcp list-tools --module stats
+scitex mcp start --transport stdio
 ```
 
-Each top-level group accepts `--help`:
+The first command lists registered statistics tool metadata. The second starts
+the server; bare `scitex mcp` displays help and does not start it. An MCP client
+must use the `scitex` executable from the intended environment. Protocol metadata
+discovery does not invoke the tools or prove their external services are ready.
+No fixed tool count or universal result envelope is assumed.
 
-```bash
-scitex scholar --help
-scitex writer compile --help
-```
+## Skills and Web APIs
 
-## Standalone aliases
+Use package-owned skill files and inspect the installed scitex-dev skill manager
+before choosing an export/install command. In the checked public 2.30.8 and source
+2.30.9 dependency sets, the legacy `scitex skills get` callback imports a missing
+`scitex_dev.skills` module. Do not present that callback as verified by its help.
+Do not assume a vendor-specific discovery directory.
 
-Sister packages also ship their own console scripts (e.g.
-`crossref-local`, `openalex-local`, `scitex-notebook`). The umbrella
-`scitex <sub>` form and the standalone scripts share implementations.
-
-## MCP server
-
-```bash
-scitex mcp                  # serve the umbrella's mounted MCP namespaces
-```
-
-This boots the FastMCP server defined in `scitex.mcp_server`, which
-mounts every sister-package MCP server under its namespaced prefix
-(`io_*`, `plt_*`, `stats_*`, `scholar_*`, ...).
+Hub/app plugins provide Web API endpoints. Use their declared routes and owning
+package documentation; a registered Python/CLI name is not a Web route.
