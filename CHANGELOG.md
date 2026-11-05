@@ -37,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Report the installed SciTeX package version in MCP server identification,
   rather than the default FastMCP framework version.
 
+- Adopt public scitex-notebook 0.1.4 so notebook compilation/conversion expose
+  working `--dry-run`/`--yes` controls and command examples through the umbrella.
+
 ### Added
 - A normal PEP517 producer for packaged Sphinx documentation, with an independent
   rebuild from immutable Git source to verify derived bytes. Preserve tracked
