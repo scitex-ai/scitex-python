@@ -68,8 +68,8 @@ def _print_help_recursive(ctx):
 
 
 @tex.command()
-@click.argument("tex_file", type=click.Path(exists=True))
-@click.option("--output", "-o", type=click.Path(), help="Output PDF path")
+@click.argument("tex_file", type=click.Path(exists=True, dir_okay=False))
+@click.option("--output", "-o", type=click.Path(dir_okay=False), help="Output PDF path")
 @click.option(
     "--engine",
     "-e",
@@ -82,12 +82,18 @@ def _print_help_recursive(ctx):
 )
 @click.option(
     "--timeout",
-    type=int,
+    type=click.IntRange(min=1),
     default=300,
     help="Compilation timeout in seconds (default: 300)",
 )
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed compilation output")
-def compile(tex_file, output, engine, clean, timeout, verbose):
+@click.option(
+    "--dry-run", is_flag=True, help="Preview compilation without writing files."
+)
+@click.option(
+    "--yes", "-y", is_flag=True, help="Accept this explicit non-interactive operation."
+)
+def compile(tex_file, output, engine, clean, timeout, verbose, dry_run, yes):
     """
     Compile LaTeX document to PDF
 
@@ -97,40 +103,41 @@ def compile(tex_file, output, engine, clean, timeout, verbose):
       scitex tex compile paper.tex --output ./output/paper.pdf
       scitex tex compile paper.tex --engine xelatex
       scitex tex compile paper.tex --clean --verbose
+      scitex tex compile paper.tex --output ./output/paper.pdf --dry-run
     """
+    path = Path(tex_file).resolve()
+    target = Path(output).resolve() if output else path.with_suffix(".pdf")
+    if target == path:
+        raise click.UsageError("The output PDF path must differ from the input source.")
+    if dry_run:
+        click.echo(f"Would compile: {path} -> {target}")
+        click.echo(
+            f"Engine: {engine}; timeout: {timeout}s; clean auxiliary files: {clean}"
+        )
+        return
+
+    # This command has always been explicit and non-interactive. --yes is
+    # accepted for standard automation; --dry-run takes priority over it.
     try:
         from scitex.tex import compile_tex
 
-        path = Path(tex_file)
         click.echo(f"Compiling: {path.name}")
 
         result = compile_tex(
             tex_path=path,
-            output_path=output,
-            engine=engine,
+            output_dir=target.parent,
+            compiler=engine,
+            clean=clean,
             timeout=timeout,
         )
 
-        if result.success:
+        if result.success and result.pdf_path is not None:
+            generated = Path(result.pdf_path)
+            if generated != target:
+                generated.replace(target)
             click.secho("Compilation successful!", fg="green")
-            click.echo(f"PDF: {result.output_pdf}")
-
+            click.echo(f"PDF: {target}")
             if clean:
-                # Clean auxiliary files
-                aux_extensions = [
-                    ".aux",
-                    ".log",
-                    ".out",
-                    ".toc",
-                    ".bbl",
-                    ".blg",
-                    ".fls",
-                    ".fdb_latexmk",
-                ]
-                for ext in aux_extensions:
-                    aux_file = path.with_suffix(ext)
-                    if aux_file.exists():
-                        aux_file.unlink()
                 click.echo("Auxiliary files cleaned")
         else:
             click.secho(
@@ -140,7 +147,7 @@ def compile(tex_file, output, engine, clean, timeout, verbose):
                 click.echo("\nErrors:")
                 for error in result.errors[:10]:
                     click.echo(f"  {error}")
-            sys.exit(result.exit_code)
+            sys.exit(result.exit_code or 1)
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)

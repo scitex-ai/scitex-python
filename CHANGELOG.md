@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fix the TeX CLI adapter to use the current provider's arguments and result fields,
+  honor output filenames and provider cleanup, and support non-writing previews.
+
+
 ## [2.30.9] - Unreleased
 
 ### Changed

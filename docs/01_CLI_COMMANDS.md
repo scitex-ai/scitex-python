@@ -184,3 +184,17 @@ Raw mode streams bytes and does not deserialize arrays or checkpoints. Existing
 numeric content hashing remains the default. NumPy pickle loading is disabled,
 and checkpoint loading explicitly requests weights only; serialized custom
 objects may be refused in that mode. Use raw mode for untrusted inputs.
+
+## LaTeX compilation in this source
+
+```bash
+scitex tex compile paper.tex --output ./compiled/review.pdf --clean --yes
+scitex tex compile paper.tex --output ./compiled/review.pdf --dry-run --yes
+```
+
+The adapter delegates to `scitex-tex` for compilation and auxiliary-file cleanup,
+then honors the requested PDF filename. Install a supported LaTeX engine
+(`pdflatex`, `xelatex`, or `lualatex`) separately. Missing compilers and failed
+compilations return a nonzero status. `--dry-run` previews paths and options
+without importing the compiler provider or writing output; it takes priority
+over `--yes`. The operation remains non-interactive when `--yes` is omitted.
