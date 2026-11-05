@@ -7,8 +7,8 @@ SciTeX MCP CLI - Model Context Protocol server management commands.
 Commands:
 - scitex mcp list-tools    List the admitted MCP tool catalog
 - scitex mcp doctor        Check MCP server health and configuration
-- scitex mcp start         Start the unified MCP server
-- scitex mcp installation  Show MCP client setup
+- scitex mcp serve         Serve the unified MCP server in the foreground
+- scitex mcp get-config    Print vendor-neutral MCP client configuration
 """
 
 import click
@@ -486,7 +486,7 @@ def _print_help_recursive(ctx):
 
     for name in sorted(mcp.list_commands(ctx) or []):
         cmd = mcp.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
         click.secho(f"━━━ scitex mcp {name} ━━━", fg="cyan", bold=True)
@@ -494,7 +494,7 @@ def _print_help_recursive(ctx):
             click.echo(cmd.get_help(sub_ctx))
 
 
-@mcp.command("start")
+@mcp.command("serve")
 @click.option(
     "--transport",
     "-t",
@@ -507,9 +507,9 @@ def _print_help_recursive(ctx):
     "--port", "-p", default=8085, type=int, help="Port to bind (default: 8085)"
 )
 def start(transport: str, host: str, port: int):
-    """Start the unified MCP server.
+    """Serve the unified MCP server in the foreground.
 
-    $ scitex mcp start
+    $ scitex mcp serve --transport stdio
     """
     try:
         from scitex._mcp import run_server
@@ -521,41 +521,38 @@ def start(transport: str, host: str, port: int):
     run_server(transport=transport, host=host, port=port)
 
 
-@mcp.command("installation")
-def installation():
-    """Show Claude Desktop configuration for SciTeX MCP server.
+@mcp.command("get-config")
+@click.option(
+    "--json", "as_json", is_flag=True, help="Output only the MCP client JSON."
+)
+def installation(as_json=False):
+    """Print MCP client configuration for the current Python environment.
 
-    $ scitex mcp installation
+    $ scitex mcp get-config --json
     """
-    import shutil
+    import json
     import sys
 
-    from scitex import __version__
+    config = {
+        "mcpServers": {
+            "scitex": {
+                "command": sys.executable,
+                "args": ["-m", "scitex", "mcp", "serve"],
+            }
+        }
+    }
+    if not as_json:
+        click.echo("Server configuration for clients accepting the mcpServers format:")
+    click.echo(json.dumps(config, indent=2))
 
-    click.secho(f"SciTeX MCP Server v{__version__}", fg="cyan", bold=True)
-    click.echo()
 
-    # Get actual path
-    scitex_path = shutil.which("scitex")
-    python_path = sys.executable
+# Retain existing client setups and scripts without advertising daemon semantics
+# for a foreground protocol server. Warnings stay on stderr, outside MCP stdout.
+from scitex_dev.ecosystem import deprecated_alias
 
-    if scitex_path:
-        click.echo(f"Your installation path: {scitex_path}")
-        click.echo(f"Your Python path: {python_path}")
-    click.echo()
-
-    click.secho("Claude Desktop Configuration:", fg="green", bold=True)
-    click.echo(
-        "Add to ~/Library/Application Support/Claude/claude_desktop_config.json (macOS)"
-    )
-    click.echo("or %APPDATA%\\Claude\\claude_desktop_config.json (Windows):")
-    click.echo()
-
-    config = f""""scitex": {{
-  "command": "{scitex_path or "/path/to/.venv/bin/scitex"}",
-  "args": ["mcp", "start"]
-}}"""
-    click.secho(config, fg="yellow")
+# Tuple prefixes also forward --help through the shared native Click adapter.
+deprecated_alias(mcp, "start", target=("serve",), remove_in="3.0")
+deprecated_alias(mcp, "installation", target=("get-config",), remove_in="3.0")
 
 
 # EOF

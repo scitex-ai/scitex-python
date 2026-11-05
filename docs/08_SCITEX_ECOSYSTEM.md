@@ -100,7 +100,7 @@ provider documentation when migrating an existing environment.
 ## Agent setup
 
 Use `scitex dev skills install --help` to inspect generated-store options and
-`scitex mcp start --help` to inspect server startup. Selecting skills, installing
+`scitex mcp serve --help` to inspect server startup. Selecting skills, installing
 them into an owned destination, and linking or configuring a particular agent
 client are separate operations. Neither provider discovery nor server startup
 proves what a client has loaded into its conversation.

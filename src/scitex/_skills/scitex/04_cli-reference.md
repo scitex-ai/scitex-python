@@ -11,7 +11,6 @@ tags: [scitex-cli-reference]
 scitex --version
 scitex --help
 scitex mcp --help
-scitex mcp start --help
 ```
 
 The available groups depend on the installed release and providers. Inspect the
@@ -20,14 +19,22 @@ Help success verifies parsing/discovery, not the operation itself.
 
 ## MCP
 
+In the upcoming 2.30.9 source, `serve` runs the foreground server and
+`get-config --json` prints a complete client configuration using the current
+Python environment. Older `start` and `installation` invocations remain hidden
+compatibility routes; inspect installed help before using the new names on an
+earlier release.
+
 ```bash
 scitex mcp list-tools --module stats
-scitex mcp start --transport stdio
+scitex mcp get-config --json
+scitex mcp serve --transport stdio
 ```
 
-The first command lists registered statistics tool metadata. The second starts
-the server; bare `scitex mcp` displays help and does not start it. An MCP client
-must use the `scitex` executable from the intended environment. Protocol metadata
+The commands list registered statistics tool metadata, print client setup,
+and explicitly serve the protocol; bare `scitex mcp` displays help and does not start it. An MCP client
+must use the intended Python environment; generated setup uses that interpreter
+directly. Protocol metadata
 discovery does not invoke the tools or prove their external services are ready.
 No fixed tool count or universal result envelope is assumed.
 
@@ -94,7 +101,7 @@ listing, while the summary still covers the admitted server catalog.
 To advertise search and invocation tools instead of the full catalog:
 
 ```bash
-SCITEX_MCP_DISCOVERY=search scitex mcp start --transport stdio
+SCITEX_MCP_DISCOVERY=search scitex mcp serve --transport stdio
 ```
 
 This source uses FastMCP's existing search transform. Package admission still

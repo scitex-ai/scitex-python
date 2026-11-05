@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   verdicts that could hide a failed test process. Packaged documentation remains
   generated and source-verified by the normal release build.
 
+- Use `mcp serve` for foreground protocol serving and `mcp get-config --json`
+  for vendor-neutral setup tied to the current interpreter. Preserve hidden
+  `start`/`installation` migration routes, including help and argv forwarding.
+
 ### Added
 - A normal PEP517 producer for packaged Sphinx documentation, with an independent
   rebuild from immutable Git source to verify derived bytes. Preserve tracked

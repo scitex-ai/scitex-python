@@ -261,7 +261,7 @@ def cli(ctx, help_recursive, as_json):
       scitex scholar bibtex papers.bib      # Manage papers
       scitex audio speak "Hello"            # Text-to-speech
       scitex mcp list-tools                 # List MCP tools
-      scitex mcp start                      # Start MCP server
+      scitex mcp serve                      # Serve MCP in the foreground
 
     \b
     Enable tab-completion:
