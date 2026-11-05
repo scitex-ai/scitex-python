@@ -211,6 +211,8 @@ scitex tex render-preview 'x^2' --output ./previews/math.png --dry-run --yes
 renders expressions through the TeX provider and saves the recording figure as
 a PNG with a recipe. Reproduction validation stays enabled. Its preview mode
 does not render or create output directories.
+This source pins FigRecipe 0.44.3, which preserves the rendered layout during
+save/replay validation; the renderer does not bypass that validation.
 
 The previous `preview FILE --viewer ...` and `to-vec FILE --format ...` routes
 described operations that their Python providers did not implement. Those
