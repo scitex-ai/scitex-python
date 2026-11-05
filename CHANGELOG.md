@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use `mcp serve` for foreground protocol serving and `mcp get-config --json`
   for vendor-neutral setup tied to the current interpreter. Preserve hidden
   `start`/`installation` migration routes, including help and argv forwarding.
+- Report the installed SciTeX package version in MCP server identification,
+  rather than the default FastMCP framework version.
 
 ### Added
 - A normal PEP517 producer for packaged Sphinx documentation, with an independent

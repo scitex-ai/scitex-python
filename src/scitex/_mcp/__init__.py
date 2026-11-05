@@ -428,7 +428,9 @@ Use introspect_* tools to explore the API: introspect_dir("scitex.stats")
 
 
 if FASTMCP_AVAILABLE:
-    mcp = FastMCP(name="scitex", instructions=_INSTRUCTIONS)
+    from scitex import __version__ as _SCITEX_VERSION
+
+    mcp = FastMCP(name="scitex", version=_SCITEX_VERSION, instructions=_INSTRUCTIONS)
 
     from ._exposure import configure_discovery, load_package_policy
 
