@@ -218,3 +218,20 @@ The previous `preview FILE --viewer ...` and `to-vec FILE --format ...` routes
 described operations that their Python providers did not implement. Those
 routes are hidden and return an explicit usage error with the supported
 commands. Use `compile` to create a document PDF.
+
+## Browser PDF export and guidance
+
+```bash
+scitex browser save-as-pdf https://example.org ./output/page.pdf --dry-run --yes
+scitex browser show --json
+```
+
+PDF export's `--dry-run` reports the destination without launching a browser,
+contacting the URL or creating directories. It takes priority over `--yes`.
+Remove `--dry-run` to export; the existing non-interactive behavior is preserved
+when `--yes` is omitted. Actual export requires Playwright and its matching
+Chromium installation. Run `python -m playwright install chromium --only-shell`
+using the same Python environment as `scitex` to install that browser.
+
+`browser show --json` returns guidance in a Result envelope. It does not control
+a browser session; the response explicitly reports that control is unavailable.

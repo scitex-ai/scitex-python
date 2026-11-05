@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Give unsupported older file/viewer/export routes explicit migration errors.
 - Require FigRecipe 0.44.3 consistently across the core, plotting and development
   profiles so expression previews retain strict save/replay validation.
+- Add inert browser PDF export previews and standard automation flags. Return
+  browser visibility guidance as JSON without claiming session control.
 
 - Fix the TeX CLI adapter to use the current provider's arguments and result fields,
   honor output filenames and provider cleanup, and support non-writing previews.
