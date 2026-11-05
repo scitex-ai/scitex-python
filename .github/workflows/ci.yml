@@ -66,4 +66,12 @@ jobs:
 
   rtd-sphinx-build:
     uses: scitex-ai/.github/.github/workflows/rtd-sphinx-build.yml@main
+    # Preserve the legacy build-and-publish behavior through the shared PR-based
+    # publisher. Editable consumers still read the checked-in bundle; release
+    # artifacts independently rebuild and verify it from source.
+    with:
+      bundle_dir: src/scitex/_sphinx_html
+    permissions:
+      contents: write
+      pull-requests: write
     secrets: inherit
