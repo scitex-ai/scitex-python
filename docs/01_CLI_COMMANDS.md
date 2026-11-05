@@ -170,3 +170,17 @@ and stay outside normal command listings. Human setup remains available through
 `scitex dev completion install`; the older `scitex completion` group still
 forwards there. The shared helper's deprecated `completion` alias does not replace
 that group. Remove `--dry-run` to perform the explicitly requested installation.
+
+## Hashing serialized files in this source
+
+For a byte-for-byte artifact digest, use the upcoming 2.30.9 raw mode:
+
+```bash
+scitex repro hash data.npy --raw
+scitex repro hash checkpoint.pt --raw --algorithm sha256
+```
+
+Raw mode streams bytes and does not deserialize arrays or checkpoints. Existing
+numeric content hashing remains the default. NumPy pickle loading is disabled,
+and checkpoint loading explicitly requests weights only; serialized custom
+objects may be refused in that mode. Use raw mode for untrusted inputs.

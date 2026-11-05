@@ -157,10 +157,18 @@ def gen_timestamp(fmt, utc):
 @repro.command()
 @click.argument("file_path", type=click.Path(exists=True))
 @click.option(
-    "--algorithm", "-a", default="sha256", help="Hash algorithm (default: sha256)"
+    "--algorithm",
+    "-a",
+    default="sha256",
+    help="File-byte hash algorithm (default: sha256); use --raw for array files.",
 )
 @click.option("--short", "-s", is_flag=True, help="Output short hash (first 8 chars)")
-def hash(file_path, algorithm, short):
+@click.option(
+    "--raw",
+    is_flag=True,
+    help="Stream file bytes without deserializing array/checkpoint contents.",
+)
+def hash(file_path, algorithm, short, raw):
     """
     Hash array or file for reproducibility verification
 
@@ -175,7 +183,11 @@ def hash(file_path, algorithm, short):
     Examples:
       scitex repro hash data.npy
       scitex repro hash model.pt --short
-      scitex repro hash weights.npz --algorithm md5
+      scitex repro hash weights.npz --raw --algorithm md5
+
+    Array mode disables NumPy pickle and uses weights-only checkpoint loading.
+    Use --raw for untrusted or serialized-object files: it streams bytes without
+    interpreting their contents and honors --algorithm.
     """
     try:
         import hashlib
@@ -186,24 +198,23 @@ def hash(file_path, algorithm, short):
         # Try to load as array first
         hash_val = None
         try:
-            if path.suffix in (".npy", ".npz"):
+            if not raw and path.suffix in (".npy", ".npz"):
                 import numpy as np
 
                 from scitex.repro import hash_array
 
-                arr = np.load(path, allow_pickle=True)
+                arr = np.load(path, allow_pickle=False)
                 if isinstance(arr, np.lib.npyio.NpzFile):
                     # For npz, hash all arrays
-                    hashes = []
-                    for key in arr.files:
-                        hashes.append(hash_array(arr[key]))
+                    with arr:
+                        hashes = [hash_array(arr[key]) for key in arr.files]
                     hash_val = hashlib.sha256("".join(hashes).encode()).hexdigest()
                 else:
                     hash_val = hash_array(arr)
-            elif path.suffix in (".pt", ".pth"):
+            elif not raw and path.suffix in (".pt", ".pth"):
                 import torch
 
-                data = torch.load(path, map_location="cpu")
+                data = torch.load(path, map_location="cpu", weights_only=True)
                 if isinstance(data, torch.Tensor):
                     hash_val = hashlib.sha256(data.numpy().tobytes()).hexdigest()
                 else:

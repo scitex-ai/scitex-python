@@ -46,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   command examples through the umbrella.
 
 ### Fixed
+- Disable NumPy pickle and request weights-only checkpoint loading in the
+  array-aware hash command. Add `--raw` for streaming artifact hashes without
+  deserialization, while preserving numeric content hashing.
 - Delegate documentation listing, search and builds to Dev's public Python API.
   Return a failed Result and nonzero exit for package-level or per-builder
   failures instead of reporting a successful build.
