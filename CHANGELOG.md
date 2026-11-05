@@ -41,6 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   real dry-run previews, accept the standard automation flags and include
   command examples through the umbrella.
 
+### Fixed
+- Delegate documentation listing, search and builds to Dev's public Python API.
+  Return a failed Result and nonzero exit for package-level or per-builder
+  failures instead of reporting a successful build.
+- Accept `--yes`/`-y` consistently on explicit config initialization, completion
+  installation and documentation building. These commands remain non-interactive;
+  dry-run previews take priority and do not perform the requested writes.
+
 ### Added
 - A normal PEP517 producer for packaged Sphinx documentation, with an independent
   rebuild from immutable Git source to verify derived bytes. Preserve tracked

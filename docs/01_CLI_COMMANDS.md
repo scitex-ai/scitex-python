@@ -122,3 +122,19 @@ canonical names. The older `scitex dev dev skills …` path also remains invocab
 new umbrella examples use `scitex dev skills …`. CLI migration does not rename
 Python imports, standalone console scripts, or MCP tool names. Optional providers
 must still be installed and permitted by their exposure policy.
+
+## Automation previews and build results in this source
+
+These controls require the upcoming 2.30.9 release:
+
+```bash
+scitex config init --dry-run --yes
+scitex dev completion install --shell bash --dry-run --yes
+scitex docs build --package scitex --dry-run --yes --json
+```
+
+`--yes` is accepted for consistent automation; these explicit operations already
+run without an interactive prompt. `--dry-run` takes priority. Documentation
+build errors produce a nonzero exit and `success: false` with `--json`, including
+errors returned for an individual Sphinx builder. A successful build does not
+establish that every documented example has been executed.

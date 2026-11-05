@@ -104,7 +104,13 @@ def completion():
     is_flag=True,
     help="Print the target rc file and completion script without writing.",
 )
-def completion_install(shell, dry_run):
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Accept explicit completion installation for automation (already non-interactive).",
+)
+def completion_install(shell, dry_run, yes):
     """
     Install shell completion for the scitex CLI.
 
@@ -114,6 +120,7 @@ def completion_install(shell, dry_run):
       scitex completion install --shell bash
       scitex completion install --dry-run             # Inspect, write nothing
     """
+    del yes  # Explicit install is already non-interactive.
     shell = _resolve_shell(shell)
     rc_file = _get_rc_file(shell)
     completion_script = _generate_completion_script(shell)

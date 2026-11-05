@@ -161,7 +161,13 @@ def list_config(env, exists, as_json):
     is_flag=True,
     help="Show what would be created without creating",
 )
-def init_config(dry_run):
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Accept explicit directory creation for automation (already non-interactive).",
+)
+def init_config(dry_run, yes):
     """
     Initialize all SciTeX directories.
 
@@ -172,6 +178,7 @@ def init_config(dry_run):
       scitex config init            # Create all directories
       scitex config init --dry-run  # Show what would be created
     """
+    del yes  # Explicit init is already non-interactive; --dry-run takes priority.
     from scitex.config import ScitexPaths
 
     paths = ScitexPaths()
