@@ -60,11 +60,20 @@ def _tool_output_schema(tool_obj):
     return getattr(tool_obj, "outputSchema", None) if schema is None else schema
 
 
+def _tool_input_schema(tool_obj):
+    """Read native, Python protocol and serialized protocol schema fields."""
+    for name in ("parameters", "input_schema", "inputSchema"):
+        schema = getattr(tool_obj, name, None)
+        if schema is not None:
+            return schema
+    return {}
+
+
 def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> str:
     """Format tool as Python-like function signature with return type."""
     params = []
-    if hasattr(tool_obj, "parameters") and tool_obj.parameters:
-        schema = tool_obj.parameters
+    schema = _tool_input_schema(tool_obj)
+    if schema:
         props = schema.get("properties", {})
         required = schema.get("required", [])
         for name, info in props.items():
@@ -110,13 +119,10 @@ def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
     instructions = getattr(mcp_server, "instructions", "") or ""
     definitions = []
     for tool in all_tools.values():
-        parameters = getattr(tool, "parameters", None)
-        if parameters is None:
-            parameters = getattr(tool, "inputSchema", {})
         definition = {
             "name": tool.name,
             "description": getattr(tool, "description", None) or "",
-            "inputSchema": parameters,
+            "inputSchema": _tool_input_schema(tool),
         }
         output_schema = _tool_output_schema(tool)
         if output_schema is not None:
@@ -250,7 +256,7 @@ def list_tools(
             }
             for tool_name in tool_list:
                 tool_obj = all_tools.get(tool_name)
-                schema = tool_obj.parameters if hasattr(tool_obj, "parameters") else {}
+                schema = _tool_input_schema(tool_obj)
                 output["modules"][mod]["tools"].append(
                     {
                         "name": tool_name,

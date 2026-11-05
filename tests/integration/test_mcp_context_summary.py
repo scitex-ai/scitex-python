@@ -59,8 +59,15 @@ def test_context_summary_preserves_protocol_schema_metadata_without_calls():
     server = SimpleNamespace(name="owned", instructions="fixture")
     schema = {"type": "object", "properties": {"value": {"type": "string"}}}
     output = {"type": "object", "properties": {"ok": {"type": "boolean"}}}
-    tool = SimpleNamespace(
-        name="owned", description="fixture", inputSchema=schema, outputSchema=output
+    from mcp.types import Tool
+
+    tool = Tool.model_validate(
+        {
+            "name": "owned",
+            "description": "fixture",
+            "inputSchema": schema,
+            "outputSchema": output,
+        }
     )
     expected = measure_context(
         tools=[
@@ -77,3 +84,25 @@ def test_context_summary_preserves_protocol_schema_metadata_without_calls():
     actual = _get_mcp_summary(server, {"owned": tool})["context_measurement"]
     # Assert
     assert actual == expected
+
+
+def test_protocol_tool_signature_keeps_actual_input_parameters():
+    # Arrange
+    from mcp.types import Tool
+
+    from scitex.cli.mcp import _format_signature
+
+    tool = Tool.model_validate(
+        {
+            "name": "owned",
+            "inputSchema": {
+                "type": "object",
+                "properties": {"value": {"type": "string"}},
+                "required": ["value"],
+            },
+        }
+    )
+    # Act
+    rendered = _format_signature(tool)
+    # Assert
+    assert "value" in rendered and "string" in rendered
