@@ -110,6 +110,9 @@ import matplotlib.font_manager
 import mimetypes
 mimetypes.knownfiles = []
 mimetypes.init()
+# Initialize the trusted toolchain (including Babel's local-zone lookup) before
+# guarding project configuration and autodoc. No project has been loaded yet.
+from sphinx.cmd.build import main
 root = Path(sys.argv.pop(1)).resolve()
 allowed = (root, Path(sys.prefix).resolve(), Path(sys.base_prefix).resolve(),
            *runtime_paths, *runtime_data_paths,
@@ -131,7 +134,6 @@ def deny_effects(event, args):
         if path != Path("/dev/null") and not runtime_cpu and not any(path.is_relative_to(base) for base in allowed):
             raise RefusedOperation("documentation build refuses out-of-tree file access: " + str(path))
 sys.addaudithook(deny_effects)
-from sphinx.cmd.build import main
 result = main(sys.argv[1:])
 raise SystemExit(result)
 '''
@@ -152,6 +154,7 @@ def build_bundle(root: Path, output: Path) -> None:
             "MPLCONFIGDIR": str(scratch / "matplotlib"),
             "LANG": "C.UTF-8",
             "LC_ALL": "C.UTF-8",
+            "TZ": "UTC",
             "SOURCE_DATE_EPOCH": "0",
             "PYTHONHASHSEED": "0",
             "SCITEX_DOCS_STATIC": "1",

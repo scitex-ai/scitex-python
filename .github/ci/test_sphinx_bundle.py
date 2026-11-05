@@ -25,6 +25,22 @@ def source_at(root, text):
 
 
 class SphinxBundleTests(unittest.TestCase):
+    def test_project_config_cannot_start_children_after_toolchain_bootstrap(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source_at(root, "Owned config guard\n==================\n")
+            marker = root / "must-not-exist"
+            with (root / "docs/sphinx/conf.py").open("a") as stream:
+                stream.write(
+                    "import subprocess, sys\n"
+                    "subprocess.run([sys.executable, '-c', "
+                    + repr(f"from pathlib import Path; Path({str(marker)!r}).write_text('unexpected')")
+                    + "], check=True)\n"
+                )
+            with self.assertRaises(subprocess.CalledProcessError):
+                PRODUCER.build_bundle(root, root / "output")
+            assert not marker.exists() and not (root / "output").exists()
+
     def test_build_uses_declared_dependencies_outside_interpreter_prefix(self):
         """PEP517 overlays install dependencies outside the caller's venv."""
         import venv
