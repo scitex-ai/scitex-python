@@ -100,6 +100,10 @@ scitex --help
 
 Use the equivalent activation command for your shell. Python requirements are declared on [PyPI](https://pypi.org/project/scitex/). Optional integrations may have additional runtime or platform requirements.
 
+In the upcoming 2.30.9 release, Hub integration (`hub`, `cloud`, `module`,
+`project`, and `[all]`) requires Python 3.11+. The base package retains its
+declared Python 3.10+ requirement.
+
 Choose extras for the work you need, for example:
 
 ```bash

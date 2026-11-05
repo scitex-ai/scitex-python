@@ -91,7 +91,7 @@ dependencies = [
     "scitex-notebook==0.1.2",
     # Delegated modules from #51 standalonization
     "scitex-db==0.1.12",
-    "scitex-scholar==1.4.3",
+    "scitex-scholar==1.29.1",
     "scitex-parallel==0.1.8",
     "scitex-types==0.1.6",
     "scitex-path==0.1.7",
@@ -208,7 +208,7 @@ bridge = [
 
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
-container = ["scitex-container==0.2.1"]
+container = ["scitex-container==0.4.2"]
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -249,18 +249,18 @@ cli = [
 
 # Cloud Module - Cloud service integration (OPTIONAL peer: scitex-hub)
 # Use: pip install scitex[cloud]  (alias of scitex[hub])
-# Kept OUT of [all] so CI's matrix skips cloud/module/project when scitex-hub
-# (not yet released) is absent. scitex.cloud/.module/.project degrade with a
-# friendly install hint when scitex-hub is missing.
+# Hub is an optional peer for the base install and is included in [all].
+# The SDK-based alpha integration requires Python 3.11+; the base package
+# retains its independent Python requirement. Missing peers produce install hints.
 cloud = [
     "matplotlib",
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a5",
 ]
 
 # Hub Module - scitex-hub (formerly scitex-cloud) optional peer.
 # Powers scitex.cloud / scitex.module / scitex.project.
 hub = [
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a5",
 ]
 
 # Compat Module - Compatibility utilities
@@ -478,7 +478,7 @@ ml = [
 # Module Module - Module management (OPTIONAL peer: scitex-hub.module)
 # Use: pip install scitex[module]
 module = [
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a5",
 ]
 
 # MSWord Module - MS Word document handling
@@ -566,7 +566,7 @@ plt = [
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
 # Use: pip install scitex[project]
 project = [
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a5",
 ]
 
 # Repro Module - Reproducibility tools
@@ -658,7 +658,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar==1.4.3"
+    "scitex-scholar==1.29.1"
 ]
 
 # Schema Module - Data schema validation
@@ -718,7 +718,7 @@ str = [
 # Use: pip install scitex[template]
 # Delegates to standalone scitex-template package (per general rule §12).
 template = [
-    "scitex-template==0.6.7",
+    "scitex-template==0.7.0",
 ]
 
 # Tex Module - LaTeX utilities
@@ -949,18 +949,16 @@ dev = [
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
     "scitex-clew==0.21.0",
-    # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
-    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
-    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
-    # `pip install scitex[cloud]` when scitex-hub is available.
-    "scitex-container==0.2.1",
+    # Hub is selected by the public [hub]/[cloud]/[module]/[project] extras
+    # and therefore [all]; developer tooling alone need not install the service.
+    "scitex-container==0.4.2",
     "scitex-dataset==0.7.1",
     "scitex-dev==0.62.16",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
     "scitex-notification==0.2.9",
-    "scitex-scholar==1.4.3",
+    "scitex-scholar==1.29.1",
     "scitex-ssh==1.1.0",
     "scitex-stats==0.2.24",
     "scitex-sdk[gui]>=0.3.17",
@@ -1022,9 +1020,10 @@ all = [
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
-    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
-    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
+    "scitex[cloud]",
+    "scitex[hub]",
+    "scitex[module]",
+    "scitex[project]",
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",

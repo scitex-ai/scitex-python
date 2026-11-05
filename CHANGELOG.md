@@ -23,6 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fields are null instead of character-based guesses.
 - Refresh the public README and packaged umbrella skills with runnable examples,
   package ownership, current app screenshots and release-specific guidance.
+- Align Scholar, Container and Template with the SDK-based Hub alpha cohort;
+  include public Hub integrations in `[all]`. Hub and `[all]` require Python
+  3.11 or newer, independently of the base library's Python requirement.
+- Use the shared strict test matrix for the existing required check names.
+  Remove duplicate test/import/docs workflows, fallback installs and retry/JUnit
+  verdicts that could hide a failed test process. Packaged documentation remains
+  generated and source-verified by the normal release build.
 
 ### Added
 - A normal PEP517 producer for packaged Sphinx documentation, with an independent
