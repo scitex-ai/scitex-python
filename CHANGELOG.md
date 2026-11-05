@@ -54,6 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   dry-run previews take priority and do not perform the requested writes.
 
 ### Added
+- Shared shell-completion bootstrap callbacks for package-agnostic setup,
+  respecting operator declines. Keep normal listings concise and preserve the
+  existing developer completion group and compatibility route.
 - A normal PEP517 producer for packaged Sphinx documentation, with an independent
   rebuild from immutable Git source to verify derived bytes. Preserve tracked
   inputs, reject unsafe paths and prevent duplicate generated members.

@@ -432,3 +432,23 @@ def test_registered_developer_aliases_have_actual_canonical_targets(tmp_path):
     result = _probe(tmp_path, "developer-aliases")
     assert not result["unresolved"], result
     assert not (set(result["registered"]) & set(result["absent"])), result
+
+
+@pytest.mark.parametrize("name", ["install-shell-completion", "print-shell-completion"])
+def test_explicit_decline_blocks_root_shell_protocol(tmp_path, installed_parser, name):
+    """Shared bootstrap cannot bypass an actual installed metadata decline."""
+    # Arrange
+    site, imported, called = installed_parser
+    (site / "scitex_owned_parser-1.0.dist-info" / "entry_points.txt").write_text(
+        "[scitex.cli]\n" + name + " = none\n"
+    )
+    # Act
+    result = _probe(
+        tmp_path, "invoke", {"args": [name, "--help"], "fixture_site": str(site)}
+    )
+    # Assert
+    assert (result["code"] != 0, imported.exists(), called.exists()) == (
+        True,
+        False,
+        False,
+    )

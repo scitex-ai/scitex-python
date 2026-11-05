@@ -319,6 +319,13 @@ for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
         deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
 
 
+# Standard package bootstrap endpoints reuse Dev's real callbacks. The supported
+# protocol names stay out of normal listings; human setup remains under dev.
+from ._shell_protocol import _register_shell_protocol
+
+_register_shell_protocol(cli, blocked=_reserved_aliases | _dev_reserved_aliases)
+
+
 def _get_all_command_paths(group, prefix=""):
     """Recursively get all command paths from a Click group."""
     paths = []

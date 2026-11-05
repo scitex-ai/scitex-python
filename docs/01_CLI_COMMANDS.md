@@ -155,3 +155,18 @@ The older `latest`, `history` and `types` routes remain hidden compatibility
 paths, preserving their text output and options. Explicit `--json` returns the
 shared Result envelope. Local event writes use the provider's validated event
 types and state-directory configuration; an outbound webhook is optional.
+
+## Standard shell bootstrap in this source
+
+The upcoming 2.30.9 source supports the shared package bootstrap endpoints:
+
+```bash
+scitex print-shell-completion --shell bash
+scitex install-shell-completion --shell bash --dry-run --yes
+```
+
+These endpoints use Dev's shared generator and installer, respect CLI declines,
+and stay outside normal command listings. Human setup remains available through
+`scitex dev completion install`; the older `scitex completion` group still
+forwards there. The shared helper's deprecated `completion` alias does not replace
+that group. Remove `--dry-run` to perform the explicitly requested installation.
