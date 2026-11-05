@@ -1,47 +1,36 @@
 ---
 description: |
   [TOPIC] Quick start — scitex umbrella
-  [DETAILS] Minimal `@scitex.session` script showing CONFIG / plt / logger injection and `scitex.io.save` auto-CSV export.
+  [DETAILS] A complete synthetic signal example using scitex.plt and scitex.io with an explicit absolute output path. Advanced session/provenance behavior belongs to its owning package.
 tags: [scitex-quick-start]
 ---
 
 # Quick start — scitex
 
+After installation, run this in your project directory:
+
 ```python
-import scitex
+from pathlib import Path
+
 import numpy as np
+import scitex
 
-@scitex.session
-def main(
-    n_points: int = 100,                 # auto-CLI: --n-points
-    CONFIG=scitex.INJECTED,              # ./config/*.yaml
-    plt=scitex.INJECTED,                 # pre-styled matplotlib
-    logger=scitex.INJECTED,
-):
-    """Quick-start demo. Docstring becomes --help text."""
-    x = np.linspace(0, 10, n_points)
-    y = np.sin(x)
+x = np.linspace(0, 2 * np.pi, 200)
+y = np.sin(x)
 
-    fig, ax = plt.subplots()
-    ax.plot_line(x, y)                   # data tracked for CSV export
-    ax.set_xyt("X", "sin(X)", "demo")
+fig, ax = scitex.plt.subplots()
+ax.plot(x, y)
+ax.set_xyt("Time", "Amplitude", "Synthetic signal")
 
-    scitex.io.save(fig, "sine.png")      # writes sine.png + sine.csv
-    scitex.io.save({"x": x, "y": y}, "data.pkl")
-    logger.info("done")
-    return 0
-
-
-if __name__ == "__main__":
-    main()
+output = Path("outputs/signal.png").resolve()
+scitex.io.save(fig, str(output))
 ```
 
-Run it:
+It writes `outputs/signal.png` and a FigRecipe recipe beside it. The data is
+synthetic. Font rendering depends on the environment; the example does not
+assert a pixel-identical style across platforms.
 
-```bash
-python script.py --n-points 500
-# Outputs land in ./script_out/FINISHED_SUCCESS/<session_id>/
-```
-
-For the per-module APIs, see the relevant sister-package skill
-(`scitex-io`, `scitex-plt`, `scitex-stats`, ...).
+The same Python example is presented in the repository README. Its generated
+PNG and recipe were checked in separate normal public-release and source-wheel
+environments. Consult figrecipe and scitex-io for format/plugin details, and
+scitex-session/scitex-clew for session injection and provenance configuration.

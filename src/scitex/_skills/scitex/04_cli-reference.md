@@ -1,89 +1,83 @@
 ---
 description: |
-  [TOPIC] CLI reference — scitex umbrella
-  [DETAILS] Inspect installed public command groups and their owning providers; use sdk/cards/clew/ssh tunnel and developer workflows under dev. Preserve legacy invocation compatibility without inferring CLI or MCP exposure from Python availability.
+  [TOPIC] CLI and MCP — scitex umbrella
+  [DETAILS] Inspect installed command help, distinguish metadata discovery from execution, and start the MCP server explicitly with stdio. Preserve release-specific compatibility limits.
 tags: [scitex-cli-reference]
 ---
 
-# CLI reference — scitex
-
-The `scitex` console script dispatches declared provider commands and explicit
-umbrella workflows. This guide describes the source layout. Check actual installed
-help before assuming an older release exposes a new path.
-
-## Discover and select
+# CLI and MCP — scitex
 
 ```bash
 scitex --version
 scitex --help
+scitex mcp --help
+scitex mcp start --help
+```
+
+The available groups depend on the installed release and providers. Inspect the
+selected group's help instead of inferring a command from a Python module name.
+Help success verifies parsing/discovery, not the operation itself.
+
+## MCP
+
+```bash
+scitex mcp list-tools --module stats
+scitex mcp start --transport stdio
+```
+
+The first command lists registered statistics tool metadata. The second starts
+the server; bare `scitex mcp` displays help and does not start it. An MCP client
+must use the `scitex` executable from the intended environment. Protocol metadata
+discovery does not invoke the tools or prove their external services are ready.
+No fixed tool count or universal result envelope is assumed.
+
+## Skills and Web APIs
+
+Use package-owned skill files and inspect the installed scitex-dev skill manager
+before choosing an export/install command. In public 2.30.8, the legacy
+`scitex skills get` callback imports a missing `scitex_dev.skills` module.
+Do not present that callback as verified by its help.
+Do not assume a vendor-specific discovery directory.
+
+Hub/app plugins provide Web API endpoints. Use their declared routes and owning
+package documentation; a registered Python/CLI name is not a Web route.
+
+## Canonical CLI paths in this source
+
+The interface migration in this source checkout groups developer operations
+under `scitex dev` and uses the owning package names for app and research tools.
+These paths require a release containing the migration; public 2.30.8 retains
+its older command layout.
+
+```bash
 scitex sdk --help
 scitex cards --help
 scitex clew --help
 scitex ssh tunnel --help
 scitex dev --help
-```
-
-Provider metadata is read from packages visible to Dev's interpreter. Exposure
-must be declared or supported by the existing legacy metadata path; a Python
-module alone does not create a CLI. Explicitly declined exposure blocks fallback.
-A catalog entry remains a candidate until its target resolves to a supported
-Click command or an owned console launcher. Do not report every metadata entry
-as a runnable command.
-
-For leaf subcommands, use that owner's help and skill:
-
-```bash
-scitex scholar --help
-scitex writer --help
-scitex io --help
-```
-
-`scitex --help-recursive` can resolve optional command trees for a broader view.
-Prefer the selected group's help when only one workflow is needed.
-
-## Developer commands and skills
-
-```bash
-scitex dev audit --help
-scitex dev completion --help
-scitex dev introspect --help
-scitex dev linter --help
-scitex dev list-python-apis --help
-scitex dev pkg --help
-scitex dev skills --help
 scitex dev skills list --package scitex-dev --json
 scitex dev skills install --package scitex-dev --dry-run --json
 ```
 
-`scitex dev skills` delegates to the canonical Dev skill group, with its installed
-provider discovery and configuration. It does not maintain a second umbrella skill
-catalog. Installing generated skills, selecting bodies to load, and configuring an
-agent client's discovery or links are separate operations. Inspect `install --help`
-for destination options and preserve existing files when linking for a client.
+Developer commands `audit`, `completion`, `introspect`, `linter`,
+`list-python-apis`, `pkg`, and `skills` are available under `scitex dev`.
+Skills delegate to Dev's installed-provider discovery and configuration;
+installation, loading selected bodies, and client discovery remain separate.
+Inspect `install --help` for destinations and preserve existing client files.
 
-## Compatibility
+| Older root path | Canonical path |
+|---|---|
+| `app`, `ui` | `sdk app`, `sdk ui` |
+| `todo` | `cards` |
+| `tunnel` | `ssh tunnel` |
+| `notify` | `notification` |
+| `verify` | `clew` |
 
-Public CLI routes are `sdk app`, `sdk ui`, `cards`, `ssh tunnel`,
-`notification`, and `clew`. Hidden old root invocations `app`, `ui`, `todo`,
-`tunnel`, `notify`, and `verify` still route to those owners. The developer names
-above likewise retain their old root routes. The older `scitex dev dev skills`
-path remains invocable; new umbrella examples use `scitex dev skills`.
+The older paths and developer root spellings remain hidden compatibility routes
+when the owning provider is installed and admitted. The older
+`scitex dev dev skills` route also remains available. These CLI migrations do
+not rename Python imports or MCP tools. A metadata catalog entry does not prove
+that its target can execute; inspect the selected provider's help and skill.
 
-These are invocation migrations, not Python import renames or MCP tool-name
-changes. An optional owning provider must still be installed and permitted.
-Standalone packages can also publish their own console scripts; inspect their
-actual help rather than assuming every script is mountable by the umbrella.
-
-## MCP
-
-```bash
-scitex mcp --help
-scitex mcp list-tools
-scitex mcp start
-```
-
-CLI, MCP, Python API, Web API, and skills are independent surfaces. Inspect the
-configured MCP server and its exposure settings; do not infer that every installed
-package has an MCP server, that every tool is eagerly advertised, or that its skill
-bodies are loaded into a client. Provider availability and actual client context
-are separate observations.
+See `docs/01_CLI_COMMANDS.md` and `docs/08_SCITEX_ECOSYSTEM.md` in the source
+repository for the command layout and ownership rules.

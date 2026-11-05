@@ -1,39 +1,37 @@
 ---
 description: |
   [TOPIC] Installation — scitex umbrella
-  [DETAILS] `pip install scitex` pulls the umbrella; sister packages (`scitex_io`, `scitex_plt`, ...) install on demand via extras or transitively.
+  [DETAILS] Create an isolated environment, install declared dependencies normally, and select extras for the task. Verify installed versions and runtime capabilities separately.
 tags: [scitex-installation]
 ---
 
 # Installation — scitex
 
 ```bash
-pip install scitex
-python -c "import scitex; print(scitex.__version__)"
+uv venv .venv
+source .venv/bin/activate
+uv pip install scitex
+scitex --version
+scitex --help
 ```
 
-## Extras
+Use your shell's activation equivalent. Python and optional-provider requirements
+are declared in package metadata; install an environment compatible with the
+selected release. Select task extras from that release's `pyproject.toml`, for
+example `uv pip install "scitex[scholar,writer]"`.
 
-The umbrella exposes `pip install 'scitex[<short>]'` for sister packages
-that need optional dependencies. The full mapping lives in
-`pyproject.toml` and `src/scitex/__init__.py::_EXTERNAL_REEXPORTS`.
+The base umbrella already declares several leaf dependencies. An extra adds its
+own requirements; it does not imply that every leaf is optional or that every
+integration is configured. Keep normal dependency resolution enabled.
 
-Common extras:
+## Compatibility and verification
 
-```bash
-pip install 'scitex[plt]'        # matplotlib + figrecipe
-pip install 'scitex[ai]'         # ML stack (torch, transformers, ...)
-pip install 'scitex[scholar]'    # literature management
-pip install 'scitex[cloud]'      # SciTeX Cloud SDK
-pip install 'scitex[all]'        # everything
-```
+The published 2.30.8 dependency set and the 2.30.9 source dependency set were
+checked separately. Both provide the plotting quick start and MCP statistics
+metadata discovery; their legacy skills CLI import of `scitex_dev.skills` fails.
+Read installed skill files directly until using a release with compatible skill
+dispatch. Do not assume a successful `--help` means the callback works.
 
-## Verify
-
-```bash
-python -c "import scitex; scitex.io"     # triggers lazy load
-python -c "import scitex; scitex.plt"
-```
-
-A missing optional dep raises a friendly `ImportError` with the install
-hint (`pip install scitex[<short>]`) rather than the raw upstream error.
+No fixed installation duration or full `[all]` environment qualification is
+claimed here. External services, credentials, browsers, compilers and container
+runtimes follow the owning leaf's setup instructions.
