@@ -68,7 +68,9 @@ def test_duplicate_runners_no_longer_replace_failed_full_installs():
 def test_shared_docs_workflow_keeps_generated_bundle_publication():
     """Replacing build-and-publish with build-only would freeze editable docs."""
     docs = workflow()["jobs"]["rtd-sphinx-build"]
-    assert docs["uses"] == "scitex-ai/.github/.github/workflows/rtd-sphinx-build.yml@main"
+    assert (
+        docs["uses"] == "scitex-ai/.github/.github/workflows/rtd-sphinx-build.yml@main"
+    )
     assert docs["with"]["bundle_dir"] == "src/scitex/_sphinx_html"
     assert docs["permissions"] == {"contents": "write", "pull-requests": "write"}
     legacy_url = ROOT / "docs/sphinx/source/installation.rst"
