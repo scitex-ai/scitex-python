@@ -25,6 +25,38 @@ def source_at(root, text):
 
 
 class SphinxBundleTests(unittest.TestCase):
+    def test_build_uses_declared_dependencies_outside_interpreter_prefix(self):
+        """PEP517 overlays install dependencies outside the caller's venv."""
+        import venv
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source_at(root, "Owned overlay page\n==================\n")
+            bare = root / "bare"
+            venv.EnvBuilder(with_pip=False).create(bare)
+            dependency_paths = [
+                str(Path(path).resolve()) for path in sys.path
+                if path and Path(path).name in {"site-packages", "dist-packages"}
+            ]
+            import json
+
+            driver = (
+                "import sys,json,runpy; from pathlib import Path; "
+                "sys.path[:0]=json.loads(sys.argv[1]); "
+                "m=runpy.run_path(sys.argv[2]); "
+                "m['build_bundle'](Path(sys.argv[3]),Path(sys.argv[4]))"
+            )
+            result = subprocess.run(
+                [str(bare / "bin/python"), "-I", "-B", "-c", driver,
+                 json.dumps(dependency_paths), str(ROOT / "build_hooks/sphinx_bundle.py"),
+                 str(root), str(root / "output")],
+                env={"PATH": os.defpath, "HOME": str(root / "home"), "TMPDIR": str(root)},
+                capture_output=True, text=True, timeout=30,
+            )
+            if result.returncode:
+                self.fail(result.stdout + result.stderr)
+            assert b"Owned overlay page" in (root / "output/index.html").read_bytes()
+
     def test_actual_napoleon_config_hides_private_path_and_keeps_public_members(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

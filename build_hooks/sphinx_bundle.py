@@ -7,6 +7,7 @@ archive-provided bundle or manifest is never the authority for derived bytes.
 from __future__ import annotations
 
 import os
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -86,8 +87,13 @@ def ordinary_source_inputs(root: Path, config) -> list[Path]:
 # This is a static/mock documentation build, not runtime API qualification.
 SPHINX_DRIVER = '''
 import sys
+import json
 import platform
 from pathlib import Path
+# PEP517 may install declared dependencies in an overlay outside sys.prefix.
+# Restore its package directories without forwarding cwd or raw PYTHONPATH.
+runtime_paths = tuple(Path(path) for path in json.loads(sys.argv.pop(1)))
+sys.path[:0] = [str(path) for path in runtime_paths]
 # Resolve stdlib platform detection before documentation code runs.
 platform.uname().processor
 # Matplotlib discovers local fonts once; no plots are evaluated.
@@ -98,6 +104,7 @@ mimetypes.knownfiles = []
 mimetypes.init()
 root = Path(sys.argv.pop(1)).resolve()
 allowed = (root, Path(sys.prefix).resolve(), Path(sys.base_prefix).resolve(),
+           *runtime_paths,
            Path(__import__("os").environ["HOME"]).parent.resolve())
 class RefusedOperation(BaseException):
     pass
@@ -143,7 +150,10 @@ def build_bundle(root: Path, output: Path) -> None:
         }
         subprocess.run(
             [sys.executable, "-I", "-B", "-X", "pycache_prefix=" + str(scratch / "pycache"),
-             "-c", SPHINX_DRIVER, str(root),
+             "-c", SPHINX_DRIVER, json.dumps([
+                 str(Path(path).resolve()) for path in sys.path
+                 if path and Path(path).name in {"site-packages", "dist-packages"}
+             ]), str(root),
              "-E", "-a", "-b", "html", "-d", str(scratch / "doctrees"),
              str(root / "docs/sphinx"), str(scratch / "html")],
             cwd=root, env=env, check=True,

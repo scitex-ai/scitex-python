@@ -1,6 +1,6 @@
-# Packaged documentation prototype
+# Source-bound packaged documentation
 
-This separate source prototype builds real Sphinx HTML during normal Hatch
+This implementation builds real Sphinx HTML during normal Hatch
 PEP517 sdist and wheel builds. The wheel contains `scitex/_sphinx_html/`; the
 sdist carries the same bundle under `src/` and the original Sphinx sources.
 The wheel build from an sdist regenerates the bundle rather than accepting
@@ -14,6 +14,13 @@ build requirements. The native producer obtains both targets' requirements
 from Hatch's public PEP517 API, normally installs them into an exclusive build
 environment, and builds source → sdist → wheel through the normal frontend.
 No independent copy of the runtime dependency list or self `[all]` edge exists.
+
+For isolated pip builds, declared dependencies may live in package directories
+outside the caller interpreter's prefix. The isolated Sphinx child receives
+those resolved package directories explicitly. It does not inherit the caller's
+working-directory import path or raw `PYTHONPATH`. These runtime directories
+are admitted for reads; writes remain limited to private scratch, and the
+network/child-execution guards remain active.
 
 The release verifier recognizes exactly this producer/configuration shape.
 It reconstructs selected ordinary source from immutable Git blobs and invokes
@@ -52,7 +59,8 @@ include an independent clean rebuild, source → sdist → wheel equality,
 tamper/source-mismatch/path rejection controls, and real installed discovery
 and HTTP serving from a clean directory with no checkout import path.
 
-This prototype is not pushed, released or installed into any live runtime.
+This implementation is under review in scitex-python PR #387. It has not been
+released or installed into a live runtime.
 The historical frozen metadata fixture is bound to actual commit 644558f8,
 with its genuine Hatch 1.27 headers verified byte for byte. Its 97 unchanged
 assertions exercise legacy primitives against the current helper. They are
