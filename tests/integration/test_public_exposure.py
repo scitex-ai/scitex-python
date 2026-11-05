@@ -415,3 +415,10 @@ def test_web_adapter_requires_its_installed_leaf(tmp_path):
     result = _probe(tmp_path, "web-eligibility")
     # Assert
     assert result["listed"] == result["installed"]
+
+
+def test_registered_developer_aliases_have_actual_canonical_targets(tmp_path):
+    """Missing optional owners must not leave broken legacy routes behind."""
+    result = _probe(tmp_path, "developer-aliases")
+    assert not result["unresolved"], result
+    assert not (set(result["registered"]) & set(result["absent"])), result

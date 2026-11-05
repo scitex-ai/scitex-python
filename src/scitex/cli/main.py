@@ -219,6 +219,7 @@ class LazyGroup(click.Group):
 from ._exposure import load_cli_snapshot
 from ._lazy_subcommands import (
     DEPRECATED_ALIASES,
+    DEV_PEERS,
     build_lazy_subcommands,
     reserved_cli_names,
 )
@@ -301,8 +302,19 @@ def cli(ctx, help_recursive, as_json):
 from scitex_dev.ecosystem import deprecated_alias
 
 _reserved_aliases = reserved_cli_names(snapshot=_CLI_EXPOSURE)
+_dev_reserved_aliases = reserved_cli_names(snapshot=_CLI_EXPOSURE, namespace="dev")
+_dev_peer_aliases = build_lazy_subcommands(
+    os.path.dirname(__file__), namespace="dev", snapshot=_CLI_EXPOSURE
+)
 for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
     _canonical = _new[0] if isinstance(_new, tuple) else _new
+    if _canonical == "dev" and (
+        _old in _dev_reserved_aliases
+        or (_old in DEV_PEERS and _old not in _dev_peer_aliases)
+    ):
+        # The dev group alone does not prove its optional target is installed.
+        # Use the same frozen metadata projection without importing providers.
+        continue
     if _old not in _reserved_aliases and _canonical in cli._lazy_subcommands:
         deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
 

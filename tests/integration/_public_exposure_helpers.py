@@ -89,6 +89,17 @@ elif operation=='developer-listing':
     result={'listed':listed,
             'unresolved':[name for name,command in resolved.items() if command is None],
             'hidden':[name for name,command in resolved.items() if command is not None and command.hidden]}
+elif operation=='developer-aliases':
+    import click
+    from scitex.cli.main import cli
+    from scitex.cli._lazy_subcommands import DEV_COMMANDS,DEV_PEERS
+    dev=cli.get_command(click.Context(cli),'dev')
+    registered={name:cli.commands.get(name) for name in DEV_COMMANDS|DEV_PEERS}
+    result={'registered':[name for name,command in registered.items() if command is not None],
+            'unresolved':[name for name,command in registered.items()
+                          if command is not None and dev.get_command(click.Context(dev),name) is None],
+            'absent':[name for name in DEV_PEERS
+                      if dev.get_command(click.Context(dev),name) is None]}
 elif operation=='web-eligibility':
     from scitex_dev.cli_providers import list_cli_providers
     from scitex.cli.main import cli
