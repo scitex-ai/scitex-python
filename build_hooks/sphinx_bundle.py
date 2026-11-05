@@ -88,12 +88,20 @@ def ordinary_source_inputs(root: Path, config) -> list[Path]:
 SPHINX_DRIVER = '''
 import sys
 import json
+import os
 import platform
 from pathlib import Path
 # PEP517 may install declared dependencies in an overlay outside sys.prefix.
 # Restore its package directories without forwarding cwd or raw PYTHONPATH.
 runtime_paths = tuple(Path(path) for path in json.loads(sys.argv.pop(1)))
 sys.path[:0] = [str(path) for path in runtime_paths]
+# Wheel data files use the installation prefix, not site-packages. Jupyter's
+# template discovery otherwise checks the bare caller venv instead of overlays.
+runtime_data_paths = tuple(
+    (path.parents[2] / "share/jupyter").resolve()
+    for path in runtime_paths if (path.parents[2] / "share/jupyter").is_dir()
+)
+os.environ["JUPYTER_PATH"] = os.pathsep.join(str(path) for path in runtime_data_paths)
 # Resolve stdlib platform detection before documentation code runs.
 platform.uname().processor
 # Matplotlib discovers local fonts once; no plots are evaluated.
@@ -104,7 +112,7 @@ mimetypes.knownfiles = []
 mimetypes.init()
 root = Path(sys.argv.pop(1)).resolve()
 allowed = (root, Path(sys.prefix).resolve(), Path(sys.base_prefix).resolve(),
-           *runtime_paths,
+           *runtime_paths, *runtime_data_paths,
            Path(__import__("os").environ["HOME"]).parent.resolve())
 class RefusedOperation(BaseException):
     pass

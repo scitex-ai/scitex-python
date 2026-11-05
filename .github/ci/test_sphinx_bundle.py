@@ -32,6 +32,8 @@ class SphinxBundleTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             source_at(root, "Owned overlay page\n==================\n")
+            with (root / "docs/sphinx/conf.py").open("a") as stream:
+                stream.write('extensions = ["nbsphinx"]\n')
             bare = root / "bare"
             venv.EnvBuilder(with_pip=False).create(bare)
             dependency_paths = [

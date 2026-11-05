@@ -17,7 +17,9 @@ No independent copy of the runtime dependency list or self `[all]` edge exists.
 
 For isolated pip builds, declared dependencies may live in package directories
 outside the caller interpreter's prefix. The isolated Sphinx child receives
-those resolved package directories explicitly. It does not inherit the caller's
+those resolved package directories explicitly. Jupyter template discovery uses
+the corresponding installation prefixes' `share/jupyter` directories, which
+are also admitted for reads. It does not inherit the caller's
 working-directory import path or raw `PYTHONPATH`. These runtime directories
 are admitted for reads; writes remain limited to private scratch, and the
 network/child-execution guards remain active.
