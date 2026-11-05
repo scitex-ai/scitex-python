@@ -30,14 +30,14 @@ def tex(ctx, help_recursive, as_json):
     \b
     Commands:
       compile    Compile LaTeX document to PDF
-      preview    Preview LaTeX document
-      to-vec     Convert to vector format (SVG/PDF)
+      format-vector   Format text as LaTeX vector notation
+      render-preview  Render mathematical expressions to PNG and recipe
 
     \b
     Examples:
       scitex tex compile paper.tex
-      scitex tex preview paper.tex
-      scitex tex to-vec figure.tex --format svg
+      scitex tex format-vector AB --json
+      scitex tex render-preview 'x^2' --output preview.png
     """
     if help_recursive:
         _print_help_recursive(ctx)
@@ -59,7 +59,7 @@ def _print_help_recursive(ctx):
     click.echo(tex.get_help(parent_ctx))
     for name in sorted(tex.list_commands(ctx) or []):
         cmd = tex.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
         click.secho(f"━━━ scitex tex {name} ━━━", fg="cyan", bold=True)
@@ -154,32 +154,20 @@ def compile(tex_file, output, engine, clean, timeout, verbose, dry_run, yes):
         sys.exit(1)
 
 
-@tex.command()
+@tex.command(hidden=True)
 @click.argument("tex_file", type=click.Path(exists=True))
 @click.option("--viewer", "-v", help="PDF viewer to use (default: system default)")
 def preview(tex_file, viewer):
-    """
-    Preview LaTeX document (compile and open)
-
-    \b
-    Examples:
-      scitex tex preview paper.tex
-      scitex tex preview paper.tex --viewer evince
-    """
-    try:
-        from scitex.tex import preview as tex_preview
-
-        path = Path(tex_file)
-        click.echo(f"Previewing: {path.name}")
-
-        tex_preview(path, viewer=viewer)
-
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
+    """Explain migration from the unsupported document-viewer adapter."""
+    # These file/viewer arguments cannot be forwarded to the provider's
+    # expression renderer: they describe a different, unimplemented operation.
+    raise click.UsageError(
+        "Use `scitex tex compile FILE` to create a document PDF, or "
+        "`scitex tex render-preview EXPRESSION --output preview.png` for mathematics."
+    )
 
 
-@tex.command("to-vec")
+@tex.command("to-vec", hidden=True)
 @click.argument("tex_file", type=click.Path(exists=True))
 @click.option(
     "--format",
@@ -191,41 +179,76 @@ def preview(tex_file, viewer):
 )
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
 def to_vec(tex_file, fmt, output):
-    """
-    Convert LaTeX to vector format
+    """Explain migration from the unsupported file-export adapter."""
+    # The provider formats a text vector, so the old file/export arguments
+    # cannot be a pure forwarding alias without silently changing their meaning.
+    raise click.UsageError(
+        "Use `scitex tex format-vector TEXT` for vector notation or "
+        "`scitex tex compile FILE` for a document PDF."
+    )
 
-    \b
-    Useful for embedding equations and figures in other documents.
 
-    \b
-    Examples:
-      scitex tex to-vec equation.tex
-      scitex tex to-vec equation.tex --format pdf
-      scitex tex to-vec figure.tex --output ./vectors/fig.svg
-    """
+@tex.command("format-vector")
+@click.argument("text")
+@click.option(
+    "--json", "as_json", is_flag=True, help="Return a structured Result envelope."
+)
+def format_vector(text, as_json):
+    """Format text as LaTeX vector notation."""
     try:
-        from scitex.tex import to_vec as convert_to_vec
+        from scitex.tex import to_vec as format_notation
 
-        path = Path(tex_file)
-        click.echo(f"Converting: {path.name} -> {fmt.upper()}")
+        vector = format_notation(text, enable_fallback=False)
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+    if as_json:
+        from scitex_dev import Result
 
-        if output:
-            output_path = Path(output)
-        else:
-            output_path = path.with_suffix(f".{fmt}")
+        click.echo(
+            Result(success=True, data={"text": text, "vector": vector}).to_json()
+        )
+    else:
+        click.echo(vector)
 
-        result = convert_to_vec(path, output_path, format=fmt)
 
-        if result:
-            click.secho("Conversion successful!", fg="green")
-            click.echo(f"Output: {result}")
-        else:
-            click.secho("Conversion failed", fg="red", err=True)
-            sys.exit(1)
+@tex.command("render-preview")
+@click.argument("expressions", nargs=-1, required=True)
+@click.option(
+    "--output",
+    "-o",
+    required=True,
+    type=click.Path(dir_okay=False),
+    help="Output PNG path.",
+)
+@click.option(
+    "--dry-run", is_flag=True, help="Preview paths without rendering or writing files."
+)
+@click.option(
+    "--yes", "-y", is_flag=True, help="Accept this explicit non-interactive operation."
+)
+def render_preview(expressions, output, dry_run, yes):
+    """Render mathematical expressions to a PNG and reproducible recipe."""
+    target = Path(output).resolve()
+    if target.suffix.lower() != ".png":
+        raise click.BadParameter("Use a .png output path.", param_hint="--output")
+    if dry_run:
+        click.echo(f"Would render {len(expressions)} expression(s): {target}")
+        return
+    try:
+        from scitex.tex import preview as render_expressions
 
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
+        figure = render_expressions(list(expressions), enable_fallback=False)
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            # Keep the provider's recording wrapper and strict validation.
+            figure.savefig(target)
+        finally:
+            import matplotlib.pyplot as plt
+
+            plt.close(figure.fig)
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"Saved preview: {target}")
 
 
 @tex.command()

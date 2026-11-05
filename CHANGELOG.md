@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Align TeX helper commands with real providers: `format-vector` formats vector
+  text and `render-preview` saves expression previews with validated recipes.
+  Give unsupported older file/viewer/export routes explicit migration errors.
+
+
 - Fix the TeX CLI adapter to use the current provider's arguments and result fields,
   honor output filenames and provider cleanup, and support non-writing previews.
 

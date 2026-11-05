@@ -198,3 +198,21 @@ then honors the requested PDF filename. Install a supported LaTeX engine
 compilations return a nonzero status. `--dry-run` previews paths and options
 without importing the compiler provider or writing output; it takes priority
 over `--yes`. The operation remains non-interactive when `--yes` is omitted.
+
+## Mathematical TeX helpers in this source
+
+```bash
+scitex tex format-vector AB --json
+scitex tex render-preview 'x^2' 'y^2' --output ./previews/math.png --yes
+scitex tex render-preview 'x^2' --output ./previews/math.png --dry-run --yes
+```
+
+`format-vector` returns LaTeX vector notation from text. `render-preview`
+renders expressions through the TeX provider and saves the recording figure as
+a PNG with a recipe. Reproduction validation stays enabled. Its preview mode
+does not render or create output directories.
+
+The previous `preview FILE --viewer ...` and `to-vec FILE --format ...` routes
+described operations that their Python providers did not implement. Those
+routes are hidden and return an explicit usage error with the supported
+commands. Use `compile` to create a document PDF.
