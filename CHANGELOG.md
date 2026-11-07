@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Read resource samples from the provider's DataFrame rather than a nonexistent
+  nested dictionary. Show measured CPU/GPU percentages and RAM/VRAM in GiB;
+  return structured JSON samples and retain those units in monitor CSV files.
+  Reject nonpositive monitoring limits before opening a log file.
+
 - Align TeX helper commands with real providers: `format-vector` formats vector
   text and `render-preview` saves expression previews with validated recipes.
   Give unsupported older file/viewer/export routes explicit migration errors.

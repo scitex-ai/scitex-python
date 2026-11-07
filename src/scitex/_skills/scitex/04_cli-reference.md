@@ -72,6 +72,20 @@ Skills delegate to Dev's installed-provider discovery and configuration;
 installation, loading selected bodies, and client discovery remain separate.
 Inspect `install --help` for destinations and preserve existing client files.
 
+Resource readings in this source use the installed `scitex-resource` provider:
+
+```bash
+scitex dev resource usage --json
+scitex dev resource monitor --count 2 --interval 1 --log measurements.csv
+```
+
+Usage JSON contains a Result envelope with `data.samples`, preserving the
+provider's timestamp, CPU/GPU percentages and RAM/VRAM measurements in GiB.
+Monitor CSV uses those same column names and units; RAM usage is not a memory
+percentage. Counts and intervals must be positive; omitting count monitors until
+interrupted. `--log` writes the explicitly selected file. These source fixes do
+not establish that an older installed CLI reports the measurements correctly.
+
 | Older root path | Canonical path |
 |---|---|
 | `app`, `ui` | `sdk app`, `sdk ui` |
