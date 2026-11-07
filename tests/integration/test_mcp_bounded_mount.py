@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Timestamp: 2026-07-07
-# File: tests/scitex/test_mcp_bounded_mount.py
+# File: tests/integration/test_mcp_bounded_mount.py
 """Bounded, non-blocking per-peer mount for the umbrella MCP aggregator.
 
 The single ``scitex serve`` aggregator fronts ~33 packages' MCP tools by

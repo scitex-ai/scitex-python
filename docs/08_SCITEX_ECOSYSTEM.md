@@ -1,180 +1,106 @@
-<!-- ---
-!-- Timestamp: 2026-01-29 22:43:42
-!-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/scitex-python/docs/08_SCITEX_ECOSYSTEM.md
-!-- --- -->
-
 # SciTeX Ecosystem
 
-<p align="center">
-    <img src="../scripts/assets/workflow_out/workflow.png" alt="SciTeX Ecosystem" width="800">
-</p>
+SciTeX composes independently installable packages through the `scitex` umbrella.
+Each leaf package owns its behavior, dependencies, provider declarations, and
+interface documentation. The umbrella routes workflows to those owners.
 
-SciTeX integrates standalone packages that can be used independently or through the unified `scitex` interface.
+## Ownership
 
-## Packages
+| Area | Owner | Umbrella entry examples |
+|------|-------|------------------------|
+| Figures | `figrecipe` and its plotting integration | Python `scitex.plt`; inspect the installed plotting CLI |
+| Literature | `scitex-scholar`, with database providers such as `crossref-local` and `openalex-local` | Python `scitex.scholar`; `scitex scholar --help` |
+| Manuscripts | `scitex-writer` | Python `scitex.writer`; `scitex writer --help` |
+| Research verification | `scitex-clew` | Python `scitex.clew`; `scitex clew --help` |
+| App and UI development | `scitex-sdk` | `scitex sdk --help`; existing Python app/UI imports remain compatible |
+| SSH and tunnels | `scitex-ssh` | `scitex ssh --help`; `scitex ssh tunnel --help` |
+| Developer tooling and skill dispatch | `scitex-dev` | `scitex dev --help`; `scitex dev skills --help` |
+| Research workspace | `scitex-hub` | The Hub application's own routes and declared installed CLI |
 
-| Package                                                           | scitex Module                    | Description                              | Status     |
-|-------------------------------------------------------------------|----------------------------------|------------------------------------------|------------|
-| [figrecipe](https://github.com/ywatanabe1989/figrecipe)           | `scitex.plt`                     | Publication-ready matplotlib figures     | Integrated |
-| [crossref-local](https://github.com/ywatanabe1989/crossref-local) | `scitex.scholar.crossref_scitex` | Local CrossRef database (167M+ papers)   | Integrated |
-| [openalex-local](https://github.com/ywatanabe1989/openalex-local) | `scitex.scholar.openalex_scitex` | Local OpenAlex database (250M+ papers)   | Integrated |
-| [socialia](https://github.com/ywatanabe1989/socialia)             | `scitex.social`                  | Social media posting (Twitter, LinkedIn) | Integrated |
-| [scitex-writer](https://github.com/ywatanabe1989/scitex-writer)   | `scitex.writer`                  | LaTeX manuscript compilation             | Integrated |
-| [scitex-dataset](https://github.com/ywatanabe1989/scitex-dataset) | `scitex.dataset`                 |                                          |            |
+These examples describe this source tree, not an installed-package or release
+inventory. Optional groups depend on the packages visible to the interpreter
+running `scitex` and their exposure decisions.
 
-## Architecture
+## Interfaces are independent
 
+Python API, CLI, MCP, Web API, and skills answer different needs. Packages expose
+the surfaces they support; implementing a Python module does not require all
+other interfaces. There is no universal interface score or fixed tool count.
+
+- **Python:** use the owning library directly or its umbrella integration.
+- **CLI:** installed metadata declares candidates; Dev's exposure reader applies
+  explicit declarations and declines. The umbrella retains named workflow adapters.
+  Selected targets must resolve to supported command objects before dispatch.
+- **MCP:** inspect the configured server's enabled providers and advertised tools.
+  An installed package, available provider, and client-loaded context are distinct.
+- **Web API:** consult the owning application's actual route documentation.
+- **Skills:** Dev discovers registered resources in its own interpreter environment;
+  leaf packages remain authoritative for their content.
+
+An explicit CLI exposure decline blocks guessed fallback commands. Metadata
+advertisement alone does not demonstrate that a command can run with the current
+dependencies, credentials, or services. A Python-only library stays Python-only.
+
+## Inspect your environment
+
+```bash
+scitex --help
+scitex dev --help
+scitex dev list-python-apis --help
+scitex dev introspect --help
+scitex dev skills list --help
+scitex mcp --help
 ```
-scitex (umbrella)
-├── scitex.plt      ← figrecipe
-├── scitex.social   ← socialia
-├── scitex.scholar  ← crossref-local + openalex-local
-└── scitex.writer   ← scitex-writer
-```
 
-### Integration Pattern
-
-- **Thin Wrapper**: Delegate without modification
-- **Single Source of Truth**: Downstream packages are authoritative
-- **Branding**: Apply `scitex.*` namespace via environment variables
-
-### Usage
+Root help discovers the public layout; selected group help describes the owning
+implementation. `scitex --help-recursive` can resolve optional command trees when
+a broader inventory is needed. These are inspection entrypoints, not claims of
+complete API parity, runtime health, or documentation-drift coverage.
 
 ```python
-# Via scitex (recommended)
+# Umbrella integration
 import scitex as stx
 fig, ax = stx.plt.subplots()
 
-# Standalone (also works)
+# Owning library
 import figrecipe as fr
 fig, ax = fr.subplots()
 ```
 
-### CLI
+Wrappers may add integration behavior; compare the owner's documentation and
+actual source rather than treating similarly named APIs as identical.
+
+## Public names and migration
+
+The public CLI uses `sdk`, `cards`, `clew`, and `ssh tunnel`. Developer operations
+`audit`, `completion`, `introspect`, `linter`, `list-python-apis`, `pkg`, and
+`skills` are grouped under `scitex dev`.
 
 ```bash
-# Via scitex
-scitex writer compile manuscript
-scitex social post "Hello"
-
-# Standalone
-scitex-writer compile manuscript
-socialia post "Hello"
+scitex sdk --help
+scitex cards --help
+scitex clew --help
+scitex ssh tunnel --help
+scitex dev skills list --package scitex-dev --json
 ```
 
-## Port Scheme
+Compatibility aliases are registered only when their canonical root namespace
+is available. Hidden legacy invocations preserve `app`/`ui` → `sdk app`/`sdk ui`,
+`todo` → `cards`, `tunnel` → `ssh tunnel`, `notify` → `notification`,
+and `verify` → `clew`, plus the moved developer names. The older double-`dev`
+skill path remains compatible; the public umbrella path is `scitex dev skills`.
+See the [CLI migration table](01_CLI_COMMANDS.md#migration-and-compatibility).
 
-SciTeX uses `3129X` (sa-i-te-ku-su = 3-1-2-9):
+SDK owns the app and UI implementations; historical `scitex.app` and `scitex.ui`
+imports are separate compatibility surfaces. CLI renaming does not imply Python
+import removal or changes to MCP names. Retired standalone Linter and Orochi
+packages are not recommendations for new installations; use the owning current
+provider documentation when migrating an existing environment.
 
-| Port | Service |
-|------|---------|
-| 31290 | scitex-cloud |
-| 31291 | crossref-local |
-| 31292 | openalex |
-| 31293 | scitex-audio |
+## Agent setup
 
-# SciTeX Family
-
-SciTeX integrates standalone packages that can be used independently or through the unified `scitex` interface.
-
-## Packages
-
-| Package | scitex Module | Integration | API Items |
-|---------|---------------|-------------|-----------|
-| [figrecipe](https://github.com/ywatanabe1989/figrecipe) | `scitex.plt` | Enhanced | 14 → 3881 |
-| [crossref-local](https://github.com/ywatanabe1989/crossref-local) | `scitex.scholar.crossref_scitex` | Enhanced | 98 → 2063 |
-| [openalex-local](https://github.com/ywatanabe1989/openalex-local) | `scitex.scholar.openalex_scitex` | Enhanced | - |
-| [socialia](https://github.com/ywatanabe1989/socialia) | `scitex.social` | Thin | 2907 → 12 |
-| [scitex-writer](https://github.com/ywatanabe1989/scitex-writer) | `scitex.writer` | Thin | 37 → 37 |
-
-## Architecture
-
-```
-scitex (umbrella)
-├── scitex.plt      ← figrecipe + matplotlib + local features
-├── scitex.scholar  ← crossref-local + openalex-local + local features
-├── scitex.social   ← socialia (thin wrapper)
-└── scitex.writer   ← scitex-writer (thin wrapper)
-```
-
-## Integration Patterns
-
-### Thin Wrapper (scitex.writer, scitex.social)
-
-Re-export downstream package as-is, without modifications.
-
-**Python API:**
-```python
-# scitex/writer/__init__.py
-from scitex_writer import bib, compile, figures, guidelines, project, prompts, tables
-
-# scitex/social/__init__.py
-from socialia import Twitter, LinkedIn, Reddit, YouTube, GoogleAnalytics, BasePoster
-```
-
-**MCP Tools:**
-```python
-# scitex/_mcp/__init__.py — ONE registry-mounting entrypoint.
-# Each peer's FastMCP server is auto-mounted under a brand-prefixed
-# namespace by iterating scitex_dev._ecosystem.ECOSYSTEM. No per-package
-# "register_<pkg>_tools" bridge files; new peer tools appear automatically.
-def register_all_tools(mcp):
-    for _pip, import_name, namespace in _iter_registry():
-        peer_mcp = _resolve_peer_mcp(import_name)   # e.g. scitex_writer._mcp.server
-        if peer_mcp is not None:
-            safe_mount(mcp, peer_mcp, namespace=namespace)  # -> writer_*, socialia_*
-```
-
-- Single source of truth: the ecosystem registry + each downstream package
-- API parity: `scitex.writer` ≈ `scitex_writer`, `scitex.social` ≈ `socialia`
-- MCP tools auto-mounted from each peer's `_mcp_server` — no umbrella maintenance
-- Use `scitex introspect api` to verify consistency
-
-### Enhanced Wrapper (scitex.plt, scitex.scholar)
-
-Integrate downstream package with scitex-specific features.
-
-```python
-# scitex/plt/__init__.py
-from figrecipe import compose, crop, save, subplots  # Core from figrecipe
-from . import ax, color, gallery, styles             # Local scitex features
-```
-
-- Downstream as foundation
-- Local features added (color palettes, gallery, etc.)
-- API larger than standalone package
-
-## CLI
-
-```bash
-# Via scitex (hyphen or underscore both work)
-scitex introspect api scitex-writer  # → 37 items
-scitex introspect api scitex.writer  # → 37 items
-
-# Standalone
-scitex-writer --help
-socialia --help
-```
-
-## Branding
-
-Set environment variables before importing to apply scitex namespace:
-
-```python
-os.environ.setdefault("SCITEX_WRITER_BRAND", "scitex.writer")
-os.environ.setdefault("FIGRECIPE_BRAND", "scitex.plt")
-```
-
-## Port Scheme
-
-SciTeX uses `3129X` (sa-i-te-ku-su = 3-1-2-9):
-
-| Port | Service |
-|------|---------|
-| 31290 | scitex-cloud |
-| 31291 | crossref-local |
-| 31292 | openalex |
-| 31293 | scitex-audio |
-
-<!-- EOF -->
+Use `scitex dev skills install --help` to inspect generated-store options and
+`scitex mcp serve --help` to inspect server startup. Selecting skills, installing
+them into an owned destination, and linking or configuring a particular agent
+client are separate operations. Neither provider discovery nor server startup
+proves what a client has loaded into its conversation.

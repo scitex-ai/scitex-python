@@ -279,9 +279,10 @@ SciTeX provides a unified CLI that mirrors the Python module structure.
    scitex capture snap                     # Take a screenshot
 
    # Introspection
-   scitex introspect api scitex.stats      # List APIs for a module
-   scitex list-python-apis                 # List all Python APIs
+   scitex dev introspect list-apis scitex.stats      # List APIs for a module
+   scitex dev list-python-apis                 # List all Python APIs
    scitex mcp list-tools                   # List all MCP tools
 
-Every CLI command corresponds to a Python function and an MCP tool.
-See :doc:`concepts` for details on this three-interface design.
+The CLI exposes operations from installed SciTeX providers. Python APIs,
+MCP tools, Web APIs, and skills provide additional interfaces; availability
+depends on each package's declared capabilities. See :doc:`concepts` for details.

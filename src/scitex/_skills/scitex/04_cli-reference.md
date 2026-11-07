@@ -1,58 +1,121 @@
 ---
 description: |
-  [TOPIC] CLI reference — scitex umbrella
-  [DETAILS] `scitex` console entry dispatches to per-package CLIs (`scitex io ...`, `scitex plt ...`, `scitex scholar ...`); the umbrella itself adds version + MCP server entry points.
+  [TOPIC] CLI and MCP — scitex umbrella
+  [DETAILS] Inspect installed command help, distinguish metadata discovery from execution, and start the MCP server explicitly with stdio. Preserve release-specific compatibility limits.
 tags: [scitex-cli-reference]
 ---
 
-# CLI reference — scitex
-
-The `scitex` console script is a thin dispatcher. For per-package
-sub-commands, refer to the sister-package skill (e.g. `scitex-scholar`
-documents `scitex scholar bibtex ...`).
-
-## Top-level commands
+# CLI and MCP — scitex
 
 ```bash
-scitex --version            # umbrella version
-scitex --help               # list available sub-commands
-scitex mcp                  # umbrella MCP server entry
+scitex --version
+scitex --help
+scitex mcp --help
 ```
 
-## Sub-command dispatch
+The available groups depend on the installed release and providers. Inspect the
+selected group's help instead of inferring a command from a Python module name.
+Help success verifies parsing/discovery, not the operation itself.
 
-Each installed sister package contributes its own sub-command tree. The
-exact subset depends on what you have installed:
+## MCP
+
+In the upcoming 2.30.9 source, `serve` runs the foreground server and
+`get-config --json` prints a complete client configuration using the current
+Python environment. Older `start` and `installation` invocations remain hidden
+compatibility routes; inspect installed help before using the new names on an
+earlier release.
 
 ```bash
-scitex scholar ...          # literature management
-scitex writer  ...          # manuscript compilation
-scitex cloud   ...          # SciTeX Cloud
-scitex notebook ...         # notebook reproducibility
-scitex container ...        # container management
-scitex io ...               # I/O helpers
-# ...
+scitex mcp list-tools --module stats
+scitex mcp get-config --json
+scitex mcp serve --transport stdio
 ```
 
-Each top-level group accepts `--help`:
+The commands list registered statistics tool metadata, print client setup,
+and explicitly serve the protocol; bare `scitex mcp` displays help and does not start it. An MCP client
+must use the intended Python environment; generated setup uses that interpreter
+directly. Protocol metadata
+discovery does not invoke the tools or prove their external services are ready.
+No fixed tool count or universal result envelope is assumed.
+
+## Skills and Web APIs
+
+Use package-owned skill files and inspect the installed scitex-dev skill manager
+before choosing an export/install command. In public 2.30.8, the legacy
+`scitex skills get` callback imports a missing `scitex_dev.skills` module.
+Do not present that callback as verified by its help.
+Do not assume a vendor-specific discovery directory.
+
+Hub/app plugins provide Web API endpoints. Use their declared routes and owning
+package documentation; a registered Python/CLI name is not a Web route.
+
+## Canonical CLI paths in this source
+
+The interface migration in this source checkout groups developer operations
+under `scitex dev` and uses the owning package names for app and research tools.
+These paths require a release containing the migration; public 2.30.8 retains
+its older command layout.
 
 ```bash
-scitex scholar --help
-scitex writer compile --help
+scitex sdk --help
+scitex cards --help
+scitex clew --help
+scitex ssh tunnel --help
+scitex dev --help
+scitex dev skills list --package scitex-dev --json
+scitex dev skills install --package scitex-dev --dry-run --json
 ```
 
-## Standalone aliases
+Developer commands `audit`, `completion`, `introspect`, `linter`,
+`list-python-apis`, `pkg`, and `skills` are available under `scitex dev`.
+Skills delegate to Dev's installed-provider discovery and configuration;
+installation, loading selected bodies, and client discovery remain separate.
+Inspect `install --help` for destinations and preserve existing client files.
 
-Sister packages also ship their own console scripts (e.g.
-`crossref-local`, `openalex-local`, `scitex-notebook`). The umbrella
-`scitex <sub>` form and the standalone scripts share implementations.
+| Older root path | Canonical path |
+|---|---|
+| `app`, `ui` | `sdk app`, `sdk ui` |
+| `todo` | `cards` |
+| `tunnel` | `ssh tunnel` |
+| `notify` | `notification` |
+| `verify` | `clew` |
 
-## MCP server
+The older paths and developer root spellings remain hidden compatibility routes
+when the owning provider is installed and admitted. The older
+`scitex dev dev skills` route also remains available. These CLI migrations do
+not rename Python imports or MCP tools. A metadata catalog entry does not prove
+that its target can execute; inspect the selected provider's help and skill.
+
+See `docs/01_CLI_COMMANDS.md` and `docs/08_SCITEX_ECOSYSTEM.md` in the source
+repository for the command layout and ownership rules.
+
+## Metadata size and search mode in this source
+
+`scitex mcp list-tools --summary` reports normalized Unicode characters and
+UTF-8 bytes through Dev's shared measurement API. It measures admitted tool
+names, descriptions, input/output schemas and server instructions. Annotations,
+protocol framing, vendor token counts and a client's complete context are not
+measured. Legacy token-count keys in JSON are null. `--module` filters the
+listing, while the summary still covers the admitted server catalog.
+
+To advertise search and invocation tools instead of the full catalog:
 
 ```bash
-scitex mcp                  # serve the umbrella's mounted MCP namespaces
+SCITEX_MCP_DISCOVERY=search scitex mcp serve --transport stdio
 ```
 
-This boots the FastMCP server defined in `scitex.mcp_server`, which
-mounts every sister-package MCP server under its namespaced prefix
-(`io_*`, `plt_*`, `stats_*`, `scholar_*`, ...).
+This source uses FastMCP's existing search transform. Package admission still
+applies first; search does not grant permission or defer provider imports. The
+unconfigured mode remains `full` for compatibility. Use the environment of the
+same MCP server process to select search mode; filtering a CLI listing alone
+will not change what an MCP client receives.
+
+## Event workflows in this source
+
+The upcoming 2.30.9 `[events]` extra installs the Python-only `scitex-events`
+provider; `[all]` includes it. Root adds the optional `event` CLI composition
+when that owner is installed. Use `get-latest`, `list-history` or `list-types`
+with `--json` for the shared Result envelope. The older `latest`, `history`
+and `types` routes remain hidden compatibility paths with their existing
+text output and options. Consult the installed provider's skill for local
+state paths, validated event types and optional outbound delivery.

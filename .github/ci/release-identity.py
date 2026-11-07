@@ -7,6 +7,7 @@ import configparser
 import csv
 import hashlib
 import io
+import importlib.metadata
 import json
 import os
 import posixpath
@@ -15,6 +16,8 @@ import select
 import signal
 import stat
 import subprocess
+import sys
+import sysconfig
 import tarfile
 import tempfile
 import time
@@ -332,6 +335,21 @@ PUBLIC_LINKS = {
     ("examples/_legacy/stats/statsz.py"): ("../scitex/io/bundle/statsz.py"),
 }
 
+DOC_IGNORE_SHA256 = "9ac10ad59a7ce9071fb89211853129e8747a00314450c6ccf05582bb40046624"
+
+DOC_HOOK = {
+    "path": "build_hooks/sphinx_bundle.py",
+    "source-input-root": "docs/sphinx",
+    "require-runtime-dependencies": True,
+    "dependencies": [
+        "sphinx==8.1.3", "sphinx-rtd-theme==3.1.0", "myst-parser==4.0.1",
+        "sphinx-copybutton==0.5.2", "sphinx-autodoc-typehints==2.5.0",
+        "nbsphinx==0.9.8", "matplotlib==3.10.7",
+        "tomli>=2; python_version < '3.11'",
+    ],
+}
+DOC_PREFIX = "src/scitex/_sphinx_html/"
+
 
 def git_tree(commit, source_root):
     if not SHA.fullmatch(commit):
@@ -365,11 +383,26 @@ def git_tree(commit, source_root):
 
 def selected_paths(entries, project, ignore_raw):
     build = project.get("tool", {}).get("hatch", {}).get("build", {})
-    if build != {
+    ordinary = {
         "targets": {"wheel": {"exclude": EXCLUDES}, "sdist": {"exclude": EXCLUDES}}
-    }:
+    }
+    documented = {
+        "hooks": {"custom": DOC_HOOK},
+        "targets": {
+            "wheel": {"exclude": EXCLUDES, "artifacts": [DOC_PREFIX + "**"]},
+            "sdist": {"exclude": EXCLUDES},
+        },
+    }
+    if build not in (ordinary, documented):
         raise ValueError("reviewed umbrella Hatch mapping changed")
-    if hashlib.sha256(ignore_raw).hexdigest() != IGNORE_SHA256:
+    if build == documented and project.get("build-system") != {
+        "requires": ["hatchling==1.33.0"], "build-backend": "hatchling.build"
+    }:
+        raise ValueError("reviewed documentation backend changed")
+    if any(name.startswith(DOC_PREFIX) for name in entries):
+        raise ValueError("derived documentation must not be tracked source")
+    expected_ignore = DOC_IGNORE_SHA256 if build == documented else IGNORE_SHA256
+    if hashlib.sha256(ignore_raw).hexdigest() != expected_ignore:
         raise ValueError("reviewed umbrella ignore selection changed")
     with tempfile.TemporaryDirectory(prefix="scitex-release-selector-") as temporary:
         root = Path(temporary)
@@ -413,6 +446,11 @@ def selected_paths(entries, project, ignore_raw):
         and PurePosixPath(name).name != ".DS_Store"
         and not (set(PurePosixPath(name).parts[:-1]) & SKIP_DIRS)
     }
+    if build == documented:
+        doc_inputs = {name for name in entries if name.startswith("docs/sphinx/")}
+        if not doc_inputs or any(entries[name][0] not in {"100644", "100755"} for name in doc_inputs):
+            raise ValueError("documentation source inputs are not regular Git blobs")
+        selected.update(doc_inputs)
     wheel = {
         name.removeprefix("src/"): name
         for name in selected
@@ -652,6 +690,8 @@ def declared_metadata(project):
     """Follow the reviewed Hatch static metadata and recursive-extra contract."""
     if project.get("dynamic"):
         raise ValueError("dynamic release metadata is not qualified")
+    if "import-names" in project or "import-namespaces" in project:
+        raise ValueError("source import declarations are not qualified")
     core = {requirement_identity(value) for value in project.get("dependencies", [])}
     groups = {}
     inherited = {}
@@ -708,16 +748,25 @@ def declared_metadata(project):
     }
 
 
-def metadata_source_identity(wheel_raw, sdist_raw, entry_points, project):
+def metadata_source_identity(wheel_raw, sdist_raw, entry_points, project, *, required_version=None):
+    if required_version is not None and (not isinstance(required_version, str) or required_version != "2.5"):
+        raise ValueError("unsupported qualified metadata version")
     expected = declared_metadata(project)
     for raw in (wheel_raw, sdist_raw):
         headers = BytesParser().parsebytes(raw)
         if headers.get_all("License-File") != ["LICENSE"]:
             raise ValueError("source License-File declaration differs")
-        if headers.get_all("Metadata-Version") not in [
-            [x] for x in ("2.1", "2.2", "2.3", "2.4")
-        ]:
+        allowed = ["2.5"] if required_version else ["2.1", "2.2", "2.3", "2.4"]
+        if headers.get_all("Metadata-Version") not in [[x] for x in allowed]:
             raise ValueError("unsupported generated metadata version")
+        if headers.get_all("Import-Name") is not None or headers.get_all("Import-Namespace") is not None:
+            raise ValueError("artifact import declarations are not qualified")
+        if required_version == "2.5" and (
+            not isinstance(project.get("license"), str)
+            or headers.get_all("License-Expression") != [project["license"]]
+            or headers.get_all("License") is not None
+        ):
+            raise ValueError("source License-Expression declaration differs")
         python = headers.get_all("Requires-Python", [])
         if len(python) != (1 if expected["requires_python"] else 0) or (
             python and specifier_identity(python[0]) != expected["requires_python"]
@@ -758,6 +807,160 @@ def metadata_source_identity(wheel_raw, sdist_raw, entry_points, project):
     }
 
 
+def docs_toolchain_identity():
+    """Observe the verifier's installed toolchain, not artifact assertions.
+
+    Record actual installed bytes and refuse RECORD mismatches. Python/SIF
+    identity remains part of the surrounding admitted release contract.
+    """
+    rows = []
+    owners = set()
+    prefix = Path(sys.prefix).resolve()
+    for distribution in importlib.metadata.distributions():
+        owner = normalized_name(distribution.metadata["Name"])
+        if owner in owners or distribution.files is None:
+            raise ValueError("documentation toolchain inventory is ambiguous")
+        owners.add(owner)
+        for item in distribution.files:
+            path = Path(distribution.locate_file(item))
+            resolved = path.resolve(strict=True)
+            if not resolved.is_relative_to(prefix) or path.is_symlink():
+                raise ValueError("documentation toolchain path is unowned")
+            if not resolved.is_file():
+                raise ValueError("documentation toolchain member is not regular")
+            if item.hash is None:
+                if item.name == "RECORD" or str(item).endswith(".pyc"):
+                    continue  # Standard installer-derived files are not import inputs.
+                raise ValueError("documentation toolchain has an unhashed input")
+            digest = hashlib.sha256()
+            with resolved.open("rb") as stream:
+                for block in iter(lambda: stream.read(1048576), b""):
+                    digest.update(block)
+            actual = base64.urlsafe_b64encode(digest.digest()).decode().rstrip("=")
+            if item.hash.mode != "sha256" or item.hash.value != actual:
+                raise ValueError("documentation toolchain RECORD bytes differ")
+            canonical = digest.hexdigest()
+            if resolved.is_relative_to(prefix / "bin"):
+                # Preserve the complete entrypoint body. Normalize ONLY the
+                # installer's Python shebang, after resolving that interpreter.
+                raw = resolved.read_bytes()
+                first, separator, body = raw.partition(b"\n")
+                if first.startswith(b"#!"):
+                    interpreter = first[2:].decode()
+                    if Path(interpreter).resolve() == Path(sys.executable).resolve():
+                        canonical = hashlib.sha256(
+                            b"#!<resolved-qualified-python>" + separator + body
+                        ).hexdigest()
+            rows.append((owner, distribution.version, str(item), canonical))
+    stdlib = Path(sysconfig.get_path("stdlib"))
+    runtime = []
+    for path in sorted(stdlib.rglob("*")):
+        relative = path.relative_to(stdlib)
+        if {"__pycache__", "site-packages", "dist-packages"} & set(relative.parts):
+            continue
+        if path.is_file():
+            runtime.append((relative.as_posix(),
+                            os.readlink(path) if path.is_symlink() else None,
+                            hashlib.sha256(path.read_bytes()).hexdigest()))
+    return {
+        "python": sys.version,
+        "executable_sha256": hashlib.sha256(Path(sys.executable).read_bytes()).hexdigest(),
+        "stdlib_runtime_sha256": hashlib.sha256(json.dumps(runtime).encode()).hexdigest(),
+        "approved_sif_sha256": os.environ.get("SCITEX_CI_SIF_SHA256"),
+        "distributions": len(owners),
+        "files": len(rows),
+        "canonical_installed_inputs_sha256": hashlib.sha256(
+            json.dumps(sorted(rows), separators=(",", ":")).encode()
+        ).hexdigest(),
+    }
+
+
+def docs_runtime_observation():
+    """Record host CPU inputs separately from portable canonical code bytes."""
+    return {
+        "cpu_affinity": sorted(os.sched_getaffinity(0)),
+        "cpu_constraints": {
+            name: hashlib.sha256(Path(name).read_bytes()).hexdigest()
+            for name in (
+                "/sys/fs/cgroup/cpu.max", "/sys/fs/cgroup/cpu/cpu.cfs_quota_us",
+                "/sys/fs/cgroup/cpu/cpu.cfs_period_us",
+            )
+            if Path(name).is_file()
+        },
+    }
+
+
+def rebuild_derived_docs(entries, selected, project, source_root):
+    """Independently execute only the Git-bound producer on clean Git bytes.
+
+    There is no caller-supplied expected-docs mapping or archive provenance
+    manifest. Both archive payloads must match this independently rebuilt set.
+    """
+    if "hooks" not in project["tool"]["hatch"]["build"]:
+        return {}, None
+    producer = DOC_HOOK["path"]
+    if producer not in selected or entries[producer][0] not in {"100644", "100755"}:
+        raise ValueError("trusted documentation producer is missing")
+    before = docs_toolchain_identity()
+    runtime_before = docs_runtime_observation()
+    with tempfile.TemporaryDirectory(prefix="scitex-docs-replay-") as temporary:
+        base = Path(temporary)
+        root = base / "source"
+        root.mkdir()
+        inputs = []
+        with GitBodies(source_root) as git:
+            for name in sorted(selected):
+                body = git.body(entries[name])
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                if entries[name][0] == "120000":
+                    if PUBLIC_LINKS.get(name) != body.decode():
+                        raise ValueError("unreviewed documentation source link")
+                    path.symlink_to(body.decode())
+                else:
+                    path.write_bytes(body)
+                inputs.append((name, entries[name][0], hashlib.sha256(body).hexdigest()))
+        output = base / "html"
+        driver = (
+            "import runpy,sys; from pathlib import Path; "
+            "m=runpy.run_path(sys.argv[1]); "
+            "m['build_bundle'](Path(sys.argv[2]),Path(sys.argv[3]))"
+        )
+        subprocess.run(
+            [sys.executable, "-I", "-B", "-c", driver,
+             str(root / producer), str(root), str(output)],
+            cwd=base, env={"PATH": os.defpath, "LANG": "C.UTF-8"}, check=True,
+        )
+        payload = {}
+        for path in output.rglob("*"):
+            if path.is_symlink() or not (path.is_file() or path.is_dir()):
+                raise ValueError("derived documentation contains an unsafe member")
+            if path.is_file():
+                name = path.relative_to(output).as_posix()
+                safe_member(name)
+                if path.stat().st_size > 67108864:
+                    raise ValueError("derived documentation member exceeds bounds")
+                payload[DOC_PREFIX + name] = path.read_bytes()
+        if (DOC_PREFIX + "index.html" not in payload or len(payload) > 20000
+                or sum(map(len, payload.values())) > 1073741824):
+            raise ValueError("derived documentation inventory exceeds bounds")
+    after = docs_toolchain_identity()
+    runtime_after = docs_runtime_observation()
+    if before != after or runtime_before != runtime_after:
+        raise ValueError("documentation toolchain changed during replay")
+    print("Documentation replay runtime observation: " + json.dumps(runtime_before, sort_keys=True))
+    return payload, {
+        "method": "independent clean Git-source producer replay",
+        "producer": producer,
+        "producer_sha256": dict((name, digest) for name, _, digest in inputs)[producer],
+        "source_inputs_sha256": hashlib.sha256(json.dumps(inputs).encode()).hexdigest(),
+        "toolchain": before,
+        "invocation": ["python", "-I", "-B", "Git-bound build_bundle"],
+        "members": len(payload), "expanded_bytes": sum(map(len, payload.values())),
+        "scope": "static/mock Sphinx; no notebook/plot execution or runtime API qualification",
+    }
+
+
 def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path(".")):
     entries = git_tree(commit, source_root)
     if not {"pyproject.toml", ".gitignore", "LICENSE"}.issubset(entries):
@@ -773,6 +976,12 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
         wheel_expected, sdist_expected = selected_paths(
             entries, project, git.body(entries[".gitignore"])
         )
+    derived, derived_identity = rebuild_derived_docs(
+        entries, sdist_expected, project, source_root
+    )
+    wheel_expected.update({name.removeprefix("src/"): name for name in derived})
+    sdist_expected = sdist_expected | set(derived)
+    with GitBodies(source_root) as git:
         with (
             zipfile.ZipFile(io.BytesIO(wheel_raw)) as wheel,
             tarfile.open(fileobj=io.BytesIO(sdist_raw), mode="r:gz") as sdist,
@@ -815,6 +1024,7 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                 if owner + "entry_points.txt" in names
                 else None,
                 project["project"],
+                required_version="2.5" if derived_identity is not None else None,
             )
             roots = {PurePosixPath(item.name).parts[0] for item in sdist.getmembers()}
             if len(roots) != 1 or roots != {"scitex-" + project["project"]["version"]}:
@@ -840,8 +1050,8 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
             if set(members) != sdist_expected:
                 raise ValueError("whole sdist public source membership differs")
             for name in sorted(sdist_expected):
-                row = entries[name]
-                body = git.body(row)
+                row = entries.get(name, ("100644", None, None))
+                body = derived[name] if name in derived else git.body(row)
                 item = members[name]
                 if row[0] == "120000":
                     if (
@@ -851,10 +1061,12 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                     ):
                         raise ValueError("sdist public link identity differs")
                 elif not item.isfile() or sdist.extractfile(item).read() != body:
-                    raise ValueError("sdist public source bytes differ")
+                    raise ValueError("derived documentation bytes differ" if name in derived
+                                     else "sdist public source bytes differ")
                 destination = name.removeprefix("src/")
                 if destination in wheel_expected and wheel.read(destination) != body:
-                    raise ValueError("wheel public source bytes differ")
+                    raise ValueError("derived documentation bytes differ" if name in derived
+                                     else "wheel public source bytes differ")
                 if (
                     name == "LICENSE"
                     and wheel.read(owner + "licenses/LICENSE") != body
@@ -870,6 +1082,9 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                 )
     return {
         "git_commit": commit,
+        "derived_documentation": derived_identity,
+        "ordinary_wheel_source_members": len(wheel_expected) - len(derived),
+        "ordinary_sdist_source_members": len(sdist_expected) - len(derived),
         "metadata_source": metadata_summary,
         "wheel_public_members": len(wheel_expected),
         "sdist_public_members": len(sdist_expected),
@@ -879,7 +1094,7 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
     }
 
 
-def check_source_layout(commit, source_root=Path(".")):
+def check_source_layout(commit, source_root=Path("."), *, require_derived_docs=False):
     """Refuse dirty/unowned traversal before the backend reads source files."""
     source_root = source_root.absolute()
     entries = git_tree(commit, source_root)
@@ -893,6 +1108,10 @@ def check_source_layout(commit, source_root=Path(".")):
     with GitBodies(source_root) as git:
         project = tomllib.loads(git.body(entries["pyproject.toml"]).decode())
         _, selected = selected_paths(entries, project, git.body(entries[".gitignore"]))
+        if require_derived_docs and project["tool"]["hatch"]["build"].get("hooks") != {
+            "custom": DOC_HOOK
+        }:
+            raise ValueError("current producer requires derived documentation")
         for name in selected | {
             name for name, row in entries.items() if row[0] == "160000"
         }:
@@ -965,7 +1184,7 @@ def artifact_proof(directory, tag, commit, run, attempt, source_root=Path(".")):
         payloads["wheel"], payloads["sdist"], commit, source_root
     )
     return {
-        "schema": "scitex-release/v1",
+        "schema": "scitex-release/v2" if source_identity["derived_documentation"] else "scitex-release/v1",
         "workflow": "pypi-publish-and-github-release-on-tag.yml",
         "sif_sha256": os.environ.get("SCITEX_CI_SIF_SHA256", ""),
         "repository": REPOSITORY,
@@ -987,6 +1206,7 @@ def main(query=api):
     parser.add_argument("--commit")
     parser.add_argument("--dist", type=Path, default=Path("dist"))
     parser.add_argument("--revalidate", action="store_true")
+    parser.add_argument("--require-derived-docs", action="store_true")
     args = parser.parse_args()
     if args.mode == "resolve":
         member_admission(query)
@@ -1002,7 +1222,7 @@ def main(query=api):
         print(json.dumps(identity))
         return
     if args.mode == "check-source":
-        check_source_layout(args.commit or "")
+        check_source_layout(args.commit or "", require_derived_docs=args.require_derived_docs)
         print("Exact clean public source layout verified")
         return
     actual = git_read(["rev-parse", "HEAD"], Path(".")).decode().strip()
@@ -1015,6 +1235,8 @@ def main(query=api):
         os.environ.get("GITHUB_RUN_ID", ""),
         os.environ.get("GITHUB_RUN_ATTEMPT", ""),
     )
+    if args.require_derived_docs and proof["schema"] != "scitex-release/v2":
+        raise ValueError("current producer requires derived documentation proof")
     path = args.dist / PROOF
     if args.mode == "write-proof":
         with os.fdopen(

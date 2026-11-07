@@ -23,30 +23,34 @@ def print_help_recursive(ctx, group: click.Group) -> None:
         ctx: The click context
         group: The click group to print help for
     """
-    # Create a fake parent context to show correct command path in Usage
-    fake_parent = click.Context(click.Group(), info_name="scitex")
-    parent_ctx = click.Context(group, info_name=group.name, parent=fake_parent)
+    if ctx.parent is not None:
+        parent_ctx = ctx
+    else:
+        # Standalone group callers still receive the umbrella program prefix.
+        fake_parent = click.Context(click.Group(), info_name="scitex")
+        parent_ctx = click.Context(group, info_name=group.name, parent=fake_parent)
+    command_path = parent_ctx.command_path
 
-    click.secho(f"━━━ scitex {group.name} ━━━", fg="cyan", bold=True)
+    click.secho(f"━━━ {command_path} ━━━", fg="cyan", bold=True)
     click.echo(group.get_help(parent_ctx))
 
     for name in sorted(group.list_commands(ctx) or []):
         cmd = group.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
-        click.secho(f"━━━ scitex {group.name} {name} ━━━", fg="cyan", bold=True)
+        click.secho(f"━━━ {command_path} {name} ━━━", fg="cyan", bold=True)
         with click.Context(cmd, info_name=name, parent=parent_ctx) as sub_ctx:
             click.echo(cmd.get_help(sub_ctx))
             # Handle nested subgroups
             if isinstance(cmd, click.Group):
                 for sub_name in sorted(cmd.list_commands(sub_ctx) or []):
                     sub_cmd = cmd.get_command(sub_ctx, sub_name)
-                    if sub_cmd is None:
+                    if sub_cmd is None or sub_cmd.hidden:
                         continue
                     click.echo()
                     click.secho(
-                        f"━━━ scitex {group.name} {name} {sub_name} ━━━",
+                        f"━━━ {command_path} {name} {sub_name} ━━━",
                         fg="cyan",
                         bold=True,
                     )
@@ -121,12 +125,22 @@ def group_to_json(ctx, group: click.Group) -> None:
     """
     from scitex_dev import Result
 
-    cmds = {}
-    for name in sorted(group.list_commands(ctx) or []):
-        cmd = group.get_command(ctx, name)
-        if cmd:
-            cmds[name] = cmd.get_short_help_str(limit=150)
-    click.echo(Result(success=True, data={"commands": cmds}).to_json())
+    summaries = getattr(group, "command_summaries", None)
+    if summaries is not None:
+        cmds = dict(summaries(ctx))
+    else:
+        cmds = {}
+        for name in sorted(group.list_commands(ctx) or []):
+            cmd = group.get_command(ctx, name)
+            if cmd is not None and not cmd.hidden:
+                cmds[name] = cmd.get_short_help_str(limit=150)
+    data = {"commands": cmds}
+    distribution = getattr(group, "_metadata_distribution", None)
+    if distribution:
+        from ._metadata import cli_metadata
+
+        data["metadata"] = cli_metadata(distribution)
+    click.echo(Result(success=True, data=data).to_json())
     ctx.exit(0)
 
 
@@ -151,9 +165,11 @@ def help_recursive_to_json(ctx, group: click.Group) -> None:
                     "name": param.name,
                     "flags": list(param.opts),
                     "required": param.required,
-                    "type": param.type.name
-                    if hasattr(param.type, "name")
-                    else str(param.type),
+                    "type": (
+                        param.type.name
+                        if hasattr(param.type, "name")
+                        else str(param.type)
+                    ),
                 }
                 if param.default is not None:
                     p["default"] = param.default
@@ -175,7 +191,7 @@ def help_recursive_to_json(ctx, group: click.Group) -> None:
             subs = {}
             for name in sorted(cmd.list_commands(parent_ctx) or []):
                 sub_cmd = cmd.get_command(parent_ctx, name)
-                if sub_cmd:
+                if sub_cmd is not None and not sub_cmd.hidden:
                     with click.Context(
                         sub_cmd, info_name=name, parent=parent_ctx
                     ) as sub_ctx:
@@ -190,6 +206,11 @@ def help_recursive_to_json(ctx, group: click.Group) -> None:
     parent_ctx = click.Context(group, info_name=group_name, parent=fake_parent)
 
     tree = _cmd_to_dict(group, parent_ctx)
+    distribution = getattr(group, "_metadata_distribution", None)
+    if distribution:
+        from ._metadata import cli_metadata
+
+        tree["metadata"] = cli_metadata(distribution)
     tree["name"] = f"scitex {group_name}" if group_name != "cli" else "scitex"
 
     click.echo(Result(success=True, data=tree).to_json())

@@ -7,26 +7,26 @@ Requirements
 - **Python 3.10+**
 - ``uv`` (strongly recommended) — install with ``pip install uv`` or
   ``curl -LsSf https://astral.sh/uv/install.sh | sh``
-- ``pip`` 21+ also works, but expect 30–90 min for ``scitex[all]``
-  (see warning below)
+- Hub integration and ``scitex[all]`` require **Python 3.11+** in the
+  upcoming 2.30.9 release. The base library retains its Python 3.10+ requirement.
+- ``pip`` is also supported; resolution and download time depend on the
+  selected extras, platform and package cache.
 
 
-.. warning::
+.. note::
 
-   ``pip install "scitex[all]"`` typically takes **30–90 minutes** because
-   pip's serial resolver walks version histories of the large transitive
-   dependency set (numpy/pandas/torch/jax/playwright/openalex-local/…).
-   Use **uv** instead — it resolves the same set in parallel in **1–3
-   minutes**. Every ``pip install`` line on this page also works as
-   ``uv pip install`` and we recommend the uv form.
+   ``scitex[all]`` selects a large dependency set. Use a dedicated environment
+   and inspect installation errors rather than falling back to fewer extras
+   while claiming a complete installation. System tools needed by an integration
+   (for example, a LaTeX compiler) are separate from Python package installation.
 
 
 Core Install
 ------------
 
-The base package pulls in only lightweight dependencies and gives you access
-to session management, path utilities, string helpers, and the module
-discovery system.
+The base package installs the default scientific stack and declared leaf
+providers. Extras select additional integrations; the base install is not a
+promise that every app or external service is available.
 
 .. code-block:: bash
 
@@ -42,8 +42,8 @@ and every other module):
 
 .. code-block:: bash
 
-   uv pip install "scitex[all]"   # ~3 min
-   pip install "scitex[all]"       # ~30–90 min (resolver thrash)
+   uv pip install "scitex[all]"
+   pip install "scitex[all]"
 
 
 Research Workflow
@@ -80,8 +80,10 @@ Install only what you need. Each extra maps to a self-contained capability.
      - LaTeX manuscript compilation, BibTeX management, Overleaf export
    * - ``audio``
      - Text-to-speech and audio utilities (scitex-audio)
-   * - ``ai``
-     - LLM APIs (OpenAI, Anthropic, Google, Groq) and ML tools (scikit-learn)
+   * - ``genai``
+     - Generative-AI provider interfaces
+   * - ``ml``
+     - Machine-learning tools
    * - ``browser``
      - Web automation via Playwright
    * - ``capture``
@@ -91,7 +93,7 @@ Install only what you need. Each extra maps to a self-contained capability.
    * - ``cloud``
      - Cloud integration utilities
    * - ``app``
-     - Unified file storage SDK (scitex-app)
+     - App interfaces supplied by scitex-sdk
    * - ``session``
      - Session decorator with reproducibility logging
    * - ``diagram``

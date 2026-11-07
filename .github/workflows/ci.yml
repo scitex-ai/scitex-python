@@ -2,7 +2,8 @@ name: ci
 
 # Canonical scitex CI — thin org-reusable caller (the ONE per-repo shape).
 # Job bodies live ONCE, org-side, in scitex-ai/.github@main.
-# Runner policy: SELF-HOSTED ONLY (PS-169), via repo Actions Variable CI_RUNS_ON.
+# Shared workflows admit trusted actors to the compute pool. Required-context
+# relays run only fixed result checks on hosted runners, without checkout/secrets.
 
 on:
   pull_request:
@@ -21,6 +22,8 @@ jobs:
   pytest-matrix:
     uses: scitex-ai/.github/.github/workflows/pytest-matrix.yml@main
     with:
+      full_python_versions: '["3.11","3.12","3.13"]'
+      ordinary_pr_python: ''
       pre_test_command: |
         owned=$(mktemp -d "${RUNNER_TEMP:?}/scitex-matrix-context.XXXXXXXX")
         mkdir -p "$owned/tmp" "$owned/cache" "$owned/config" "$owned/scitex" "$owned/mpl"
@@ -28,6 +31,28 @@ jobs:
           printf '%s\n' "$pair" >> "${GITHUB_ENV:?}"
         done
     secrets: inherit
+
+  # Both protected branches require these bare legacy names. Relay the complete
+  # shared matrix result instead of rerunning a weaker fallback/retry suite.
+  # Non-success includes failure, cancellation and skipped/missing execution.
+  required-test-contexts:
+    name: pytest-matrix-on-ubuntu-py${{ matrix.python-version }}
+    needs: [pytest-matrix]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions: {}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    steps:
+      - name: Require the complete shared matrix
+        env:
+          FULL_MATRIX_RESULT: ${{ needs.pytest-matrix.result }}
+        run: |
+          set -euo pipefail
+          test "$FULL_MATRIX_RESULT" = success
 
   import-smoke:
     uses: scitex-ai/.github/.github/workflows/import-smoke.yml@main
@@ -41,4 +66,12 @@ jobs:
 
   rtd-sphinx-build:
     uses: scitex-ai/.github/.github/workflows/rtd-sphinx-build.yml@main
+    # Preserve the legacy build-and-publish behavior through the shared PR-based
+    # publisher. Editable consumers still read the checked-in bundle; release
+    # artifacts independently rebuild and verify it from source.
+    with:
+      bundle_dir: src/scitex/_sphinx_html
+    permissions:
+      contents: write
+      pull-requests: write
     secrets: inherit

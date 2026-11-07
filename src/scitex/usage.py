@@ -25,7 +25,11 @@ def show(topic: str | None = None) -> str:
     str
         Usage text.
     """
+    import scitex_logging as slogging
+
     from .template._code._code_templates import CODE_TEMPLATES, get_code_template
+
+    console = slogging.getPlainConsole(__name__)
 
     if topic is None:
         lines = ["SciTeX Usage Topics", "=" * 40, ""]
@@ -35,17 +39,17 @@ def show(topic: str | None = None) -> str:
         lines.append("")
         lines.append("Example: stx.usage('plt')")
         text = "\n".join(lines)
-        print(text)
+        console.emit(text)
         return text
 
     if topic not in CODE_TEMPLATES:
         available = ", ".join(CODE_TEMPLATES.keys())
         msg = f"Unknown topic: '{topic}'. Available: {available}"
-        print(msg)
+        console.emit(msg)
         return msg
 
     content = get_code_template(topic)
-    print(content)
+    console.emit(content)
     return content
 
 

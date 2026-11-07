@@ -7,23 +7,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Align TeX helper commands with real providers: `format-vector` formats vector
+  text and `render-preview` saves expression previews with validated recipes.
+  Give unsupported older file/viewer/export routes explicit migration errors.
+- Require FigRecipe 0.44.3 consistently across the core, plotting and development
+  profiles so expression previews retain strict save/replay validation.
+- Add inert browser PDF export previews and standard automation flags. Return
+  browser visibility guidance as JSON without claiming session control.
+
+- Fix the TeX CLI adapter to use the current provider's arguments and result fields,
+  honor output filenames and provider cleanup, and support non-writing previews.
+
+
 ## [2.30.9] - Unreleased
 
 ### Changed
-- Align the umbrella's Clew, Dev and Logging requirements with the Clew 0.21.0
-  dependency contract across core dependencies and their declared extras:
-  scitex-clew 0.17.0 to 0.21.0, scitex-dev 0.28.0 to 0.62.2 and
-  scitex-logging 0.1.7 to 0.2.2. The existing lazy external Clew re-export
-  remains unchanged. Dev 0.62.2 requires scitex-scholar>=1.4.3, so the
-  corresponding existing Scholar pins move from 1.4.2 to 1.4.3 to close
-  that dependency constraint.
-  Existing scitex-ssh pins in the Dev and tunnel extras move from 1.0.1
-  to 1.1.0 because Dev 0.62.2 also requires scitex-ssh>=1.1.0.
-  The existing Dataset and Dev extra pins move from scitex-dataset 0.5.0
-  to 0.7.1 for the current Dataset consumer requirement.
-  Existing legacy App pins move from 0.2.11 to 0.26.1 and UI pins from
-  0.6.0 to 0.23.0 to satisfy the App>=0.24.0 and UI>=0.11.1 requirements
-  of Cards 0.53.4, while preserving the existing application namespaces.
+- Install the real scitex-events provider through `[events]` and `[all]`.
+  Expose event workflows only when their domain owner is installed. Normalize
+  reads to `get-latest`, `list-history` and `list-types`, with structured JSON
+  and hidden compatibility routes preserving earlier text and arguments.
+- Organize public CLI routes under SDK, Cards, Clew, SSH and Dev namespaces,
+  retaining hidden compatibility routes for older invocations. Keep Python,
+  CLI, MCP, skills and Web API exposure independent and provider-owned.
+- Use scitex-sdk for the app/UI facades and public scitex-dev 0.62.16 for
+  shared discovery, exposure preferences and CLI ownership checks.
+- Align Clew, Logging, Scholar, SSH and Dataset dependencies with the selected
+  public provider cohort. Preserve lazy Python re-exports.
+- Measure MCP tool names, descriptions, input/output schemas and instructions
+  through Dev's shared metadata API. Report Unicode characters and UTF-8 bytes;
+  token counts and client context remain unmeasured. Legacy token-count JSON
+  fields are null instead of character-based guesses.
+- Refresh the public README and packaged umbrella skills with runnable examples,
+  package ownership, current app screenshots and release-specific guidance.
+- Align Scholar, Container and Template with the SDK-based Hub alpha cohort;
+  include public Hub integrations in `[all]`. Hub and `[all]` require Python
+  3.11 or newer, independently of the base library's Python requirement.
+- Use the shared strict test matrix for the existing required check names.
+  Remove duplicate test/import/docs workflows, fallback installs and retry/JUnit
+  verdicts that could hide a failed test process. Packaged documentation remains
+  generated and source-verified by the normal release build.
+
+- Use `mcp serve` for foreground protocol serving and `mcp get-config --json`
+  for vendor-neutral setup tied to the current interpreter. Preserve hidden
+  `start`/`installation` migration routes, including help and argv forwarding.
+- Report the installed SciTeX package version in MCP server identification,
+  rather than the default FastMCP framework version.
+
+- Adopt public scitex-notebook 0.1.4 so notebook compilation/conversion expose
+  real dry-run previews, accept the standard automation flags and include
+  command examples through the umbrella.
+
+### Fixed
+- Disable NumPy pickle and request weights-only checkpoint loading in the
+  array-aware hash command. Add `--raw` for streaming artifact hashes without
+  deserialization, while preserving numeric content hashing.
+- Delegate documentation listing, search and builds to Dev's public Python API.
+  Return a failed Result and nonzero exit for package-level or per-builder
+  failures instead of reporting a successful build.
+- Accept `--yes`/`-y` consistently on explicit config initialization, completion
+  installation and documentation building. These commands remain non-interactive;
+  dry-run previews take priority and do not perform the requested writes.
+
+### Added
+- Shared shell-completion bootstrap callbacks for package-agnostic setup,
+  respecting operator declines. Keep normal listings concise and preserve the
+  existing developer completion group and compatibility route.
+- A normal PEP517 producer for packaged Sphinx documentation, with an independent
+  rebuild from immutable Git source to verify derived bytes. Preserve tracked
+  inputs, reject unsafe paths and prevent duplicate generated members.
+- Explicit optional MCP search mode using FastMCP's existing transform, after
+  package admission. Unconfigured servers retain the full catalog; search does
+  not defer provider imports or change authorization.
 
 ## [2.30.5] - 2026-06-30
 

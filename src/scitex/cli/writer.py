@@ -18,7 +18,8 @@ except ImportError:
 
 if _main is not None:
     writer = _main
-    writer.name = "writer"  # prog-name fragment shown under `scitex`
+    # Click's invocation context supplies the umbrella program name. Keep the
+    # owning group's identity and standalone name intact.
 else:
 
     @click.command("writer")

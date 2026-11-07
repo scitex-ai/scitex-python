@@ -16,7 +16,7 @@ General
 .. code-block:: bash
 
    scitex --help-recursive        # Show all commands across all modules
-   scitex list-python-apis        # List all Python APIs (210 items)
+   scitex dev list-python-apis        # List all Python APIs
    scitex mcp list-tools          # List all MCP tools (120+ tools)
 
 Scholar
@@ -84,8 +84,8 @@ Python code introspection for exploring APIs.
 
 .. code-block:: bash
 
-   scitex introspect api <module>       # List APIs for a module
-   scitex introspect source <function>  # View source code of a function
+   scitex dev introspect list-apis <module>       # List APIs for a module
+   scitex dev introspect show-source <function>  # View source code of a function
 
 Dev
 ---
