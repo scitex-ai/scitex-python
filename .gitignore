@@ -954,3 +954,5 @@ src/scitex/_sphinx_html/
 # clew's runtime store is written by the scitex-clew package at import
 # time; it is machine-local state and must never be committed again.
 .scitex/clew/runtime/
+# Local checkouts are runtime development state, not repository submodules.
+/.worktrees/
