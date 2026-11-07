@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Share legacy file-conversion checks between JSON and text output. Enforce
+  extension and overwrite checks before previews, preserve already-STX inputs,
+  and refuse source/output aliases, including hardlinks. This does not repair
+  the legacy schema normalizer or qualify actual format conversion.
+
 - Read resource samples from the provider's DataFrame rather than a nonexistent
   nested dictionary. Show measured CPU/GPU percentages and RAM/VRAM in GiB;
   return structured JSON samples and retain those units in monitor CSV files.

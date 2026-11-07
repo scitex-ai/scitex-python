@@ -104,6 +104,15 @@ that its target can execute; inspect the selected provider's help and skill.
 See `docs/01_CLI_COMMANDS.md` and `docs/08_SCITEX_ECOSYSTEM.md` in the source
 repository for the command layout and ownership rules.
 
+### Legacy bundle conversion
+
+The legacy `convert file` path shares suffix, overwrite and source-alias checks
+between text and JSON output. A preview checks the proposed paths without
+writing; it does not qualify the archive's schema or conversion support. Actual
+conversion remains unqualified: the current helper calls its obsolete schema
+normalizer with an unsupported signature. Do not treat preview success or this
+guard correction as a working migration to the current bundle format.
+
 ## Metadata size and search mode in this source
 
 `scitex mcp list-tools --summary` reports normalized Unicode characters and
