@@ -4,7 +4,6 @@ import csv
 import json
 
 import pytest
-
 from click.testing import CliRunner
 
 from scitex.cli.resource import resource
@@ -67,3 +66,18 @@ def test_invalid_monitor_limits_are_refused_before_opening_a_log(
     result = CliRunner().invoke(resource, ["monitor", option, value, "--log", str(log)])
     # Assert
     assert result.exit_code == 2 and not log.exists()
+
+
+@pytest.mark.parametrize(
+    "name,legacy", [("show-specs", "specs"), ("show-usage", "usage")]
+)
+def test_resource_help_advertises_transitive_reads_and_hides_migration_aliases(
+    name, legacy
+):
+    # Arrange
+    runner = CliRunner()
+    # Act
+    result = runner.invoke(resource, ["--help"])
+    # Assert
+    assert result.exit_code == 0 and f"  {name} " in result.output
+    assert f"  {legacy} " not in result.output

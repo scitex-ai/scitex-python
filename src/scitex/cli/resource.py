@@ -1,18 +1,29 @@
 #!/usr/bin/env python3
 """
-SciTeX CLI - Resource Commands (System Monitoring)
+SciTeX CLI - Resource Commands (System Monitoring).
 
 Provides system resource monitoring and specifications.
 """
 
+import copy
 import csv
 import json
 import sys
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand, SpecGroup
 
 
 @click.group(
+    cls=SpecGroup,
+    help_spec=CliHelp(
+        summary="Read system specifications and measured resource usage.",
+        examples=(
+            Example("{prog} show-specs --json", "Read system specifications."),
+            Example("{prog} show-usage --json", "Read a measured resource sample."),
+            Example("{prog} monitor --count 2", "Display two measured samples."),
+        ),
+    ),
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )
@@ -25,21 +36,7 @@ import click
 )
 @click.pass_context
 def resource(ctx, help_recursive, as_json):
-    """
-    System resource monitoring
-
-    \b
-    Commands:
-      specs     Show system specifications
-      usage     Show current resource usage
-      monitor   Continuously monitor resource usage
-
-    \b
-    Examples:
-      scitex resource specs              # Show system specs
-      scitex resource usage              # Current CPU/memory/GPU usage
-      scitex resource monitor --interval 5
-    """
+    """Display resource commands or recursively inspect their help."""
     if help_recursive:
         _print_help_recursive(ctx)
         ctx.exit(0)
@@ -54,21 +51,31 @@ def resource(ctx, help_recursive, as_json):
 
 def _print_help_recursive(ctx):
     """Print help for all commands recursively."""
-    fake_parent = click.Context(click.Group(), info_name="scitex")
-    parent_ctx = click.Context(resource, info_name="resource", parent=fake_parent)
-    click.secho("━━━ scitex resource ━━━", fg="cyan", bold=True)
-    click.echo(resource.get_help(parent_ctx))
+    click.secho(f"━━━ {ctx.command_path} ━━━", fg="cyan", bold=True)
+    click.echo(resource.get_help(ctx))
     for name in sorted(resource.list_commands(ctx) or []):
         cmd = resource.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
-        click.secho(f"━━━ scitex resource {name} ━━━", fg="cyan", bold=True)
-        with click.Context(cmd, info_name=name, parent=parent_ctx) as sub_ctx:
+        click.secho(f"━━━ {ctx.command_path} {name} ━━━", fg="cyan", bold=True)
+        with click.Context(cmd, info_name=name, parent=ctx) as sub_ctx:
             click.echo(cmd.get_help(sub_ctx))
 
 
-@resource.command()
+@resource.command(
+    "show-specs",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show system specifications from the installed resource provider.",
+        examples=(
+            Example("{prog} --json", "Read all specification categories as JSON."),
+            Example(
+                "{prog} --category cpu --category memory", "Read selected categories."
+            ),
+        ),
+    ),
+)
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.option(
     "--category",
@@ -78,25 +85,7 @@ def _print_help_recursive(ctx):
     help="Specific category to show",
 )
 def specs(as_json, category):
-    """
-    Show system specifications
-
-    \b
-    Categories:
-      cpu     - Processor information
-      memory  - RAM information
-      disk    - Storage information
-      network - Network interfaces
-      gpu     - GPU/CUDA information
-      os      - Operating system details
-      python  - Python environment
-
-    \b
-    Examples:
-      scitex resource specs
-      scitex resource specs --json
-      scitex resource specs --category cpu --category gpu
-    """
+    """Read system specifications from the installed provider."""
     try:
         from scitex.resource import get_specs
 
@@ -161,18 +150,22 @@ def _format_measurement(value):
     return "N/A" if value is None else f"{value:.1f}"
 
 
-@resource.command()
+@resource.command(
+    "show-usage",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show measured CPU/GPU percentages and RAM/VRAM usage in GiB.",
+        examples=(
+            Example("{prog}", "Display the current resource sample with its units."),
+            Example("{prog} --json", "Return structured samples in a Result envelope."),
+        ),
+    ),
+)
 @click.option(
     "--json", "as_json", is_flag=True, help="Output a structured Result envelope"
 )
 def usage(as_json):
-    """Show current CPU/GPU percentages and RAM/VRAM usage in GiB.
-
-    \b
-    Examples:
-      scitex resource usage
-      scitex resource usage --json
-    """
+    """Display measured resource samples with their original units."""
     try:
         frame, samples = _read_processor_usage()
         if as_json:
@@ -192,7 +185,22 @@ def usage(as_json):
         sys.exit(1)
 
 
-@resource.command()
+@resource.command(
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Monitor CPU/GPU percentages and RAM/VRAM usage in GiB.",
+        description=(
+            "Omit --count to continue until interrupted. Counts and intervals must be positive.",
+        ),
+        examples=(
+            Example("{prog} --count 2", "Display two samples and stop."),
+            Example(
+                "{prog} --count 10 --interval 1 --log measurements.csv",
+                "Write ten samples with provider units to CSV.",
+            ),
+        ),
+    ),
+)
 @click.option(
     "--interval",
     "-i",
@@ -208,15 +216,7 @@ def usage(as_json):
 )
 @click.option("--log", "-l", type=click.Path(), help="Log to file")
 def monitor(interval, count, log):
-    """
-    Continuously monitor resource usage
-
-    \b
-    Examples:
-      scitex resource monitor
-      scitex resource monitor --interval 5
-      scitex resource monitor --count 10 --log usage.log
-    """
+    """Display resource samples and optionally write their measurements to CSV."""
     try:
         import time
 
@@ -266,6 +266,14 @@ def monitor(interval, count, log):
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
+
+
+# Keep older explicit invocations while advertising the canonical read verbs.
+for _legacy_name, _canonical in (("specs", specs), ("usage", usage)):
+    _alias = copy.copy(_canonical)
+    _alias.name = _legacy_name
+    _alias.hidden = True
+    resource.add_command(_alias)
 
 
 if __name__ == "__main__":

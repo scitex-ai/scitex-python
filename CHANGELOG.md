@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   nested dictionary. Show measured CPU/GPU percentages and RAM/VRAM in GiB;
   return structured JSON samples and retain those units in monitor CSV files.
   Reject nonpositive monitoring limits before opening a log file.
+- Advertise resource reads as `show-specs` and `show-usage`, with shared structured
+  help and hidden legacy aliases. Recursive help retains its actual CLI path.
 
 - Align TeX helper commands with real providers: `format-vector` formats vector
   text and `render-preview` saves expression previews with validated recipes.

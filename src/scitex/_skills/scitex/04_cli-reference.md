@@ -75,11 +75,12 @@ Inspect `install --help` for destinations and preserve existing client files.
 Resource readings in this source use the installed `scitex-resource` provider:
 
 ```bash
-scitex dev resource usage --json
+scitex dev resource show-usage --json
 scitex dev resource monitor --count 2 --interval 1 --log measurements.csv
 ```
 
-Usage JSON contains a Result envelope with `data.samples`, preserving the
+Public reads use `show-specs` and `show-usage`; older `specs` and `usage`
+invocations remain hidden compatibility routes. Usage JSON contains a Result envelope with `data.samples`, preserving the
 provider's timestamp, CPU/GPU percentages and RAM/VRAM measurements in GiB.
 Monitor CSV uses those same column names and units; RAM usage is not a memory
 percentage. Counts and intervals must be positive; omitting count monitors until
