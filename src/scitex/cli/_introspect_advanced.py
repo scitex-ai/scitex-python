@@ -5,7 +5,7 @@ import sys
 
 import click
 
-from ._introspect_helpers import echo_json_error, echo_json_result
+from ._introspect_helpers import command_help, echo_json_error, echo_json_result
 
 
 def _normalize_path(ctx, param, value):
@@ -26,7 +26,10 @@ def _print_subclasses(subclasses, indent=0):
 def register_advanced_commands(group):  # noqa: C901
     """Register advanced introspection commands on the given click group."""
 
-    @group.command()
+    @group.command(
+        "show-docstring",
+        **command_help("Show a Python object's documentation.", "json.dumps --json"),
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option(
         "--format",
@@ -48,8 +51,8 @@ def register_advanced_commands(group):  # noqa: C901
 
         \b
         Examples:
-          scitex introspect docstring scitex.plt.plot
-          scitex introspect docstring scitex.audio.speak --format parsed
+          scitex dev introspect show-docstring scitex.plt.plot
+          scitex dev introspect show-docstring scitex.audio.speak --format parsed
         """
         from scitex.introspect import get_docstring
 
@@ -72,7 +75,9 @@ def register_advanced_commands(group):  # noqa: C901
                         click.secho(f"\n[{key}]", fg="cyan", bold=True)
                         click.echo(value)
 
-    @group.command()
+    @group.command(
+        "list-exports", **command_help("List a module's exports.", "json --json")
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def exports(dotted_path, as_json):
@@ -81,8 +86,8 @@ def register_advanced_commands(group):  # noqa: C901
 
         \b
         Examples:
-          scitex introspect exports scitex.audio
-          scitex introspect exports scitex.plt
+          scitex dev introspect list-exports scitex.audio
+          scitex dev introspect list-exports scitex.plt
         """
         from scitex.introspect import get_exports
 
@@ -103,7 +108,10 @@ def register_advanced_commands(group):  # noqa: C901
             for name in result["exports"]:
                 click.echo(f"  {name}")
 
-    @group.command()
+    @group.command(
+        "list-examples",
+        **command_help("List usage examples for a Python object.", "json.dumps --json"),
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--search-paths", "-p", help="Comma-separated search paths")
     @click.option("--max-results", "-n", type=int, default=10, help="Max examples")
@@ -114,8 +122,8 @@ def register_advanced_commands(group):  # noqa: C901
 
         \b
         Examples:
-          scitex introspect examples scitex.plt.plot
-          scitex introspect examples scitex.audio.speak --max-results 5
+          scitex dev introspect list-examples scitex.plt.plot
+          scitex dev introspect list-examples scitex.audio.speak --max-results 5
         """
         from scitex.introspect import find_examples
 
@@ -144,7 +152,12 @@ def register_advanced_commands(group):  # noqa: C901
                 click.secho(f"--- {ex['file']}:{ex['line']} ---", fg="yellow")
                 click.echo(ex["context"])
 
-    @group.command("hierarchy")
+    @group.command(
+        "show-hierarchy",
+        **command_help(
+            "Show class inheritance and subclasses.", "builtins.dict --json"
+        ),
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--builtins", is_flag=True, help="Include builtin classes")
     @click.option("--max-depth", "-d", type=int, default=10, help="Max subclass depth")
@@ -152,7 +165,7 @@ def register_advanced_commands(group):  # noqa: C901
     def class_hierarchy(dotted_path, builtins, max_depth, as_json):
         """Get class inheritance hierarchy (MRO + subclasses)
 
-        $ scitex dev introspect hierarchy builtins.dict --json
+        $ scitex dev introspect show-hierarchy builtins.dict --json
         """
         from scitex.introspect import get_class_hierarchy
 
@@ -176,13 +189,16 @@ def register_advanced_commands(group):  # noqa: C901
             click.secho(f"\nSubclasses ({result['subclass_count']}):", fg="yellow")
             _print_subclasses(result.get("subclasses", []), indent=2)
 
-    @group.command("hints")
+    @group.command(
+        "show-type-hints",
+        **command_help("Show a Python object's type annotations.", "json.dumps --json"),
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def type_hints(dotted_path, as_json):
         """Get detailed type hint analysis
 
-        $ scitex dev introspect hints scitex.io.load --json
+        $ scitex dev introspect show-type-hints scitex.io.load --json
         """
         from scitex.introspect import get_type_hints_detailed
 
@@ -204,14 +220,16 @@ def register_advanced_commands(group):  # noqa: C901
             if result.get("return_hint"):
                 click.secho(f"\nReturn: {result['return_hint']['raw']}", fg="green")
 
-    @group.command("imports")
+    @group.command(
+        "list-imports", **command_help("List a module's imports.", "json --json")
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--no-categorize", is_flag=True, help="Don't group by category")
     @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
     def imports(dotted_path, no_categorize, as_json):
         """Get all imports from a module (AST-based)
 
-        $ scitex dev introspect imports scitex.cli.main --json
+        $ scitex dev introspect list-imports scitex.cli.main --json
         """
         from scitex.introspect import get_imports
 
@@ -237,7 +255,10 @@ def register_advanced_commands(group):  # noqa: C901
                 for imp in result["imports"]:
                     click.echo(f"  {imp['module']}")
 
-    @group.command("deps")
+    @group.command(
+        "list-dependencies",
+        **command_help("List a module's dependencies.", "json --json"),
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--recursive", "-r", is_flag=True, help="Recursive analysis")
     @click.option("--max-depth", "-d", type=int, default=3, help="Max recursion depth")
@@ -245,7 +266,7 @@ def register_advanced_commands(group):  # noqa: C901
     def dependencies(dotted_path, recursive, max_depth, as_json):
         """Get module dependencies
 
-        $ scitex dev introspect deps scitex.io --json
+        $ scitex dev introspect list-dependencies scitex.io --json
         """
         from scitex.introspect import get_dependencies
 
@@ -264,7 +285,10 @@ def register_advanced_commands(group):  # noqa: C901
             for dep in result.get("dependencies", []):
                 click.echo(f"  {dep}")
 
-    @group.command("calls")
+    @group.command(
+        "list-calls",
+        **command_help("List function calls and callers.", "json.dumps --json"),
+    )
     @click.argument("dotted_path", callback=_normalize_path)
     @click.option("--timeout", "-t", type=int, default=10, help="Timeout in seconds")
     @click.option("--all", "all_calls", is_flag=True, help="Include external calls")
@@ -272,7 +296,7 @@ def register_advanced_commands(group):  # noqa: C901
     def call_graph(dotted_path, timeout, all_calls, as_json):
         """Get function call graph (with timeout protection)
 
-        $ scitex dev introspect calls scitex.io.load --json
+        $ scitex dev introspect list-calls scitex.io.load --json
         """
         from scitex.introspect import get_call_graph
 

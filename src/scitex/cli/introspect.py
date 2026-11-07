@@ -8,8 +8,9 @@ Provides IPython-like introspection for Python packages.
 import sys
 
 import click
+from scitex_dev.ecosystem import deprecated_alias
 
-from ._introspect_helpers import echo_json_error, echo_json_result
+from ._introspect_helpers import command_help, echo_json_error, echo_json_result
 
 
 def _normalize_path(ctx, param, value):
@@ -36,21 +37,26 @@ def introspect(ctx, help_recursive, as_json):
     Python package introspection utilities
 
     \b
-    IPython-like introspection for any Python package:
-      q         - Function/class signature (like func?)
-      qq        - Full source code (like func??)
-      dir       - List module/class members (like dir())
-      api       - Full module API tree
-      docstring - Extract docstrings
-      exports   - Show __all__ exports
-      examples  - Find usage examples
+    Commands:
+      show-signature      Function/class signature
+      show-source         Python source code
+      list-members        Module/class members
+      list-apis           Module API tree
+      show-docstring      Object documentation
+      list-exports        Module exports
+      list-examples       Usage examples
+      show-hierarchy      Class inheritance
+      show-type-hints     Type annotations
+      list-imports        Module imports
+      list-dependencies   Module dependencies
+      list-calls          Function call graph
 
     \b
     Examples:
-      scitex introspect q scitex.plt.plot
-      scitex introspect qq scitex.stats.run_test --max-lines 50
-      scitex introspect dir scitex.plt --kind functions
-      scitex introspect api scitex --max-depth 2
+      scitex dev introspect show-signature scitex.plt.plot
+      scitex dev introspect show-source scitex.stats.run_test --max-lines 50
+      scitex dev introspect list-members scitex.plt --kind functions
+      scitex dev introspect list-apis scitex --max-depth 2
     """
     if help_recursive:
         from . import print_help_recursive
@@ -66,7 +72,10 @@ def introspect(ctx, help_recursive, as_json):
             click.echo(ctx.get_help())
 
 
-@introspect.command()
+@introspect.command(
+    "show-signature",
+    **command_help("Show a Python call signature.", "json.dumps --json"),
+)
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option("--no-defaults", is_flag=True, help="Exclude default values")
 @click.option("--no-annotations", is_flag=True, help="Exclude type annotations")
@@ -77,9 +86,9 @@ def q(dotted_path, no_defaults, no_annotations, as_json):
 
     \b
     Examples:
-      scitex introspect q scitex.plt.plot
-      scitex introspect q scitex.audio.speak --json
-      scitex introspect q json.dumps
+      scitex dev introspect show-signature scitex.plt.plot
+      scitex dev introspect show-signature scitex.audio.speak --json
+      scitex dev introspect show-signature json.dumps
     """
     from scitex.introspect import q as get_q
 
@@ -110,7 +119,10 @@ def q(dotted_path, no_defaults, no_annotations, as_json):
                 click.echo(line)
 
 
-@introspect.command()
+@introspect.command(
+    "show-source",
+    **command_help("Show a Python object's source code.", "json.dumps --json"),
+)
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option("--max-lines", "-n", type=int, help="Limit output to N lines")
 @click.option("--no-decorators", is_flag=True, help="Exclude decorator lines")
@@ -121,8 +133,8 @@ def qq(dotted_path, max_lines, no_decorators, as_json):
 
     \b
     Examples:
-      scitex introspect qq scitex.plt.plot
-      scitex introspect qq scitex.audio.speak --max-lines 50
+      scitex dev introspect show-source scitex.plt.plot
+      scitex dev introspect show-source scitex.audio.speak --max-lines 50
     """
     from scitex.introspect import qq as get_qq
 
@@ -147,7 +159,9 @@ def qq(dotted_path, max_lines, no_decorators, as_json):
         click.echo(result["source"])
 
 
-@introspect.command("dir")
+@introspect.command(
+    "list-members", **command_help("List a module or class's members.", "json --json")
+)
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option(
     "--filter",
@@ -170,9 +184,9 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
 
     \b
     Examples:
-      scitex introspect dir scitex.plt
-      scitex introspect dir scitex.audio --kind functions
-      scitex introspect dir scitex.plt.AxisWrapper --filter all
+      scitex dev introspect list-members scitex.plt
+      scitex dev introspect list-members scitex.audio --kind functions
+      scitex dev introspect list-members scitex.plt.AxisWrapper --filter all
     """
     from scitex.introspect import dir as get_dir
 
@@ -200,7 +214,10 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
             click.echo(f"  {kind_str} {name_str}{summary}")
 
 
-@introspect.command()
+@introspect.command(
+    "list-apis",
+    **command_help("List a module's public API tree.", "json --root-only --json"),
+)
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option("--max-depth", "-d", type=int, default=5, help="Max recursion depth")
 @click.option("--root-only", is_flag=True, help="Show only root-level items")
@@ -209,7 +226,7 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
 def api(dotted_path, max_depth, root_only, verbose, as_json):
     """List API tree with types and signatures. -v adds docstrings, -vv full docs.
 
-    $ scitex dev introspect api scitex --root-only --json
+    $ scitex dev introspect list-apis scitex --root-only --json
     """
     import importlib
 
@@ -281,3 +298,21 @@ def api(dotted_path, max_depth, root_only, verbose, as_json):
 from scitex.cli._introspect_advanced import register_advanced_commands
 
 register_advanced_commands(introspect)
+
+
+# Reuse Dev's hidden migration routes; discovery advertises full verb names.
+for _old, _new in {
+    "q": "show-signature",
+    "qq": "show-source",
+    "dir": "list-members",
+    "api": "list-apis",
+    "docstring": "show-docstring",
+    "exports": "list-exports",
+    "examples": "list-examples",
+    "hierarchy": "show-hierarchy",
+    "hints": "show-type-hints",
+    "imports": "list-imports",
+    "deps": "list-dependencies",
+    "calls": "list-calls",
+}.items():
+    deprecated_alias(introspect, _old, target=_new, remove_in="3.0")

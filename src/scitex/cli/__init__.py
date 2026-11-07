@@ -23,11 +23,15 @@ def print_help_recursive(ctx, group: click.Group) -> None:
         ctx: The click context
         group: The click group to print help for
     """
-    # Create a fake parent context to show correct command path in Usage
-    fake_parent = click.Context(click.Group(), info_name="scitex")
-    parent_ctx = click.Context(group, info_name=group.name, parent=fake_parent)
+    if ctx.parent is not None:
+        parent_ctx = ctx
+    else:
+        # Standalone group callers still receive the umbrella program prefix.
+        fake_parent = click.Context(click.Group(), info_name="scitex")
+        parent_ctx = click.Context(group, info_name=group.name, parent=fake_parent)
+    command_path = parent_ctx.command_path
 
-    click.secho(f"━━━ scitex {group.name} ━━━", fg="cyan", bold=True)
+    click.secho(f"━━━ {command_path} ━━━", fg="cyan", bold=True)
     click.echo(group.get_help(parent_ctx))
 
     for name in sorted(group.list_commands(ctx) or []):
@@ -35,7 +39,7 @@ def print_help_recursive(ctx, group: click.Group) -> None:
         if cmd is None or cmd.hidden:
             continue
         click.echo()
-        click.secho(f"━━━ scitex {group.name} {name} ━━━", fg="cyan", bold=True)
+        click.secho(f"━━━ {command_path} {name} ━━━", fg="cyan", bold=True)
         with click.Context(cmd, info_name=name, parent=parent_ctx) as sub_ctx:
             click.echo(cmd.get_help(sub_ctx))
             # Handle nested subgroups
@@ -46,7 +50,7 @@ def print_help_recursive(ctx, group: click.Group) -> None:
                         continue
                     click.echo()
                     click.secho(
-                        f"━━━ scitex {group.name} {name} {sub_name} ━━━",
+                        f"━━━ {command_path} {name} {sub_name} ━━━",
                         fg="cyan",
                         bold=True,
                     )
@@ -161,9 +165,11 @@ def help_recursive_to_json(ctx, group: click.Group) -> None:
                     "name": param.name,
                     "flags": list(param.opts),
                     "required": param.required,
-                    "type": param.type.name
-                    if hasattr(param.type, "name")
-                    else str(param.type),
+                    "type": (
+                        param.type.name
+                        if hasattr(param.type, "name")
+                        else str(param.type)
+                    ),
                 }
                 if param.default is not None:
                     p["default"] = param.default
