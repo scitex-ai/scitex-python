@@ -14,10 +14,14 @@ _LOCAL = {
     for name, help_text in {
         "audit": "Security auditing tools.",
         "completion": "Manage completion for the scitex command.",
-        "introspect": "Inspect Python APIs and documentation.",
         "pkg": "Inspect installed package drift.",
     }.items()
 }
+_LOCAL["introspection"] = (
+    "scitex.cli.introspect",
+    "introspect",
+    "Inspect Python APIs and documentation.",
+)
 _LOCAL["list-python-apis"] = (
     "scitex.cli._list_python_apis",
     "list_python_apis",
@@ -67,10 +71,28 @@ class DevGroup(LazyGroup):
             target_name="dev",
             remove_in="3.0",
         )
+        deprecated_alias(
+            self,
+            "introspect",
+            target=("introspection",),
+            remove_in="3.0",
+        )
 
     def with_exposure(self, snapshot):
         """Bind a fresh Root construction without mutating the shared Dev owner."""
         return self if snapshot is self._exposure_snapshot else type(self)(snapshot)
+
+    def get_help(self, ctx):
+        """Render the composed JSON view while preserving the owner's callback."""
+        if (
+            ctx.params.get("as_json")
+            and ctx.invoked_subcommand is None
+            and not ctx.params.get("help_recursive")
+        ):
+            from . import _group_json
+
+            return _group_json(ctx, self)
+        return super().get_help(ctx)
 
     def list_commands(self, ctx):
         """List the shared domain and flattened maintenance workflows."""

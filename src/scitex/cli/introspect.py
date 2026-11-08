@@ -21,6 +21,7 @@ def _normalize_path(ctx, param, value):
 
 
 @click.group(
+    name="introspection",
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )
@@ -53,10 +54,10 @@ def introspect(ctx, help_recursive, as_json):
 
     \b
     Examples:
-      scitex dev introspect show-signature scitex.plt.plot
-      scitex dev introspect show-source scitex.stats.run_test --max-lines 50
-      scitex dev introspect list-members scitex.plt --kind functions
-      scitex dev introspect list-apis scitex --max-depth 2
+      scitex dev introspection show-signature scitex.plt.plot
+      scitex dev introspection show-source scitex.stats.run_test --max-lines 50
+      scitex dev introspection list-members scitex.plt --kind functions
+      scitex dev introspection list-apis scitex --max-depth 2
     """
     if help_recursive:
         from . import print_help_recursive
@@ -86,9 +87,9 @@ def q(dotted_path, no_defaults, no_annotations, as_json):
 
     \b
     Examples:
-      scitex dev introspect show-signature scitex.plt.plot
-      scitex dev introspect show-signature scitex.audio.speak --json
-      scitex dev introspect show-signature json.dumps
+      scitex dev introspection show-signature scitex.plt.plot
+      scitex dev introspection show-signature scitex.audio.speak --json
+      scitex dev introspection show-signature json.dumps
     """
     from scitex.introspect import q as get_q
 
@@ -133,8 +134,8 @@ def qq(dotted_path, max_lines, no_decorators, as_json):
 
     \b
     Examples:
-      scitex dev introspect show-source scitex.plt.plot
-      scitex dev introspect show-source scitex.audio.speak --max-lines 50
+      scitex dev introspection show-source scitex.plt.plot
+      scitex dev introspection show-source scitex.audio.speak --max-lines 50
     """
     from scitex.introspect import qq as get_qq
 
@@ -184,9 +185,9 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
 
     \b
     Examples:
-      scitex dev introspect list-members scitex.plt
-      scitex dev introspect list-members scitex.audio --kind functions
-      scitex dev introspect list-members scitex.plt.AxisWrapper --filter all
+      scitex dev introspection list-members scitex.plt
+      scitex dev introspection list-members scitex.audio --kind functions
+      scitex dev introspection list-members scitex.plt.AxisWrapper --filter all
     """
     from scitex.introspect import dir as get_dir
 
@@ -226,7 +227,7 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
 def api(dotted_path, max_depth, root_only, verbose, as_json):
     """List API tree with types and signatures. -v adds docstrings, -vv full docs.
 
-    $ scitex dev introspect list-apis scitex --root-only --json
+    $ scitex dev introspection list-apis scitex --root-only --json
     """
     import importlib
 

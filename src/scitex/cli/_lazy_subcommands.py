@@ -42,6 +42,8 @@ class PeerCliTarget:
 # Hidden migration routes reuse Dev's native alias helper. Canonical products
 # stay at root; developer workflows move under dev. The normal metadata views
 # never advertise these routes, and a reserved name cannot recreate an alias.
+DEV_RENAMES = {"introspect": "introspection"}
+
 DEPRECATED_ALIASES: dict[str, tuple[object, str]] = {
     "notify": ("notification", "3.0"),
     "verify": ("clew", "3.0"),
@@ -52,7 +54,7 @@ DEPRECATED_ALIASES: dict[str, tuple[object, str]] = {
     "app": (("sdk", "app"), "3.0"),
     "ui": (("sdk", "ui"), "3.0"),
     **{
-        name: (("dev", name), "3.0")
+        name: (("dev", DEV_RENAMES.get(name, name)), "3.0")
         for name in (
             "audit",
             "completion",
@@ -95,6 +97,7 @@ _FALLBACK_HELP: dict[str, str] = {
     "docs": "Browse and search SciTeX documentation.",
     "event": "Event bus for async task results.",
     "introspect": "Code introspection tools.",
+    "introspection": "Code introspection tools.",
     "mcp": "MCP server management.",
     "notebook": "Jupyter notebook tools.",
     "notification": "Notification and alerting tools.",
@@ -192,7 +195,7 @@ DEV_COMMANDS = frozenset(
     {
         "audit",
         "completion",
-        "introspect",
+        "introspection",
         "linter",
         "list-python-apis",
         "pkg",
@@ -220,6 +223,7 @@ _WORKFLOW_OWNERS = {
     "writer": "scitex-writer",
     "audit": "scitex-audit",
     "introspect": "scitex-introspect",
+    "introspection": "scitex-introspect",
     "list-python-apis": "scitex-introspect",
     "linter": "scitex-dev",
     "skills": "scitex-dev",
@@ -277,6 +281,11 @@ def reserved_cli_names(rows=None, *, snapshot=None, namespace="root"):
             for name in workflows
             if name not in native_enabled and not workflow_enabled(name, snapshot)
         )
+    # A renamed wrapper must honor declines and preferences under either name.
+    # Keeping the old route hidden must not make it a way around policy.
+    for previous, canonical in DEV_RENAMES.items():
+        if previous in blocked or canonical in blocked:
+            blocked.update((previous, canonical))
     return blocked
 
 

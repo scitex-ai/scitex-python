@@ -117,12 +117,8 @@ def format_python_signature(func, multiline: bool = True, indent: str = "  ") ->
     return name_s, sig_s
 
 
-def group_to_json(ctx, group: click.Group) -> None:
-    """Output a group's subcommands as Result JSON and exit.
-
-    Provides ``--json`` behavior for group-level commands, listing
-    available subcommands with their short help text.
-    """
+def _group_json(ctx, group: click.Group) -> str:
+    """Render a group's actual visible commands as Result JSON."""
     from scitex_dev import Result
 
     summaries = getattr(group, "command_summaries", None)
@@ -140,7 +136,12 @@ def group_to_json(ctx, group: click.Group) -> None:
         from ._metadata import cli_metadata
 
         data["metadata"] = cli_metadata(distribution)
-    click.echo(Result(success=True, data=data).to_json())
+    return Result(success=True, data=data).to_json()
+
+
+def group_to_json(ctx, group: click.Group) -> None:
+    """Output a group's subcommands as Result JSON and exit."""
+    click.echo(_group_json(ctx, group))
     ctx.exit(0)
 
 

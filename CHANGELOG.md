@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Prefer `scitex dev introspection` for Python inspection. Keep the old
+  `introspect` routes as hidden warning aliases and honor CLI declines under
+  either name. Render the composed Dev inventory as JSON without replacing
+  the Dev owner's callback or its runtime checks.
+
 - Preview `scitex dev template clone` by default and require `--yes` to create
   a project. Return a structured Result for JSON previews without cloning.
   Install the actual `scitex-git` provider through the Git and template extras.

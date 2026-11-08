@@ -47,7 +47,7 @@ dependencies, credentials, or services. A Python-only library stays Python-only.
 scitex --help
 scitex dev --help
 scitex dev list-python-apis --help
-scitex dev introspect --help
+scitex dev introspection --help
 scitex dev skills list --help
 scitex mcp --help
 ```

@@ -23,7 +23,7 @@ installed_parser = _HELPERS.installed_parser
 
 _MOVED = {
     "completion",
-    "introspect",
+    "introspection",
     "linter",
     "list-python-apis",
     "pkg",
@@ -31,6 +31,7 @@ _MOVED = {
     "audit",
 }
 _HIDDEN = {
+    "introspect",
     "app",
     "ui",
     "orochi",
@@ -404,7 +405,7 @@ def test_developer_discovery_lists_only_resolvable_visible_commands(tmp_path):
     # Arrange / Act: use the real installed Dev owner and composed view.
     result = _probe(tmp_path, "developer-listing")
     # Assert: retain public maintenance paths while excluding hidden closures.
-    assert {"skills", "completion", "introspect"} <= set(result["listed"])
+    assert {"skills", "completion", "introspection"} <= set(result["listed"])
     assert result["unresolved"] == []
     assert result["hidden"] == []
 

@@ -57,7 +57,7 @@ provider's help for deployment and workspace operations.
 ```bash
 scitex dev audit --help
 scitex dev completion --help
-scitex dev introspect --help
+scitex dev introspection --help
 scitex dev linter --help
 scitex dev list-python-apis --help
 scitex dev pkg --help
@@ -106,7 +106,7 @@ into a client. Consult the [MCP reference](02_MCP_TOOLS.md) and actual server he
 | `scitex verify …` | `scitex clew …` |
 | `scitex audit …` | `scitex dev audit …` |
 | `scitex completion …` | `scitex dev completion …` |
-| `scitex introspect …` | `scitex dev introspect …` |
+| `scitex introspect …`, `scitex dev introspect …` | `scitex dev introspection …` |
 | `scitex linter …` | `scitex dev linter …` |
 | `scitex list-python-apis …` | `scitex dev list-python-apis …` |
 | `scitex pkg …` | `scitex dev pkg …` |
