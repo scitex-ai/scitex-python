@@ -6,6 +6,7 @@ from __future__ import annotations
 import sys
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand
 
 
 class AuditGroup(click.Group):
@@ -117,19 +118,30 @@ def status(as_json):
             click.echo(f"  {badge}  {tool} ({check_name}) — install: {install_hint}")
 
 
-@audit.command()
+@audit.command(
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Preview missing audit tools; require --yes to install Python tools.",
+        description="Without --yes, show a plan. --dry-run always prevents installation.",
+        examples=(
+            Example("{prog} dev audit install", "Preview missing audit tools."),
+            Example(
+                "{prog} dev audit install --yes",
+                "Install missing bandit and pip-audit tools.",
+            ),
+            Example(
+                "{prog} dev audit install --yes --dry-run",
+                "Preview even with consent supplied.",
+            ),
+        ),
+    ),
+)
 @click.option(
     "--dry-run", is_flag=True, help="Preview without changes, even with --yes."
 )
 @click.option("--yes", is_flag=True, help="Install the missing Python audit tools.")
 def install(dry_run, yes):
-    """Preview missing audit tools; use --yes to install bandit and pip-audit.
-
-    \b
-    scitex dev audit install             # Preview only
-    scitex dev audit install --yes       # Install missing Python tools
-    scitex dev audit install --dry-run   # Preview only
-    """
+    """Install missing Python audit tools only after explicit consent."""
     import shutil
     import subprocess
 

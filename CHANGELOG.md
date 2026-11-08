@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Preview `scitex dev template clone` by default and require `--yes` to create
+  a project. Return a structured Result for JSON previews without cloning.
+  Install the actual `scitex-git` provider through the Git and template extras.
+
 - Preview missing security audit tools by default. Require `scitex dev audit
   install --yes` to install them; `--dry-run` always prevents installation.
 

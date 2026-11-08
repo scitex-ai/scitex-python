@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand
 
 
 @click.group(
@@ -178,7 +179,18 @@ def list_code_templates_cmd(as_json):
         sys.exit(1)
 
 
-@template.command()
+@template.command(
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Preview a project template clone; require --yes to create it.",
+        description="Without --yes, show a plan. --dry-run always prevents cloning.",
+        examples=(
+            Example("{prog} dev template clone research ./my-research", "Preview a research project."),
+            Example("{prog} dev template clone pip-project ./my-package --yes", "Create a Python project."),
+            Example("{prog} dev template clone paper ./manuscript --yes --dry-run", "Preview only."),
+        ),
+    ),
+)
 @click.argument(
     "template_type",
     type=click.Choice(["research", "minimal", "pip-project", "singularity", "paper"]),
@@ -200,34 +212,11 @@ def list_code_templates_cmd(as_json):
     help="Output as structured JSON (Result envelope).",
 )
 @click.option(
-    "--dry-run", is_flag=True, help="Show what would be done without making changes."
+    "--dry-run", is_flag=True, help="Preview without changes, even with --yes."
 )
-def clone(template_type, destination, git_strategy, branch, tag, as_json, dry_run):
-    """
-    Clone a project template
-
-    \b
-    Template Types:
-      research    - Full scientific workflow (scripts, data, docs, results)
-      minimal     - Minimal SciTeX structure (writer, scholar, visualizer)
-      pip-project - Python package (src, tests, docs, CI/CD)
-      singularity - Container-based (definition files, build scripts)
-      paper       - Academic paper (LaTeX, BibTeX, figures)
-
-    \b
-    Git Strategies:
-      child  - Create isolated git in project directory (default)
-      parent - Use parent git repository
-      origin - Preserve template's original git history
-      none   - Disable git initialization
-
-    \b
-    Examples:
-      scitex template clone research ./my-research
-      scitex template clone minimal ./my-project
-      scitex template clone pip-project ./my-package --git-strategy parent
-      scitex template clone paper ./manuscript --branch develop
-    """
+@click.option("--yes", is_flag=True, help="Create the project from the template.")
+def clone(template_type, destination, git_strategy, branch, tag, as_json, dry_run, yes):
+    """Create a project only after consent, or display its clone plan."""
     # Validate mutual exclusivity
     if branch and tag:
         click.echo("Error: Cannot specify both --branch and --tag", err=True)
@@ -245,7 +234,14 @@ def clone(template_type, destination, git_strategy, branch, tag, as_json, dry_ru
         tag=tag,
     )
 
-    if dry_run:
+    if dry_run or not yes:
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(
+                Result(success=True, data={"dry_run": True, **clone_kwargs}).to_json()
+            )
+            return
         click.echo(f"[dry-run] Would clone '{template_type}' to {destination}")
         click.echo(f"[dry-run] git_strategy={git_strategy}, branch={branch}, tag={tag}")
         return

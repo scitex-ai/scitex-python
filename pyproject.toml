@@ -397,6 +397,7 @@ gists = ["scitex-gists==0.1.8"]
 # Git Module - Git operations
 # Use: pip install scitex[git]
 git = [
+    "scitex-git==0.3.2",
     "GitPython",
     "matplotlib",
 ]
@@ -719,6 +720,7 @@ str = [
 # Delegates to standalone scitex-template package (per general rule §12).
 template = [
     "scitex-template==0.7.0",
+    "scitex-git==0.3.2",
 ]
 
 # Tex Module - LaTeX utilities

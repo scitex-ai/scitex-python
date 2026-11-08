@@ -67,12 +67,12 @@ Project scaffolding from built-in templates.
 
 .. code-block:: bash
 
-   scitex template clone <type> <name>
+   scitex dev template clone <type> <name> --yes
 
 Available template types:
 
 - ``research`` -- Research project with session tracking
-- ``pip`` -- Python pip package
+- ``pip-project`` -- Python pip package
 - ``paper`` -- LaTeX manuscript project
 - ``app`` -- SciTeX app with bridge integration
 - ``singularity`` -- Singularity container definition
