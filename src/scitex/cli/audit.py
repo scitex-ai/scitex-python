@@ -119,12 +119,16 @@ def status(as_json):
 
 @audit.command()
 @click.option(
-    "--dry-run", is_flag=True, help="Show what would be done without making changes"
+    "--dry-run", is_flag=True, help="Preview without changes, even with --yes."
 )
-def install(dry_run):
-    """Install missing audit tools (bandit, pip-audit).
+@click.option("--yes", is_flag=True, help="Install the missing Python audit tools.")
+def install(dry_run, yes):
+    """Preview missing audit tools; use --yes to install bandit and pip-audit.
 
-    $ scitex dev audit install --dry-run
+    \b
+    scitex dev audit install             # Preview only
+    scitex dev audit install --yes       # Install missing Python tools
+    scitex dev audit install --dry-run   # Preview only
     """
     import shutil
     import subprocess
@@ -135,7 +139,7 @@ def install(dry_run):
     if not shutil.which("pip-audit"):
         pip_tools.append("pip-audit")
 
-    if dry_run:
+    if dry_run or not yes:
         if pip_tools:
             click.secho("[dry-run] Would install via pip:", fg="cyan")
             for tool in pip_tools:
