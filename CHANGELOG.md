@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Require the qualified public Dev 0.62.18 release consistently in the core,
+  development and linter profiles, including installed CLI dictionaries,
+  interpreter-bound completion and audit opt-out corrections.
+
 - Share legacy file-conversion checks between JSON and text output. Enforce
   extension and overwrite checks before previews, preserve already-STX inputs,
   and refuse source/output aliases, including hardlinks. This does not repair
