@@ -20,7 +20,7 @@ import pytest
 )
 def test_mutation_help_uses_the_canonical_umbrella_path(tmp_path, path, expected):
     # Arrange
-    source = Path(__file__).resolve().parents[3] / "src"
+    source = Path(__file__).resolve().parents[2] / "src"
     driver = (
         "import sys\n"
         "sys.path.insert(0,sys.argv[1])\n"
