@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Require the qualified public Scholar 1.29.2 release consistently across
+  profiles, including its source-bound installed CLI vocabulary.
+
 - Require the qualified public Dev 0.62.18 release consistently in the core,
   development and linter profiles, including installed CLI dictionaries,
   interpreter-bound completion and audit opt-out corrections.

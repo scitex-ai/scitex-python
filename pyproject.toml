@@ -91,7 +91,7 @@ dependencies = [
     "scitex-notebook==0.1.4",
     # Delegated modules from #51 standalonization
     "scitex-db==0.1.12",
-    "scitex-scholar==1.29.1",
+    "scitex-scholar==1.29.2",
     "scitex-parallel==0.1.8",
     "scitex-types==0.1.6",
     "scitex-path==0.1.7",
@@ -658,7 +658,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar==1.29.1"
+    "scitex-scholar==1.29.2"
 ]
 
 # Schema Module - Data schema validation
@@ -958,7 +958,7 @@ dev = [
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
     "scitex-notification==0.2.9",
-    "scitex-scholar==1.29.1",
+    "scitex-scholar==1.29.2",
     "scitex-ssh==1.1.0",
     "scitex-stats==0.2.24",
     "scitex-sdk[gui]>=0.3.17",
