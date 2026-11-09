@@ -1,11 +1,21 @@
 """Guarded real Click/installed-metadata fixtures for CLI operator preferences."""
 
+import faulthandler
 import importlib
 import json
 import os
 import re
 import sys
 from pathlib import Path
+
+
+def run_with_diagnostics(callback, *, seconds=40):
+    """Show child stacks before the unchanged parent's 50-second deadline."""
+    faulthandler.dump_traceback_later(seconds, repeat=False, file=sys.stderr)
+    try:
+        return callback()
+    finally:
+        faulthandler.cancel_dump_traceback_later()
 
 
 def provider(
@@ -360,4 +370,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_with_diagnostics(main)

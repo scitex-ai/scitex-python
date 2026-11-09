@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from ._cli_probe_timeout import annotate_timeout
+
 
 @pytest.mark.parametrize(
     "operation",
@@ -37,22 +39,26 @@ def test_cli_operator_preferences_use_frozen_actual_owner_view(tmp_path, operati
     }
     environment["COVERAGE_FILE"] = str(tmp_path / ".coverage")
     # Act
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-I",
-            "-B",
-            str(probe),
-            str(root / "src"),
-            str(tmp_path),
-            operation,
-        ],
-        capture_output=True,
-        text=True,
-        cwd=tmp_path,
-        env=environment,
-        timeout=50,
-    )
+    try:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-I",
+                "-B",
+                str(probe),
+                str(root / "src"),
+                str(tmp_path),
+                operation,
+            ],
+            capture_output=True,
+            text=True,
+            cwd=tmp_path,
+            env=environment,
+            timeout=50,
+        )
+    except subprocess.TimeoutExpired as error:
+        annotate_timeout(error)
+        raise
     # Assert
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout)
