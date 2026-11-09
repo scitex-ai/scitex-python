@@ -90,6 +90,11 @@ envelope with `data.dry_run` and the proposed `data.command`. Confirmed deletion
 uses Socialia's `delete-post --yes`; JSON flags are command-level. Execution
 remains delegated to Socialia, preserving its output and exit status.
 
+Use `scitex social mcp list-tools --json` for the provider-owned tool catalog.
+The adapter preserves that JSON schema and passes command-level `--json` for
+`status`, `check`, `feed`, and `me` reads too. Provider stderr and nonzero exits
+remain failures rather than being replaced with success envelopes.
+
 Resource readings in this source use the installed `scitex-resource` provider:
 
 ```bash

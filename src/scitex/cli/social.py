@@ -18,9 +18,9 @@ import click
 def _run_socialia(*args, json_output: bool = False) -> int:
     """Run socialia CLI command."""
     cmd = [sys.executable, "-m", "socialia"]
+    cmd.extend(args)
     if json_output:
         cmd.append("--json")
-    cmd.extend(args)
 
     result = subprocess.run(cmd)
     return result.returncode
@@ -382,15 +382,17 @@ def doctor():
 
 
 @mcp.command("list-tools")
-def list_tools():
+@click.option("--json", "as_json", is_flag=True, help="Output the provider tool catalog as JSON.")
+def list_tools(as_json):
     """
     List available MCP tools
 
     \b
     Example:
       scitex social mcp list-tools
+      scitex social mcp list-tools --json
     """
-    sys.exit(_run_socialia("mcp", "list-tools"))
+    sys.exit(_run_socialia("mcp", "list-tools", json_output=as_json))
 
 
 @mcp.command()

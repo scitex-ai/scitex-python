@@ -161,6 +161,12 @@ envelope with `data.dry_run` and the proposed `data.command`. Confirmed deletion
 maps to Socialia's `delete-post --yes` operation; JSON flags are passed to the
 provider command. Provider output and exit status pass through unchanged.
 
+`scitex social mcp list-tools --json` forwards Socialia's tool catalog without
+reformatting it. Social reads (`status`, `check`, `feed`, and `me`) likewise pass
+`--json` to the provider command rather than its root group. Supply the flag
+after the subcommand. Failed provider operations retain their nonzero exit
+status and stderr; the adapter does not turn failures into successful JSON.
+
 ## File-backed event notifications in this source
 
 The upcoming 2.30.9 `[events]` extra installs `scitex-events`; `[all]` includes
