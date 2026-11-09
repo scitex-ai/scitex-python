@@ -117,7 +117,7 @@ dependencies = [
     # scitex-audit; scitex-python's main deps no longer pull the
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
-    "figrecipe==0.44.3",
+    "figrecipe==0.44.5",
     "scitex-sdk[gui]>=0.3.17",
 ]
 
@@ -561,7 +561,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.44.3",
+    "figrecipe==0.44.5",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
@@ -867,7 +867,7 @@ dev = [
     "crossref-local==0.7.6",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.44.3",
+    "figrecipe==0.44.5",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
