@@ -151,6 +151,16 @@ build errors produce a nonzero exit and `success: false` with `--json`, includin
 errors returned for an individual Sphinx builder. A successful build does not
 establish that every documented example has been executed.
 
+## Social provider consent in this source
+
+In the upcoming 2.30.9 release, `scitex social delete PLATFORM POST_ID` and
+`scitex social mcp start` preview by default. Add `--yes` to forward the
+operation to Socialia. `--dry-run` always prevents the provider process from
+starting, including with `--yes`. Preview `--json` uses the shared Result
+envelope with `data.dry_run` and the proposed `data.command`. Confirmed deletion
+maps to Socialia's `delete-post --yes` operation; JSON flags are passed to the
+provider command. Provider output and exit status pass through unchanged.
+
 ## File-backed event notifications in this source
 
 The upcoming 2.30.9 `[events]` extra installs `scitex-events`; `[all]` includes

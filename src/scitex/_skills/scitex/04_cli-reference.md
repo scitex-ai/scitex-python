@@ -83,6 +83,13 @@ Reads use installed distribution metadata and a separate import check; the
 existing `--auto-fix` option opts into repair through the selected interpreter's
 pip. JSON remains one object per checked package.
 
+In the upcoming 2.30.9 source, `scitex social delete PLATFORM POST_ID` and
+`scitex social mcp start` preview by default and require `--yes` to execute.
+`--dry-run` takes priority even with consent. Preview `--json` returns a Result
+envelope with `data.dry_run` and the proposed `data.command`. Confirmed deletion
+uses Socialia's `delete-post --yes`; JSON flags are command-level. Execution
+remains delegated to Socialia, preserving its output and exit status.
+
 Resource readings in this source use the installed `scitex-resource` provider:
 
 ```bash

@@ -36,6 +36,20 @@ def _check_socialia() -> bool:
         return False
 
 
+def _preview_socialia(args, as_json):
+    """Describe the exact provider command without launching it."""
+    command = [sys.executable, "-m", "socialia"]
+    command.extend(args)
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        wrap_as_cli(lambda: {"dry_run": True, "command": command}, as_json=True)
+    else:
+        import shlex
+
+        click.echo("[dry-run] Would run: " + shlex.join(command))
+
+
 @click.group(
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
@@ -147,20 +161,24 @@ def post(platform, text, file, reply_to, quote, subreddit, title, dry_run, as_js
     "--dry-run", is_flag=True, help="Show what would be deleted without deleting"
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def delete(platform, post_id, dry_run, as_json):
+@click.option("--yes", "-y", is_flag=True, help="Confirm deletion of the selected post.")
+def delete(platform, post_id, dry_run, as_json, yes):
     """
-    Delete a post from a platform
+    Preview deletion; require --yes to delete a post from a platform.
 
     \b
     Examples:
       scitex social delete twitter 1234567890
-      scitex social delete reddit abc123
+      scitex social delete reddit abc123 --yes
       scitex social delete twitter 1234567890 --dry-run
     """
-    if dry_run:
-        click.echo(f"[dry-run] Would delete post {post_id} from {platform}")
-        sys.exit(0)
-    sys.exit(_run_socialia("delete", platform, post_id, json_output=as_json))
+    args = ["delete-post", platform, post_id, "--yes"]
+    if as_json:
+        args.append("--json")
+    if dry_run or not yes:
+        _preview_socialia(args, as_json)
+        return
+    sys.exit(_run_socialia(*args))
 
 
 @social.command()
@@ -318,7 +336,7 @@ def mcp(ctx, as_json):
 
     \b
     Examples:
-      scitex social mcp start
+      scitex social mcp start --yes
       scitex social mcp doctor
     """
     if ctx.invoked_subcommand is None:
@@ -331,15 +349,24 @@ def mcp(ctx, as_json):
 
 
 @mcp.command()
-def start():
+@click.option("--dry-run", is_flag=True, help="Preview without starting the server.")
+@click.option("--yes", "-y", is_flag=True, help="Confirm starting the MCP server.")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
+def start(dry_run, yes, as_json):
     """
-    Start the MCP server
+    Preview the MCP server command; require --yes to start it.
 
     \b
     Example:
-      scitex social mcp start
+      scitex social mcp start --yes
     """
-    sys.exit(_run_socialia("mcp", "start"))
+    args = ["mcp", "start", "--yes"]
+    if as_json:
+        args.append("--json")
+    if dry_run or not yes:
+        _preview_socialia(args, as_json)
+        return
+    sys.exit(_run_socialia(*args))
 
 
 @mcp.command()
