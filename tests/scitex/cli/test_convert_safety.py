@@ -28,8 +28,8 @@ def test_json_conversion_refuses_existing_output_without_overwrite(tmp_path):
     )
     # Assert
     assert result.exit_code != 0 and target.read_bytes() == before
-    assert json.loads(result.output)["success"] is False
-    assert "Output file exists" in json.loads(result.output)["error"]
+    assert json.loads(result.stdout)["success"] is False
+    assert "Output file exists" in json.loads(result.stdout)["error"]
 
 
 def test_json_conversion_validates_input_suffix_before_preview(tmp_path):
@@ -40,7 +40,7 @@ def test_json_conversion_validates_input_suffix_before_preview(tmp_path):
     result = CliRunner().invoke(convert, ["file", str(source), "--dry-run", "--json"])
     # Assert
     assert result.exit_code != 0 and not source.with_suffix(".stx").exists()
-    assert json.loads(result.output)["success"] is False
+    assert json.loads(result.stdout)["success"] is False
 
 
 def test_json_existing_stx_is_a_nonwriting_noop(tmp_path):
@@ -52,7 +52,7 @@ def test_json_existing_stx_is_a_nonwriting_noop(tmp_path):
     result = CliRunner().invoke(convert, ["file", str(source), "--json"])
     # Assert
     assert result.exit_code == 0 and source.read_bytes() == before
-    assert json.loads(result.output)["data"]["action"] == "already_stx"
+    assert json.loads(result.stdout)["data"]["action"] == "already_stx"
 
 
 @pytest.mark.parametrize("as_json", [False, True])

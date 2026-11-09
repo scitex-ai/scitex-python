@@ -290,11 +290,17 @@ using the same Python environment as `scitex` to install that browser.
 `browser show --json` returns guidance in a Result envelope. It does not control
 a browser session; the response explicitly reports that control is unavailable.
 
-In the upcoming 2.30.9 source, `scitex convert info FILE.stx` reads archive
-metadata through `scitex-io`'s `ZipBundle`. `scitex convert validate FILE.stx`
+In the upcoming 2.30.9 source, `scitex conversion info FILE.stx` reads archive
+metadata through `scitex-io`'s `ZipBundle`. `scitex conversion validate FILE.stx`
 requires a JSON object in `spec.json` and enforces the provider's strict schema
 metadata and figure/plot/statistics field checks. Invalid files produce a
 nonzero exit, including mixed valid/invalid batches. Both operations preserve
 the archive bytes. These checks do not establish scientific reproducibility
 or validate nested-reference depth or cycles; legacy-format migration is a
 separate operation and still needs qualification.
+
+In this source, use `scitex conversion convert-file FILE --dry-run --json`
+for a nonwriting path preview. Single and batch conversion preview by default;
+`--yes` attempts writing and `--dry-run` always prevents it. `convert` and `file` remain hidden warning aliases
+until 3.0; warnings use stderr and JSON stays on stdout. Declining either group
+name reserves both routes. Actual legacy-format migration remains unqualified.

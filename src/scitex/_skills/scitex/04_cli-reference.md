@@ -155,12 +155,11 @@ repository for the command layout and ownership rules.
 
 ### Legacy bundle conversion
 
-The legacy `convert file` path shares suffix, overwrite and source-alias checks
-between text and JSON output. A preview checks the proposed paths without
-writing; it does not qualify the archive's schema or conversion support. Actual
-conversion remains unqualified: the current helper calls its obsolete schema
-normalizer with an unsupported signature. Do not treat preview success or this
-guard correction as a working migration to the current bundle format.
+The canonical `conversion convert-file` path shares suffix, overwrite and source-alias checks between text and JSON
+output. Single and batch conversions preview by default; `--yes` attempts writing and `--dry-run` always prevents it.
+Previews check paths, not schemas or conversion support. Actual migration remains unqualified: the current helper calls
+its obsolete normalizer with an unsupported signature. Do not treat a successful preview as a working migration. The
+hidden `convert` and `file` aliases warn on stderr until 3.0; JSON stays on stdout.
 
 ## Metadata size and search mode in this source
 
@@ -193,11 +192,9 @@ and `types` routes remain hidden compatibility paths with their existing
 text output and options. Consult the installed provider's skill for local
 state paths, validated event types and optional outbound delivery.
 
-In the upcoming 2.30.9 source, `scitex convert info FILE.stx` reads archive
-metadata through `scitex-io`'s `ZipBundle`. `scitex convert validate FILE.stx`
-requires a JSON object in `spec.json` and enforces the provider's strict schema
-metadata and figure/plot/statistics field checks. Invalid files produce a
-nonzero exit, including mixed valid/invalid batches. Both operations preserve
-the archive bytes. These checks do not establish scientific reproducibility
-or validate nested-reference depth or cycles; legacy-format migration is a
-separate operation and still needs qualification.
+In the upcoming 2.30.9 source, `scitex conversion info FILE.stx` reads archive metadata through `scitex-io`'s
+`ZipBundle`. `scitex conversion validate FILE.stx` requires a JSON object in `spec.json` and enforces the provider's
+strict schema metadata and figure/plot/statistics field checks. Invalid files produce a nonzero exit, including mixed
+valid/invalid batches. Both operations preserve the archive bytes. These checks do not establish scientific
+reproducibility or validate nested-reference depth or cycles; legacy-format migration is a separate operation and still
+needs qualification.

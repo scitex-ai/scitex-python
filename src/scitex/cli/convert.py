@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import List, Optional
 
 import click
+from scitex_dev.ecosystem import deprecated_alias
 
 
-@click.group(invoke_without_command=True)
+@click.group("conversion", invoke_without_command=True)
 @click.option(
     "--json",
     "as_json",
@@ -30,7 +31,7 @@ def convert(ctx, as_json):
             click.echo(ctx.get_help())
 
 
-@convert.command("file")
+@convert.command("convert-file")
 @click.argument("input_path", type=click.Path(exists=True))
 @click.option(
     "-o",
@@ -49,27 +50,33 @@ def convert(ctx, as_json):
     help="Show what would be done without writing files",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option(
+    "--yes", "-y", is_flag=True, help="Attempt conversion instead of previewing"
+)
 def convert_file(
     input_path: str,
     output: Optional[str],
     overwrite: bool,
     dry_run: bool,
     as_json: bool,
+    yes: bool,
 ):
-    """Convert a single legacy bundle to .stx format.
+    """Preview a legacy conversion; --yes attempts writing.
 
     \b
-    Supported input formats:
+    Legacy extensions accepted for preview:
       .figz  - Figure bundles
       .pltz  - Plot bundles
       .statsz - Statistics bundles
 
     \b
     Examples:
-      scitex convert file old_figure.figz
-      scitex convert file plot.pltz -o converted_plot.stx
-      scitex convert file stats.statsz --dry-run
+      scitex conversion convert-file old_figure.figz
+      scitex conversion convert-file plot.pltz -o converted_plot.stx
+      scitex conversion convert-file stats.statsz --dry-run
     """
+
+    dry_run = dry_run or not yes
 
     def _convert():
         input_file = Path(input_path)
@@ -143,21 +150,27 @@ def convert_file(
     help="Show what would be done without writing files",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option(
+    "--yes", "-y", is_flag=True, help="Attempt conversion instead of previewing"
+)
 def convert_batch(
     pattern: tuple,
     output_dir: Optional[str],
     overwrite: bool,
     dry_run: bool,
     as_json: bool,
+    yes: bool,
 ):
-    """Batch convert multiple legacy bundles to .stx format.
+    """Preview batch conversions; --yes attempts writing.
 
     \b
     Examples:
-      scitex convert batch ./figures/*.figz
-      scitex convert batch ./plots/*.pltz -o ./converted/
-      scitex convert batch ./**/*.figz ./**/*.pltz --dry-run
+      scitex conversion batch ./figures/*.figz
+      scitex conversion batch ./plots/*.pltz -o ./converted/
+      scitex conversion batch ./**/*.figz ./**/*.pltz --dry-run
     """
+    dry_run = dry_run or not yes
+
     if as_json:
         from scitex_dev import wrap_as_cli
 
@@ -292,13 +305,15 @@ def validate_bundles(paths: tuple, verbose: bool):
 
     \b
     Examples:
-      scitex convert validate output.stx
-      scitex convert validate ./figures/*.stx --verbose
+      scitex conversion validate output.stx
+      scitex conversion validate ./figures/*.stx --verbose
     """
     try:
         from scitex_io.bundle import ZipBundle, validate_spec
     except ImportError as error:
-        raise click.ClickException("scitex-io bundle support is not available") from error
+        raise click.ClickException(
+            "scitex-io bundle support is not available"
+        ) from error
 
     valid = 0
     invalid = 0
@@ -361,12 +376,14 @@ def bundle_info(path: str):
 
     \b
     Example:
-      scitex convert info figure.stx
+      scitex conversion info figure.stx
     """
     try:
         from scitex_io.bundle import ZipBundle
     except ImportError as error:
-        raise click.ClickException("scitex-io bundle support is not available") from error
+        raise click.ClickException(
+            "scitex-io bundle support is not available"
+        ) from error
 
     bundle_path = Path(path)
 
@@ -479,5 +496,7 @@ def _convert_bundle(input_path: Path, output_path: Path) -> None:
                         arcname = file_path.relative_to(tmpdir)
                         out_zf.write(file_path, arcname)
 
+
+deprecated_alias(convert, "file", target="convert-file", remove_in="3.0")
 
 # EOF

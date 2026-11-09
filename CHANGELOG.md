@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Expose bundle conversion under `scitex conversion convert-file`. Keep
+  `convert` and `file` as hidden warning aliases until 3.0, preserving JSON stdout
+  and metadata declines. Single and batch conversions preview by default, require
+  `--yes` to attempt writes, and honor `--dry-run`. Actual migration remains unqualified.
+
 - Require public Hub 0.22.0a7 for cloud, Hub, module and project profiles,
   including the installed CLI vocabulary supplied by its owning package.
   Align both logging profiles with its required public logging 0.2.5 release.

@@ -43,8 +43,10 @@ class PeerCliTarget:
 # stay at root; developer workflows move under dev. The normal metadata views
 # never advertise these routes, and a reserved name cannot recreate an alias.
 DEV_RENAMES = {"introspect": "introspection"}
+ROOT_RENAMES = {"convert": "conversion"}
 
 DEPRECATED_ALIASES: dict[str, tuple[object, str]] = {
+    "convert": ("conversion", "3.0"),
     "notify": ("notification", "3.0"),
     "verify": ("clew", "3.0"),
     "events": ("event", "3.0"),
@@ -92,7 +94,7 @@ _FALLBACK_HELP: dict[str, str] = {
     "audit": "Security auditing tools.",
     "capture": "Screenshot capture tools.",
     "completion": "Shell tab-completion management (install, status).",
-    "convert": "File format conversion.",
+    "conversion": "File format conversion.",
     "config": "Inspect and configure SciTeX paths and settings.",
     "docs": "Browse and search SciTeX documentation.",
     "event": "Event bus for async task results.",
@@ -171,7 +173,7 @@ _UMBRELLA_WRAPPERS = frozenset(
     {
         "browser",
         "config",
-        "convert",
+        "conversion",
         "dev",
         "docs",
         "event",
@@ -283,7 +285,7 @@ def reserved_cli_names(rows=None, *, snapshot=None, namespace="root"):
         )
     # A renamed wrapper must honor declines and preferences under either name.
     # Keeping the old route hidden must not make it a way around policy.
-    for previous, canonical in DEV_RENAMES.items():
+    for previous, canonical in (*DEV_RENAMES.items(), *ROOT_RENAMES.items()):
         if previous in blocked or canonical in blocked:
             blocked.update((previous, canonical))
     return blocked
@@ -383,7 +385,7 @@ def build_lazy_subcommands(
 # the non-Core minority keeps this table maintainable and keeps new
 # registry peers out of `Other`.
 _NON_CORE_CATEGORIES: tuple[tuple[str, frozenset], ...] = (
-    ("Data & Sync", frozenset({"convert"})),
+    ("Data & Sync", frozenset({"conversion"})),
     (
         "Service",
         frozenset(
