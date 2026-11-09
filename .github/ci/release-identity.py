@@ -335,7 +335,9 @@ PUBLIC_LINKS = {
     ("examples/_legacy/stats/statsz.py"): ("../scitex/io/bundle/statsz.py"),
 }
 
-DOC_IGNORE_SHA256 = "9ac10ad59a7ce9071fb89211853129e8747a00314450c6ccf05582bb40046624"
+# Reviewed source adds only the private /.worktrees/ exclusion to the prior
+# documented policy. Require these exact bytes; unrelated ignore edits refuse.
+DOC_IGNORE_SHA256 = "9f0533a3fefdfe0957ef14f2b6cb7dbcae7b50552a4ab4d7ad18b36b10c70cf9"
 
 DOC_HOOK = {
     "path": "build_hooks/sphinx_bundle.py",
