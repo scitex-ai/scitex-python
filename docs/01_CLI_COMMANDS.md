@@ -70,6 +70,12 @@ vocabulary is `src/scitex/_cli_audit_dict.yaml`, shipped as
 installed dictionary through its verified owner and RECORD checks. This noun
 classification does not waive action flags or provide vocabulary to other owners.
 
+Use `scitex dev pkg validate --pkg scitex --json` to check an installed package's
+metadata and importability in the selected Python environment. `pkg audit`
+remains a hidden, deprecated compatibility route. Validation is read-only by
+default; the existing `--auto-fix` option explicitly requests a repair through
+that interpreter's pip.
+
 Eligible developer providers such as capture, security, newb, resource and
 project templates also live under `scitex dev`. Python-only helpers do not gain
 commands merely by being installed.

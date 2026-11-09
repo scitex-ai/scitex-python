@@ -77,6 +77,12 @@ included by the normal package mapping. Dev admits it through verified installed
 ownership and RECORD checks. Its `audit` noun names the umbrella's audit facility;
 it does not waive action flags or extend another owner's vocabulary.
 
+Package environment checks use `scitex dev pkg validate --pkg scitex --json`.
+The old `pkg audit` route remains hidden and forwards with a deprecation warning.
+Reads use installed distribution metadata and a separate import check; the
+existing `--auto-fix` option opts into repair through the selected interpreter's
+pip. JSON remains one object per checked package.
+
 Resource readings in this source use the installed `scitex-resource` provider:
 
 ```bash

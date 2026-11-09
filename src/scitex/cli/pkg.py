@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 """SciTeX package-management CLI (``scitex-pkg``).
 
-Currently provides the ``audit`` subcommand — an autonomous
-virtualenv-drift detector. It inspects a hardcoded list of
+The ``validate`` subcommand checks virtualenv drift. It inspects a default list of
 ``scitex-*`` packages (overridable via env / config), checks that
-each one is both pip-installed *and* importable, and optionally
+each one has installed distribution metadata *and* is importable, and optionally
 re-installs the package from a local editable checkout when drift
 is detected.
 
-This CLI is driven on the ``mgr-pkg`` agent host by orochi-cron at
-startup (see lead msg#16799 item B); it is also useful as a
-developer-run sanity check.
+Use ``scitex dev pkg validate`` or the standalone ``scitex-pkg validate``.
+The older ``audit`` invocation remains a hidden compatibility route.
 
 Exit codes (with ``--quiet``):
     0 = all packages ok
@@ -22,19 +20,22 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
+from importlib.metadata import PackageNotFoundError, version as distribution_version
 from pathlib import Path
 from typing import Optional
 
 import click
+from scitex_dev.ecosystem import deprecated_alias
 
 # ---------------------------------------------------------------------------
 # Target package set
 # ---------------------------------------------------------------------------
-# Hardcoded defaults per the msg#16799 spec. Keep this list ordered —
+# Keep the existing default targets ordered —
 # users reading the terminal output benefit from a stable order.
 DEFAULT_TARGET_PACKAGES: tuple[str, ...] = (
     "scitex",
@@ -116,7 +117,7 @@ class PackageAuditResult:
     repo_path : Optional[str]
         Resolved local repo path (if any).
     version : Optional[str]
-        Installed version from ``pip show`` (if any).
+        Version from this interpreter's installed distribution metadata (if any).
     import_ok : bool
         Whether ``python -c 'import <pkg>'`` succeeded.
     fix_attempted : bool
@@ -144,27 +145,12 @@ class PackageAuditResult:
 # ---------------------------------------------------------------------------
 # Core audit primitives (wrap subprocess so tests can patch them)
 # ---------------------------------------------------------------------------
-def _pip_show(pkg: str) -> Optional[str]:
-    """Return installed version from ``pip show <pkg>`` or None if not found.
-
-    A return of ``None`` means pip does not have the package in the current
-    environment. A non-empty string is the reported ``Version:`` line.
-    """
+def _installed_version(pkg: str) -> Optional[str]:
+    """Read this interpreter's distribution metadata without requiring pip."""
     try:
-        proc = subprocess.run(
-            [sys.executable, "-m", "pip", "show", pkg],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
-    except (subprocess.SubprocessError, OSError):
+        return distribution_version(pkg)
+    except PackageNotFoundError:
         return None
-    if proc.returncode != 0:
-        return None
-    for line in proc.stdout.splitlines():
-        if line.lower().startswith("version:"):
-            return line.split(":", 1)[1].strip()
-    return None
 
 
 def _python_import_ok(import_name: str) -> tuple[bool, Optional[str]]:
@@ -216,19 +202,21 @@ def audit_package(pkg: str, auto_fix: bool = False) -> PackageAuditResult:
     """Audit a single package and return a ``PackageAuditResult``.
 
     The algorithm:
-      1. ``pip show <pkg>`` — establishes "pip thinks it's installed".
+      1. Distribution metadata establishes the installed version.
       2. ``python -c 'import <pkg>'`` — establishes "it actually works".
       3. If both pass → ``ok``.
-         If pip-only → ``drift`` (e.g. editable install that lost its src).
+         If metadata-only → ``drift`` (e.g. editable install that lost its src).
          If neither → ``missing``.
       4. If ``auto_fix`` and a local repo path exists, run
          ``pip install -e <repo_path>`` then re-verify the import.
     """
+    if not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?", pkg):
+        return PackageAuditResult(pkg=pkg, status="missing", error="Invalid distribution name")
     import_name = _import_name(pkg)
     repo_path = _repo_path_for(pkg)
     repo_path_str = str(repo_path) if repo_path.exists() else None
 
-    version = _pip_show(pkg)
+    version = _installed_version(pkg)
     import_ok, import_err = _python_import_ok(import_name)
 
     if version and import_ok:
@@ -261,7 +249,7 @@ def audit_package(pkg: str, auto_fix: bool = False) -> PackageAuditResult:
                 result.status = "ok"
                 result.import_ok = True
                 result.error = None
-                result.version = _pip_show(pkg) or result.version
+                result.version = _installed_version(pkg) or result.version
             else:
                 result.fix_result = "failed"
                 result.error = import_err_after or "import still fails after reinstall"
@@ -298,11 +286,11 @@ def pkg():
 
     \b
     Subcommands:
-      audit    Check installed scitex-* packages for venv drift.
+      validate    Check installed scitex-* packages for venv drift.
     """
 
 
-@pkg.command()
+@pkg.command(name="validate")
 @click.option(
     "--auto-fix",
     is_flag=True,
@@ -337,11 +325,11 @@ def audit(auto_fix, host, as_json, quiet, single_pkg):
 
     \b
     Examples:
-      scitex-pkg audit                          # human text, read-only
-      scitex-pkg audit --auto-fix               # repair any drift found
-      scitex-pkg audit --json                   # NDJSON output
-      scitex-pkg audit --pkg scitex-orochi      # audit one package
-      scitex-pkg audit --auto-fix --quiet       # cron-style (exit code only)
+      scitex dev pkg validate                     # human text, read-only
+      scitex dev pkg validate --auto-fix          # repair any drift found
+      scitex dev pkg validate --json              # NDJSON output
+      scitex dev pkg validate --pkg scitex        # validate one package
+      scitex dev pkg validate --auto-fix --quiet  # exit code only
     """
     # --host is a stub; remote audit lives in a future iteration so the
     # orochi-cron entry on mgr-pkg stays simple.
@@ -393,6 +381,9 @@ def audit(auto_fix, host, as_json, quiet, single_pkg):
     if any_non_ok:
         sys.exit(1)
     sys.exit(0)
+
+
+deprecated_alias(pkg, "audit", target="validate", remove_in="3.0")
 
 
 # Allow ``python -m scitex.cli.pkg`` for quick manual runs
