@@ -287,29 +287,18 @@ def validate_bundles(paths: tuple, verbose: bool):
     Checks:
       - Valid ZIP structure
       - spec.json present and valid
-      - Schema version
-      - Depth limits
-      - Circular references
+      - Required schema metadata
+      - Type-specific figure, plot and statistics fields
 
     \b
     Examples:
       scitex convert validate output.stx
       scitex convert validate ./figures/*.stx --verbose
     """
-    # Use Bundle for validation
     try:
-        from scitex.io.bundle import Bundle as ZipBundle
-
-        def validate_stx_bundle(path):
-            try:
-                bundle = ZipBundle(path)
-                return bundle.validate(level="strict")
-            except Exception as e:
-                return {"valid": False, "errors": [str(e)]}
-
-    except ImportError:
-        click.echo("Error: scitex.io.bundle not available", err=True)
-        return
+        from scitex_io.bundle import ZipBundle, validate_spec
+    except ImportError as error:
+        raise click.ClickException("scitex-io bundle support is not available") from error
 
     valid = 0
     invalid = 0
@@ -321,7 +310,11 @@ def validate_bundles(paths: tuple, verbose: bool):
             with ZipBundle(path, mode="r") as zb:
                 spec = zb.read_json("spec.json")
 
-            # Check schema
+            if not isinstance(spec, dict):
+                raise ValueError("spec.json must contain a JSON object")
+            validate_spec(spec, spec.get("type", "unknown"), strict=True)
+
+            # Display the metadata only after expert validation succeeds.
             schema = spec.get("schema", {})
             schema_name = schema.get("name", "unknown")
             schema_version = schema.get("version", "unknown")
@@ -335,9 +328,6 @@ def validate_bundles(paths: tuple, verbose: bool):
                 click.echo(f"  ID: {bundle_id}")
                 constraints = spec.get("constraints", {})
                 click.echo(f"  Constraints: {constraints}")
-
-            # Validate structure
-            validate_stx_bundle(spec)
 
             click.secho(f"VALID: {path}", fg="green")
             valid += 1
@@ -374,10 +364,9 @@ def bundle_info(path: str):
       scitex convert info figure.stx
     """
     try:
-        from scitex.io.bundle import Bundle as ZipBundle
-    except ImportError:
-        click.echo("Error: scitex.io.bundle not available", err=True)
-        return
+        from scitex_io.bundle import ZipBundle
+    except ImportError as error:
+        raise click.ClickException("scitex-io bundle support is not available") from error
 
     bundle_path = Path(path)
 

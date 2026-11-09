@@ -192,3 +192,12 @@ with `--json` for the shared Result envelope. The older `latest`, `history`
 and `types` routes remain hidden compatibility paths with their existing
 text output and options. Consult the installed provider's skill for local
 state paths, validated event types and optional outbound delivery.
+
+In the upcoming 2.30.9 source, `scitex convert info FILE.stx` reads archive
+metadata through `scitex-io`'s `ZipBundle`. `scitex convert validate FILE.stx`
+requires a JSON object in `spec.json` and enforces the provider's strict schema
+metadata and figure/plot/statistics field checks. Invalid files produce a
+nonzero exit, including mixed valid/invalid batches. Both operations preserve
+the archive bytes. These checks do not establish scientific reproducibility
+or validate nested-reference depth or cycles; legacy-format migration is a
+separate operation and still needs qualification.

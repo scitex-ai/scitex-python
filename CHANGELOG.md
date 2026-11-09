@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Read legacy bundle metadata with the I/O package's ZIP reader and enforce
+  its strict schema/type validation before reporting a bundle as valid.
+  Preserve archive contents during inspection and validation.
+
 - Replace unsupported social platform analytics arguments with the provider's
   actual Google Analytics report reads: `show-realtime`, `show-pageviews`,
   and `show-sources`. Preserve provider date/path arguments and JSON output.
