@@ -385,7 +385,7 @@ def build_lazy_subcommands(
 # the non-Core minority keeps this table maintainable and keeps new
 # registry peers out of `Other`.
 _NON_CORE_CATEGORIES: tuple[tuple[str, frozenset], ...] = (
-    ("Data & Sync", frozenset({"conversion"})),
+    ("Data & Sync", frozenset({"conversion", "convert"})),
     (
         "Service",
         frozenset(

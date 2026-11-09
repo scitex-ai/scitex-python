@@ -153,6 +153,7 @@ class TestCommandCategories:
         [
             ("io", "Core"),
             ("convert", "Data & Sync"),
+            ("conversion", "Data & Sync"),
             ("mcp", "Service"),
             ("audit", "Diagnostics"),
             ("introspect", "Introspection"),
