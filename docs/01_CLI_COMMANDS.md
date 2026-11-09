@@ -64,6 +64,12 @@ scitex dev pkg --help
 scitex dev skills --help
 ```
 
+The umbrella owns the `audit` facility in this namespace. Its canonical noun
+vocabulary is `src/scitex/_cli_audit_dict.yaml`, shipped as
+`scitex/_cli_audit_dict.yaml` by the normal package mapping. Dev discovers the
+installed dictionary through its verified owner and RECORD checks. This noun
+classification does not waive action flags or provide vocabulary to other owners.
+
 Eligible developer providers such as capture, security, newb, resource and
 project templates also live under `scitex dev`. Python-only helpers do not gain
 commands merely by being installed.

@@ -66,11 +66,16 @@ scitex dev skills list --package scitex-dev --json
 scitex dev skills install --package scitex-dev --dry-run --json
 ```
 
-Developer commands `audit`, `completion`, `introspect`, `linter`,
+Developer commands `audit`, `completion`, `introspection`, `linter`,
 `list-python-apis`, `pkg`, and `skills` are available under `scitex dev`.
 Skills delegate to Dev's installed-provider discovery and configuration;
 installation, loading selected bodies, and client discovery remain separate.
 Inspect `install --help` for destinations and preserve existing client files.
+
+The umbrella's canonical audit vocabulary is `scitex/_cli_audit_dict.yaml`,
+included by the normal package mapping. Dev admits it through verified installed
+ownership and RECORD checks. Its `audit` noun names the umbrella's audit facility;
+it does not waive action flags or extend another owner's vocabulary.
 
 Resource readings in this source use the installed `scitex-resource` provider:
 
