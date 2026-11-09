@@ -13,6 +13,7 @@ import subprocess
 import sys
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand, SpecGroup
 
 
 def _run_socialia(*args, json_output: bool = False) -> int:
@@ -78,7 +79,7 @@ def social(ctx, help_recursive, as_json):
       scitex social post twitter "Hello from SciTeX!"
       scitex social post linkedin "Research update"
       scitex social status
-      scitex social analytics twitter
+      scitex social analytics show-realtime
 
     \b
     Environment Variables (SCITEX_SOCIAL_ prefix):
@@ -260,28 +261,73 @@ def me(platform, as_json):
     sys.exit(_run_socialia("show-me", platform, json_output=as_json))
 
 
-@social.command()
-@click.argument("platform", type=click.Choice(["twitter", "youtube", "ga"]))
-@click.option("--days", "-d", type=int, default=7, help="Number of days to analyze")
-@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def analytics(platform, days, as_json):
-    """
-    Get analytics for a platform
+@social.group(
+    "analytics",
+    cls=SpecGroup,
+    invoke_without_command=True,
+    help_spec=CliHelp(
+        summary="Read Google Analytics reports through Socialia.",
+        examples=(Example("{prog} show-pageviews --start 30daysAgo --json"),),
+    ),
+)
+@click.pass_context
+def analytics(ctx):
+    """Show report choices without starting a provider process."""
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
 
-    \b
-    Platforms:
-      twitter  - Tweet engagement metrics
-      youtube  - Channel and video statistics
-      ga       - Google Analytics reports
 
-    \b
-    Examples:
-      scitex social analytics twitter
-      scitex social analytics youtube --days 30
-      scitex social analytics ga --json
-    """
-    args = ["analytics", platform, "--days", str(days)]
+@analytics.command(
+    "show-realtime",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show realtime active users.",
+        examples=(Example("{prog} --json"),),
+    ),
+)
+@click.option("--json", "as_json", is_flag=True, help="Output provider JSON.")
+def analytics_realtime(as_json):
+    """Delegate the realtime read to the provider."""
+    sys.exit(_run_socialia("analytics", "show-realtime", json_output=as_json))
+
+
+@analytics.command(
+    "show-pageviews",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show page view metrics.",
+        examples=(Example("{prog} --start 30daysAgo --json"),),
+    ),
+)
+@click.option("--start", default="7daysAgo", help="Start date, interpreted by Socialia.")
+@click.option("--end", default="today", help="End date, interpreted by Socialia.")
+@click.option("--path", default=None, help="Filter by page path.")
+@click.option("--json", "as_json", is_flag=True, help="Output provider JSON.")
+def analytics_pageviews(start, end, path, as_json):
+    """Delegate report dates and path without changing provider semantics."""
+    args = ["analytics", "show-pageviews", "--start", start, "--end", end]
+    if path is not None:
+        args.extend(["--path", path])
     sys.exit(_run_socialia(*args, json_output=as_json))
+
+
+@analytics.command(
+    "show-sources",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show traffic sources.",
+        examples=(Example("{prog} --json"),),
+    ),
+)
+@click.option("--start", default="7daysAgo", help="Start date, interpreted by Socialia.")
+@click.option("--end", default="today", help="End date, interpreted by Socialia.")
+@click.option("--json", "as_json", is_flag=True, help="Output provider JSON.")
+def analytics_sources(start, end, as_json):
+    """Delegate traffic source dates to the provider."""
+    sys.exit(_run_socialia(
+        "analytics", "show-sources", "--start", start, "--end", end,
+        json_output=as_json,
+    ))
 
 
 @social.command()

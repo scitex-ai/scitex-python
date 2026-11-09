@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Replace unsupported social platform analytics arguments with the provider's
+  actual Google Analytics report reads: `show-realtime`, `show-pageviews`,
+  and `show-sources`. Preserve provider date/path arguments and JSON output.
+
 - Normalize social reads as `show-me` and `mcp show-installation`; retain old
   names as hidden warning aliases until 3.0. Forward installation JSON at the
   command level; pure JSON requires the provider fix after Socialia 0.5.15.

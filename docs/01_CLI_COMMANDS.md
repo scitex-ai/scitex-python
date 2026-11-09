@@ -178,6 +178,21 @@ this read requires Socialia's installation JSON fix in source after 0.5.15;
 public Socialia 0.5.15 still emits human instructions. Qualify a release
 containing that provider fix before distributing this installation JSON path.
 
+Social analytics reads in this source match the provider's Google Analytics
+interface:
+
+```bash
+scitex social analytics show-realtime --json
+scitex social analytics show-pageviews --start 30daysAgo --end today --path /papers --json
+scitex social analytics show-sources --start 7daysAgo --end today --json
+```
+
+Dates and paths pass unchanged to Socialia, which owns authentication, report
+semantics, output, and errors. The previous `analytics PLATFORM --days N`
+adapter did not match Socialia's report parser; those unsupported requests now
+fail locally without launching the provider. Event tracking remains a Socialia
+operation and is not exposed by this read-only umbrella group.
+
 ## File-backed event notifications in this source
 
 The upcoming 2.30.9 `[events]` extra installs `scitex-events`; `[all]` includes

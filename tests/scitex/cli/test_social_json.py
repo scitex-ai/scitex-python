@@ -166,3 +166,84 @@ def test_read_help_advertises_only_canonical_names(
         False,
         False,
     )
+
+
+ANALYTICS_READS = [
+    (["analytics", "show-realtime"], ["analytics", "show-realtime"]),
+    (
+        [
+            "analytics",
+            "show-pageviews",
+            "--start",
+            "30daysAgo",
+            "--end",
+            "today",
+            "--path",
+            "/research notes",
+        ],
+        [
+            "analytics",
+            "show-pageviews",
+            "--start",
+            "30daysAgo",
+            "--end",
+            "today",
+            "--path",
+            "/research notes",
+        ],
+    ),
+    (
+        ["analytics", "show-sources"],
+        ["analytics", "show-sources", "--start", "7daysAgo", "--end", "today"],
+    ),
+]
+
+
+@pytest.mark.parametrize("arguments,expected", ANALYTICS_READS)
+@pytest.mark.parametrize("as_json", [False, True])
+def test_analytics_reads_forward_real_provider_contracts(
+    social_read_workspace, arguments, expected, as_json
+):
+    # Arrange
+    request = [*arguments, *(["--json"] if as_json else [])]
+    receipt = social_read_workspace / "receipt.json"
+    # Act
+    code, _, _ = _invoke(social_read_workspace, request)
+    # Assert
+    assert (code, receipt.exists()) == (0, True)
+    assert json.loads(receipt.read_text()) == [
+        *expected,
+        *(["--json"] if as_json else []),
+    ]
+
+
+@pytest.mark.parametrize(
+    "arguments", [["analytics", "twitter"], ["analytics", "ga", "--days", "30"]]
+)
+def test_unsupported_platform_analytics_never_launches_provider(
+    social_read_workspace, arguments
+):
+    # Arrange
+    receipt = social_read_workspace / "receipt.json"
+    # Act
+    code, _, _ = _invoke(social_read_workspace, arguments)
+    # Assert
+    assert (code, receipt.exists()) == (2, False)
+
+
+def test_analytics_help_lists_provider_reads_without_running_them(
+    social_read_workspace,
+):
+    # Arrange
+    receipt = social_read_workspace / "receipt.json"
+    # Act
+    code, output, _ = _invoke(social_read_workspace, ["analytics", "--help"])
+    # Assert
+    assert (
+        code,
+        all(
+            name in output
+            for name in ["show-realtime", "show-pageviews", "show-sources"]
+        ),
+        receipt.exists(),
+    ) == (0, True, False)
