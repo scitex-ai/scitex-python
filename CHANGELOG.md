@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Normalize social reads as `show-me` and `mcp show-installation`; retain old
+  names as hidden warning aliases until 3.0. Forward installation JSON at the
+  command level; pure JSON requires the provider fix after Socialia 0.5.15.
+
 - Prefer `scitex dev introspection` for Python inspection. Keep the old
   `introspect` routes as hidden warning aliases and honor CLI declines under
   either name. Render the composed Dev inventory as JSON without replacing

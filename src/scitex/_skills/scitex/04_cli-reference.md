@@ -92,8 +92,19 @@ remains delegated to Socialia, preserving its output and exit status.
 
 Use `scitex social mcp list-tools --json` for the provider-owned tool catalog.
 The adapter preserves that JSON schema and passes command-level `--json` for
-`status`, `check`, `feed`, and `me` reads too. Provider stderr and nonzero exits
+`status`, `check`, `feed`, and `show-me` reads too. Provider stderr and nonzero exits
 remain failures rather than being replaced with success envelopes.
+
+In the upcoming 2.30.9 source, social profile and MCP installation reads use
+`scitex social show-me PLATFORM` and `scitex social mcp show-installation`.
+The old `me` and `mcp installation` names remain hidden compatibility routes
+with deprecation warnings on stderr until 3.0. Both names delegate to the same
+canonical Socialia read; provider output and failure exits remain unchanged.
+
+`show-installation --json` forwards the provider flag unchanged. Pure JSON for
+this read requires Socialia's installation JSON fix in source after 0.5.15;
+public Socialia 0.5.15 still emits human instructions. Qualify a release
+containing that provider fix before distributing this installation JSON path.
 
 Resource readings in this source use the installed `scitex-resource` provider:
 

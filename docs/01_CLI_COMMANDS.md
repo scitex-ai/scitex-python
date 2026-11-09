@@ -162,10 +162,21 @@ maps to Socialia's `delete-post --yes` operation; JSON flags are passed to the
 provider command. Provider output and exit status pass through unchanged.
 
 `scitex social mcp list-tools --json` forwards Socialia's tool catalog without
-reformatting it. Social reads (`status`, `check`, `feed`, and `me`) likewise pass
+reformatting it. Social reads (`status`, `check`, `feed`, and `show-me`) likewise pass
 `--json` to the provider command rather than its root group. Supply the flag
 after the subcommand. Failed provider operations retain their nonzero exit
 status and stderr; the adapter does not turn failures into successful JSON.
+
+In the upcoming 2.30.9 source, social profile and MCP installation reads use
+`scitex social show-me PLATFORM` and `scitex social mcp show-installation`.
+The old `me` and `mcp installation` names remain hidden compatibility routes
+with deprecation warnings on stderr until 3.0. Both names delegate to the same
+canonical Socialia read; provider output and failure exits remain unchanged.
+
+`show-installation --json` forwards the provider flag unchanged. Pure JSON for
+this read requires Socialia's installation JSON fix in source after 0.5.15;
+public Socialia 0.5.15 still emits human instructions. Qualify a release
+containing that provider fix before distributing this installation JSON path.
 
 ## File-backed event notifications in this source
 

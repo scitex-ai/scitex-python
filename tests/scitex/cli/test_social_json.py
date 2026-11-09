@@ -27,6 +27,7 @@ def social_read_workspace(tmp_path):
         "else:\n"
         " print('provider text: '+repr(args))\n"
     )
+    (tmp_path / "runtime").mkdir()
     return tmp_path
 
 
@@ -38,10 +39,13 @@ def _invoke(workspace, arguments):
         "module=importlib.util.module_from_spec(spec)\n"
         "spec.loader.exec_module(module)\n"
         "result=CliRunner().invoke(module.social,sys.argv[2:])\n"
-        "print('\\nROOT_RESULT='+json.dumps({'code':result.exit_code,'output':result.output}))\n"
+        "print('\\nROOT_RESULT='+json.dumps({'code':result.exit_code,'output':result.stdout,'stderr':result.stderr}))\n"
     )
     environment = dict(os.environ)
-    environment["COVERAGE_FILE"] = str(workspace / ".coverage")
+    environment.update(
+        COVERAGE_FILE=str(workspace / ".coverage"),
+        XDG_RUNTIME_DIR=str(workspace / "runtime"),
+    )
     child = subprocess.run(
         [sys.executable, "-c", driver, str(source), *arguments],
         cwd=workspace,
@@ -53,15 +57,22 @@ def _invoke(workspace, arguments):
     )
     provider_output, footer = child.stdout.rsplit("\nROOT_RESULT=", 1)
     result = json.loads(footer)
-    return result["code"], provider_output + result["output"], child.stderr
+    return (
+        result["code"],
+        provider_output + result["output"],
+        child.stderr + result["stderr"],
+    )
 
 
 READS = [
     (["status"], ["status"]),
     (["check", "twitter"], ["check", "twitter"]),
     (["feed", "twitter", "--limit", "3"], ["feed", "twitter", "--limit", "3"]),
-    (["me", "twitter"], ["me", "twitter"]),
+    (["show-me", "twitter"], ["show-me", "twitter"]),
+    (["me", "twitter"], ["show-me", "twitter"]),
     (["mcp", "list-tools"], ["mcp", "list-tools"]),
+    (["mcp", "show-installation"], ["mcp", "show-installation"]),
+    (["mcp", "installation"], ["mcp", "show-installation"]),
 ]
 
 
@@ -102,3 +113,56 @@ def test_provider_refusal_is_not_replaced_by_success_json(social_read_workspace)
     )
     # Assert
     assert (code, output, stderr) == (7, "", "controlled provider refusal\n")
+
+
+@pytest.mark.parametrize("name", ["show-installation", "installation"])
+def test_installation_names_forward_the_canonical_provider_read(
+    social_read_workspace, name
+):
+    # Arrange
+    receipt = social_read_workspace / "receipt.json"
+    # Act
+    code, _, _ = _invoke(social_read_workspace, ["mcp", name])
+    # Assert
+    assert (code, json.loads(receipt.read_text())) == (0, ["mcp", "show-installation"])
+
+
+@pytest.mark.parametrize(
+    "arguments,canonical",
+    [(["me", "twitter"], "show-me"), (["mcp", "installation"], "show-installation")],
+)
+def test_legacy_reads_warn_on_stderr(social_read_workspace, arguments, canonical):
+    # Arrange
+    receipt = social_read_workspace / "receipt.json"
+    # Act
+    code, _, stderr = _invoke(social_read_workspace, arguments)
+    # Assert
+    assert (code, receipt.exists(), canonical in stderr, "deprecated" in stderr) == (
+        0,
+        True,
+        True,
+        True,
+    )
+
+
+@pytest.mark.parametrize(
+    "arguments,canonical,legacy",
+    [
+        (["--help"], "show-me", "me"),
+        (["mcp", "--help"], "show-installation", "installation"),
+    ],
+)
+def test_read_help_advertises_only_canonical_names(
+    social_read_workspace, arguments, canonical, legacy
+):
+    # Arrange
+    receipt = social_read_workspace / "receipt.json"
+    # Act
+    code, output, _ = _invoke(social_read_workspace, arguments)
+    # Assert
+    assert (code, canonical in output, f"  {legacy} " in output, receipt.exists()) == (
+        0,
+        True,
+        False,
+        False,
+    )

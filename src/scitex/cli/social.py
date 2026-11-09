@@ -245,7 +245,7 @@ def feed(platform, limit, mentions, as_json):
     sys.exit(_run_socialia(*args, json_output=as_json))
 
 
-@social.command()
+@social.command("show-me")
 @click.argument("platform", type=click.Choice(["twitter", "linkedin", "reddit"]))
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def me(platform, as_json):
@@ -254,10 +254,10 @@ def me(platform, as_json):
 
     \b
     Examples:
-      scitex social me twitter
-      scitex social me linkedin --json
+      scitex social show-me twitter
+      scitex social show-me linkedin --json
     """
-    sys.exit(_run_socialia("me", platform, json_output=as_json))
+    sys.exit(_run_socialia("show-me", platform, json_output=as_json))
 
 
 @social.command()
@@ -332,7 +332,7 @@ def mcp(ctx, as_json):
       start        - Start the MCP server
       doctor       - Check MCP server health
       list-tools   - List available MCP tools
-      installation - Show Claude Desktop configuration
+      show-installation - Show MCP client configuration
 
     \b
     Examples:
@@ -395,16 +395,23 @@ def list_tools(as_json):
     sys.exit(_run_socialia("mcp", "list-tools", json_output=as_json))
 
 
-@mcp.command()
-def installation():
+@mcp.command("show-installation")
+@click.option("--json", "as_json", is_flag=True, help="Output provider configuration as JSON.")
+def installation(as_json):
     """
-    Show Claude Desktop configuration
+    Show provider MCP client configuration
 
     \b
     Example:
-      scitex social mcp installation
+      scitex social mcp show-installation
     """
-    sys.exit(_run_socialia("mcp", "installation"))
+    sys.exit(_run_socialia("mcp", "show-installation", json_output=as_json))
+
+
+from scitex_dev.ecosystem import deprecated_alias
+
+deprecated_alias(social, "me", target=("show-me",), remove_in="3.0")
+deprecated_alias(mcp, "installation", target=("show-installation",), remove_in="3.0")
 
 
 if __name__ == "__main__":
