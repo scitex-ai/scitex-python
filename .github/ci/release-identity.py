@@ -21,11 +21,15 @@ import sysconfig
 import tarfile
 import tempfile
 import time
-import tomllib
 import urllib.request
 import zipfile
 from email.parser import BytesParser
 from pathlib import Path, PurePosixPath
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10; tomli is a declared dependency.
+    import tomli as tomllib
 
 REPOSITORY = "scitex-ai/scitex-python"
 TAG = re.compile(r"v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)")

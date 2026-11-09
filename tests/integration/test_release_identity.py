@@ -3,9 +3,13 @@
 import copy
 import importlib.util
 from pathlib import Path
-import tomllib
 
 import pytest
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10; tomli is a declared dependency.
+    import tomli as tomllib
 
 
 ROOT = Path(__file__).resolve().parents[2]
