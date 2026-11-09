@@ -101,7 +101,7 @@ dependencies = [
     "scitex-genai==0.1.1",
     "scitex-gists==0.1.8",
     "scitex-audit==0.2.0",
-    "scitex-logging==0.2.4",
+    "scitex-logging==0.2.5",
     "scitex-dict==0.1.8",
     "scitex-browser==0.1.15",
     "scitex-str==0.1.12",
@@ -254,13 +254,13 @@ cli = [
 # retains its independent Python requirement. Missing peers produce install hints.
 cloud = [
     "matplotlib",
-    "scitex-hub>=0.22.0a5",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # Hub Module - scitex-hub (formerly scitex-cloud) optional peer.
 # Powers scitex.cloud / scitex.module / scitex.project.
 hub = [
-    "scitex-hub>=0.22.0a5",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # Compat Module - Compatibility utilities
@@ -463,7 +463,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
-    "scitex-logging==0.2.4",
+    "scitex-logging==0.2.5",
 ]
 
 # Media Module - Media display utilities (always available: scitex-etc is a
@@ -479,7 +479,7 @@ ml = [
 # Module Module - Module management (OPTIONAL peer: scitex-hub.module)
 # Use: pip install scitex[module]
 module = [
-    "scitex-hub>=0.22.0a5",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # MSWord Module - MS Word document handling
@@ -567,7 +567,7 @@ plt = [
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
 # Use: pip install scitex[project]
 project = [
-    "scitex-hub>=0.22.0a5",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # Repro Module - Reproducibility tools

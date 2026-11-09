@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Require public Hub 0.22.0a7 for cloud, Hub, module and project profiles,
+  including the installed CLI vocabulary supplied by its owning package.
+  Align both logging profiles with its required public logging 0.2.5 release.
+
 - Read legacy bundle metadata with the I/O package's ZIP reader and enforce
   its strict schema/type validation before reporting a bundle as valid.
   Preserve archive contents during inspection and validation.
@@ -34,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Require the qualified public Scholar 1.29.2 release consistently across
   profiles, including its source-bound installed CLI vocabulary.
 
-- Require the qualified public Dev 0.62.18 release consistently in the core,
+- Require the qualified public Dev 0.62.20 release consistently in the core,
   development and linter profiles, including installed CLI dictionaries,
   interpreter-bound completion and audit opt-out corrections.
 
