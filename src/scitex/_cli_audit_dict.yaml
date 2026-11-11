@@ -1,4 +1,6 @@
 # Canonical umbrella CLI vocabulary, shipped by the normal package mapping.
 # The audit group names the security-audit facility under `scitex dev`.
+# SSH names the Secure Shell transport mounted at the umbrella root.
 nouns:
   - audit
+  - ssh
