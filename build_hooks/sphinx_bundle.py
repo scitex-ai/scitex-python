@@ -205,6 +205,8 @@ class CustomBuildHook(BuildHookInterface):
         self.build_config.target_config["exclude"] = policy.source_excludes(
             Path(self.root), explicit
         )
+        # Compile/validate exclusions before the expensive documentation build.
+        self.build_config.path_is_excluded(".gitignore")
         self._temporary = tempfile.TemporaryDirectory(prefix="scitex-doc-bundle-")
         output = Path(self._temporary.name) / "html"
         build_bundle(Path(self.root), output)

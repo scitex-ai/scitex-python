@@ -15,4 +15,7 @@ def source_excludes(root: Path, explicit: list[str]) -> list[str]:
         raise ValueError("source ignore policy must be a contained regular file")
     if not isinstance(explicit, list) or any(not isinstance(p, str) for p in explicit):
         raise ValueError("explicit source exclusions must be a list of strings")
-    return [*ignore.read_text(encoding="utf-8").splitlines(), *explicit]
+    patterns = [
+        line for line in ignore.read_text(encoding="utf-8").splitlines() if line
+    ]
+    return [*patterns, *explicit]

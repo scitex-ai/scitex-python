@@ -21,7 +21,7 @@ def test_private_paths_and_explicit_veto_keep_git_ignore_semantics(tmp_path, par
     root = tmp_path / parent / "project"
     root.mkdir(parents=True)
     (root / ".gitignore").write_text(
-        "var/\nGITIGNORED/\n.env\n*.ignored\n!kept.ignored\n!veto.ignored\n"
+        "\nvar/\nGITIGNORED/\n.env\n*.ignored\n!kept.ignored\n!veto.ignored\n\n"
     )
     patterns = POLICY.source_excludes(root, ["veto.ignored"])
     (root / ".gitignore").write_text("\n".join(patterns) + "\n")
