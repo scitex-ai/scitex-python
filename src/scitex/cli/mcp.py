@@ -155,7 +155,7 @@ def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
     "-m",
     type=str,
     default=None,
-    help="Filter by module (audio, canvas, capture, dataset, diagram, plt, scholar, stats, template, ui, writer)",
+    help="Filter by an available module; list-tools --json shows current modules.",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.option(
