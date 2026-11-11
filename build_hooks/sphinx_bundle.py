@@ -7,6 +7,7 @@ archive-provided bundle or manifest is never the authority for derived bytes.
 from __future__ import annotations
 
 import os
+import importlib.util
 import json
 from pathlib import Path
 import shutil
@@ -189,6 +190,21 @@ class CustomBuildHook(BuildHookInterface):
     def initialize(self, version, build_data):
         if self.config.get("source-input-root") != "docs/sphinx":
             raise ValueError("reviewed documentation source root differs")
+        # Native VCS discovery depends on the absolute checkout path. Retain
+        # the reviewed project policy even when that parent path is ignored.
+        policy_spec = importlib.util.spec_from_file_location(
+            "_scitex_source_policy", Path(__file__).with_name("source_policy.py")
+        )
+        policy = importlib.util.module_from_spec(policy_spec)
+        policy_spec.loader.exec_module(policy)
+        if "exclude_spec" in vars(self.build_config):
+            raise ValueError("source exclusion policy was cached before admission")
+        explicit = self.build_config.target_config.get(
+            "exclude", self.build_config.build_config.get("exclude", [])
+        )
+        self.build_config.target_config["exclude"] = policy.source_excludes(
+            Path(self.root), explicit
+        )
         self._temporary = tempfile.TemporaryDirectory(prefix="scitex-doc-bundle-")
         output = Path(self._temporary.name) / "html"
         build_bundle(Path(self.root), output)
