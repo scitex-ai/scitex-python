@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Require public Dataset 0.8.3 for the Dataset and development profiles,
+  including bounded CLI/MCP skill reads and bundled reference documentation.
+  Refresh Config to 0.3.8 for the current shared configuration behavior.
+  Dev 0.62.26 recognizes finite guarded lazy exports; FigRecipe 0.44.7 ships
+  the qualified frontend with its rendered-token CSRF handling.
+
 - Expose bundle conversion under `scitex conversion convert-file`. Keep
   `convert` and `file` as hidden warning aliases until 3.0, preserving JSON stdout
   and metadata declines. Single and batch conversions preview by default, require
@@ -43,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Require the qualified public Scholar 1.29.2 release consistently across
   profiles, including its source-bound installed CLI vocabulary.
 
-- Require the qualified public Dev 0.62.20 release consistently in the core,
+- Require the qualified public Dev 0.62.26 release consistently in the core,
   development and linter profiles, including installed CLI dictionaries,
   interpreter-bound completion and audit opt-out corrections.
 
@@ -62,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Align TeX helper commands with real providers: `format-vector` formats vector
   text and `render-preview` saves expression previews with validated recipes.
   Give unsupported older file/viewer/export routes explicit migration errors.
-- Require the qualified public FigRecipe 0.44.5 release consistently across the
+- Require the qualified public FigRecipe 0.44.7 release consistently across the
   core, plotting and development profiles. Retain strict expression preview
   save/replay validation and install its canonical CLI vocabulary.
 - Add inert browser PDF export previews and standard automation flags. Return
