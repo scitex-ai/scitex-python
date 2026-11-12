@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Route the retained utilities reference URL to the supported path, text and
+  data I/O namespaces instead of autodoc for the absent `scitex.utils` module.
+
 - Require public Dataset 0.8.3 for the Dataset and development profiles,
   including bounded CLI/MCP skill reads and bundled reference documentation.
-  Refresh Config to 0.3.8 for the current shared configuration behavior.
-  Dev 0.62.26 recognizes finite guarded lazy exports; FigRecipe 0.44.7 ships
+  Refresh Config to 0.3.9 for corrected constructor documentation.
+  Dev 0.62.27 adds source-based documentation call checks; FigRecipe 0.44.7 ships
   the qualified frontend with its rendered-token CSRF handling.
 
 - Expose bundle conversion under `scitex conversion convert-file`. Keep
