@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Require public SSH 1.2.1 in both tunnel and development profiles for its
+  installed CLI vocabulary and optional-MCP import behavior. Align all three
+  shared tooling pins with public Dev 0.62.28.
+
 - Route the retained utilities reference URL to the supported path, text and
   data I/O namespaces instead of autodoc for the absent `scitex.utils` module.
 

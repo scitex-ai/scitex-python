@@ -83,7 +83,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-sdk>=0.3.17",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.62.27",
+    "scitex-dev==0.62.28",
     "scitex-io==0.3.3",
     "scitex-stats==0.2.24",
     "scitex-audio==0.3.0",
@@ -732,7 +732,7 @@ tex = [
 # Tunnel Module - SSH reverse tunnel for NAT traversal
 # Use: pip install scitex[tunnel]
 tunnel = [
-    "scitex-ssh==1.1.0",
+    "scitex-ssh==1.2.1",
 ]
 
 # Torch Module - PyTorch support
@@ -955,13 +955,13 @@ dev = [
     # and therefore [all]; developer tooling alone need not install the service.
     "scitex-container==0.4.2",
     "scitex-dataset==0.8.3",
-    "scitex-dev==0.62.27",
+    "scitex-dev==0.62.28",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
     "scitex-notification==0.2.9",
     "scitex-scholar==1.29.2",
-    "scitex-ssh==1.1.0",
+    "scitex-ssh==1.2.1",
     "scitex-stats==0.2.24",
     "scitex-sdk[gui]>=0.3.17",
     "scitex-writer==2.43.20",
@@ -1092,7 +1092,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.62.27"]
+linter = ["scitex-dev==0.62.28"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 
