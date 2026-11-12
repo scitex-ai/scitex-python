@@ -4,18 +4,12 @@
 # ----------------------------------------
 import pytest
 
-pytest.importorskip("torch")
-
 import os
-import shutil
 import tempfile
-
-import pytest
 
 pytest.importorskip("zarr")
 import numpy as np
 import pandas as pd
-import torch
 
 """
 Tests for IO consistency across different formats in the scitex package.
@@ -89,38 +83,33 @@ def test_pandas_dataframe_consistency():
         pytest.skip("Required scitex modules not available")
 
 
-@pytest.mark.xfail(
-    reason="torch._has_torch_function docstring conflict in current torch version"
-)
 def test_pytorch_tensor_consistency():
     """Test saving and loading PyTorch tensors consistently."""
-    try:
-        # Create test directory
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Import actual modules
-            from scitex.io import load, save
+    torch = pytest.importorskip("torch")
+    # Create test directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Import actual modules
+        from scitex.io import load, save
 
-            # Test data
-            tensors = {
-                "tensor_1d": torch.tensor([1, 2, 3, 4, 5]),
-                "tensor_2d": torch.tensor([[1, 2, 3], [4, 5, 6]]),
-                "tensor_3d": torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-            }
+        # Test data
+        tensors = {
+            "tensor_1d": torch.tensor([1, 2, 3, 4, 5]),
+            "tensor_2d": torch.tensor([[1, 2, 3], [4, 5, 6]]),
+            "tensor_3d": torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        }
 
-            for name, tensor in tensors.items():
-                # Test .pt format (PyTorch native)
-                pt_path = os.path.join(temp_dir, f"{name}.pt")
-                save(tensor, pt_path, verbose=False)
-                loaded_pt = load(pt_path)
-                assert torch.all(tensor == loaded_pt)
+        for name, tensor in tensors.items():
+            # Test .pt format (PyTorch native)
+            pt_path = os.path.join(temp_dir, f"{name}.pt")
+            save(tensor, pt_path, verbose=False)
+            loaded_pt = load(pt_path)
+            assert torch.all(tensor == loaded_pt)
 
-                # Test .pth format (PyTorch alternative extension)
-                pth_path = os.path.join(temp_dir, f"{name}.pth")
-                save(tensor, pth_path, verbose=False)
-                loaded_pth = load(pth_path)
-                assert torch.all(tensor == loaded_pth)
-    except ImportError:
-        pytest.skip("Required scitex modules not available")
+            # Test .pth format (PyTorch alternative extension)
+            pth_path = os.path.join(temp_dir, f"{name}.pth")
+            save(tensor, pth_path, verbose=False)
+            loaded_pth = load(pth_path)
+            assert torch.all(tensor == loaded_pth)
 
 
 def test_nested_structures_consistency():

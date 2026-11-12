@@ -1,87 +1,43 @@
-# scitex CLI Commands
+# SciTeX CLI paths
 
-The `scitex` CLI is built with Click and uses lazy loading — subcommands are only imported when actually invoked, keeping startup instant.
-
-## Available Subcommands
-
-| Command | Description |
-|---------|-------------|
-| `scitex app` | Create and manage SciTeX apps |
-| `scitex audio` | Audio tools and text-to-speech |
-| `scitex audit` | Security auditing tools |
-| `scitex browser` | Browser automation tools |
-| `scitex capture` | Screenshot capture tools |
-| `scitex clew` | Verification and reproducibility |
-| `scitex cloud` | Cloud storage operations |
-| `scitex config` | Configuration management |
-| `scitex container` | Container management (Apptainer/Singularity) |
-| `scitex convert` | File format conversion |
-| `scitex dataset` | Dataset discovery and management |
-| `scitex dev` | Developer tools |
-| `scitex docs` | Browse and search SciTeX documentation |
-| `scitex event` | Event bus for async task results |
-| `scitex introspect` | Code introspection tools |
-| `scitex linter` | SciTeX linter |
-| `scitex mcp` | MCP server management |
-| `scitex notification` | Notification and alerting tools |
-| `scitex notebook` | Jupyter notebook tools |
-| `scitex plt` | Plotting tools |
-| `scitex repro` | Reproducibility tools |
-| `scitex resource` | Resource management |
-| `scitex scholar` | Scholar CLI commands |
-| `scitex security` | Security scanning tools |
-| `scitex skills` | Browse skills across the ecosystem |
-| `scitex social` | Social media tools |
-| `scitex stats` | Statistical analysis tools |
-| `scitex template` | Project templates |
-| `scitex tex` | LaTeX tools |
-| `scitex tunnel` | SSH reverse tunnel for NAT traversal |
-| `scitex web` | Web utilities |
-| `scitex writer` | Manuscript writing tools |
-
-## Common Usage
+Discover the current environment instead of assuming a fixed command inventory:
 
 ```bash
-# Get help for any command
 scitex --help
-scitex scholar --help
-
-# Show help for all commands recursively
-scitex --help-recursive
-
-# Get structured JSON output (for programmatic use)
 scitex --json
-scitex scholar --json
-
-# Tab completion (auto-installs for your shell)
-scitex completion
-scitex completion install --shell bash
+scitex dev cli list --json
 ```
 
-## Key Examples
+| Canonical path | Workflow |
+| --- | --- |
+| `scitex sdk` | Standalone apps and Hub plugins |
+| `scitex cards` | Tasks and conversations |
+| `scitex clew` | Research provenance and verification |
+| `scitex ssh tunnel` | SSH tunnels |
+| `scitex scholar` | Literature |
+| `scitex writer` | Manuscripts |
+| `scitex io` | Scientific I/O |
+| `scitex dev` | Development and maintenance tools |
+
+Optional providers appear only when installed and eligible. Metadata is not
+proof of runtime availability or authorization.
+
+Developer workflows use `scitex dev audit`, `completion`, `introspect`,
+`linter`, `list-python-apis`, `pkg`, and `skills`. Eligible capture, security,
+resource, template and newb providers also belong under `dev`. Python-only
+libraries do not gain commands automatically.
+
+Legacy `app`/`ui`, `todo`, `tunnel`, `notify`, `verify` and moved developer
+spellings are hidden compatibility routes to canonical groups. An explicit
+exposure decline cannot be bypassed through these routes. Python imports,
+standalone scripts and MCP names retain their own compatibility contracts.
 
 ```bash
-# Config
-scitex config list
-
-# Cloud operations
-scitex cloud clone user/project
-scitex cloud push
-
-# Scholar
-scitex scholar search "deep learning EEG"
-scitex scholar bibtex papers.bib --project myresearch
-
-# Audio
-scitex audio speak "Analysis complete"
-
-# MCP server
-scitex mcp list-tools
-scitex mcp start
-
-# Security
-scitex audit run ./src --checks python deps
-
-# Plotting
-scitex plt reproduce plot.yaml
+scitex dev completion --help
+scitex dev completion install --shell bash --dry-run
+scitex dev skills install --help
+scitex --help-recursive
 ```
+
+Bare `completion` is not an automatic installer. Inspect help before choosing
+an installation destination or invoking a mutating operation.

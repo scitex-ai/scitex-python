@@ -6,7 +6,7 @@
 # /home/ywatanabe/proj/scitex-python/pyproject.toml
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling==1.33.0"]
 build-backend = "hatchling.build"
 
 [project]
@@ -14,7 +14,7 @@ name = "scitex"
 version = "2.30.9"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "AGPL-3.0-only"
 authors = [
     { name = "Yusuke Watanabe", email = "ywatanabe@scitex.ai" }
@@ -33,7 +33,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -77,21 +76,21 @@ dependencies = [
     "natsort",  # Natural sorting - used by many modules
     "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
-    "scitex-config==0.3.6",
+    "scitex-config==0.3.9",
     # Reproducibility Verification
     "scitex-clew==0.21.0",
     # App SDK — unified file storage for local + cloud
-    "scitex-app==0.26.1",
+    "scitex-sdk>=0.3.17",
     # Delegated core modules (thin re-exports)
-    "scitex-dev==0.62.2",
+    "scitex-dev==0.62.28",
     "scitex-io==0.3.3",
     "scitex-stats==0.2.24",
     "scitex-audio==0.3.0",
     "scitex-notification==0.2.9",
-    "scitex-notebook==0.1.2",
+    "scitex-notebook==0.1.4",
     # Delegated modules from #51 standalonization
     "scitex-db==0.1.12",
-    "scitex-scholar==1.4.3",
+    "scitex-scholar==1.29.2",
     "scitex-parallel==0.1.8",
     "scitex-types==0.1.6",
     "scitex-path==0.1.7",
@@ -101,7 +100,7 @@ dependencies = [
     "scitex-genai==0.1.1",
     "scitex-gists==0.1.8",
     "scitex-audit==0.2.0",
-    "scitex-logging==0.2.2",
+    "scitex-logging==0.2.5",
     "scitex-dict==0.1.8",
     "scitex-browser==0.1.15",
     "scitex-str==0.1.12",
@@ -117,8 +116,8 @@ dependencies = [
     # scitex-audit; scitex-python's main deps no longer pull the
     # deprecated 0.1.4 standalone.
     "scitex-tex==0.1.7",
-    "figrecipe==0.29.9",
-    "scitex-ui==0.23.0",
+    "figrecipe==0.44.7",
+    "scitex-sdk[gui]>=0.3.17",
 ]
 
 [project.urls]
@@ -131,7 +130,7 @@ Repository = "https://github.com/ywatanabe1989/scitex-python"
 scitex = "scitex.__main__:main"
 # Package-management CLI (venv drift detector for mgr-pkg autonomous ops)
 scitex-pkg = "scitex.cli.pkg:pkg"
-# Unified MCP Server (all modules in one). Use `scitex serve` (preferred)
+# Unified MCP Server (all modules in one). Use `scitex mcp start`
 # or `scitex-mcp-server`. The umbrella's single MCP entrypoint
 # (scitex._mcp) registry-mounts every peer's FastMCP server, so peer
 # standalone packages (scitex-scholar, scitex-stats, scitex-capture, ...)
@@ -168,7 +167,7 @@ scitex = "scitex"
 # App Module - Unified file storage SDK (local + cloud)
 # Use: pip install scitex[app]
 app = [
-    "scitex-app==0.26.1",
+    "scitex-sdk>=0.3.17",
 ]
 
 # ML Module — classical / deep machine-learning utilities
@@ -208,7 +207,7 @@ bridge = [
 
 # Container Module - Unified container management (Apptainer + Docker)
 # Use: pip install scitex[container]
-container = ["scitex-container==0.2.1"]
+container = ["scitex-container==0.4.2"]
 
 # Browser Module - Web automation
 # Use: pip install scitex[browser]
@@ -249,18 +248,18 @@ cli = [
 
 # Cloud Module - Cloud service integration (OPTIONAL peer: scitex-hub)
 # Use: pip install scitex[cloud]  (alias of scitex[hub])
-# Kept OUT of [all] so CI's matrix skips cloud/module/project when scitex-hub
-# (not yet released) is absent. scitex.cloud/.module/.project degrade with a
-# friendly install hint when scitex-hub is missing.
+# Hub is an optional peer for the base install and is included in [all].
+# Base and SDK-based alpha integration both require Python 3.11+.
+# Missing optional peers produce install hints.
 cloud = [
     "matplotlib",
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # Hub Module - scitex-hub (formerly scitex-cloud) optional peer.
 # Powers scitex.cloud / scitex.module / scitex.project.
 hub = [
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # Compat Module - Compatibility utilities
@@ -294,7 +293,7 @@ db = [
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = ["scitex-dataset==0.7.1"]
+dataset = ["scitex-dataset==0.8.3"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -388,7 +387,7 @@ etc = [
 
 # Events Module - Event system
 # Use: pip install scitex[events]
-events = []
+events = ["scitex-events==0.1.8"]
 
 # Gists Module - Code snippet management
 # Use: pip install scitex[gists]
@@ -397,6 +396,7 @@ gists = ["scitex-gists==0.1.8"]
 # Git Module - Git operations
 # Use: pip install scitex[git]
 git = [
+    "scitex-git==0.3.2",
     "GitPython",
     "matplotlib",
 ]
@@ -462,7 +462,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
-    "scitex-logging==0.2.2",
+    "scitex-logging==0.2.5",
 ]
 
 # Media Module - Media display utilities (always available: scitex-etc is a
@@ -478,7 +478,7 @@ ml = [
 # Module Module - Module management (OPTIONAL peer: scitex-hub.module)
 # Use: pip install scitex[module]
 module = [
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # MSWord Module - MS Word document handling
@@ -512,7 +512,7 @@ nn = [
 # Notebook Module - Jupyter notebook utilities
 # Use: pip install scitex[notebook]
 notebook = [
-    "scitex-notebook==0.1.2",
+    "scitex-notebook==0.1.4",
 ]
 
 # Notification Module - Phone call, SMS, and other notifications
@@ -560,13 +560,13 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe==0.29.9",
+    "figrecipe==0.44.7",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
 # Use: pip install scitex[project]
 project = [
-    "scitex-hub>=0.19.0",
+    "scitex-hub>=0.22.0a7",
 ]
 
 # Repro Module - Reproducibility tools
@@ -658,7 +658,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar==1.4.3"
+    "scitex-scholar==1.29.2"
 ]
 
 # Schema Module - Data schema validation
@@ -718,7 +718,8 @@ str = [
 # Use: pip install scitex[template]
 # Delegates to standalone scitex-template package (per general rule §12).
 template = [
-    "scitex-template==0.6.7",
+    "scitex-template==0.7.0",
+    "scitex-git==0.3.2",
 ]
 
 # Tex Module - LaTeX utilities
@@ -730,7 +731,7 @@ tex = [
 # Tunnel Module - SSH reverse tunnel for NAT traversal
 # Use: pip install scitex[tunnel]
 tunnel = [
-    "scitex-ssh==1.1.0",
+    "scitex-ssh==1.2.1",
 ]
 
 # Torch Module - PyTorch support
@@ -750,7 +751,7 @@ types = [
 
 # UI Module - User interface utilities
 # Use: pip install scitex[ui]
-ui = ["scitex-ui==0.23.0"]
+ui = ["scitex-sdk[gui]>=0.3.17"]
 
 # Utils Module - REMOVED (Phase B). The in-tree scitex.utils grab-bag was
 # deleted; its public helpers live in their SoC owners (compress_hdf5 →
@@ -798,7 +799,7 @@ clew = ["scitex-clew==0.21.0"]
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer==2.24.1",  # Core writer package (single source of truth)
+    "scitex-writer==2.43.20",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -865,7 +866,7 @@ dev = [
     "crossref-local==0.7.6",
     "csv2latex",
     "feedparser",
-    "figrecipe==0.29.9",
+    "figrecipe==0.44.7",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -949,22 +950,20 @@ dev = [
     "scitex-audit==0.2.0",
     "scitex-browser==0.1.15",
     "scitex-clew==0.21.0",
-    # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
-    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
-    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
-    # `pip install scitex[cloud]` when scitex-hub is available.
-    "scitex-container==0.2.1",
-    "scitex-dataset==0.7.1",
-    "scitex-dev==0.62.2",
+    # Hub is selected by the public [hub]/[cloud]/[module]/[project] extras
+    # and therefore [all]; developer tooling alone need not install the service.
+    "scitex-container==0.4.2",
+    "scitex-dataset==0.8.3",
+    "scitex-dev==0.62.28",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
     "scitex-io==0.3.3",
     "scitex-notification==0.2.9",
-    "scitex-scholar==1.4.3",
-    "scitex-ssh==1.1.0",
+    "scitex-scholar==1.29.2",
+    "scitex-ssh==1.2.1",
     "scitex-stats==0.2.24",
-    "scitex-ui==0.23.0",
-    "scitex-writer==2.24.1",
+    "scitex-sdk[gui]>=0.3.17",
+    "scitex-writer==2.43.20",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1022,9 +1021,10 @@ all = [
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
-    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
-    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
+    "scitex[cloud]",
+    "scitex[hub]",
+    "scitex[module]",
+    "scitex[project]",
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
@@ -1091,7 +1091,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev==0.62.2"]
+linter = ["scitex-dev==0.62.28"]
 orochi = ["scitex-orochi==0.17.0"]
 agent-container = ["scitex-agent-container==0.21.11"]
 
@@ -1099,7 +1099,19 @@ agent-container = ["scitex-agent-container==0.21.11"]
 path = "src/scitex/__version__.py"
 pattern = '__version__ = "(?P<version>[^"]+)"'
 
+[tool.hatch.build.hooks.custom]
+path = "build_hooks/sphinx_bundle.py"
+source-input-root = "docs/sphinx"
+require-runtime-dependencies = true
+dependencies = [
+    "sphinx==8.1.3", "sphinx-rtd-theme==3.1.0", "myst-parser==4.0.1",
+    "sphinx-copybutton==0.5.2", "sphinx-autodoc-typehints==2.5.0",
+    "nbsphinx==0.9.8", "matplotlib==3.10.7",
+    "tomli>=2; python_version < '3.11'",
+]
+
 [tool.hatch.build.targets.wheel]
+artifacts = ["src/scitex/_sphinx_html/**"]
 exclude = [
     # Scholar development symlinks
     "src/scitex/scholar/.env",

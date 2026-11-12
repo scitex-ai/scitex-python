@@ -15,13 +15,14 @@ Modules are imported on-demand to avoid circular dependencies.
 
 # Suppress SQLAlchemy verbose logging (SQL queries, BEGIN/COMMIT)
 # Must happen early, before any module imports sqlalchemy
-import logging as _stdlib_logging
 import warnings
 
-_stdlib_logging.getLogger("sqlalchemy").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.engine").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.engine.Engine").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.pool").setLevel(_stdlib_logging.WARNING)
+import scitex_logging as _slogging
+
+_slogging.getLogger("sqlalchemy").setLevel(_slogging.WARNING)
+_slogging.getLogger("sqlalchemy.engine").setLevel(_slogging.WARNING)
+_slogging.getLogger("sqlalchemy.engine.Engine").setLevel(_slogging.WARNING)
+_slogging.getLogger("sqlalchemy.pool").setLevel(_slogging.WARNING)
 
 # Show deprecation warnings from scitex modules (educational for migration)
 warnings.filterwarnings("default", category=DeprecationWarning, module="scitex.*")
@@ -153,7 +154,7 @@ introspect = _LazyModule(
 sh = _LazyModule("sh", external="scitex_sh")  # Shell command execution
 os = _LazyModule("os", external="scitex_os")  # OS utilities (file operations)
 cv = _LazyModule("cv", external="scitex_cv")  # Computer vision utilities
-ui = _LazyModule("ui", external="scitex_ui")  # User interface utilities
+ui = _LazyModule("ui", external="scitex_sdk.ui")  # User interface utilities
 notification = _LazyModule(
     "notification", external="scitex_notification"
 )  # Multi-backend notifications (scitex-notification)
@@ -191,7 +192,7 @@ notebook = _LazyModule(
     "notebook", external="scitex_notebook"
 )  # Jupyter notebook verification & compilation
 app = _LazyModule(
-    "app", external="scitex_app"
+    "app", external="scitex_sdk.app"
 )  # App SDK — unified file storage for local + cloud
 usage = _CallableModuleWrapper("usage", main_decorator_name="show")
 usage._setup_persistence("scitex", "usage")

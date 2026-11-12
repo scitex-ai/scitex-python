@@ -1,4 +1,4 @@
 events Module (``stx.events``)
 ==============================
 
-See :doc:`/api/scitex.events` for the auto-generated Python API.
+See :doc:`/source/api/events` for the auto-generated Python API.

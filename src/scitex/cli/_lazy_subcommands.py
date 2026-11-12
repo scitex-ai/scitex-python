@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-"""Registry-driven lazy-subcommand wiring for the umbrella ``scitex`` CLI.
+"""Installed declaration projection for the umbrella ``scitex`` CLI.
 
-Single source of truth: the scitex-dev ecosystem registry
-(``scitex_dev._ecosystem._core.ECOSYSTEM``). Every peer with
-``umbrella_subcommand=X`` is expected to ship an umbrella-side click
-group at ``scitex.cli.<X>:<X>`` (X with underscores for hyphenated
-names). The builder iterates the registry, filters to subcommands
-whose wrapper file actually exists in ``scitex/cli/``, and merges in
-non-conventional overrides + aliases.
+Dev resolves installed ownership and CLI-specific declines without imports.
+The registry supplies migration/naming policy, never fabricated capabilities.
+Deliberate umbrella adapters preserve actual workflows; legacy console targets
+use the exact declared target at invocation time. Discovery calls no provider.
 
 Pulled out of ``scitex/cli/main.py`` to keep that orchestrator file
 under the project's 512-line cap.
@@ -16,7 +13,7 @@ under the project's 512-line cap.
 from __future__ import annotations
 
 import os
-from typing import Dict, Tuple
+from dataclasses import dataclass
 
 # Spec shape: (module_path_or_candidates, attr_name, short_help).
 # - module_path_or_candidates is either a single dotted module path (str)
@@ -26,43 +23,62 @@ from typing import Dict, Tuple
 #   registration is what keeps the umbrella `scitex` CLI startup fast —
 #   eagerly importing every peer's `_cli._main` at registration time
 #   added ~45 s of cold-start latency across ~60 ecosystem peers.
-LazySpec = Tuple[object, str, str]
+LazySpec = tuple[object, str, str]
 
-_REGISTRY_SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 
-# Duplicate namespaces retired 2026-07-07 (CLI-standardization slice 5).
-# {old_name: (canonical_name, remove_in_version)}. The old names are
-# NEVER registered as lazy subcommands; ``main.py`` re-adds them as
-# hidden warn-phase deprecated aliases via scitex-dev's
-# ``click_compat.deprecated_alias`` when that helper is importable
-# (scitex-dev > 0.21.0). With an older scitex-dev the duplicates are
-# simply excluded — canonical names only.
-#
-# Canonical picks (verified against the packages' own CLI names and the
-# doctrine noun catalog):
-#   notification — the package is scitex-notification; `notify` was an
-#                  ad-hoc alias added here.
-#   clew         — the package is scitex-clew; `verify` was an ad-hoc
-#                  alias added here.
-#   event        — singular noun-group doctrine; the `events` name came
-#                  from the scitex-events peer, which ships NO CLI (all
-#                  candidate probes fail), so `scitex events` was a dead
-#                  entry in help.
-#   social       — doctrine §5b brand table (socialia → `scitex social`);
-#                  the bare `socialia` name leaked from the registry
-#                  because the peer record has no umbrella_subcommand.
-DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
+@dataclass(frozen=True)
+class PeerCliTarget:
+    """Metadata-qualified target; only these may use a console adapter."""
+
+    candidates: tuple[tuple[str, str], ...]
+    distribution: str
+    target: str
+    console_script: str | None
+
+    def __iter__(self):
+        return iter(self.candidates)
+
+
+# Hidden migration routes reuse Dev's native alias helper. Canonical products
+# stay at root; developer workflows move under dev. The normal metadata views
+# never advertise these routes, and a reserved name cannot recreate an alias.
+DEV_RENAMES = {"introspect": "introspection"}
+ROOT_RENAMES = {"convert": "conversion"}
+
+DEPRECATED_ALIASES: dict[str, tuple[object, str]] = {
+    "convert": ("conversion", "3.0"),
     "notify": ("notification", "3.0"),
     "verify": ("clew", "3.0"),
     "events": ("event", "3.0"),
     "socialia": ("social", "3.0"),
+    "todo": ("cards", "3.0"),
+    "tunnel": (("ssh", "tunnel"), "3.0"),
+    "app": (("sdk", "app"), "3.0"),
+    "ui": (("sdk", "ui"), "3.0"),
+    **{
+        name: (("dev", DEV_RENAMES.get(name, name)), "3.0")
+        for name in (
+            "audit",
+            "completion",
+            "introspect",
+            "linter",
+            "list-python-apis",
+            "pkg",
+            "skills",
+            "capture",
+            "security",
+            "newb",
+            "resource",
+            "template",
+            "git",
+            "benchmark",
+        )
+    },
 }
 
-# NOTE on figrecipe/plt: NOT a deprecated duplicate. `scitex plt` mounts
-# the scitex-plt peer, a published identity-alias package for figrecipe
-# (`scitex_plt is figrecipe` -> True), and doctrine §5b's brand table
-# documents `scitex plt` as a figrecipe mount. Both names stay mounted;
-# `figrecipe` is canonical and `plt` self-describes as the alias.
+# Python identity aliases such as scitex.plt remain public Python facades.
+# A separate CLI alias is mounted only if its installed ownership/delegation
+# is actually declared and eligible; Python identity alone is insufficient.
 
 # Help blurbs for scitex-internal subcommands AND fallback one-liners
 # for registry peers whose package metadata is unavailable in the
@@ -71,15 +87,19 @@ DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
 # ("dataset   dataset"). One-liners are sourced from each package's own
 # pyproject `description` (what metadata Summary would return), trimmed
 # to fit the help column.
-_FALLBACK_HELP: Dict[str, str] = {
+_FALLBACK_HELP: dict[str, str] = {
     # scitex-internal wrappers (no peer in the registry)
+    "dev": "Developer tools, audits, package checks, skills, and completion.",
+    "sdk": "SDK for standalone research apps and SciTeX Hub plugins.",
     "audit": "Security auditing tools.",
     "capture": "Screenshot capture tools.",
     "completion": "Shell tab-completion management (install, status).",
-    "convert": "File format conversion.",
+    "conversion": "File format conversion.",
+    "config": "Inspect and configure SciTeX paths and settings.",
     "docs": "Browse and search SciTeX documentation.",
     "event": "Event bus for async task results.",
     "introspect": "Code introspection tools.",
+    "introspection": "Code introspection tools.",
     "mcp": "MCP server management.",
     "notebook": "Jupyter notebook tools.",
     "notification": "Notification and alerting tools.",
@@ -93,6 +113,7 @@ _FALLBACK_HELP: Dict[str, str] = {
     "web": "Web utilities.",
     # registry peers (fallback when the peer is not installed)
     "app": "SciTeX App SDK — write-once interface for local + cloud apps.",
+    "ui": "Shared UI shell, components, and application tooling.",
     "audio": "Text-to-speech with multiple backends for scientific work.",
     "browser": "Browser automation for scholarly paper access.",
     "clew": "Verifiable knowledge graph for scientific experiments.",
@@ -146,91 +167,211 @@ def _wrapper_inventory(cli_dir: str) -> set[str]:
     }
 
 
-# Conventional locations a peer might publish its main click group at.
-# Probed in order; first hit wins. Keeps the umbrella registry-driven
-# even when peers don't follow a single canonical layout.
-_PEER_CLI_PROBES: tuple[tuple[str, str], ...] = (
-    ("_cli._main", "main"),  # scitex-io, scitex-clew, scitex-plt, scitex-ssh, …
-    ("_cli", "main"),  # scitex-dataset, scitex-audio, scitex-cloud, …
-    ("cli", "main"),  # scitex-capture, scitex-security, scitex-agent-container
-    ("_cli._app", "app"),  # scitex-app
-    ("_cli_main", "cli"),  # scitex-scholar (entry point scitex_scholar._cli_main:cli)
+# Existing umbrella-owned workflows are deliberate adapters, not generic peer
+# discovery. Merely adding a file must not create a new public root command.
+_UMBRELLA_WRAPPERS = frozenset(
+    {
+        "browser",
+        "config",
+        "conversion",
+        "dev",
+        "docs",
+        "event",
+        "mcp",
+        "repro",
+        "resource",
+        "social",
+        "template",
+        "tex",
+        "web",
+        "writer",
+    }
+)
+# Require the actual installed domain owner even for call-time imports. An
+# umbrella wrapper file alone does not establish a usable optional workflow.
+# An absent native CLI declaration still provides installed-distribution proof:
+# Root composes the Python-only events provider without inventing a leaf CLI.
+_WRAPPER_OWNERS = {"web": "scitex-web", "event": "scitex-events"}
+
+DEV_COMMANDS = frozenset(
+    {
+        "audit",
+        "completion",
+        "introspection",
+        "linter",
+        "list-python-apis",
+        "pkg",
+        "skills",
+    }
+)
+DEV_PEERS = frozenset(
+    {"capture", "security", "newb", "resource", "template", "git", "benchmark"}
 )
 
 
-def _peer_cli_candidates(import_name: str) -> tuple[tuple[str, str], ...]:
-    """Return candidate ``(module_path, attr_name)`` pairs for the peer's main click group.
+# Actual operation delegation, not ownership inferred from a command spelling.
+# Config/convert/pkg/completion/mcp are Root-owned compositions over libraries.
+_WORKFLOW_OWNERS = {
+    "browser": "scitex-browser",
+    "dev": "scitex-dev",
+    "docs": "scitex-dev",
+    "event": "scitex-events",
+    "repro": "scitex-repro",
+    "resource": "scitex-resource",
+    "social": "socialia",
+    "template": "scitex-template",
+    "tex": "scitex-tex",
+    "web": "scitex-web",
+    "writer": "scitex-writer",
+    "audit": "scitex-audit",
+    "introspect": "scitex-introspect",
+    "introspection": "scitex-introspect",
+    "list-python-apis": "scitex-introspect",
+    "linter": "scitex-dev",
+    "skills": "scitex-dev",
+}
 
-    Does NOT import — that's left to the LazyGroup loader at invocation
-    time. Returning the candidate list at registration keeps umbrella
-    startup fast (importing every peer's ``_cli._main`` at registration
-    added ~45 s across ~60 peers).
-    """
-    return tuple((f"{import_name}.{sub}", attr) for sub, attr in _PEER_CLI_PROBES)
+
+def _native_candidate(row, retired):
+    return bool(
+        row.name
+        and row.target
+        and row.status in {"declared", "legacy_unknown"}
+        and row.distribution not in retired
+        and not (row.name in DEPRECATED_ALIASES and row.name not in DEV_PEERS)
+        and row.name not in DEV_COMMANDS
+        and row.name != "dev"
+    )
 
 
-def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
-    """Build the umbrella's lazy-subcommand dict.
+def workflow_enabled(name, snapshot):
+    """Require Root's composition preference and any actual domain delegate."""
+    return snapshot.allows("scitex") and snapshot.allows(
+        _WORKFLOW_OWNERS.get(name, "scitex")
+    )
 
-    Pure registry-driven: for every non-archived non-template peer in
-    ``ECOSYSTEM``, probe the peer's import name for a ``main``/``app``
-    click group at one of the conventional sub-paths and register it
-    directly as ``scitex <short>``. No per-peer wrapper file in
-    ``scitex/cli/<short>.py`` is required (or wanted) — the umbrella
-    ships zero hand-wired peer dispatchers.
 
-    Falls back to the on-disk wrapper inventory only for scitex-internal
-    subcommands that aren't peers (audit, capture, convert, docs, etc.)
-    and for any peer that was missed by the probe (the wrapper acts as
-    an explicit override).
-    """
-    out: Dict[str, LazySpec] = {}
-    have_wrapper = _wrapper_inventory(cli_dir)
+def reserved_cli_names(rows=None, *, snapshot=None, namespace="root"):
+    """Reserve declarations and declined actual routes, never a guessed namespace."""
+    if snapshot is None and rows is None:
+        from ._exposure import load_cli_snapshot
 
-    # 1. Registry-driven peer dispatch (no per-peer wrapper file needed).
-    try:
-        from scitex_dev._ecosystem._core import ECOSYSTEM
-    except ImportError:
-        ECOSYSTEM = {}
-
-    for pip_name, info in ECOSYSTEM.items():
-        if info.get("archived"):
-            continue
-        if info.get("category") in _REGISTRY_SKIP_CATEGORIES:
-            continue
-        imp = info.get("import_name") or ""
-        if not imp:
-            continue
-        sub = info.get("umbrella_subcommand", pip_name.removeprefix("scitex-"))
-        attr = sub.replace("-", "_")
-        # Register the peer's candidate locations WITHOUT importing.
-        # LazyGroup._load_lazy walks the candidates at invocation time
-        # and returns the first one that resolves. An on-disk wrapper
-        # file in scitex/cli/<short>.py acts as an explicit override.
-        help_text = _registry_subcommand_help(imp) or _FALLBACK_HELP.get(sub) or sub
-        if attr in have_wrapper:
-            out[sub] = (f"scitex.cli.{attr}", attr, help_text)
-        else:
-            out[sub] = (_peer_cli_candidates(imp), attr, help_text)
-
-    # 2. scitex-internal wrappers (no peer in the registry).
-    registered_attrs = {
-        spec[1]
-        for spec in out.values()
-        if isinstance(spec[0], str) and spec[0].startswith("scitex.cli.")
+        snapshot = load_cli_snapshot()
+    if rows is None:
+        rows = snapshot.rows
+    blocked = {
+        row.name
+        for row in rows
+        if row.name and row.status in {"none", "invalid", "ambiguous"}
     }
-    for attr in have_wrapper:
-        if attr in registered_attrs:
+    if snapshot is not None:
+        eligible = [
+            row
+            for row in rows
+            if _native_candidate(row, snapshot.retired)
+            and (namespace == "root" or row.name in DEV_PEERS)
+        ]
+        blocked.update(
+            row.name for row in eligible if not snapshot.allows(row.distribution)
+        )
+        native_enabled = {
+            row.name for row in eligible if snapshot.allows(row.distribution)
+        }
+        workflows = {*_UMBRELLA_WRAPPERS, *DEV_COMMANDS, "linter", "skills"}
+        blocked.update(
+            name
+            for name in workflows
+            if name not in native_enabled and not workflow_enabled(name, snapshot)
+        )
+    # A renamed wrapper must honor declines and preferences under either name.
+    # Keeping the old route hidden must not make it a way around policy.
+    for previous, canonical in (*DEV_RENAMES.items(), *ROOT_RENAMES.items()):
+        if previous in blocked or canonical in blocked:
+            blocked.update((previous, canonical))
+    return blocked
+
+
+def build_lazy_subcommands(
+    cli_dir: str, *, namespace: str = "root", snapshot=None
+) -> dict[str, LazySpec]:
+    """Project installed CLI declarations; never invent a CLI from a registry row.
+
+    The Dev reader owns metadata eligibility and explicit declines. Registry
+    records supply retirement/name policy only. A named, existing umbrella
+    adapter may implement a workflow without a standalone leaf console script.
+    Explicit decline/invalid/ambiguous names remain reserved against adapters.
+    """
+    if namespace not in {"root", "dev"}:
+        raise ValueError("CLI namespace must be root or dev")
+
+    from ._exposure import load_cli_snapshot
+
+    have_wrapper = _wrapper_inventory(cli_dir)
+    out: dict[str, LazySpec] = {}
+    snapshot = load_cli_snapshot() if snapshot is None else snapshot
+    rows = snapshot.rows
+    blocked = reserved_cli_names(rows, snapshot=snapshot, namespace=namespace)
+    installed_owners = {row.distribution for row in rows}
+    retired = snapshot.retired
+    for row in rows:
+        if not row.name or row.name in blocked or not row.target:
             continue
-        sub = attr.replace("_", "-")
-        out.setdefault(sub, (f"scitex.cli.{attr}", attr, _FALLBACK_HELP.get(sub, sub)))
+        if (
+            row.status not in {"declared", "legacy_unknown"}
+            or row.distribution in retired
+        ):
+            continue
+        sub = row.name
+        if (
+            (sub in DEPRECATED_ALIASES and sub not in DEV_PEERS)
+            or sub in DEV_COMMANDS
+            or sub == "dev"
+        ):
+            continue
+        module, _, attr = row.target.partition(":")
+        if not module or not attr:
+            continue
+        help_text = _registry_subcommand_help(row.distribution) or _FALLBACK_HELP.get(
+            sub, sub
+        )
+        # The shared reader proved this exact module belongs to the owner.
+        # Do not probe alternate modules: namespace prefixes are not ownership.
+        candidates = ((module, attr),)
+        out[sub] = (
+            PeerCliTarget(candidates, row.distribution, row.target, row.console_script),
+            sub.replace("-", "_"),
+            help_text,
+        )
 
-    # 3. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
-    # main.py re-adds them as hidden warn-phase deprecated aliases when
-    # scitex-dev's click_compat is importable.
-    for old_name in DEPRECATED_ALIASES:
-        out.pop(old_name, None)
-
+    for name in _UMBRELLA_WRAPPERS:
+        if (
+            name in blocked
+            or name not in have_wrapper
+            or not workflow_enabled(name, snapshot)
+        ):
+            continue
+        owner = _WRAPPER_OWNERS.get(name)
+        if owner is not None and owner not in installed_owners:
+            continue
+        # An explicit leaf target takes precedence over a legacy wrapper.
+        explicit = any(r.name == name and r.status == "declared" for r in rows)
+        # This exact owner still needs Root's filtered Dev composition,
+        # rather than mounting the raw owner group and bypassing its scope.
+        canonical_dev = name == "dev" and any(
+            row.name == "dev"
+            and row.status == "declared"
+            and row.distribution == "scitex-dev"
+            and row.target == "scitex_dev._cli:main"
+            for row in rows
+        )
+        if explicit and not canonical_dev:
+            continue
+        out[name] = (f"scitex.cli.{name}", name, _FALLBACK_HELP.get(name, name))
+    # Deprecated spellings are added only as hidden, lazy canonical aliases.
+    if namespace == "dev":
+        return {name: spec for name, spec in out.items() if name in DEV_PEERS}
+    for name in (*DEPRECATED_ALIASES, *DEV_COMMANDS, *DEV_PEERS):
+        out.pop(name, None)
     return out
 
 
@@ -243,11 +384,13 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
 # re-exported domain package", which grows with the registry, so listing
 # the non-Core minority keeps this table maintainable and keeps new
 # registry peers out of `Other`.
-_NON_CORE_CATEGORIES: Tuple[Tuple[str, frozenset], ...] = (
-    ("Data & Sync", frozenset({"convert"})),
+_NON_CORE_CATEGORIES: tuple[tuple[str, frozenset], ...] = (
+    ("Data & Sync", frozenset({"conversion", "convert"})),
     (
         "Service",
-        frozenset({"agent-container", "container", "hub", "mcp", "orochi", "ssh", "tunnel"}),
+        frozenset(
+            {"agent-container", "container", "hub", "mcp", "orochi", "ssh", "tunnel"}
+        ),
     ),
     (
         "Diagnostics",
@@ -261,7 +404,7 @@ _NON_CORE_CATEGORIES: Tuple[Tuple[str, frozenset], ...] = (
 )
 
 # Canonical render order (§4a). Empty categories are omitted at render.
-CATEGORY_ORDER: Tuple[str, ...] = (
+CATEGORY_ORDER: tuple[str, ...] = (
     "Core",
     "Data & Sync",
     "Service",

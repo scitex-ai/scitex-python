@@ -1,131 +1,49 @@
-Linter Module (``stx.linter``)
-===============================
+Linting with SciTeX Dev
+=======================
 
-AST-based Python linter enforcing SciTeX conventions for reproducible
-scientific code.
+``scitex-dev`` owns the linter engine and discovers rule providers from
+installed SciTeX packages. The umbrella exposes its CLI under
+``scitex dev linter``.
 
-.. note::
-
-   ``stx.linter`` wraps the standalone
-   `scitex-linter <https://github.com/ywatanabe1989/scitex-linter>`_ package.
-   Install with: ``pip install scitex-linter``.
-
-Quick Reference
----------------
+CLI
+---
 
 .. code-block:: bash
 
-   # Check a file
-   scitex linter check my_script.py
+   scitex dev linter --help
+   scitex dev linter list-rules --json
+   scitex dev linter validate-files path/to/script.py
 
-   # Check with specific severity
-   scitex linter check my_script.py --severity warning
+``validate-files`` inspects Python source without running the target script.
+Use the installed command's help for filters and output options.
 
-   # List all rules
-   scitex linter list-rules
+The standalone provider exposes the same commands under ``scitex-dev linter``.
 
-   # Filter by category
-   scitex linter list-rules --category session
-
-.. code-block:: python
-
-   from scitex_linter import check_file, list_rules
-
-   # Check a file
-   results = check_file("my_script.py")
-
-   # List available rules
-   rules = list_rules()
-
-Rule Categories
----------------
-
-45 rules across 8 categories:
-
-.. list-table::
-   :header-rows: 1
-   :widths: 15 25 60
-
-   * - Prefix
-     - Category
-     - Examples
-   * - ``STX-S``
-     - **Session**
-     - Missing ``@stx.session``, missing ``if __name__`` guard, missing return
-   * - ``STX-I``
-     - **Import**
-     - Using ``import mngs`` instead of ``import scitex``, bare ``import numpy``
-   * - ``STX-IO``
-     - **I/O**
-     - Using ``open()`` instead of ``stx.io``, hardcoded paths
-   * - ``STX-P``
-     - **Plotting**
-     - Using ``plt.show()`` instead of ``stx.io.save``, missing ``set_xyt``
-   * - ``STX-ST``
-     - **Statistics**
-     - Using ``scipy.stats`` directly instead of ``stx.stats``
-   * - ``STX-PA``
-     - **Path**
-     - Hardcoded absolute paths, missing ``stx.gen.mk_spath``
-   * - ``STX-FM``
-     - **Format**
-     - Non-snake_case names, magic numbers, missing docstrings
-
-Severity Levels
----------------
-
-- **error** -- Must fix (breaks reproducibility or correctness)
-- **warning** -- Should fix (best practice violations)
-- **info** -- Suggestions for improvement
-
-Interfaces
+Python API
 ----------
 
-The linter is available through multiple interfaces:
-
-**CLI:**
-
-.. code-block:: bash
-
-   scitex linter check script.py
-   scitex-linter check script.py    # standalone CLI
-
-**Python API:**
-
 .. code-block:: python
 
-   from scitex_linter import check_file, check_source
+   from scitex_dev import linter
 
-   results = check_file("script.py")
-   results = check_source("import numpy as np\n...")
+   rules = linter.list_rules()
 
-**Flake8 Plugin:**
+The rule inventory includes installed plugin providers, so it depends on the
+environment. Providers register through ``scitex_dev.linter.plugins``; each
+package owns its domain rules.
 
-.. code-block:: bash
+Migration and compatibility
+---------------------------
 
-   flake8 --select=STX script.py
+Use ``scitex_dev.linter`` or the umbrella's ``scitex.dev.linter`` delegation
+instead of ``scitex.linter``. Install the current development-tool provider
+rather than the retired standalone ``scitex-linter`` package.
 
-**MCP Tools:**
+The umbrella and Dev releases must have compatible provider declarations.
+For example, legacy umbrella 2.29.3 declares rules now built into Dev 0.62.26;
+that combination refuses rule discovery. This source's umbrella no longer
+advertises that legacy provider. Dependency installation alone does not prove
+that an installed provider set can load.
 
-.. code-block:: python
-
-   # Available as MCP tools for AI agents
-   linter_check(path="script.py", severity="warning")
-   linter_list_rules(category="session")
-   linter_check_source(source="...", filepath="<stdin>")
-
-Configuration
--------------
-
-Configure via ``pyproject.toml``:
-
-.. code-block:: toml
-
-   [tool.scitex-linter]
-   severity = "warning"
-   ignore = ["STX-S002", "STX-FM001"]
-
-API Reference
--------------
-
-See :doc:`/api/scitex.linter` for the auto-generated Python API.
+See the `SciTeX Dev repository <https://github.com/scitex-ai/scitex-dev>`_
+for the owning implementation and reference documentation.

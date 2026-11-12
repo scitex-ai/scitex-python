@@ -10,12 +10,14 @@ Project Templates
 
 .. code-block:: bash
 
-   # Clone a project template
-   scitex template clone research my_project
-   scitex template clone pip_project my_package
-   scitex template clone paper my_paper
-   scitex template clone app my_app
-   scitex template clone singularity my_container
+   # Preview first; --yes creates the project
+   scitex dev template clone research my_project
+
+   # Create a project template
+   scitex dev template clone research my_project --yes
+   scitex dev template clone pip-project my_package --yes
+   scitex dev template clone paper my_paper --yes
+   scitex dev template clone singularity my_container --yes
 
 .. list-table::
    :header-rows: 1
@@ -25,14 +27,12 @@ Project Templates
      - Description
    * - ``research``
      - Full scientific workflow (scripts, data, docs, config, session scaffolding)
-   * - ``research_minimal``
-     - Essential modules only for lightweight experiments
-   * - ``pip_project``
+   * - ``minimal``
+     - Minimal SciTeX project
+   * - ``pip-project``
      - Distributable Python package for PyPI (``pyproject.toml``, tests, CI)
    * - ``paper``
      - Academic paper with LaTeX/BibTeX structure, SciTeX writer integration
-   * - ``app``
-     - SciTeX application with bridge-init, MountPoint, and EventBus
    * - ``singularity``
      - Reproducible containerized environment (Singularity/Apptainer definition)
 
@@ -71,7 +71,7 @@ Control how git is initialized in the cloned template:
      - Use parent repo if available
    * - ``origin``
      - Preserve template's git history
-   * - ``None``
+   * - ``none``
      - No git initialization
 
 .. code-block:: python
@@ -89,20 +89,20 @@ is a complete, runnable script.
 .. code-block:: bash
 
    # List available code templates
-   scitex template code list
+   scitex dev template list-code-templates
 
    # Get a template (prints to stdout)
-   scitex template code session           # Full @stx.session script
-   scitex template code session-minimal   # Lightweight session
-   scitex template code session-plot      # Figure-focused session
-   scitex template code session-stats     # Statistics-focused session
-   scitex template code io                # I/O operations
-   scitex template code plt               # Plotting patterns
-   scitex template code stats             # Statistical analysis
-   scitex template code scholar           # Literature management
+   scitex dev template get session           # Full @stx.session script
+   scitex dev template get session-minimal   # Lightweight session
+   scitex dev template get session-plot      # Figure-focused session
+   scitex dev template get session-stats     # Statistics-focused session
+   scitex dev template get io                # I/O operations
+   scitex dev template get plt               # Plotting patterns
+   scitex dev template get stats             # Statistical analysis
+   scitex dev template get scholar           # Literature management
 
    # Save to a file
-   scitex template code session --output analyze.py
+   scitex dev template get session --output analyze.py
 
 Python API
 ----------
@@ -111,7 +111,10 @@ Python API
 
    from scitex.template import clone_template, get_code_template
 
-   # Clone a project template
+   # Preview first; --yes creates the project
+   scitex dev template clone research my_project
+
+   # Create a project template
    clone_template("research", "my_experiment", git_strategy="child")
 
    # Get a code snippet as a string

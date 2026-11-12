@@ -68,15 +68,11 @@ Package Reference
    * - scitex-dev
      - ``scitex.dev``
      - ``pip install scitex-dev``
-     - Developer tools, ecosystem management
+     - Developer tools, ecosystem management and AST-based code checks
    * - scitex-clew
      - ``scitex.clew``
      - ``pip install scitex-clew``
      - Hash-based reproducibility verification
-   * - scitex-linter
-     - ``scitex.linter``
-     - ``pip install scitex-linter``
-     - AST-based code pattern checking
    * - scitex-dataset
      - ``scitex.dataset``
      - ``pip install scitex-dataset``

@@ -5,9 +5,11 @@ SciTeX CLI - Repro Commands (Reproducibility)
 Provides reproducibility utilities: ID generation, timestamps, hashing.
 """
 
+import copy
 import sys
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand
 
 
 @click.group(
@@ -28,15 +30,15 @@ def repro(ctx, help_recursive, as_json):
 
     \b
     Commands:
-      gen-id         Generate unique identifier
-      gen-timestamp  Generate timestamp
+      generate-id         Generate unique identifier
+      generate-timestamp  Generate timestamp
       hash           Hash array/file for reproducibility
       seed           Set random seed across all libraries
 
     \b
     Examples:
-      scitex repro gen-id              # Generate unique ID
-      scitex repro gen-timestamp       # Generate timestamp
+      scitex repro generate-id              # Generate unique ID
+      scitex repro generate-timestamp       # Generate timestamp
       scitex repro hash data.npy       # Hash array file
       scitex repro seed 42             # Set random seed
     """
@@ -60,7 +62,7 @@ def _print_help_recursive(ctx):
     click.echo(repro.get_help(parent_ctx))
     for name in sorted(repro.list_commands(ctx) or []):
         cmd = repro.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
         click.secho(f"━━━ scitex repro {name} ━━━", fg="cyan", bold=True)
@@ -68,38 +70,109 @@ def _print_help_recursive(ctx):
             click.echo(cmd.get_help(sub_ctx))
 
 
-@repro.command("gen-id")
-@click.option("--length", "-l", type=int, default=8, help="ID length (default: 8)")
+@repro.command(
+    "generate-id",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Generate timestamped identifiers with random suffixes.",
+        description=(
+            "--length controls the random suffix; the timestamp is always retained.",
+        ),
+        examples=(
+            Example(
+                "{prog} --length 12 --count 5 --json",
+                "Generate five identifiers as JSON.",
+            ),
+            Example(
+                "{prog} --prefix exp_ --dry-run",
+                "Preview the operation without generating identifiers.",
+            ),
+        ),
+    ),
+)
+@click.option(
+    "--length",
+    "-l",
+    type=click.IntRange(min=1),
+    default=8,
+    help="Random suffix length; the timestamp is retained (default: 8).",
+)
 @click.option("--prefix", "-p", default="", help="Prefix to add to ID")
-@click.option("--count", "-n", type=int, default=1, help="Number of IDs to generate")
-def gen_id(length, prefix, count):
+@click.option(
+    "--count",
+    "-n",
+    type=click.IntRange(min=1),
+    default=1,
+    help="Number of IDs to generate",
+)
+@click.option("--json", "as_json", is_flag=True, help="Return generated IDs as JSON.")
+@click.option(
+    "--dry-run", is_flag=True, help="Describe generation without producing IDs."
+)
+@click.option(
+    "--yes", "-y", is_flag=True, help="Accept this non-interactive operation."
+)
+def gen_id(length, prefix, count, as_json, dry_run, yes):
     """
     Generate unique identifier(s)
 
     \b
     Examples:
-      scitex repro gen-id
-      scitex repro gen-id --length 12
-      scitex repro gen-id --prefix exp_
-      scitex repro gen-id --count 5
+      scitex repro generate-id
+      scitex repro generate-id --length 12
+      scitex repro generate-id --prefix exp_
+      scitex repro generate-id --count 5 --json
     """
+    if dry_run:
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(
+                Result(
+                    success=True,
+                    data={
+                        "dry_run": True,
+                        "count": count,
+                        "length": length,
+                        "prefix": prefix,
+                    },
+                ).to_json()
+            )
+        else:
+            click.echo(
+                f"Would generate {count} timestamped ID(s) with a {length}-character random suffix and prefix {prefix!r}."
+            )
+        return
     try:
         from scitex.repro import gen_ID
 
-        for _ in range(count):
-            id_str = gen_ID()
-            if length != 8:
-                id_str = id_str[:length]
-            if prefix:
-                id_str = f"{prefix}{id_str}"
-            click.echo(id_str)
+        ids = [f"{prefix}{gen_ID(N=length)}" for _ in range(count)]
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(Result(success=True, data={"ids": ids}).to_json())
+        else:
+            for id_str in ids:
+                click.echo(id_str)
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
 
 
-@repro.command("gen-timestamp")
+@repro.command(
+    "generate-timestamp",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Generate a timestamp in a specified format and timezone.",
+        examples=(
+            Example(
+                "{prog} --utc --json", "Return an ISO timestamp with its UTC offset."
+            ),
+            Example("{prog} --format file", "Return a file-safe timestamp."),
+        ),
+    ),
+)
 @click.option(
     "--format",
     "-f",
@@ -109,7 +182,14 @@ def gen_id(length, prefix, count):
     help="Timestamp format (default: iso)",
 )
 @click.option("--utc", is_flag=True, help="Use UTC timezone")
-def gen_timestamp(fmt, utc):
+@click.option("--json", "as_json", is_flag=True, help="Return the timestamp as JSON.")
+@click.option(
+    "--dry-run", is_flag=True, help="Describe generation without producing a timestamp."
+)
+@click.option(
+    "--yes", "-y", is_flag=True, help="Accept this non-interactive operation."
+)
+def gen_timestamp(fmt, utc, as_json, dry_run, yes):
     """
     Generate timestamp
 
@@ -122,10 +202,24 @@ def gen_timestamp(fmt, utc):
 
     \b
     Examples:
-      scitex repro gen-timestamp
-      scitex repro gen-timestamp --format file
-      scitex repro gen-timestamp --format human --utc
+      scitex repro generate-timestamp
+      scitex repro generate-timestamp --format file
+      scitex repro generate-timestamp --format human --utc
     """
+    if dry_run:
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(
+                Result(
+                    success=True, data={"dry_run": True, "format": fmt, "utc": utc}
+                ).to_json()
+            )
+        else:
+            click.echo(
+                f"Would generate a {fmt} timestamp using {'UTC' if utc else 'local time'}."
+            )
+        return
     try:
         from datetime import datetime, timezone
 
@@ -147,7 +241,16 @@ def gen_timestamp(fmt, utc):
         else:
             ts = make_timestamp()
 
-        click.echo(ts)
+        if as_json:
+            from scitex_dev import Result
+
+            click.echo(
+                Result(
+                    success=True, data={"timestamp": ts, "format": fmt, "utc": utc}
+                ).to_json()
+            )
+        else:
+            click.echo(ts)
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
@@ -157,10 +260,18 @@ def gen_timestamp(fmt, utc):
 @repro.command()
 @click.argument("file_path", type=click.Path(exists=True))
 @click.option(
-    "--algorithm", "-a", default="sha256", help="Hash algorithm (default: sha256)"
+    "--algorithm",
+    "-a",
+    default="sha256",
+    help="File-byte hash algorithm (default: sha256); use --raw for array files.",
 )
 @click.option("--short", "-s", is_flag=True, help="Output short hash (first 8 chars)")
-def hash(file_path, algorithm, short):
+@click.option(
+    "--raw",
+    is_flag=True,
+    help="Stream file bytes without deserializing array/checkpoint contents.",
+)
+def hash(file_path, algorithm, short, raw):
     """
     Hash array or file for reproducibility verification
 
@@ -175,7 +286,11 @@ def hash(file_path, algorithm, short):
     Examples:
       scitex repro hash data.npy
       scitex repro hash model.pt --short
-      scitex repro hash weights.npz --algorithm md5
+      scitex repro hash weights.npz --raw --algorithm md5
+
+    Array mode disables NumPy pickle and uses weights-only checkpoint loading.
+    Use --raw for untrusted or serialized-object files: it streams bytes without
+    interpreting their contents and honors --algorithm.
     """
     try:
         import hashlib
@@ -186,24 +301,23 @@ def hash(file_path, algorithm, short):
         # Try to load as array first
         hash_val = None
         try:
-            if path.suffix in (".npy", ".npz"):
+            if not raw and path.suffix in (".npy", ".npz"):
                 import numpy as np
 
                 from scitex.repro import hash_array
 
-                arr = np.load(path, allow_pickle=True)
+                arr = np.load(path, allow_pickle=False)
                 if isinstance(arr, np.lib.npyio.NpzFile):
                     # For npz, hash all arrays
-                    hashes = []
-                    for key in arr.files:
-                        hashes.append(hash_array(arr[key]))
+                    with arr:
+                        hashes = [hash_array(arr[key]) for key in arr.files]
                     hash_val = hashlib.sha256("".join(hashes).encode()).hexdigest()
                 else:
                     hash_val = hash_array(arr)
-            elif path.suffix in (".pt", ".pth"):
+            elif not raw and path.suffix in (".pt", ".pth"):
                 import torch
 
-                data = torch.load(path, map_location="cpu")
+                data = torch.load(path, map_location="cpu", weights_only=True)
                 if isinstance(data, torch.Tensor):
                     hash_val = hashlib.sha256(data.numpy().tobytes()).hexdigest()
                 else:
@@ -263,6 +377,13 @@ def seed(seed, verbose):
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
+
+
+# Keep established scripts working without advertising abbreviated names.
+for _old_name, _command in (("gen-id", gen_id), ("gen-timestamp", gen_timestamp)):
+    _alias = copy.copy(_command)
+    _alias.hidden = True
+    repro.add_command(_alias, _old_name)
 
 
 if __name__ == "__main__":

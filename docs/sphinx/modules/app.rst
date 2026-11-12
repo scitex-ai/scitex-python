@@ -1,4 +1,4 @@
 app Module (``stx.app``)
 ========================
 
-See :doc:`/api/scitex.app` for the auto-generated Python API.
+See :doc:`/source/api/app` for the auto-generated Python API.
