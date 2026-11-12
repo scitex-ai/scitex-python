@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Correct the advertised Python minimum to 3.11, matching the mandatory I/O
+  dependency already selected by 2.30.8. Align the installation guide, README
+  and classifiers; retain the existing Python 3.11–3.13 CI matrix.
+
 - Require public SSH 1.2.1 in both tunnel and development profiles for its
   installed CLI vocabulary and optional-MCP import behavior. Align all three
   shared tooling pins with public Dev 0.62.28.

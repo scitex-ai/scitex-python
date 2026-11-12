@@ -4,11 +4,10 @@ Installation
 Requirements
 ------------
 
-- **Python 3.10+**
+- **Python 3.11+**
 - ``uv`` (strongly recommended) — install with ``pip install uv`` or
   ``curl -LsSf https://astral.sh/uv/install.sh | sh``
-- Hub integration and ``scitex[all]`` require **Python 3.11+** in the
-  upcoming 2.30.9 release. The base library retains its Python 3.10+ requirement.
+- The base package and optional integrations share this Python minimum.
 - ``pip`` is also supported; resolution and download time depend on the
   selected extras, platform and package cache.
 

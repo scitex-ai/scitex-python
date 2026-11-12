@@ -14,7 +14,7 @@ name = "scitex"
 version = "2.30.9"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "AGPL-3.0-only"
 authors = [
     { name = "Yusuke Watanabe", email = "ywatanabe@scitex.ai" }
@@ -33,7 +33,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -250,8 +249,8 @@ cli = [
 # Cloud Module - Cloud service integration (OPTIONAL peer: scitex-hub)
 # Use: pip install scitex[cloud]  (alias of scitex[hub])
 # Hub is an optional peer for the base install and is included in [all].
-# The SDK-based alpha integration requires Python 3.11+; the base package
-# retains its independent Python requirement. Missing peers produce install hints.
+# Base and SDK-based alpha integration both require Python 3.11+.
+# Missing optional peers produce install hints.
 cloud = [
     "matplotlib",
     "scitex-hub>=0.22.0a7",
