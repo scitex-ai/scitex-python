@@ -33,13 +33,12 @@ import threading
 import warnings
 from typing import Iterable
 
-import scitex_logging as slogging
-
 # Load environment variables from SCITEX_ENV_SRC early.
 from scitex.helpers import load_scitex_env
 
 load_scitex_env()
 
+import scitex_logging as slogging
 from scitex_dev import try_import_optional
 
 from ._compat import get_tools_sync, mounted_namespaces, safe_mount
