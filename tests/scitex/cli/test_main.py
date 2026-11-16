@@ -79,9 +79,7 @@ class TestCategorizedRootHelp:
         # Assert
         assert exit_code == 0
 
-    @pytest.mark.parametrize(
-        "header", ["Core:", "Service:", "Diagnostics:", "Introspection:", "Shell:"]
-    )
+    @pytest.mark.parametrize("header", ["Core:", "Service:", "Introspection:"])
     def test_root_help_renders_category_header(self, help_result, header):
         # Arrange
         output = help_result.output
@@ -94,7 +92,7 @@ class TestCategorizedRootHelp:
         # Arrange
         output = help_result.output
         # Act
-        core_first = output.index("Core:") < output.index("Shell:")
+        core_first = output.index("Core:") < output.index("Introspection:")
         # Assert
         assert core_first
 

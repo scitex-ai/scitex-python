@@ -62,17 +62,6 @@ def docs(ctx, list_pages, page, as_json, tldr, fmt, help_recursive):
             group_to_json(ctx, docs)
             return
 
-    # Delegate to scitex_dev docs
-    try:
-        from scitex_dev.docs import get_docs
-    except ImportError:
-        click.secho(
-            "scitex-dev package required. pip install scitex-dev",
-            fg="red",
-            err=True,
-        )
-        sys.exit(1)
-
     if tldr:
         _show_tldr(as_json)
         return
@@ -128,7 +117,7 @@ stx.io.save(fig, "plot.png")  # saves plot.png + plot.csv
 
 def _show_list(as_json):
     """List all doc pages across packages."""
-    from scitex_dev.docs import get_docs
+    from scitex_dev import get_docs
 
     overview = get_docs()
     pages = []
@@ -150,7 +139,7 @@ def _show_list(as_json):
 
 def _show_page(page, fmt, as_json):
     """Show a specific doc page."""
-    from scitex_dev.docs import get_docs
+    from scitex_dev import get_docs
 
     # Try to find the page in any package
     overview = get_docs()
@@ -197,7 +186,7 @@ def docs_search(query, package, max_results, as_json):
       scitex docs search "neural" --json
     """
     try:
-        from scitex_dev.docs import search_docs
+        from scitex_dev import search_docs
 
         results = search_docs(query=query, package=package, max_results=max_results)
 
@@ -231,7 +220,13 @@ def docs_search(query, package, max_results, as_json):
 @click.option(
     "--dry-run", is_flag=True, help="Show what would be built without building"
 )
-def docs_build(package, fmt, as_json, dry_run):
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Accept explicit documentation building for automation (already non-interactive).",
+)
+def docs_build(package, fmt, as_json, dry_run, yes):
     """Build Sphinx documentation for SciTeX packages.
 
     \b
@@ -240,8 +235,9 @@ def docs_build(package, fmt, as_json, dry_run):
       scitex docs build --package scitex-writer
       scitex docs build --dry-run
     """
+    del yes  # Explicit build is already non-interactive.
     if dry_run:
-        from scitex_dev.docs import get_docs
+        from scitex_dev import get_docs
 
         overview = get_docs()
         packages = list(overview.keys()) if isinstance(overview, dict) else []
@@ -260,24 +256,57 @@ def docs_build(package, fmt, as_json, dry_run):
             click.echo(f"[dry-run] Would build {fmt} docs for: {', '.join(packages)}")
         return
 
+    from scitex_dev import Result
+
     try:
-        from scitex_dev.docs import build_docs
+        from scitex_dev import build_docs
 
         results = build_docs(package=package, formats=[fmt])
-
+    except Exception as exc:
         if as_json:
-            from scitex_dev import Result
-
-            click.echo(Result(success=True, data=results).to_json())
+            click.echo(Result(success=False, error=str(exc)).to_json())
         else:
-            for pkg_name, result in results.items():
-                if isinstance(result, dict) and "error" in result:
-                    click.secho(f"  {pkg_name}: {result['error']}", fg="red")
-                else:
-                    click.secho(f"  {pkg_name}: built", fg="green")
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
+            click.secho(f"Error: {exc}", fg="red", err=True)
         sys.exit(1)
+
+    failures = {
+        name: errors
+        for name, result in results.items()
+        if (errors := _build_errors(result))
+    }
+    if as_json:
+        click.echo(
+            Result(
+                success=not failures,
+                data=results,
+                error=(
+                    "Documentation build failed: " + ", ".join(failures)
+                    if failures
+                    else None
+                ),
+            ).to_json()
+        )
+    else:
+        for name in results:
+            if name in failures:
+                click.secho(f"  {name}: {'; '.join(failures[name])}", fg="red")
+            else:
+                click.secho(f"  {name}: built", fg="green")
+    if failures:
+        sys.exit(1)
+
+
+def _build_errors(result):
+    """Read package-level and per-builder errors from Dev's build result."""
+    if not isinstance(result, dict):
+        return []
+    errors = []
+    for key, value in result.items():
+        if key == "error":
+            errors.append(str(value))
+        else:
+            errors.extend(_build_errors(value))
+    return errors
 
 
 # EOF

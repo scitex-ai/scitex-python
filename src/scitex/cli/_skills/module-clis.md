@@ -1,103 +1,35 @@
 ---
-description: Quick reference for every module-specific scitex CLI subcommand — audio speak, audit, container build/status, dataset search, notification send, repro gen-id, tunnel setup/remove/status, web summarize.
+description: Selected SciTeX provider CLI paths with installed-owner discovery and safe help examples; leaf help remains authoritative for operations and flags.
 ---
 
-# Module-Specific CLIs
+# Provider workflows
 
-## audio
-
-```bash
-scitex audio speak "Hello from SciTeX"
-scitex audio speak "Hello" --engine google
-```
-
-## audit
+Use selected help to learn the owning package's actual commands and flags:
 
 ```bash
-scitex audit .
-scitex audit . --checks python deps
+scitex io --help
+scitex stats --help
+scitex scholar --help
+scitex writer --help
+scitex sdk --help
+scitex cards --help
+scitex clew --help
+scitex ssh tunnel --help
 ```
 
-## container
+These are conditional provider paths, not a promise that every package is
+installed or operational. The leaf's implementation and skill are authoritative
+for its operations. Research verification belongs under `clew`; developer and
+security auditing belong under `scitex dev`.
 
 ```bash
-scitex container build environment.def
-scitex container status
-scitex container list-versions
-scitex container switch-version v1.1
+scitex dev audit --help
+scitex dev linter --help
+scitex dev pkg --help
+scitex dev template --help
+scitex dev resource --help
 ```
 
-## dataset
-
-```bash
-scitex dataset search "EEG epilepsy"
-scitex dataset fetch --source openneuro --max 20
-scitex dataset db build
-scitex dataset db search "alzheimer"
-```
-
-## notification
-
-```bash
-scitex notification send "Training complete"
-scitex notification send "GPU alert" --urgency critical
-scitex notification sms "Pipeline done"
-scitex notification backends
-```
-
-## repro
-
-```bash
-scitex repro gen-id
-scitex repro gen-timestamp
-```
-
-## tunnel
-
-```bash
-scitex tunnel setup --port 8888 --bastion user@host --key ~/.ssh/id_rsa
-scitex tunnel status
-scitex tunnel remove --port 8888
-```
-
-## web
-
-```bash
-scitex web summarize https://arxiv.org/abs/2301.12345
-scitex web search-pubmed "EEG deep learning" --max 10
-```
-
-## security
-
-```bash
-scitex security check-github-alerts
-scitex security check-github-alerts --save
-```
-
-## social
-
-```bash
-scitex social post "New preprint out!" --platform twitter
-scitex social status
-```
-
-## stats
-
-```bash
-scitex stats run-test ttest-ind data1.csv data2.csv
-scitex stats recommend --data data.csv
-```
-
-## template
-
-```bash
-scitex template list
-scitex template clone python-scitex ./my_new_project
-```
-
-## writer
-
-```bash
-scitex writer compile manuscript/
-scitex writer figures add figure1.png --caption "Results"
-```
+Only eligible providers are exposed. A Python-only utility such as `dict` or
+`types` remains a Python API without a fabricated module-named command.
+CLI-only declines leave other independently provided interfaces unchanged.

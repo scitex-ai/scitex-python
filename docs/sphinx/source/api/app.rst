@@ -85,12 +85,14 @@ Creating an Application
 
 Scaffold a new SciTeX application from a template:
 
-.. code-block:: bash
+.. code-block:: python
 
-   scitex template clone app my_tool
+   from scitex_template import clone_template
 
-This creates a project with bridge-init configuration, MountPoint
-definitions, and EventBus integration pre-configured.
+   clone_template("app", "my_tool")
+
+The ``app`` template is available through the template provider Python API;
+it is not a supported type of ``scitex dev template clone``.
 
 API Reference
 -------------

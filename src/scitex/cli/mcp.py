@@ -5,12 +5,14 @@
 SciTeX MCP CLI - Model Context Protocol server management commands.
 
 Commands:
-- scitex mcp list       List all available MCP tools
-- scitex mcp doctor     Check MCP server health and configuration
-- scitex mcp serve      Start the unified MCP server
+- scitex mcp list-tools    List the admitted MCP tool catalog
+- scitex mcp doctor        Check MCP server health and configuration
+- scitex mcp serve         Serve the unified MCP server in the foreground
+- scitex mcp get-config    Print vendor-neutral MCP client configuration
 """
 
 import click
+from scitex_dev import RESULT_SCHEMA as _RESULT_SCHEMA
 
 
 @click.group(invoke_without_command=True)
@@ -52,11 +54,26 @@ def _extract_return_keys(description: str) -> list:
     return re.findall(r"'([a-z_]+)'", match.group(1))
 
 
+def _tool_output_schema(tool_obj):
+    """Read a native or protocol tool's schema without inventing a contract."""
+    schema = getattr(tool_obj, "output_schema", None)
+    return getattr(tool_obj, "outputSchema", None) if schema is None else schema
+
+
+def _tool_input_schema(tool_obj):
+    """Read native, Python protocol and serialized protocol schema fields."""
+    for name in ("parameters", "input_schema", "inputSchema"):
+        schema = getattr(tool_obj, name, None)
+        if schema is not None:
+            return schema
+    return {}
+
+
 def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> str:
     """Format tool as Python-like function signature with return type."""
     params = []
-    if hasattr(tool_obj, "parameters") and tool_obj.parameters:
-        schema = tool_obj.parameters
+    schema = _tool_input_schema(tool_obj)
+    if schema:
         props = schema.get("properties", {})
         required = schema.get("required", [])
         for name, info in props.items():
@@ -70,22 +87,20 @@ def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> 
             else:
                 p = f"{click.style(name, fg='white', bold=True)}: {click.style(ptype, fg='cyan')} = {click.style('None', fg='yellow')}"
             params.append(p)
-    # All MCP tools return standardized Result envelope
-    ret_type = (
-        f" -> {click.style('Result', fg='magenta')}"
-        f"{click.style('{success, data, error, next_steps}', fg='yellow')}"
-    )
+    schema = _tool_output_schema(tool_obj)
+    if schema is None:
+        output = "output unspecified"
+    elif schema == _RESULT_SCHEMA:
+        output = "Result"
+    else:
+        output = "schema-defined output"
+    ret_type = f" -> {click.style(output, fg='magenta')}"
     name_s = click.style(tool_obj.name, fg="green", bold=True)
     if multiline and len(params) > 2:
         param_indent = indent + "    "
         params_str = ",\n".join(f"{param_indent}{p}" for p in params)
         return f"{indent}{name_s}(\n{params_str}\n{indent}){ret_type}"
     return f"{indent}{name_s}({', '.join(params)}){ret_type}"
-
-
-def _estimate_tokens(text: str) -> int:
-    """Estimate token count (rough: ~4 chars per token)."""
-    return len(text) // 4 if text else 0
 
 
 def _get_all_tools(mcp_server) -> dict:
@@ -96,34 +111,39 @@ def _get_all_tools(mcp_server) -> dict:
 
 
 def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
-    """Get MCP server summary statistics."""
-    import json as json_mod
+    """Measure admitted metadata without guessing tokens or client context."""
+    from scitex_dev.context import measure_context
 
     if all_tools is None:
         all_tools = _get_all_tools(mcp_server)
-    tools = list(all_tools.values())
     instructions = getattr(mcp_server, "instructions", "") or ""
-    total_desc = sum(len(t.description or "") for t in tools)
-    total_params = sum(
-        (
-            len(json_mod.dumps(t.parameters))
-            if hasattr(t, "parameters") and t.parameters
-            else 0
-        )
-        for t in tools
-    )
+    definitions = []
+    for tool in all_tools.values():
+        definition = {
+            "name": tool.name,
+            "description": getattr(tool, "description", None) or "",
+            "inputSchema": _tool_input_schema(tool),
+        }
+        output_schema = _tool_output_schema(tool)
+        if output_schema is not None:
+            definition["outputSchema"] = output_schema
+        definitions.append(definition)
+    measurement = measure_context(tools=definitions, instructions=instructions)
 
     return {
         "name": getattr(mcp_server, "name", "unknown"),
-        "tool_count": len(tools),
-        "instructions_tokens": _estimate_tokens(instructions),
-        "descriptions_tokens": _estimate_tokens("x" * total_desc),
-        "schemas_tokens": _estimate_tokens("x" * total_params),
-        "total_context_tokens": (
-            _estimate_tokens(instructions)
-            + _estimate_tokens("x" * total_desc)
-            + _estimate_tokens("x" * total_params)
+        "tool_count": len(definitions),
+        "context_measurement": measurement,
+        "context_measurement_scope": (
+            "Admitted tool names, descriptions, input/output schemas and server "
+            "instructions; annotations, protocol framing and client context "
+            "are not measured."
         ),
+        # Preserve legacy keys while making their unmeasured status explicit.
+        "instructions_tokens": None,
+        "descriptions_tokens": None,
+        "schemas_tokens": None,
+        "total_context_tokens": None,
     }
 
 
@@ -135,10 +155,15 @@ def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
     "-m",
     type=str,
     default=None,
-    help="Filter by module (audio, canvas, capture, dataset, diagram, plt, scholar, stats, template, ui, writer)",
+    help="Filter by an available module; list-tools --json shows current modules.",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-@click.option("--summary", "show_summary", is_flag=True, help="Show context summary")
+@click.option(
+    "--summary",
+    "show_summary",
+    is_flag=True,
+    help="Show normalized metadata size; tokens and client context are not measured.",
+)
 def list_tools(
     verbose: int, compact: bool, module: str, as_json: bool, show_summary: bool
 ):
@@ -146,14 +171,17 @@ def list_tools(
 
     Verbosity: (none) names, -v signatures, -vv +description, -vvv full.
     Signatures are expanded by default; use -c/--compact for single line.
+
+    $ scitex mcp list-tools --json
     """  # noqa: D301
-    import logging
     import warnings
+
+    import scitex_logging as slogging
 
     # Suppress DeprecationWarnings from third-party libraries (httplib2, etc.)
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     # Suppress INFO messages from env loader during import
-    logging.getLogger("scitex.helpers._env_loader").setLevel(logging.WARNING)
+    slogging.getLogger("scitex.helpers._env_loader").setLevel(slogging.WARNING)
     try:
         from scitex._mcp import FASTMCP_AVAILABLE
         from scitex._mcp import mcp as mcp_server
@@ -214,10 +242,9 @@ def list_tools(
     if as_json:
         import json
 
-        from scitex_dev.types import RESULT_SCHEMA
-
         output = {
-            "result_envelope": RESULT_SCHEMA,
+            "result_envelope": _RESULT_SCHEMA,
+            "result_envelope_scope": "reference only; each tool retains its own output_schema",
             "summary": summary,
             "total": sum(len(t) for t in modules.values()),
             "modules": {},
@@ -229,7 +256,7 @@ def list_tools(
             }
             for tool_name in tool_list:
                 tool_obj = all_tools.get(tool_name)
-                schema = tool_obj.parameters if hasattr(tool_obj, "parameters") else {}
+                schema = _tool_input_schema(tool_obj)
                 output["modules"][mod]["tools"].append(
                     {
                         "name": tool_name,
@@ -238,6 +265,7 @@ def list_tools(
                         ),
                         "description": tool_obj.description if tool_obj else "",
                         "parameters": schema,
+                        "output_schema": _tool_output_schema(tool_obj),
                     }
                 )
         click.echo(json.dumps(output, indent=2))
@@ -245,15 +273,18 @@ def list_tools(
         total = sum(len(t) for t in modules.values())
         click.secho(f"SciTeX MCP: {summary['name']}", fg="cyan", bold=True)
         click.echo(f"Tools: {total} ({len(modules)} modules)")
-        click.echo(
-            f"Returns: {click.style('Result', fg='magenta')}"
-            f"{click.style('{success, data, error, error_code, context, next_steps}', fg='yellow')}"
-        )
+        click.echo("Returns: per-tool output schema; unspecified when absent.")
         if show_summary:
-            click.echo(f"Context: ~{summary['total_context_tokens']:,} tokens")
-            click.echo(f"  Instructions: ~{summary['instructions_tokens']:,} tokens")
-            click.echo(f"  Descriptions: ~{summary['descriptions_tokens']:,} tokens")
-            click.echo(f"  Schemas: ~{summary['schemas_tokens']:,} tokens")
+            measured = summary["context_measurement"]["total"]
+            click.echo(
+                f"Admitted metadata fields: {measured['characters']:,} characters, "
+                f"{measured['utf8_bytes']:,} UTF-8 bytes"
+            )
+            click.echo("Tokens and total client context: not measured.")
+            if module:
+                click.echo(
+                    "The summary covers all admitted tools; --module filters this listing."
+                )
         click.echo()
 
         for mod, tool_list in sorted(modules.items()):
@@ -302,7 +333,10 @@ def list_tools(
 @mcp.command("doctor")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed diagnostics")
 def doctor(verbose: bool):
-    """Check MCP server health and configuration."""
+    """Check MCP server health and configuration.
+
+    $ scitex mcp doctor --verbose
+    """
     issues = []
     warnings = []
 
@@ -452,7 +486,7 @@ def _print_help_recursive(ctx):
 
     for name in sorted(mcp.list_commands(ctx) or []):
         cmd = mcp.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
         click.secho(f"━━━ scitex mcp {name} ━━━", fg="cyan", bold=True)
@@ -460,7 +494,7 @@ def _print_help_recursive(ctx):
             click.echo(cmd.get_help(sub_ctx))
 
 
-@mcp.command("start")
+@mcp.command("serve")
 @click.option(
     "--transport",
     "-t",
@@ -473,7 +507,10 @@ def _print_help_recursive(ctx):
     "--port", "-p", default=8085, type=int, help="Port to bind (default: 8085)"
 )
 def start(transport: str, host: str, port: int):
-    """Start the unified MCP server."""
+    """Serve the unified MCP server in the foreground.
+
+    $ scitex mcp serve --transport stdio
+    """
     try:
         from scitex._mcp import run_server
     except ImportError:
@@ -484,38 +521,38 @@ def start(transport: str, host: str, port: int):
     run_server(transport=transport, host=host, port=port)
 
 
-@mcp.command("installation")
-def installation():
-    """Show Claude Desktop configuration for SciTeX MCP server."""
-    import shutil
+@mcp.command("get-config")
+@click.option(
+    "--json", "as_json", is_flag=True, help="Output only the MCP client JSON."
+)
+def installation(as_json=False):
+    """Print MCP client configuration for the current Python environment.
+
+    $ scitex mcp get-config --json
+    """
+    import json
     import sys
 
-    from scitex import __version__
+    config = {
+        "mcpServers": {
+            "scitex": {
+                "command": sys.executable,
+                "args": ["-m", "scitex", "mcp", "serve"],
+            }
+        }
+    }
+    if not as_json:
+        click.echo("Server configuration for clients accepting the mcpServers format:")
+    click.echo(json.dumps(config, indent=2))
 
-    click.secho(f"SciTeX MCP Server v{__version__}", fg="cyan", bold=True)
-    click.echo()
 
-    # Get actual path
-    scitex_path = shutil.which("scitex")
-    python_path = sys.executable
+# Retain existing client setups and scripts without advertising daemon semantics
+# for a foreground protocol server. Warnings stay on stderr, outside MCP stdout.
+from scitex_dev.ecosystem import deprecated_alias
 
-    if scitex_path:
-        click.echo(f"Your installation path: {scitex_path}")
-        click.echo(f"Your Python path: {python_path}")
-    click.echo()
-
-    click.secho("Claude Desktop Configuration:", fg="green", bold=True)
-    click.echo(
-        "Add to ~/Library/Application Support/Claude/claude_desktop_config.json (macOS)"
-    )
-    click.echo("or %APPDATA%\\Claude\\claude_desktop_config.json (Windows):")
-    click.echo()
-
-    config = f""""scitex": {{
-  "command": "{scitex_path or "/path/to/.venv/bin/scitex"}",
-  "args": ["mcp", "start"]
-}}"""
-    click.secho(config, fg="yellow")
+# Tuple prefixes also forward --help through the shared native Click adapter.
+deprecated_alias(mcp, "start", target=("serve",), remove_in="3.0")
+deprecated_alias(mcp, "installation", target=("get-config",), remove_in="3.0")
 
 
 # EOF

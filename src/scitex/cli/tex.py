@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand
 
 
 @click.group(
@@ -30,14 +31,14 @@ def tex(ctx, help_recursive, as_json):
     \b
     Commands:
       compile    Compile LaTeX document to PDF
-      preview    Preview LaTeX document
-      to-vec     Convert to vector format (SVG/PDF)
+      format-vector   Format text as LaTeX vector notation
+      render-preview  Render mathematical expressions to PNG and recipe
 
     \b
     Examples:
       scitex tex compile paper.tex
-      scitex tex preview paper.tex
-      scitex tex to-vec figure.tex --format svg
+      scitex tex format-vector AB --json
+      scitex tex render-preview 'x^2' --output preview.png
     """
     if help_recursive:
         _print_help_recursive(ctx)
@@ -59,7 +60,7 @@ def _print_help_recursive(ctx):
     click.echo(tex.get_help(parent_ctx))
     for name in sorted(tex.list_commands(ctx) or []):
         cmd = tex.get_command(ctx, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         click.echo()
         click.secho(f"━━━ scitex tex {name} ━━━", fg="cyan", bold=True)
@@ -68,8 +69,8 @@ def _print_help_recursive(ctx):
 
 
 @tex.command()
-@click.argument("tex_file", type=click.Path(exists=True))
-@click.option("--output", "-o", type=click.Path(), help="Output PDF path")
+@click.argument("tex_file", type=click.Path(exists=True, dir_okay=False))
+@click.option("--output", "-o", type=click.Path(dir_okay=False), help="Output PDF path")
 @click.option(
     "--engine",
     "-e",
@@ -82,12 +83,18 @@ def _print_help_recursive(ctx):
 )
 @click.option(
     "--timeout",
-    type=int,
+    type=click.IntRange(min=1),
     default=300,
     help="Compilation timeout in seconds (default: 300)",
 )
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed compilation output")
-def compile(tex_file, output, engine, clean, timeout, verbose):
+@click.option(
+    "--dry-run", is_flag=True, help="Preview compilation without writing files."
+)
+@click.option(
+    "--yes", "-y", is_flag=True, help="Accept this explicit non-interactive operation."
+)
+def compile(tex_file, output, engine, clean, timeout, verbose, dry_run, yes):
     """
     Compile LaTeX document to PDF
 
@@ -97,40 +104,41 @@ def compile(tex_file, output, engine, clean, timeout, verbose):
       scitex tex compile paper.tex --output ./output/paper.pdf
       scitex tex compile paper.tex --engine xelatex
       scitex tex compile paper.tex --clean --verbose
+      scitex tex compile paper.tex --output ./output/paper.pdf --dry-run
     """
+    path = Path(tex_file).resolve()
+    target = Path(output).resolve() if output else path.with_suffix(".pdf")
+    if target == path:
+        raise click.UsageError("The output PDF path must differ from the input source.")
+    if dry_run:
+        click.echo(f"Would compile: {path} -> {target}")
+        click.echo(
+            f"Engine: {engine}; timeout: {timeout}s; clean auxiliary files: {clean}"
+        )
+        return
+
+    # This command has always been explicit and non-interactive. --yes is
+    # accepted for standard automation; --dry-run takes priority over it.
     try:
         from scitex.tex import compile_tex
 
-        path = Path(tex_file)
         click.echo(f"Compiling: {path.name}")
 
         result = compile_tex(
             tex_path=path,
-            output_path=output,
-            engine=engine,
+            output_dir=target.parent,
+            compiler=engine,
+            clean=clean,
             timeout=timeout,
         )
 
-        if result.success:
+        if result.success and result.pdf_path is not None:
+            generated = Path(result.pdf_path)
+            if generated != target:
+                generated.replace(target)
             click.secho("Compilation successful!", fg="green")
-            click.echo(f"PDF: {result.output_pdf}")
-
+            click.echo(f"PDF: {target}")
             if clean:
-                # Clean auxiliary files
-                aux_extensions = [
-                    ".aux",
-                    ".log",
-                    ".out",
-                    ".toc",
-                    ".bbl",
-                    ".blg",
-                    ".fls",
-                    ".fdb_latexmk",
-                ]
-                for ext in aux_extensions:
-                    aux_file = path.with_suffix(ext)
-                    if aux_file.exists():
-                        aux_file.unlink()
                 click.echo("Auxiliary files cleaned")
         else:
             click.secho(
@@ -140,39 +148,27 @@ def compile(tex_file, output, engine, clean, timeout, verbose):
                 click.echo("\nErrors:")
                 for error in result.errors[:10]:
                     click.echo(f"  {error}")
-            sys.exit(result.exit_code)
+            sys.exit(result.exit_code or 1)
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
 
 
-@tex.command()
+@tex.command(hidden=True)
 @click.argument("tex_file", type=click.Path(exists=True))
 @click.option("--viewer", "-v", help="PDF viewer to use (default: system default)")
 def preview(tex_file, viewer):
-    """
-    Preview LaTeX document (compile and open)
-
-    \b
-    Examples:
-      scitex tex preview paper.tex
-      scitex tex preview paper.tex --viewer evince
-    """
-    try:
-        from scitex.tex import preview as tex_preview
-
-        path = Path(tex_file)
-        click.echo(f"Previewing: {path.name}")
-
-        tex_preview(path, viewer=viewer)
-
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
+    """Explain migration from the unsupported document-viewer adapter."""
+    # These file/viewer arguments cannot be forwarded to the provider's
+    # expression renderer: they describe a different, unimplemented operation.
+    raise click.UsageError(
+        "Use `scitex tex compile FILE` to create a document PDF, or "
+        "`scitex tex render-preview EXPRESSION --output preview.png` for mathematics."
+    )
 
 
-@tex.command("to-vec")
+@tex.command("to-vec", hidden=True)
 @click.argument("tex_file", type=click.Path(exists=True))
 @click.option(
     "--format",
@@ -184,41 +180,98 @@ def preview(tex_file, viewer):
 )
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
 def to_vec(tex_file, fmt, output):
-    """
-    Convert LaTeX to vector format
+    """Explain migration from the unsupported file-export adapter."""
+    # The provider formats a text vector, so the old file/export arguments
+    # cannot be a pure forwarding alias without silently changing their meaning.
+    raise click.UsageError(
+        "Use `scitex tex format-vector TEXT` for vector notation or "
+        "`scitex tex compile FILE` for a document PDF."
+    )
 
-    \b
-    Useful for embedding equations and figures in other documents.
 
-    \b
-    Examples:
-      scitex tex to-vec equation.tex
-      scitex tex to-vec equation.tex --format pdf
-      scitex tex to-vec figure.tex --output ./vectors/fig.svg
-    """
+@tex.command(
+    "format-vector",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Format text as LaTeX vector notation.",
+        examples=(Example("{prog} AB --json", "Return vector notation as JSON."),),
+    ),
+)
+@click.argument("text")
+@click.option(
+    "--json", "as_json", is_flag=True, help="Return a structured Result envelope."
+)
+def format_vector(text, as_json):
+    """Format text as LaTeX vector notation."""
     try:
-        from scitex.tex import to_vec as convert_to_vec
+        from scitex.tex import to_vec as format_notation
 
-        path = Path(tex_file)
-        click.echo(f"Converting: {path.name} -> {fmt.upper()}")
+        vector = format_notation(text, enable_fallback=False)
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+    if as_json:
+        from scitex_dev import Result
 
-        if output:
-            output_path = Path(output)
-        else:
-            output_path = path.with_suffix(f".{fmt}")
+        click.echo(
+            Result(success=True, data={"text": text, "vector": vector}).to_json()
+        )
+    else:
+        click.echo(vector)
 
-        result = convert_to_vec(path, output_path, format=fmt)
 
-        if result:
-            click.secho("Conversion successful!", fg="green")
-            click.echo(f"Output: {result}")
-        else:
-            click.secho("Conversion failed", fg="red", err=True)
-            sys.exit(1)
+@tex.command(
+    "render-preview",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Render mathematical expressions to a PNG and reproducible recipe.",
+        examples=(
+            Example(
+                "{prog} 'x^2' --output preview.png --yes", "Save a validated preview."
+            ),
+            Example(
+                "{prog} 'x^2' --output preview.png --dry-run",
+                "Preview without writing.",
+            ),
+        ),
+    ),
+)
+@click.argument("expressions", nargs=-1, required=True)
+@click.option(
+    "--output",
+    "-o",
+    required=True,
+    type=click.Path(dir_okay=False),
+    help="Output PNG path.",
+)
+@click.option(
+    "--dry-run", is_flag=True, help="Preview paths without rendering or writing files."
+)
+@click.option(
+    "--yes", "-y", is_flag=True, help="Accept this explicit non-interactive operation."
+)
+def render_preview(expressions, output, dry_run, yes):
+    """Render mathematical expressions to a PNG and reproducible recipe."""
+    target = Path(output).resolve()
+    if target.suffix.lower() != ".png":
+        raise click.BadParameter("Use a .png output path.", param_hint="--output")
+    if dry_run:
+        click.echo(f"Would render {len(expressions)} expression(s): {target}")
+        return
+    try:
+        from scitex.tex import preview as render_expressions
 
-    except Exception as e:
-        click.secho(f"Error: {e}", fg="red", err=True)
-        sys.exit(1)
+        figure = render_expressions(list(expressions), enable_fallback=False)
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            # Keep the provider's recording wrapper and strict validation.
+            figure.savefig(target)
+        finally:
+            import matplotlib.pyplot as plt
+
+            plt.close(figure.fig)
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"Saved preview: {target}")
 
 
 @tex.command()

@@ -6,6 +6,21 @@ import sys
 import click
 
 
+def command_help(summary, example):
+    """Use the shared CLI help contract for each introspection capability."""
+    from scitex_dev.ecosystem import CliHelp, Example, SpecCommand
+
+    return {
+        "cls": SpecCommand,
+        "help_spec": CliHelp(
+            summary=summary,
+            examples=(
+                Example("{prog} " + example, "Return a structured JSON result."),
+            ),
+        ),
+    }
+
+
 def echo_json_result(data):
     """Emit a Result-envelope JSON success response and return."""
     from scitex_dev import Result

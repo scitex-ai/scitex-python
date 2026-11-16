@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import List, Optional
 
 import click
+from scitex_dev.ecosystem import deprecated_alias
 
 
-@click.group(invoke_without_command=True)
+@click.group("conversion", invoke_without_command=True)
 @click.option(
     "--json",
     "as_json",
@@ -30,7 +31,7 @@ def convert(ctx, as_json):
             click.echo(ctx.get_help())
 
 
-@convert.command("file")
+@convert.command("convert-file")
 @click.argument("input_path", type=click.Path(exists=True))
 @click.option(
     "-o",
@@ -49,91 +50,84 @@ def convert(ctx, as_json):
     help="Show what would be done without writing files",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option(
+    "--yes", "-y", is_flag=True, help="Attempt conversion instead of previewing"
+)
 def convert_file(
     input_path: str,
     output: Optional[str],
     overwrite: bool,
     dry_run: bool,
     as_json: bool,
+    yes: bool,
 ):
-    """Convert a single legacy bundle to .stx format.
+    """Preview a legacy conversion; --yes attempts writing.
 
     \b
-    Supported input formats:
+    Legacy extensions accepted for preview:
       .figz  - Figure bundles
       .pltz  - Plot bundles
       .statsz - Statistics bundles
 
     \b
     Examples:
-      scitex convert file old_figure.figz
-      scitex convert file plot.pltz -o converted_plot.stx
-      scitex convert file stats.statsz --dry-run
+      scitex conversion convert-file old_figure.figz
+      scitex conversion convert-file plot.pltz -o converted_plot.stx
+      scitex conversion convert-file stats.statsz --dry-run
     """
+
+    dry_run = dry_run or not yes
+
+    def _convert():
+        input_file = Path(input_path)
+        output_file = Path(output) if output else input_file.with_suffix(".stx")
+        if input_file.suffix == ".stx":
+            return {"action": "already_stx", "input": str(input_file)}
+        valid_extensions = (".figz", ".pltz", ".statsz")
+        if input_file.suffix not in valid_extensions:
+            raise ValueError(
+                f"Unsupported format: {input_file.suffix}. "
+                f"Supported: {', '.join(valid_extensions)}"
+            )
+        if input_file.is_dir():
+            raise ValueError(f"Input must be a bundle file: {input_file}")
+        if input_file.resolve() == output_file.resolve() or (
+            output_file.exists() and input_file.samefile(output_file)
+        ):
+            raise ValueError("Input and output refer to the same source file.")
+        if (output_file.exists() or output_file.is_symlink()) and not overwrite:
+            raise ValueError(
+                f"Output file exists: {output_file}. Use --overwrite to replace."
+            )
+        if dry_run:
+            return {
+                "action": "dry_run",
+                "input": str(input_file),
+                "output": str(output_file),
+            }
+        _convert_bundle(input_file, output_file)
+        return {"converted": str(input_file), "output": str(output_file)}
+
     if as_json:
         from scitex_dev import wrap_as_cli
-
-        def _convert():
-            input_file = Path(input_path)
-            if output:
-                output_file = Path(output)
-            else:
-                output_file = input_file.with_suffix(".stx")
-            if dry_run:
-                return {
-                    "action": "dry_run",
-                    "input": str(input_file),
-                    "output": str(output_file),
-                }
-            _convert_bundle(input_file, output_file)
-            return {"converted": str(input_file), "output": str(output_file)}
 
         wrap_as_cli(_convert, as_json=True)
         return
 
-    input_file = Path(input_path)
-
-    # Determine output path
-    if output:
-        output_file = Path(output)
-    else:
-        output_file = input_file.with_suffix(".stx")
-
-    # Check if already .stx
-    if input_file.suffix == ".stx":
-        click.secho(f"File is already in .stx format: {input_file}", fg="yellow")
-        return
-
-    # Validate input format
-    valid_extensions = (".figz", ".pltz", ".statsz")
-    if input_file.suffix not in valid_extensions:
-        click.secho(
-            f"Unsupported format: {input_file.suffix}. "
-            f"Supported: {', '.join(valid_extensions)}",
-            fg="red",
-            err=True,
-        )
-        sys.exit(1)
-
-    # Check output exists
-    if output_file.exists() and not overwrite:
-        click.secho(
-            f"Output file exists: {output_file}. Use --overwrite to replace.",
-            fg="red",
-            err=True,
-        )
-        sys.exit(1)
-
-    if dry_run:
-        click.echo(f"Would convert: {input_file} -> {output_file}")
-        return
-
-    # Perform conversion
     try:
-        _convert_bundle(input_file, output_file)
-        click.secho(f"Converted: {input_file} -> {output_file}", fg="green")
-    except Exception as e:
-        click.secho(f"Error converting {input_file}: {e}", fg="red", err=True)
+        result = _convert()
+        if result.get("action") == "already_stx":
+            click.secho(
+                f"File is already in .stx format: {result['input']}", fg="yellow"
+            )
+        elif result.get("action") == "dry_run":
+            click.echo(f"Would convert: {result['input']} -> {result['output']}")
+        else:
+            click.secho(
+                f"Converted: {result['converted']} -> {result['output']}", fg="green"
+            )
+    except Exception as error:
+        click.secho(f"Error converting {input_path}: {error}", fg="red", err=True)
         sys.exit(1)
 
 
@@ -156,21 +150,27 @@ def convert_file(
     help="Show what would be done without writing files",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option(
+    "--yes", "-y", is_flag=True, help="Attempt conversion instead of previewing"
+)
 def convert_batch(
     pattern: tuple,
     output_dir: Optional[str],
     overwrite: bool,
     dry_run: bool,
     as_json: bool,
+    yes: bool,
 ):
-    """Batch convert multiple legacy bundles to .stx format.
+    """Preview batch conversions; --yes attempts writing.
 
     \b
     Examples:
-      scitex convert batch ./figures/*.figz
-      scitex convert batch ./plots/*.pltz -o ./converted/
-      scitex convert batch ./**/*.figz ./**/*.pltz --dry-run
+      scitex conversion batch ./figures/*.figz
+      scitex conversion batch ./plots/*.pltz -o ./converted/
+      scitex conversion batch ./**/*.figz ./**/*.pltz --dry-run
     """
+    dry_run = dry_run or not yes
+
     if as_json:
         from scitex_dev import wrap_as_cli
 
@@ -300,29 +300,20 @@ def validate_bundles(paths: tuple, verbose: bool):
     Checks:
       - Valid ZIP structure
       - spec.json present and valid
-      - Schema version
-      - Depth limits
-      - Circular references
+      - Required schema metadata
+      - Type-specific figure, plot and statistics fields
 
     \b
     Examples:
-      scitex convert validate output.stx
-      scitex convert validate ./figures/*.stx --verbose
+      scitex conversion validate output.stx
+      scitex conversion validate ./figures/*.stx --verbose
     """
-    # Use Bundle for validation
     try:
-        from scitex.io.bundle import Bundle as ZipBundle
-
-        def validate_stx_bundle(path):
-            try:
-                bundle = ZipBundle(path)
-                return bundle.validate(level="strict")
-            except Exception as e:
-                return {"valid": False, "errors": [str(e)]}
-
-    except ImportError:
-        click.echo("Error: scitex.io.bundle not available", err=True)
-        return
+        from scitex_io.bundle import ZipBundle, validate_spec
+    except ImportError as error:
+        raise click.ClickException(
+            "scitex-io bundle support is not available"
+        ) from error
 
     valid = 0
     invalid = 0
@@ -334,7 +325,11 @@ def validate_bundles(paths: tuple, verbose: bool):
             with ZipBundle(path, mode="r") as zb:
                 spec = zb.read_json("spec.json")
 
-            # Check schema
+            if not isinstance(spec, dict):
+                raise ValueError("spec.json must contain a JSON object")
+            validate_spec(spec, spec.get("type", "unknown"), strict=True)
+
+            # Display the metadata only after expert validation succeeds.
             schema = spec.get("schema", {})
             schema_name = schema.get("name", "unknown")
             schema_version = schema.get("version", "unknown")
@@ -348,9 +343,6 @@ def validate_bundles(paths: tuple, verbose: bool):
                 click.echo(f"  ID: {bundle_id}")
                 constraints = spec.get("constraints", {})
                 click.echo(f"  Constraints: {constraints}")
-
-            # Validate structure
-            validate_stx_bundle(spec)
 
             click.secho(f"VALID: {path}", fg="green")
             valid += 1
@@ -384,13 +376,14 @@ def bundle_info(path: str):
 
     \b
     Example:
-      scitex convert info figure.stx
+      scitex conversion info figure.stx
     """
     try:
-        from scitex.io.bundle import Bundle as ZipBundle
-    except ImportError:
-        click.echo("Error: scitex.io.bundle not available", err=True)
-        return
+        from scitex_io.bundle import ZipBundle
+    except ImportError as error:
+        raise click.ClickException(
+            "scitex-io bundle support is not available"
+        ) from error
 
     bundle_path = Path(path)
 
@@ -503,5 +496,7 @@ def _convert_bundle(input_path: Path, output_path: Path) -> None:
                         arcname = file_path.relative_to(tmpdir)
                         out_zf.write(file_path, arcname)
 
+
+deprecated_alias(convert, "file", target="convert-file", remove_in="3.0")
 
 # EOF
