@@ -1,4 +1,4 @@
 bridge Module (``stx.bridge``)
 ==============================
 
-See :doc:`/api/scitex.bridge` for the auto-generated Python API.
+See :doc:`/source/api/bridge` for the auto-generated Python API.

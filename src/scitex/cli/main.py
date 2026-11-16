@@ -24,10 +24,42 @@ class LazyGroup(click.Group):
     help display or tab completion. This makes CLI startup instant.
     """
 
-    def __init__(self, *args, lazy_subcommands=None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        lazy_subcommands=None,
+        metadata_distribution=None,
+        exposure_snapshot=None,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         # {name: (module_path, attr_name, short_help)}
         self._lazy_subcommands = lazy_subcommands or {}
+        self._exposure_snapshot = exposure_snapshot
+        self._metadata_distribution = metadata_distribution
+        self._metadata_help_body = self.help
+        self._refresh_metadata_help()
+
+    def _refresh_metadata_help(self):
+        """Keep stored and rendered help on the same installed identity."""
+        if self._metadata_distribution:
+            from ._metadata import cli_metadata
+
+            header = cli_metadata(self._metadata_distribution)["header"]
+            self.help = f"{header}\n\n{self._metadata_help_body or ''}"
+            if self._exposure_snapshot is not None:
+                policy = self._exposure_snapshot.policy
+                self.help += (
+                    "\n\n\b\nCLI exposure preferences (selected at startup):"
+                    f"\n  Configuration (SCITEX_DEV_CONFIG): {policy.config_path}"
+                    f"\n  Knob state (SCITEX_DEV_KNOB_STATE): {policy.knob_state_path}"
+                    "\n  Inspect selected files: scitex dev cli status --paths"
+                )
+
+    def format_help_text(self, ctx, formatter):
+        """Refresh the shared metadata header before Click renders help."""
+        self._refresh_metadata_help()
+        super().format_help_text(ctx, formatter)
 
     def list_commands(self, ctx):
         """List all available commands."""
@@ -51,17 +83,7 @@ class LazyGroup(click.Group):
         """
         from ._lazy_subcommands import CATEGORY_ORDER, command_category
 
-        commands = []
-        for name in self.list_commands(ctx):
-            if name in self._lazy_subcommands:
-                _, _, help_text = self._lazy_subcommands[name]
-                commands.append((name, help_text))
-            else:
-                cmd = super().get_command(ctx, name)
-                if cmd is None or cmd.hidden:
-                    continue
-                help_text = cmd.get_short_help_str(limit=150)
-                commands.append((name, help_text))
+        commands = self.command_summaries(ctx)
 
         if not commands:
             return
@@ -78,6 +100,30 @@ class LazyGroup(click.Group):
             with formatter.section(category):
                 formatter.write_dl(rows)
 
+    def command_summaries(self, ctx):
+        """Visible metadata for help, JSON and completion, without peer imports."""
+        commands = []
+        for name in self.list_commands(ctx):
+            if name in self._lazy_subcommands:
+                commands.append((name, self._lazy_subcommands[name][2]))
+            else:
+                command = super().get_command(ctx, name)
+                if command is not None and not command.hidden:
+                    commands.append((name, command.get_short_help_str(limit=150)))
+        return commands
+
+    def shell_complete(self, ctx, incomplete):
+        """Complete metadata names without importing every candidate provider."""
+        from click.shell_completion import CompletionItem
+
+        items = click.Command.shell_complete(self, ctx, incomplete)
+        items.extend(
+            CompletionItem(name, help=summary)
+            for name, summary in self.command_summaries(ctx)
+            if name.startswith(incomplete)
+        )
+        return items
+
     def _load_lazy(self, cmd_name):
         """Import a lazy subcommand, tolerating optional-dep failures.
 
@@ -91,7 +137,10 @@ class LazyGroup(click.Group):
         cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
         """
         import importlib
-        import logging
+
+        import scitex_logging as slogging
+
+        from ._lazy_subcommands import PeerCliTarget
 
         module_path_or_candidates, attr_name, _ = self._lazy_subcommands[cmd_name]
         # Two shapes:
@@ -106,13 +155,27 @@ class LazyGroup(click.Group):
             candidates = module_path_or_candidates
 
         last_exc = None
+        declared_console = False
         for mod_path, attr in candidates:
             try:
                 mod = importlib.import_module(mod_path)
             except ImportError as exc:
                 last_exc = exc
                 continue
-            cmd = getattr(mod, attr, None)
+            root_attr, selector, component = attr.partition("::")
+            cmd = mod
+            for part in root_attr.split("."):
+                cmd = getattr(cmd, part, None)
+                if cmd is None:
+                    break
+            if selector:
+                if (
+                    not component
+                    or "::" in component
+                    or not isinstance(cmd, click.Group)
+                ):
+                    continue
+                cmd = cmd.get_command(click.Context(cmd), component)
             # Only a click command/group is mountable. Some peers expose a
             # plain ``def main(argv)`` console-script function at a probed
             # location (e.g. scitex_writer._cli.main) — returning it would
@@ -120,10 +183,31 @@ class LazyGroup(click.Group):
             # 'make_context'). Skip non-commands and keep probing.
             # (click.Group is not a click.Command subclass until click 9,
             # so check both; avoids the deprecated click.BaseCommand.)
+            if (
+                mod_path == "scitex.cli.dev"
+                and root_attr == "dev"
+                and self._exposure_snapshot is not None
+            ):
+                cmd = cmd.with_exposure(self._exposure_snapshot)
             if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
+            if (
+                isinstance(module_path_or_candidates, PeerCliTarget)
+                and f"{mod_path}:{attr}" == module_path_or_candidates.target
+                and callable(cmd)
+            ):
+                declared_console = True
+        if declared_console:
+            from ._console_adapter import console_command
+
+            return console_command(
+                cmd_name,
+                module_path_or_candidates.target,
+                self._lazy_subcommands[cmd_name][2],
+                module_path_or_candidates.console_script,
+            )
         if last_exc is not None:
-            logging.getLogger(__name__).debug(
+            slogging.getLogger(__name__).debug(
                 "Lazy-loaded subcommand %r unavailable (no candidate resolved): %s",
                 cmd_name,
                 last_exc,
@@ -132,14 +216,25 @@ class LazyGroup(click.Group):
 
 
 # Registry-driven subcommand wiring. See ``_lazy_subcommands.py``.
-from ._lazy_subcommands import DEPRECATED_ALIASES, build_lazy_subcommands
+from ._exposure import load_cli_snapshot
+from ._lazy_subcommands import (
+    DEPRECATED_ALIASES,
+    DEV_PEERS,
+    build_lazy_subcommands,
+    reserved_cli_names,
+)
 
-_LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
+_CLI_EXPOSURE = load_cli_snapshot()
+_LAZY_SUBCOMMANDS = build_lazy_subcommands(
+    os.path.dirname(__file__), snapshot=_CLI_EXPOSURE
+)
 
 
 @click.group(
     cls=LazyGroup,
     lazy_subcommands=_LAZY_SUBCOMMANDS,
+    exposure_snapshot=_CLI_EXPOSURE,
+    metadata_distribution="scitex",
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )
@@ -157,24 +252,23 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 )
 @click.pass_context
 def cli(ctx, help_recursive, as_json):
-    """
-    Integrated Scientific Research Platform (SciTeX).
+    """Integrated Scientific Research Platform (SciTeX).
 
     \b
     Examples:
       scitex config list                    # Show configured paths
-      scitex cloud clone user/project       # Clone from cloud
+      scitex sdk --help                     # Build standalone apps and Hub plugins
       scitex scholar bibtex papers.bib      # Manage papers
       scitex audio speak "Hello"            # Text-to-speech
       scitex mcp list-tools                 # List MCP tools
-      scitex mcp start                      # Start MCP server
+      scitex mcp serve                      # Serve MCP in the foreground
 
     \b
     Enable tab-completion:
-      scitex completion install            # Install for your shell
-      scitex completion install --dry-run  # Preview without writing
-      scitex completion status             # Check installation status
-    """
+      scitex dev completion install            # Install for your shell
+      scitex dev completion install --dry-run  # Preview without writing
+      scitex dev completion status             # Check installation status
+    """  # noqa: D301 - Click requires actual backspace paragraph markers.
     ctx.ensure_object(dict)["as_json"] = as_json
     # #211: top-level `--json <sub>` can't propagate to subcommand click.options.
     # Warn once on stderr so agent scripts piping to jq learn the right form.
@@ -189,7 +283,7 @@ def cli(ctx, help_recursive, as_json):
         if as_json:
             from . import help_recursive_to_json
 
-            help_recursive_to_json(ctx, cli)
+            help_recursive_to_json(ctx, ctx.command)
         else:
             _print_help_recursive(ctx)
         ctx.exit(0)
@@ -197,25 +291,39 @@ def cli(ctx, help_recursive, as_json):
         if as_json:
             from . import group_to_json
 
-            group_to_json(ctx, cli)
+            group_to_json(ctx, ctx.command)
         else:
             click.echo(ctx.get_help())
 
 
-# Retired duplicate namespaces (notify/verify/events/socialia) become
-# hidden warn-phase aliases that forward to the canonical name — the
-# doctrine 3-phase deprecation ladder (Warn -> Error -> Removed). The
-# helper ships with scitex-dev > 0.21.0; with an older scitex-dev the
-# duplicates are simply excluded (build_lazy_subcommands never registers
-# them), so canonical names are the only surface either way.
-try:
-    from scitex_dev._ecosystem.click_compat import deprecated_alias
-except ImportError:
-    deprecated_alias = None
+# Hidden legacy routes resolve through canonical effective groups. The shared
+# helper supports nested native argv prefixes; names explicitly reserved by
+# the metadata policy cannot be reintroduced even as compatibility aliases.
+from scitex_dev.ecosystem import deprecated_alias
 
-if deprecated_alias is not None:
-    for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
+_reserved_aliases = reserved_cli_names(snapshot=_CLI_EXPOSURE)
+_dev_reserved_aliases = reserved_cli_names(snapshot=_CLI_EXPOSURE, namespace="dev")
+_dev_peer_aliases = build_lazy_subcommands(
+    os.path.dirname(__file__), namespace="dev", snapshot=_CLI_EXPOSURE
+)
+for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
+    _canonical = _new[0] if isinstance(_new, tuple) else _new
+    if _canonical == "dev" and (
+        _old in _dev_reserved_aliases
+        or (_old in DEV_PEERS and _old not in _dev_peer_aliases)
+    ):
+        # The dev group alone does not prove its optional target is installed.
+        # Use the same frozen metadata projection without importing providers.
+        continue
+    if _old not in _reserved_aliases and _canonical in cli._lazy_subcommands:
         deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
+
+
+# Standard package bootstrap endpoints reuse Dev's real callbacks. The supported
+# protocol names stay out of normal listings; human setup remains under dev.
+from ._shell_protocol import _register_shell_protocol
+
+_register_shell_protocol(cli, blocked=_reserved_aliases | _dev_reserved_aliases)
 
 
 def _get_all_command_paths(group, prefix=""):
@@ -223,7 +331,7 @@ def _get_all_command_paths(group, prefix=""):
     paths = []
     for name in sorted(group.list_commands(None) or []):
         cmd = group.get_command(None, name)
-        if cmd is None:
+        if cmd is None or cmd.hidden:
             continue
         full_path = f"{prefix} {name}".strip() if prefix else name
         paths.append((full_path, cmd))
@@ -236,10 +344,10 @@ def _print_help_recursive(ctx):
     """Print help for all commands recursively."""
     # Show main CLI help first
     click.secho("━━━ scitex ━━━", fg="cyan", bold=True)
-    click.echo(cli.get_help(ctx))
+    click.echo(ctx.command.get_help(ctx))
 
     # Show help for each command using Click's internal help generation
-    command_paths = _get_all_command_paths(cli)
+    command_paths = _get_all_command_paths(ctx.command)
     for cmd_path, cmd in command_paths:
         click.echo()
         click.secho(f"━━━ scitex {cmd_path} ━━━", fg="cyan", bold=True)
@@ -254,23 +362,9 @@ def _print_help_recursive(ctx):
 # auto-installed) was replaced in CLI-standardization slice 5.
 
 
-@cli.command("list-python-apis")
-@click.option("-v", "--verbose", count=True, help="Verbosity: -v +doc, -vv full doc")
-@click.option("-d", "--max-depth", type=int, default=5, help="Max recursion depth")
-@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-@click.pass_context
-def list_python_apis(ctx, verbose, max_depth, as_json):
-    """List all scitex Python APIs (alias for: scitex introspect api scitex)."""
-    from .introspect import api
-
-    ctx.invoke(
-        api,
-        dotted_path="scitex",
-        verbose=verbose,
-        max_depth=max_depth,
-        as_json=as_json,
-    )
-
+# Python callers of the former module-level command retain its object;
+# the public CLI route is mounted by dev.py, with a hidden root alias.
+from ._list_python_apis import list_python_apis as list_python_apis
 
 if __name__ == "__main__":
     cli()

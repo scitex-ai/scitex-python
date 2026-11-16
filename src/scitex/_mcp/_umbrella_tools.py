@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # Timestamp: 2026-05-31
 # File: src/scitex/_mcp/_umbrella_tools.py
-"""Umbrella-only MCP tools — inline tools that have no peer package.
+"""Umbrella compatibility MCP adapters over explicitly owned operations.
 
-These wrap handlers under ``scitex.<module>._mcp.handlers`` (or umbrella-local
-helpers). No standalone peer's FastMCP server supplies them, so the registry
-mount cannot; they are folded directly into the single umbrella entrypoint.
+These retain historical tool IDs while delegating to leaf or umbrella helpers.
+Registration requires both the umbrella adapter preference and its delegated
+owner preference; no handler executes during discovery.
 
 Namespaces here: browser, capture, docs, skills, usage, template, tunnel.
 The larger ``introspect_*`` and ``notification_*`` families live in sibling
@@ -22,11 +22,23 @@ from ._notification_tools import register_notification_tools
 __all__ = ["register_umbrella_tools"]
 
 
-def register_umbrella_tools(mcp) -> None:
-    """Register every umbrella-only inline tool onto the FastMCP server."""
+def register_umbrella_tools(mcp, *, package_policy=None) -> None:
+    """Admit existing compatibility tools without duplicating leaf operations."""
+    from ._exposure import is_exposed, load_package_policy
+
+    package_policy = load_package_policy(package_policy)
+
+    def owned_tool(owner, namespace):
+        def register(function):
+            if is_exposed("scitex", "scitex", package_policy) and is_exposed(
+                owner, namespace, package_policy
+            ):
+                return mcp.tool()(function)
+            return function
+        return register
 
     # -- browser ---------------------------------------------------------
-    @mcp.tool()
+    @owned_tool("scitex-browser", "browser")
     async def browser_save_as_pdf(
         url: str,
         output_path: str,
@@ -64,7 +76,7 @@ def register_umbrella_tools(mcp) -> None:
         )
 
     # -- capture ---------------------------------------------------------
-    @mcp.tool()
+    @owned_tool("scitex-capture", "capture")
     async def capture_screenshot(
         monitor_id: int = 0,
         all: bool = False,
@@ -93,15 +105,15 @@ def register_umbrella_tools(mcp) -> None:
         )
 
     # -- docs (scitex-dev aggregation) -----------------------------------
-    @mcp.tool()
+    @owned_tool("scitex-dev", "docs")
     async def docs_list() -> str:
         """Enumerate every installed SciTeX package that ships bundled Sphinx docs — each entry includes version, manifest path, and docs URL. Use when the user asks "what SciTeX packages are installed?", "which ones have docs?", or before calling `docs_get` / `docs_search`."""
-        from scitex_dev.docs import get_docs
+        from scitex_dev import get_docs
         from scitex_dev.ecosystem import wrap_as_mcp
 
         return wrap_as_mcp(get_docs, idempotent=True)
 
-    @mcp.tool()
+    @owned_tool("scitex-dev", "docs")
     async def docs_get(
         package: str,
         format: Optional[str] = None,
@@ -114,14 +126,14 @@ def register_umbrella_tools(mcp) -> None:
             format: None for manifest, "json" for structured, "html" for path.
             page: Specific documentation page name.
         """
-        from scitex_dev.docs import get_docs
+        from scitex_dev import get_docs
         from scitex_dev.ecosystem import wrap_as_mcp
 
         return wrap_as_mcp(
             get_docs, idempotent=True, package=package, format=format, page=page
         )
 
-    @mcp.tool()
+    @owned_tool("scitex-dev", "docs")
     async def docs_build(
         package: Optional[str] = None,
         formats: Optional[list[str]] = None,
@@ -132,7 +144,7 @@ def register_umbrella_tools(mcp) -> None:
             package: Package name. None = build all.
             formats: List of builders ("html", "json"). Default: ["html"].
         """
-        from scitex_dev.docs import build_docs
+        from scitex_dev import build_docs
         from scitex_dev.ecosystem import wrap_as_mcp
 
         return wrap_as_mcp(
@@ -142,14 +154,14 @@ def register_umbrella_tools(mcp) -> None:
             formats=formats,
         )
 
-    @mcp.tool()
+    @owned_tool("scitex-dev", "docs")
     async def docs_search(
         query: str,
         scope: str = "all",
         package: Optional[str] = None,
         max_results: int = 10,
     ) -> str:
-        """Full-text search across every installed SciTeX package's docs / Python API / CLI reference / MCP tool registry — one Google-like query, cross-scope ranked results. Use whenever the user asks to "search the ecosystem for X", "find anything about figures / stats / writing", "which module does Y?". Use `scope='api'|'cli'|'mcp'|'docs'` to narrow; `+required` / `-excluded` operators supported.
+        """Search installed documentation, Python APIs, CLI references and source-level MCP references. This searches source documentation, not the host's admitted runtime tool catalog. Use whenever the user asks to "search the ecosystem for X", "find anything about figures / stats / writing", "which module does Y?". Use `scope='api'|'cli'|'mcp'|'docs'` to narrow; `+required` / `-excluded` operators supported.
 
         Args:
             query: Search query string.
@@ -157,8 +169,8 @@ def register_umbrella_tools(mcp) -> None:
             package: Limit search to a single package.
             max_results: Maximum number of results.
         """
+        from scitex_dev import search
         from scitex_dev.ecosystem import wrap_as_mcp
-        from scitex_dev.search import search
 
         return wrap_as_mcp(
             search,
@@ -170,33 +182,36 @@ def register_umbrella_tools(mcp) -> None:
         )
 
     # -- skills (scitex-dev aggregation) ---------------------------------
-    @mcp.tool()
+    @owned_tool("scitex-dev", "skills")
     async def skills_list(package: Optional[str] = None) -> str:
-        """Enumerate every `SKILL.md` + sub-skill reference page the installed SciTeX ecosystem ships. Use when the user asks "what SciTeX skills do I have?", "list skill pages for scitex-stats", or is orienting before `skills_get`.
+        """List enabled installed skill namespaces and pages with their owning distributions. Use when the user asks "what SciTeX skills do I have?", "list skill pages for scitex-stats", or is orienting before `skills_get`.
 
         Args:
             package: Filter to a specific package. None returns all packages.
         """
-        from scitex_dev.ecosystem import wrap_as_mcp
-        from scitex_dev.skills import list_skills
+        from scitex_dev.ecosystem import list_skills, wrap_as_mcp
 
         return wrap_as_mcp(list_skills, idempotent=True, package=package)
 
-    @mcp.tool()
-    async def skills_get(package: str, name: Optional[str] = None) -> str:
+    @owned_tool("scitex-dev", "skills")
+    async def skills_get(
+        package: str, name: Optional[str] = None, owner: Optional[str] = None
+    ) -> str:
         """Read the markdown content of a specific SciTeX skill page (main `SKILL.md` or a named reference leaf). Use when the user asks "show me the scitex-stats skill", "get the figrecipe plot-types reference", "read the skill for X".
 
         Args:
-            package: Package name (e.g. "scitex-stats").
+            package: Registered namespace (e.g. "scitex-stats").
+            owner: Listed distribution owner; never fall back to a different owner.
             name: Reference name (e.g. "test-selection"). None = main SKILL.md.
         """
-        from scitex_dev.ecosystem import wrap_as_mcp
-        from scitex_dev.skills import get_skill
+        from scitex_dev.ecosystem import get_skill, wrap_as_mcp
 
-        return wrap_as_mcp(get_skill, idempotent=True, package=package, name=name)
+        return wrap_as_mcp(
+            get_skill, idempotent=True, package=package, name=name, owner=owner
+        )
 
     # -- usage -----------------------------------------------------------
-    @mcp.tool()
+    @owned_tool("scitex", "usage")
     def usage_show(topic: str = "") -> str:
         """Return a runnable code example for a SciTeX topic (`plt`, `stats`, `session`, `io`, `scholar`, ...) — short, copy-pasteable snippets showing idiomatic usage. Use when the user asks "how do I use scitex.plt?", "show me a t-test example", "give me a session boilerplate"."""
         from scitex_dev.ecosystem import wrap_as_mcp
@@ -205,7 +220,7 @@ def register_umbrella_tools(mcp) -> None:
 
         return wrap_as_mcp(show, idempotent=True, topic=topic or None)
 
-    @mcp.tool()
+    @owned_tool("scitex", "usage")
     def usage_list() -> str:
         """List every topic `usage_show` can serve (`plt`, `stats`, `session`, `io`, `scholar`, `audio`, `writer`, ...). Use when the user asks "what examples are available?", "which modules have usage snippets?"."""
         from scitex_dev.ecosystem import wrap_as_mcp
@@ -215,7 +230,7 @@ def register_umbrella_tools(mcp) -> None:
         return wrap_as_mcp(topics, idempotent=True)
 
     # -- template --------------------------------------------------------
-    @mcp.tool()
+    @owned_tool("scitex-template", "template")
     async def template_clone_template(
         template_id: str,
         project_name: str,
@@ -240,7 +255,7 @@ def register_umbrella_tools(mcp) -> None:
             tag=tag,
         )
 
-    @mcp.tool()
+    @owned_tool("scitex-template", "template")
     async def template_list_git_strategies() -> str:
         """Enumerate the git wiring options `template_clone_template` accepts — `child` (submodule), `squash`, `fork`, `none`. Use when the user asks "how do I wire git for the new project?", "what git options does the template support?"."""
         from scitex_dev.ecosystem import async_wrap_as_mcp
@@ -249,7 +264,7 @@ def register_umbrella_tools(mcp) -> None:
 
         return await async_wrap_as_mcp(list_git_strategies_handler, idempotent=True)
 
-    @mcp.tool()
+    @owned_tool("scitex-template", "template")
     async def template_get_code_template(
         template_id: str,
         filepath: Optional[str] = None,
@@ -268,7 +283,7 @@ def register_umbrella_tools(mcp) -> None:
             docstring=docstring,
         )
 
-    @mcp.tool()
+    @owned_tool("scitex-template", "template")
     async def template_list_code_templates() -> str:
         """Return the catalog of every code template `template_get_code_template` can serve. Use when the user asks "what templates are available?", "which modules have boilerplate?"."""
         from scitex_dev.ecosystem import async_wrap_as_mcp
@@ -278,7 +293,7 @@ def register_umbrella_tools(mcp) -> None:
         return await async_wrap_as_mcp(list_code_templates_handler, idempotent=True)
 
     # -- tunnel ----------------------------------------------------------
-    @mcp.tool()
+    @owned_tool("scitex-ssh", "tunnel")
     async def tunnel_setup(port: int, bastion_server: str, secret_key_path: str) -> str:
         """Install an `autossh`-backed systemd unit that opens a reverse SSH tunnel (local -> bastion:port) and auto-reconnects on drop. Use when the user asks to "set up a reverse tunnel", "expose this machine through a bastion", "open port X on the jump host", or mentions bastion, jump host, NAT traversal, HPC login node."""
         from scitex_dev.ecosystem import wrap_as_mcp
@@ -293,7 +308,7 @@ def register_umbrella_tools(mcp) -> None:
             secret_key_path=secret_key_path,
         )
 
-    @mcp.tool()
+    @owned_tool("scitex-ssh", "tunnel")
     async def tunnel_remove(port: int) -> str:
         """Tear down an autossh reverse-tunnel unit (stop + disable + rm unit + daemon-reload). Use when the user asks to "remove the tunnel", "delete reverse tunnel on port X", "stop autossh", "decommission this route"."""
         from scitex_dev.ecosystem import wrap_as_mcp
@@ -306,7 +321,7 @@ def register_umbrella_tools(mcp) -> None:
             port=port,
         )
 
-    @mcp.tool()
+    @owned_tool("scitex-ssh", "tunnel")
     async def tunnel_status(port: int = 0) -> str:
         """Live state of autossh reverse-tunnel systemd units — active/inactive, PID, restart count, last journal lines. Use when the user asks "is my tunnel up?", "why can't I reach port 2222?", "list all reverse tunnels". `port=0` lists everything."""
         from scitex_dev.ecosystem import wrap_as_mcp
@@ -316,8 +331,11 @@ def register_umbrella_tools(mcp) -> None:
         return wrap_as_mcp(status, idempotent=True, port=port if port else None)
 
     # -- larger families (separate modules) ------------------------------
-    register_introspect_tools(mcp)
-    register_notification_tools(mcp)
+    if is_exposed("scitex", "scitex", package_policy):
+        if is_exposed("scitex-introspect", "introspect", package_policy):
+            register_introspect_tools(mcp)
+        if is_exposed("scitex-notification", "notification", package_policy):
+            register_notification_tools(mcp)
 
 
 # EOF

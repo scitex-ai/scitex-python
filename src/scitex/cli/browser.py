@@ -122,7 +122,13 @@ def open(url, stealth, timeout, background):
     # Add https:// if no scheme provided
     if url != "about:blank" and not url.startswith(("http://", "https://", "about:")):
         url = f"https://{url}"
-    from playwright.async_api import async_playwright
+    try:
+        from playwright.async_api import async_playwright
+    except ImportError as exc:
+        raise click.ClickException(
+            "Browser automation requires Playwright. Install it with: "
+            "pip install 'scitex[browser]'"
+        ) from exc
 
     from scitex.browser.core import BrowserMixin
 
@@ -163,11 +169,9 @@ def open(url, stealth, timeout, background):
         browser_id = str(uuid.uuid4())[:8]
 
         # Show browser ID in the page title
-        await page.evaluate(
-            f"""
+        await page.evaluate(f"""
             document.title = '[{browser_id}] ' + document.title;
-        """
-        )
+        """)
 
         click.echo(f"Browser ID: {browser_id}")
         click.echo(
@@ -231,11 +235,9 @@ def open(url, stealth, timeout, background):
             browser_instance.pages = [page]
 
             # Restore browser ID in title
-            await page.evaluate(
-                f"""
+            await page.evaluate(f"""
                 document.title = '[{browser_id}] ' + document.title;
-            """
-            )
+            """)
 
         if timeout > 0:
             click.echo(f"Auto-closing in {timeout} seconds...")
@@ -277,8 +279,31 @@ def open(url, stealth, timeout, background):
 
 
 @browser.command()
-def list():
-    """List browser sessions."""
+@click.option(
+    "--json",
+    "as_json",
+    is_flag=True,
+    help="Output stored sessions as JSON; not a liveness check.",
+)
+def list(as_json):
+    """List stored browser sessions (scitex browser list --json).
+
+    $ scitex browser list --json
+    """
+    if as_json:
+        try:
+            sessions = _load_sessions()
+            if not isinstance(sessions, dict) or any(
+                not isinstance(info, dict) for info in sessions.values()
+            ):
+                raise ValueError("expected a session object containing session objects")
+            output = json.dumps({"sessions": sessions}, allow_nan=False)
+        except (OSError, ValueError, TypeError) as exc:
+            raise click.ClickException(
+                "Cannot read browser session inventory as JSON."
+            ) from exc
+        click.echo(output)
+        return
     sessions = _load_sessions()
     if not sessions:
         click.echo("No browser sessions found")
@@ -291,14 +316,37 @@ def list():
 
 @browser.command()
 @click.argument("browser_id", required=False)
-def show(browser_id):
+@click.option(
+    "--json", "as_json", is_flag=True, help="Return visibility guidance as JSON."
+)
+def show(browser_id, as_json):
     """
-    Switch browser to visible/interactive mode
+    Print guidance for making a browser visible/interactive.
 
     \b
     For running browser, enter 's' in terminal.
     For background browser, use: scitex browser show <id>
+    This command prints instructions; it does not change a browser session.
+
+    $ scitex browser show browser-id
     """
+    if as_json:
+        from scitex_dev import Result
+
+        click.echo(
+            Result(
+                success=True,
+                data={
+                    "browser_id": browser_id,
+                    "control_available": False,
+                    "instructions": [
+                        "For a running browser, type 's' + Enter in its terminal.",
+                        "Background browser control is not implemented.",
+                    ],
+                },
+            ).to_json()
+        )
+        return
     if not browser_id:
         click.echo("For running browser: type 's' + Enter")
         click.echo("For background: scitex browser show <browser_id>")
@@ -319,7 +367,17 @@ def show(browser_id):
     "--format", "paper_format", default="A4", help="Paper format (A4, Letter, etc.)"
 )
 @click.option("--margin", default="10mm", help="Page margins (e.g., 10mm, 1in)")
-def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, margin):
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Preview paths without launching a browser or writing.",
+)
+@click.option(
+    "--yes", "-y", is_flag=True, help="Accept this explicit non-interactive operation."
+)
+def save_as_pdf(
+    url, output_path, wait_seconds, no_background, paper_format, margin, dry_run, yes
+):
     """
     Save a web page as PDF (print-style)
 
@@ -329,6 +387,19 @@ def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, mar
         scitex browser save-as-pdf https://nature.com/guidelines ./guidelines.pdf --wait-seconds 5
         scitex browser save-as-pdf https://example.com ./out.pdf --format Letter --margin 20mm
     """
+    if dry_run:
+        target = Path(output_path).expanduser().resolve()
+        if target.suffix.lower() != ".pdf":
+            target = target.with_suffix(".pdf")
+        source = (
+            url
+            if url.startswith(("http://", "https://", "file://"))
+            else f"https://{url}"
+        )
+        click.echo(f"Would save: {source} -> {target}")
+        click.echo(f"Format: {paper_format}; margins: {margin}; wait: {wait_seconds}s")
+        return
+
     from scitex.browser.pdf import save_as_pdf as _save_as_pdf
 
     try:
@@ -354,11 +425,14 @@ def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, mar
 @click.argument("browser_id", required=False)
 def hide(browser_id):
     """
-    Switch browser to headless/stealth mode
+    Print guidance for hiding a browser in headless/stealth mode.
 
     \b
     For running browser, enter 'h' in terminal.
     For background browser, use: scitex browser hide <id>
+    This command prints instructions; it does not change a browser session.
+
+    $ scitex browser hide browser-id
     """
     if not browser_id:
         click.echo("For running browser: type 'h' + Enter")
