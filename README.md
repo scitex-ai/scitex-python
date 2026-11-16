@@ -736,3 +736,14 @@ Each package exposes the ecosystem via up to six interfaces: Python library, CLI
 </p>
 
 <!-- EOF -->
+### Ecosystem navigation hierarchy
+
+The umbrella ships the ecosystem navigation allocations in
+[`src/scitex/_package_hierarchy.json`](src/scitex/_package_hierarchy.json),
+registered through `scitex_dev.hierarchy`. The shared Dev hierarchy reader
+validates identities, parent relationships and stable display indices without
+importing provider code. This catalog covers 37 named packages under SciTeX:
+Main, Applications, Intermediate modules and Lower-level modules. It is a
+navigation taxonomy, independent of dependency graphs, installed availability
+and host enablement. Unlisted packages remain unindexed. Leaf packages retain
+ownership of their documentation, skills and domain implementations.

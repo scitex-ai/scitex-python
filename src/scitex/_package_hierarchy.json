@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "root": "scitex",
+  "nodes": [
+    {
+      "id": "scitex",
+      "index": "0",
+      "label": "SciTeX",
+      "parent_id": null,
+      "kind": "root"
+    },
+    {
+      "id": "scitex.main",
+      "index": "1",
+      "label": "Main",
+      "parent_id": "scitex",
+      "kind": "group"
+    },
+    {
+      "id": "package:scitex",
+      "distribution": "scitex",
+      "index": "1.1",
+      "label": "scitex",
+      "parent_id": "scitex.main",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-hub",
+      "distribution": "scitex-hub",
+      "index": "1.2",
+      "label": "scitex-hub",
+      "parent_id": "scitex.main",
+      "kind": "package"
+    },
+    {
+      "id": "scitex.applications",
+      "index": "2",
+      "label": "Applications",
+      "parent_id": "scitex",
+      "kind": "group"
+    },
+    {
+      "id": "package:scitex-scholar",
+      "distribution": "scitex-scholar",
+      "index": "2.1",
+      "label": "scitex-scholar",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-stats",
+      "distribution": "scitex-stats",
+      "index": "2.2",
+      "label": "scitex-stats",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:figrecipe",
+      "distribution": "figrecipe",
+      "index": "2.3",
+      "label": "figrecipe",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-writer",
+      "distribution": "scitex-writer",
+      "index": "2.4",
+      "label": "scitex-writer",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-sdk",
+      "distribution": "scitex-sdk",
+      "index": "2.5",
+      "label": "scitex-sdk",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-agentic-journal",
+      "distribution": "scitex-agentic-journal",
+      "index": "2.6",
+      "label": "scitex-agentic-journal",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-agent-container",
+      "distribution": "scitex-agent-container",
+      "index": "2.7",
+      "label": "scitex-agent-container",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-cards",
+      "distribution": "scitex-cards",
+      "index": "2.8",
+      "label": "scitex-cards",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-storage",
+      "distribution": "scitex-storage",
+      "index": "2.9",
+      "label": "scitex-storage",
+      "parent_id": "scitex.applications",
+      "kind": "package"
+    },
+    {
+      "id": "scitex.intermediate",
+      "index": "3",
+      "label": "Intermediate modules",
+      "parent_id": "scitex",
+      "kind": "group"
+    },
+    {
+      "id": "package:scitex-clew",
+      "distribution": "scitex-clew",
+      "index": "3.1",
+      "label": "scitex-clew",
+      "parent_id": "scitex.intermediate",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-io",
+      "distribution": "scitex-io",
+      "index": "3.2",
+      "label": "scitex-io",
+      "parent_id": "scitex.intermediate",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-live-paper",
+      "distribution": "scitex-live-paper",
+      "index": "3.3",
+      "label": "scitex-live-paper",
+      "parent_id": "scitex.intermediate",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-dev",
+      "distribution": "scitex-dev",
+      "index": "3.4",
+      "label": "scitex-dev",
+      "parent_id": "scitex.intermediate",
+      "kind": "package"
+    },
+    {
+      "id": "package:openalex-local",
+      "distribution": "openalex-local",
+      "index": "3.5",
+      "label": "openalex-local",
+      "parent_id": "scitex.intermediate",
+      "kind": "package"
+    },
+    {
+      "id": "package:crossref-local",
+      "distribution": "crossref-local",
+      "index": "3.6",
+      "label": "crossref-local",
+      "parent_id": "scitex.intermediate",
+      "kind": "package"
+    },
+    {
+      "id": "scitex.foundation",
+      "index": "4",
+      "label": "Lower-level modules",
+      "parent_id": "scitex",
+      "kind": "group"
+    },
+    {
+      "id": "package:scitex-audio",
+      "distribution": "scitex-audio",
+      "index": "4.1",
+      "label": "scitex-audio",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-notebook",
+      "distribution": "scitex-notebook",
+      "index": "4.2",
+      "label": "scitex-notebook",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-dataset",
+      "distribution": "scitex-dataset",
+      "index": "4.3",
+      "label": "scitex-dataset",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-ssh",
+      "distribution": "scitex-ssh",
+      "index": "4.4",
+      "label": "scitex-ssh",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-container",
+      "distribution": "scitex-container",
+      "index": "4.5",
+      "label": "scitex-container",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-browser",
+      "distribution": "scitex-browser",
+      "index": "4.6",
+      "label": "scitex-browser",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-linter",
+      "distribution": "scitex-linter",
+      "index": "4.7",
+      "label": "scitex-linter",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:socialia",
+      "distribution": "socialia",
+      "index": "4.8",
+      "label": "socialia",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-path",
+      "distribution": "scitex-path",
+      "index": "4.9",
+      "label": "scitex-path",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-str",
+      "distribution": "scitex-str",
+      "index": "4.10",
+      "label": "scitex-str",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-dict",
+      "distribution": "scitex-dict",
+      "index": "4.11",
+      "label": "scitex-dict",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-logging",
+      "distribution": "scitex-logging",
+      "index": "4.12",
+      "label": "scitex-logging",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-types",
+      "distribution": "scitex-types",
+      "index": "4.13",
+      "label": "scitex-types",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-db",
+      "distribution": "scitex-db",
+      "index": "4.14",
+      "label": "scitex-db",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-repro",
+      "distribution": "scitex-repro",
+      "index": "4.15",
+      "label": "scitex-repro",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-audit",
+      "distribution": "scitex-audit",
+      "index": "4.16",
+      "label": "scitex-audit",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-parallel",
+      "distribution": "scitex-parallel",
+      "index": "4.17",
+      "label": "scitex-parallel",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-compat",
+      "distribution": "scitex-compat",
+      "index": "4.18",
+      "label": "scitex-compat",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-gists",
+      "distribution": "scitex-gists",
+      "index": "4.19",
+      "label": "scitex-gists",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    },
+    {
+      "id": "package:scitex-etc",
+      "distribution": "scitex-etc",
+      "index": "4.20",
+      "label": "scitex-etc",
+      "parent_id": "scitex.foundation",
+      "kind": "package"
+    }
+  ]
+}
