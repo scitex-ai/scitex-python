@@ -47,9 +47,9 @@ The Session Model
     def main(
         lr=0.001,               # --lr 0.01
         epochs=100,             # --epochs 50
-        CONFIG=stx.INJECTED,    # from ./config/*.yaml
-        plt=stx.INJECTED,       # pre-configured matplotlib
-        logger=stx.INJECTED,    # session logger
+        CONFIG=stx.session.INJECTED,    # from ./config/*.yaml
+        plt=stx.session.INJECTED,       # pre-configured matplotlib
+        logger=stx.session.INJECTED,    # session logger
     ):
         """Train a model. Docstring becomes --help text."""
         logger.info(f"Training with lr={lr}, epochs={epochs}")
@@ -167,7 +167,7 @@ Access in code:
 .. code-block:: python
 
     @stx.session
-    def main(CONFIG=stx.INJECTED, **kw):
+    def main(CONFIG=stx.session.INJECTED, **kw):
         data_dir = CONFIG["DATA_DIR"]
         hidden = CONFIG["MODEL"]["hidden_size"]
 

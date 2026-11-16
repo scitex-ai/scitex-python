@@ -64,7 +64,7 @@ Audible notifications are useful for long-running experiments:
    import scitex as stx
 
    @stx.session
-   def main(CONFIG=stx.INJECTED):
+   def main(CONFIG=stx.session.INJECTED):
        result = train_model()  # Takes hours
        stx.audio.speak(f"Training done. Accuracy: {result.accuracy:.1%}")
        return 0

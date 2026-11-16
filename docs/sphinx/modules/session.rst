@@ -16,9 +16,9 @@ Basic Usage
    def main(
        data_path="data.csv",       # CLI: --data-path data.csv
        threshold=0.5,              # CLI: --threshold 0.7
-       CONFIG=stx.INJECTED,        # Auto-injected session config
-       plt=stx.INJECTED,           # Pre-configured matplotlib
-       logger=stx.INJECTED,        # Session logger
+       CONFIG=stx.session.INJECTED,        # Auto-injected session config
+       plt=stx.session.INJECTED,           # Pre-configured matplotlib
+       logger=stx.session.INJECTED,        # Session logger
    ):
        """Analyze experimental data."""
        data = stx.io.load(data_path)
@@ -87,7 +87,7 @@ a random 4-character suffix for uniqueness.
 Injected Parameters
 -------------------
 
-Use ``stx.INJECTED`` as the default value to receive auto-injected objects:
+Use ``stx.session.INJECTED`` as the default value to receive auto-injected objects:
 
 .. list-table::
    :header-rows: 1
@@ -117,7 +117,7 @@ Only request the parameters you need:
 .. code-block:: python
 
    @stx.session
-   def main(n=100, CONFIG=stx.INJECTED):
+   def main(n=100, CONFIG=stx.session.INJECTED):
        """Minimal example -- only CONFIG injected."""
        print(f"Session ID: {CONFIG.ID}")
        print(f"Output dir: {CONFIG.SDIR_RUN}")

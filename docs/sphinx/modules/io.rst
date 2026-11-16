@@ -99,7 +99,7 @@ to a local provenance database for reproducibility verification.
 .. code-block:: python
 
     @stx.session
-    def main(logger=stx.INJECTED, **kw):
+    def main(logger=stx.session.INJECTED, **kw):
         data = stx.io.load("input.csv")    # hash recorded as input
         stx.io.save(result, "output.csv")   # hash recorded as output
 

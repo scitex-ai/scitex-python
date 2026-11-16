@@ -48,12 +48,11 @@ jobs:
           # the bloat and the crash.
           uv pip install --system torch --index-url https://download.pytorch.org/whl/cpu \
             || echo "CPU torch pre-install skipped (torch may be optional in this resolve)"
-          # Fallback chain: prefer [all,dev] so optional-dep code paths
-          # (yaml, fastmcp, textual) get exercised. Falls back to [dev] then
-          # plain editable so a packaging hiccup doesn't strand CI.
-          uv pip install --system -e ".[all,dev]" \
-            || uv pip install --system -e ".[dev]" \
-            || uv pip install --system -e .
+          # One explicit profile, [all,dev], so optional-dep code paths
+          # (yaml, fastmcp, textual) get exercised. No fallback to a smaller
+          # profile (PS-235): a failed resolve must fail CI, not silently
+          # test a different dependency set.
+          uv pip install --system -e ".[all,dev]"
       - name: Install peer standalones aliased by the umbrella
         # The umbrella aliases scitex.<x> -> scitex_<x> for several peers that
         # are mid-extraction and not yet declared as hard dependencies (open

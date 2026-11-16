@@ -98,7 +98,7 @@ import scitex as stx
 
 # Session — reproducible experiment tracking
 @stx.session
-def main(param1="default", CONFIG=stx.INJECTED, plt=stx.INJECTED):
+def main(param1="default", CONFIG=stx.session.INJECTED, plt=stx.session.INJECTED):
     stx.io.save(results, "results.csv")
     return 0
 

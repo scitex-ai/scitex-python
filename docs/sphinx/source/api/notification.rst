@@ -103,7 +103,7 @@ Enable automatic notifications when a session completes:
    import scitex as stx
 
    @stx.session(notify=True)
-   def main(CONFIG=stx.INJECTED):
+   def main(CONFIG=stx.session.INJECTED):
        """Long-running experiment."""
        result = train_model()
        return 0    # Sends "Session FINISHED_SUCCESS" notification

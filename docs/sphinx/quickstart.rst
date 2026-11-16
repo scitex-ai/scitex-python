@@ -192,9 +192,9 @@ A typical research script combining session, I/O, plotting, and statistics:
    def main(
        n=200,
        noise=0.1,
-       CONFIG=stx.INJECTED,
-       plt=stx.INJECTED,
-       logger=stx.INJECTED,
+       CONFIG=stx.session.INJECTED,
+       plt=stx.session.INJECTED,
+       logger=stx.session.INJECTED,
    ):
        """Analyze noisy sine wave."""
        import numpy as np

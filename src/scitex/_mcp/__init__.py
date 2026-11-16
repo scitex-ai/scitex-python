@@ -374,8 +374,8 @@ ALWAYS use `import scitex as stx` and leverage these core patterns:
 import scitex as stx
 
 @stx.session
-def main(param1="default", CONFIG=stx.INJECTED, plt=stx.INJECTED,
-         logger=stx.INJECTED):
+def main(param1="default", CONFIG=stx.session.INJECTED, plt=stx.session.INJECTED,
+         logger=stx.session.INJECTED):
     \"\"\"Docstring becomes --help description.\"\"\"
     stx.io.save(results, "results.csv")
     return 0
