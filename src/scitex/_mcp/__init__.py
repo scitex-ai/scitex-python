@@ -28,11 +28,12 @@ Usage:
 from __future__ import annotations
 
 import importlib
-import logging
 import os
 import threading
 import warnings
 from typing import Iterable
+
+import scitex_logging as slogging
 
 # Load environment variables from SCITEX_ENV_SRC early.
 from scitex.helpers import load_scitex_env
@@ -43,7 +44,7 @@ from scitex_dev import try_import_optional
 
 from ._compat import get_tools_sync, mounted_namespaces, safe_mount
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 FastMCP = try_import_optional("fastmcp", "FastMCP", pkg="scitex")
 FASTMCP_AVAILABLE = FastMCP is not None
@@ -338,17 +339,14 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
     timeout = peer_timeout if peer_timeout is not None else _peer_timeout()
     mounted: set[str] = set()
 
-    peers = [
-        (import_name, namespace)
-        for _pip, import_name, namespace in iter_registry()
-        if _is_enabled(namespace)
-    ]
-
     from ._mount_plan import prepare_mount
+    from ._mount_report import begin_report
 
+    peers, report = begin_report(mcp, iter_registry(), _is_enabled)
     resolved, skipped = _resolve_peers_bounded(peers, timeout, prepare=prepare_mount)
 
     for namespace, reason in skipped:
+        report[namespace] = {"state": "unavailable", "reason": reason}
         logger.warning(
             "MCP peer %r %s — its tools will be unavailable this session",
             namespace,
@@ -371,7 +369,9 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
             )
             public_names.update(names)
             mounted.add(namespace)
+            report[namespace] = {"state": "mounted", "planned_names": sorted(names)}
         except Exception as exc:  # noqa: BLE001 — diagnostic, never fatal
+            report[namespace] = {"state": "mount-failed", "reason": str(exc)}
             logger.warning("MCP mount failed for %r: %s", namespace, exc)
 
     from ._peer_extras import register_peer_extras
@@ -464,19 +464,17 @@ def run_server(
     if not FASTMCP_AVAILABLE:
         import sys
 
-        print("=" * 60)
-        print("Requires 'fastmcp' package: pip install fastmcp")
-        print("=" * 60)
+        logger.error("Requires 'fastmcp' package: pip install fastmcp")
         sys.exit(1)
 
     if transport == "stdio":
         mcp.run(transport="stdio")
     elif transport == "sse":
-        print(f"Starting scitex MCP (SSE) on {host}:{port}")
-        print(f"Remote: ssh -R {port}:localhost:{port} remote-host")
+        logger.info("Starting scitex MCP (SSE) on %s:%s", host, port)
+        logger.info("Remote: ssh -R %s:localhost:%s remote-host", port, port)
         mcp.run(transport="sse", host=host, port=port)
     elif transport == "http":
-        print(f"Starting scitex MCP (HTTP) on {host}:{port}")
+        logger.info("Starting scitex MCP (HTTP) on %s:%s", host, port)
         mcp.run(transport="streamable-http", host=host, port=port)
     else:
         raise ValueError(f"Unknown transport: {transport}")

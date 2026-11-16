@@ -61,6 +61,15 @@ def _umbrella_tool_names() -> set:
     return names
 
 
+def _peer_mount_status(namespace):
+    """Explain missing definitions without relaxing the reachability assertion."""
+    from scitex._mcp import mcp
+
+    return getattr(mcp, "_scitex_peer_mount_report", {}).get(
+        namespace, "not registered"
+    )
+
+
 def _standalone_cli_tool_names(argv: list, prefixes: tuple) -> set:
     """Tool names from a standalone `... mcp list-tools` CLI probe.
 
@@ -200,7 +209,7 @@ class TestSocialThinWrapper:
         # Assert
         assert not unreachable, (
             f"standalone social tools not reachable via the umbrella mount: "
-            f"{sorted(unreachable)}"
+            f"{sorted(unreachable)}; mount status: {_peer_mount_status('socialia')}"
         )
 
 
