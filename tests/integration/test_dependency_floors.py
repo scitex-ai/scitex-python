@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# File: ./tests/scitex/test_dependency_floors.py
+# File: ./tests/integration/test_dependency_floors.py
 """Regression guard: the umbrella declares minimum floors, never exact pins.
 
 Installing ``scitex`` must never silently downgrade an already-installed

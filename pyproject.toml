@@ -76,6 +76,14 @@ dependencies = [
     "packaging",
     "natsort",  # Natural sorting - used by many modules
     "beautifulsoup4>=4.12.0",  # HTML parsing - used by web/cli modules
+    # The umbrella imports fastmcp itself (scitex._mcp mounts peer FastMCP
+    # servers; scitex.cli.mcp). It already arrives via core scitex-dev, but
+    # undeclared it let resolvers backtrack (py3.11) to fastmcp 2.14.1, whose
+    # open-ended `mcp>=1.24.0` admits mcp 2.x — which removed
+    # `mcp.shared.exceptions.McpError` that fastmcp 2.x imports at load time.
+    # fastmcp 3.0.0 is the first release declaring `mcp<2.0` (later ones
+    # vendor via fastmcp-slim), so it is the lowest coherent floor.
+    "fastmcp>=3.0.0",
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config>=0.3.6",
     # Reproducibility Verification

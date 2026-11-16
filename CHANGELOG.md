@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   deprecated top-level `stx.INJECTED` alias.
 
 ### Added
-- `tests/scitex/test_dependency_floors.py`: regression guard asserting no
+- `tests/integration/test_dependency_floors.py`: regression guard asserting no
   `==` pins (and a `>=` floor) on SciTeX components in pyproject and in the
   installed distribution metadata.
 
