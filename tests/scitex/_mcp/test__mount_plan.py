@@ -11,13 +11,13 @@ from fastmcp import Client, FastMCP
 from fastmcp.server.middleware import Middleware
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def boundary():
     # Load only the boundary: importing the umbrella discovers every installed
     # peer and is intentionally a separate integration scope.
     name = "_scitex_mount_contract"
     package = ModuleType(name)
-    package.__path__ = [str(Path(__file__).parents[2] / "src/scitex/_mcp")]
+    package.__path__ = [str(Path(__file__).parents[3] / "src/scitex/_mcp")]
     sys.modules[name] = package
     modules = []
     try:
@@ -36,9 +36,8 @@ def boundary():
                 del sys.modules[key]
 
 
-@pytest.mark.parametrize(
-    "namespace,raw,expected",
-    [
+@pytest.fixture(
+    params=[
         ("ui", "ui_get_component", "ui_get_component"),
         ("scholar", "scholar_search", "scholar_search"),
         ("notebook", "notebook_check", "notebook_check"),
@@ -53,7 +52,8 @@ def boundary():
         ("dev", "linter_check_source", "dev_linter_check_source"),
     ],
 )
-def test_protocol_name_and_safe_fixture_call(boundary, namespace, raw, expected):
+def protocol_outcome(boundary, request):
+    namespace, raw, expected = request.param
     compat, planner = boundary
     calls = []
 
@@ -86,30 +86,121 @@ def test_protocol_name_and_safe_fixture_call(boundary, namespace, raw, expected)
     async def exercise():
         async with Client(parent) as client:
             tools = await client.list_tools()
-            assert [t.name for t in tools] == [expected]
-            assert "value" in tools[0].inputSchema["properties"]
+            schema = getattr(tools[0], "input_schema", None)
+            if schema is None:
+                schema = tools[0].inputSchema
             result = await client.call_tool(expected, {"value": "ok"})
-            assert not result.is_error
-            assert result.content[0].text == "ok"
-            assert [p.name for p in await client.list_prompts()] == [
-                namespace + "_help_me"
-            ]
+            prompts = await client.list_prompts()
             resources = await client.list_resources()
-            assert str(resources[0].uri) == "fixture://" + namespace + "/text"
-            assert (await client.read_resource(resources[0].uri))[
-                0
-            ].text == "resource retained"
+            resource_text = (await client.read_resource(resources[0].uri))[0].text
         async with Client(leaf) as client:
-            assert [t.name for t in await client.list_tools()] == [raw]
+            original_names = [tool.name for tool in await client.list_tools()]
+        return {
+            "expected": expected,
+            "namespace": namespace,
+            "raw": raw,
+            "names": [tool.name for tool in tools],
+            "schema": schema,
+            "call_error": result.is_error,
+            "content": result.content[0].text,
+            "prompts": [prompt.name for prompt in prompts],
+            "resource_uri": str(resources[0].uri),
+            "resource_text": resource_text,
+            "original_names": original_names,
+            "middleware": calls,
+        }
 
-    asyncio.run(exercise())
-    assert calls == [raw]
+    return asyncio.run(exercise())
+
+
+def test_public_tool_name(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["names"]
+    # Assert
+    assert observed == [outcome["expected"]]
+
+
+def test_input_schema_retained(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["schema"]["properties"]["value"]["type"]
+    # Assert
+    assert observed == "string"
+
+
+def test_mounted_call_succeeds(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["call_error"]
+    # Assert
+    assert observed is False
+
+
+def test_callback_result_retained(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["content"]
+    # Assert
+    assert observed == "ok"
+
+
+def test_prompt_namespace_retained(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["prompts"]
+    # Assert
+    assert observed == [outcome["namespace"] + "_help_me"]
+
+
+def test_resource_namespace_retained(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["resource_uri"]
+    # Assert
+    assert observed == "fixture://" + outcome["namespace"] + "/text"
+
+
+def test_resource_read_retained(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["resource_text"]
+    # Assert
+    assert observed == "resource retained"
+
+
+def test_leaf_names_unchanged(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["original_names"]
+    # Assert
+    assert observed == [outcome["raw"]]
+
+
+def test_leaf_middleware_retained(protocol_outcome):
+    # Arrange
+    outcome = protocol_outcome
+    # Act
+    observed = outcome["middleware"]
+    # Assert
+    assert observed == [outcome["raw"]]
 
 
 def test_collisions_rejected_before_mount(boundary):
+    # Arrange
     _, planner = boundary
     leaf = FastMCP("ambiguous")
     leaf.tool(name="io_load")(lambda: "first")
     leaf.tool(name="load")(lambda: "second")
+    # Act
+    # Assert
     with pytest.raises(ValueError, match="collision"):
         planner.prepare_mount(leaf, "io")

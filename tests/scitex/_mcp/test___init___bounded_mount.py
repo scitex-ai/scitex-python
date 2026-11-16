@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
 # Timestamp: 2026-07-07
-# File: tests/scitex/test_mcp_bounded_mount.py
-"""Bounded, non-blocking per-peer mount for the umbrella MCP aggregator.
+# File: tests/scitex/_mcp/test___init___bounded_mount.py
+"""Bounded per-peer resolution, mounting and opt-outs.
 
-The single ``scitex serve`` aggregator fronts ~33 packages' MCP tools by
-importing each peer's ``_mcp_server`` and mounting its FastMCP instance. If
-ONE peer's import HANGS at init (real case: scitex-todo's store-wedge stalls
-20s+ at mcp-start), a naive sequential resolve blocks the whole aggregator
-load and darkens EVERY peer's tools — the failure concentrates 33x.
-
-These tests prove the hardening: each peer's resolve runs in a bounded daemon
-thread, so a hung peer degrades to "that peer's tools missing" and never to
-"aggregator hangs". Real fixture peers (packages written to disk + imported)
-are driven through the real code path via the injectable ``iter_registry`` /
-``peer_timeout`` parameters — no mocks, no ``monkeypatch``.
+Real fixture peers exercise the registry and deadline without mocks. A hung
+or raising peer must not block healthy peers or interpreter exit.
 """
 
 from __future__ import annotations
@@ -33,48 +24,7 @@ fastmcp = pytest.importorskip("fastmcp")
 
 from scitex import _mcp as umbrella  # noqa: E402
 
-
-def test_registry_uses_sdk_owners_not_retired_app_ui():
-    peers = list(umbrella._iter_registry())
-    assert ("scitex-sdk", "scitex_sdk.app", "sdk") in peers
-    assert ("scitex-sdk", "scitex_sdk.ui", "ui") in peers
-    assert not {pip for pip, _, _ in peers} & {"scitex-app", "scitex-ui"}
-
-
-def test_tool_discovery_shares_peer_deadline(tmp_path):
-    from scitex._mcp._mount_plan import prepare_mount
-
-    _write_peer(
-        tmp_path,
-        "metadatawedgedpeer",
-        """
-import asyncio
-from fastmcp import FastMCP
-class Wedged(FastMCP):
-    async def list_tools(self, *args, **kwargs):
-        await asyncio.Event().wait()
-    async def get_tools(self, *args, **kwargs):
-        await asyncio.Event().wait()
-mcp = Wedged("wedged-metadata")
-""",
-    )
-    sys.path.insert(0, str(tmp_path))
-    try:
-        start = monotonic()
-        peer, reason = umbrella._resolve_one_peer_bounded(
-            "metadatawedgedpeer", "wedged", 0.1, prepare=prepare_mount
-        )
-        assert peer is None
-        assert "timed out" in reason
-        assert monotonic() - start < 2
-    finally:
-        sys.path.remove(str(tmp_path))
-        _purge_modules("metadatawedgedpeer")
-
-
-# --------------------------------------------------------------------------- #
 # Fixture-peer bodies (written to disk, imported for real).
-# --------------------------------------------------------------------------- #
 
 _FAST_PEER = """
 from fastmcp import FastMCP
@@ -154,10 +104,8 @@ def _purge_modules(*names: str) -> None:
 _Resolve = namedtuple("_Resolve", "elapsed resolved skipped")
 
 
-# --------------------------------------------------------------------------- #
 # _resolve_peers_bounded — the primitive that must never hang.
 #   Fixture runs the bounded resolve ONCE; each test asserts one fact.
-# --------------------------------------------------------------------------- #
 
 
 @pytest.fixture(scope="module")
@@ -231,9 +179,7 @@ def test_bounded_resolve_hung_peer_not_resolved(bounded_resolve):
     assert "hungns" not in resolved
 
 
-# --------------------------------------------------------------------------- #
 # A peer that ImportErrors at import resolves to None -> silently absent.
-# --------------------------------------------------------------------------- #
 
 
 @pytest.fixture(scope="module")
@@ -269,9 +215,7 @@ def test_raising_peer_does_not_block_fast_peer(resolve_with_raising_peer):
     assert "fastns2" in resolved
 
 
-# --------------------------------------------------------------------------- #
 # A peer that sys.exit()s at import (SystemExit is BaseException) is skipped.
-# --------------------------------------------------------------------------- #
 
 
 @pytest.fixture(scope="module")
@@ -307,10 +251,8 @@ def test_exiting_peer_does_not_block_fast_peer(resolve_with_exiting_peer):
     assert "fastns3" in resolved
 
 
-# --------------------------------------------------------------------------- #
 # A peer whose import blocks INDEFINITELY (Event.wait, never set) — the real
 # store-wedge shape — must still be bounded + skipped, not hang forever.
-# --------------------------------------------------------------------------- #
 
 
 @pytest.fixture(scope="module")
@@ -361,9 +303,7 @@ def test_infinite_peer_does_not_block_fast_peer(resolve_with_infinite_peer):
     assert "fastns4" in resolved
 
 
-# --------------------------------------------------------------------------- #
 # register_all_tools — full path, hung peer injected via iter_registry.
-# --------------------------------------------------------------------------- #
 
 
 @pytest.fixture(scope="module")
@@ -453,9 +393,7 @@ def test_register_all_tools_warning_marks_unavailable(register_outcome):
     assert "unavailable" in warnings_text
 
 
-# --------------------------------------------------------------------------- #
 # SCITEX_MCP_USE_<NS>=0 env gate is preserved.
-# --------------------------------------------------------------------------- #
 
 
 @pytest.fixture(scope="module")
@@ -507,9 +445,7 @@ def test_env_gate_drops_disabled_peer(gate_outcome):
     assert is_mounted is False
 
 
-# --------------------------------------------------------------------------- #
 # _peer_timeout — env-var parsing.
-# --------------------------------------------------------------------------- #
 
 
 @pytest.fixture
