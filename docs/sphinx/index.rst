@@ -43,7 +43,7 @@ AGPL-3.0 -- because research infrastructure deserves the same freedoms as the so
    import scitex as stx
 
    @stx.session
-   def main(n_samples=100, plt=stx.INJECTED):
+   def main(n_samples=100, plt=stx.session.INJECTED):
        import numpy as np
        x = np.linspace(0, 2 * np.pi, n_samples)
        y = np.sin(x) + np.random.normal(0, 0.1, n_samples)

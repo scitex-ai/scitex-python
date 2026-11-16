@@ -63,7 +63,7 @@ package-specific guidance, load the corresponding skill:
 import scitex
 
 @scitex.session
-def main(CONFIG=scitex.INJECTED, plt=scitex.INJECTED, logger=scitex.INJECTED):
+def main(CONFIG=scitex.session.INJECTED, plt=scitex.session.INJECTED, logger=scitex.session.INJECTED):
     fig, ax = scitex.plt.subplots()
     ax.plot_line(x, y)
     scitex.io.save(fig, "plot.png")    # auto-exports plot.csv

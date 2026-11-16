@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- SciTeX component requirements (core dependencies and every extra) are now
+  minimum compatible floors (`>=`) instead of exact `==` pins. Installing the
+  umbrella no longer downgrades newer, already-installed components (e.g. a
+  develop scitex-session 0.3.2, which needs scitex-dev>=0.62.28, is now
+  co-installable). Each floor is the previously pinned, CI-validated version;
+  exact versions belong in experiment/deployment lock files.
+- Skills, MCP resources and docs use `stx.session.INJECTED` instead of the
+  deprecated top-level `stx.INJECTED` alias.
+
+### Added
+- `tests/scitex/test_dependency_floors.py`: regression guard asserting no
+  `==` pins (and a `>=` floor) on SciTeX components in pyproject and in the
+  installed distribution metadata.
+
 ## [2.30.9] - Unreleased
 
 ### Changed

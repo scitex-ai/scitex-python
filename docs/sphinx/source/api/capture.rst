@@ -66,7 +66,7 @@ Documenting experiment results displayed in a GUI:
    import scitex as stx
 
    @stx.session
-   def main(CONFIG=stx.INJECTED):
+   def main(CONFIG=stx.session.INJECTED):
        run_experiment_gui()
        img = stx.capture.snap()
        stx.io.save(img, "final_state.png")

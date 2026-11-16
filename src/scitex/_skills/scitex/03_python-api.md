@@ -1,7 +1,7 @@
 ---
 description: |
   [TOPIC] Python API — scitex umbrella surface
-  [DETAILS] Top-level `scitex.*` exposes lazy sub-modules (io, plt, stats, ...) plus the `@scitex.session` decorator and `scitex.INJECTED` sentinel. Full per-module APIs live in the sister-package skills.
+  [DETAILS] Top-level `scitex.*` exposes lazy sub-modules (io, plt, stats, ...) plus the `@scitex.session` decorator and `scitex.session.INJECTED` sentinel. Full per-module APIs live in the sister-package skills.
 tags: [scitex-python-api]
 ---
 
@@ -16,8 +16,8 @@ full method-level docs.
 | Name | Kind | Purpose |
 |------|------|---------|
 | `scitex.__version__` | str | Umbrella version |
-| `scitex.session` | decorator + module | `@scitex.session` wraps `main()` for reproducible runs; also accessible as `scitex.session.start(...)` etc. |
-| `scitex.INJECTED` | sentinel | Marker for `@scitex.session` parameters that should be auto-injected (`CONFIG`, `plt`, `logger`, ...). |
+| `scitex.session` | decorator + module | `@scitex.session` wraps `main()` for reproducible runs (the bare `scitex.session.start` / `.run` names are deprecated by scitex-session; use the decorator). |
+| `scitex.session.INJECTED` | sentinel | Marker for `@scitex.session` parameters that should be auto-injected (`CONFIG`, `plt`, `logger`, ...). |
 
 ## Sub-module map
 

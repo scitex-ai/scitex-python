@@ -14,9 +14,9 @@ import numpy as np
 @scitex.session
 def main(
     n_points: int = 100,                 # auto-CLI: --n-points
-    CONFIG=scitex.INJECTED,              # ./config/*.yaml
-    plt=scitex.INJECTED,                 # pre-styled matplotlib
-    logger=scitex.INJECTED,
+    CONFIG=scitex.session.INJECTED,              # ./config/*.yaml
+    plt=scitex.session.INJECTED,                 # pre-styled matplotlib
+    logger=scitex.session.INJECTED,
 ):
     """Quick-start demo. Docstring becomes --help text."""
     x = np.linspace(0, 10, n_points)

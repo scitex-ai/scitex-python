@@ -31,11 +31,11 @@ def main(
     n_samples=100,               # --n-samples (default: 100)
 
     # INJECTED parameters (auto-provided by session)
-    CONFIG=stx.INJECTED,         # Session config with ID, paths
-    plt=stx.INJECTED,            # Pre-configured matplotlib
-    COLORS=stx.INJECTED,         # Color palette
-    rngg=stx.INJECTED,            # Seeded random generator
-    logger=stx.INJECTED,         # Session logger
+    CONFIG=stx.session.INJECTED,         # Session config with ID, paths
+    plt=stx.session.INJECTED,            # Pre-configured matplotlib
+    COLORS=stx.session.INJECTED,         # Color palette
+    rngg=stx.session.INJECTED,            # Seeded random generator
+    logger=stx.session.INJECTED,         # Session logger
 ):
     \"\"\"This docstring becomes --help description.\"\"\"
 
@@ -123,7 +123,7 @@ data/                              # Central navigation via symlinks
 1. Session ID: `YYYY'Y'-MM'M'-DD'D'-HH'h'MM'm'SS's'_XXXX-funcname`
 2. Files saved with `stx.io.save(obj, "filename")` go to `script_out/` ROOT
 3. `symlink_to="./data"` accumulates outputs from multiple scripts
-4. CONFIG (`CONFIG=stx.INJECTED`): ID, FILE, SDIR_OUT, PID, ARGS
+4. CONFIG (`CONFIG=stx.session.INJECTED`): ID, FILE, SDIR_OUT, PID, ARGS
 5. YAML files in `./config/*.yaml` auto-load into CONFIG (dot access)
 6. On success RUNNING -> FINISHED_SUCCESS; on error -> FINISHED_FAILED
 """
@@ -205,7 +205,7 @@ MODULE_SESSION = """\
 
 ```python
 @stx.session
-def main(input_file="data.csv", CONFIG=stx.INJECTED, plt=stx.INJECTED):
+def main(input_file="data.csv", CONFIG=stx.session.INJECTED, plt=stx.session.INJECTED):
     \"\"\"Docstring becomes --help.\"\"\"
     stx.io.save(results, "output.csv", symlink_to="./data")
     return 0

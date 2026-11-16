@@ -61,8 +61,8 @@ def analyze_module_dependencies(scitex_path):
 
 @stx.session
 def main(
-    CONFIG=stx.INJECTED,
-    logger=stx.INJECTED,
+    CONFIG=stx.session.INJECTED,
+    logger=stx.session.INJECTED,
 ):
     """Analyze and print scitex module dependencies."""
     scitex_root = stx.path.find_git_root() / "src" / "scitex"
