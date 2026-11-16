@@ -84,7 +84,7 @@ dependencies = [
     "scitex-app==0.26.1",
     # Delegated core modules (thin re-exports)
     "scitex-dev==0.62.2",
-    "scitex-io==0.3.3",
+    "scitex-io==0.4.3",
     "scitex-stats==0.2.24",
     "scitex-audio==0.3.0",
     "scitex-notification==0.2.9",
@@ -404,7 +404,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io==0.3.3",
+    "scitex-io==0.4.3",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -958,7 +958,7 @@ dev = [
     "scitex-dev==0.62.2",
     "scitex-etc==0.2.1",
     "scitex-genai==0.1.1",
-    "scitex-io==0.3.3",
+    "scitex-io==0.4.3",
     "scitex-notification==0.2.9",
     "scitex-scholar==1.4.3",
     "scitex-ssh==1.1.0",
