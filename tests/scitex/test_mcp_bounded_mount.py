@@ -33,6 +33,45 @@ fastmcp = pytest.importorskip("fastmcp")
 
 from scitex import _mcp as umbrella  # noqa: E402
 
+
+def test_registry_uses_sdk_owners_not_retired_app_ui():
+    peers = list(umbrella._iter_registry())
+    assert ("scitex-sdk", "scitex_sdk.app", "sdk") in peers
+    assert ("scitex-sdk", "scitex_sdk.ui", "ui") in peers
+    assert not {pip for pip, _, _ in peers} & {"scitex-app", "scitex-ui"}
+
+
+def test_tool_discovery_shares_peer_deadline(tmp_path):
+    from scitex._mcp._mount_plan import prepare_mount
+
+    _write_peer(
+        tmp_path,
+        "metadatawedgedpeer",
+        """
+import asyncio
+from fastmcp import FastMCP
+class Wedged(FastMCP):
+    async def list_tools(self, *args, **kwargs):
+        await asyncio.Event().wait()
+    async def get_tools(self, *args, **kwargs):
+        await asyncio.Event().wait()
+mcp = Wedged("wedged-metadata")
+""",
+    )
+    sys.path.insert(0, str(tmp_path))
+    try:
+        start = monotonic()
+        peer, reason = umbrella._resolve_one_peer_bounded(
+            "metadatawedgedpeer", "wedged", 0.1, prepare=prepare_mount
+        )
+        assert peer is None
+        assert "timed out" in reason
+        assert monotonic() - start < 2
+    finally:
+        sys.path.remove(str(tmp_path))
+        _purge_modules("metadatawedgedpeer")
+
+
 # --------------------------------------------------------------------------- #
 # Fixture-peer bodies (written to disk, imported for real).
 # --------------------------------------------------------------------------- #

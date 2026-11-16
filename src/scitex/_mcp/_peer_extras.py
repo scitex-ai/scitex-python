@@ -10,10 +10,8 @@ that the generic loop cannot express:
 * figrecipe ``fr_*`` tools -> re-exposed as ``plt_stx_*`` (scitex branding).
 * socialia core tools -> registered as ``social_*`` (a curated subset:
   post/delete/status), in addition to the full ``socialia_*`` mount.
-* scitex_dev.linter MCP tools -> ``linter_*`` (engine moved out of the
-  archived scitex-linter package).
-* scitex_cloud -> optional mount under ``cloud`` (not in the ecosystem
-  registry; graceful no-op when scitex-cloud is absent).
+Dev owns its linter tools; Hub owns the hosted-platform tools. Both arrive
+through the normal registry mounts, never a retired-package duplicate.
 
 Each helper is best-effort: a missing optional peer logs and is skipped.
 """
@@ -31,8 +29,6 @@ def register_peer_extras(mcp) -> None:
     """Apply every umbrella-side peer adjustment onto the FastMCP server."""
     _register_figrecipe_plt_stx(mcp)
     _register_social_core(mcp)
-    _register_linter(mcp)
-    _mount_cloud(mcp)
 
 
 def _register_figrecipe_plt_stx(mcp) -> None:
@@ -63,35 +59,6 @@ def _register_social_core(mcp) -> None:
         social.register_tools(mcp)
     except Exception as exc:  # noqa: BLE001 — diagnostic, never fatal
         logger.warning("socialia core social_* registration failed: %s", exc)
-
-
-def _register_linter(mcp) -> None:
-    """Register scitex_dev.linter MCP tools (linter_* family)."""
-    try:
-        from scitex_dev.linter._mcp.tools import register_all_tools
-    except ImportError:
-        logger.debug("scitex-dev linter not installed — linter_* tools skipped")
-        return
-    try:
-        register_all_tools(mcp)
-    except Exception as exc:  # noqa: BLE001 — diagnostic, never fatal
-        logger.warning("linter_* registration failed: %s", exc)
-
-
-def _mount_cloud(mcp) -> None:
-    """Optionally mount scitex_cloud's MCP server under the ``cloud`` namespace."""
-    try:
-        from scitex_cloud._mcp_server import mcp as cloud_mcp
-    except ImportError:
-        logger.debug("scitex-cloud not installed — cloud_* tools skipped")
-        return
-
-    from ._compat import safe_mount
-
-    try:
-        safe_mount(mcp, cloud_mcp, namespace="cloud")
-    except Exception as exc:  # noqa: BLE001 — diagnostic, never fatal
-        logger.warning("cloud mount failed: %s", exc)
 
 
 # EOF
