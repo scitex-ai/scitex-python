@@ -50,7 +50,7 @@ def mounted_namespaces(mcp_server) -> set:
 def get_tools_sync(mcp_server, include_mounted: bool = True) -> dict:
     """Get all tools as {name: Tool} dict. Works with FastMCP 2.x and 3.x.
 
-    FastMCP 2.x: _tool_manager.get_tools() (async, includes mounted servers)
+    FastMCP 2.x: get_tools() (async, includes mounted servers)
                  or _tool_manager._tools (sync, local only)
     FastMCP 3.x: mcp.list_tools() (async, returns list, includes mounted)
 
@@ -67,7 +67,9 @@ def get_tools_sync(mcp_server, include_mounted: bool = True) -> dict:
 
     # Async path for both 2.x (with mounted) and 3.x
     async def _gather():
-        # FastMCP 2.x: _tool_manager.get_tools() returns dict with mounted
+        if include_mounted and hasattr(mcp_server, "get_tools"):
+            return await mcp_server.get_tools()
+        # FastMCP 2.x local manager fallback
         if tm is not None and hasattr(tm, "get_tools"):
             return await tm.get_tools()
         # FastMCP 3.x: mcp.list_tools() returns list of Tool objects
@@ -87,7 +89,7 @@ def get_tools_sync(mcp_server, include_mounted: bool = True) -> dict:
     return asyncio.run(_gather())
 
 
-def safe_mount(mcp, sub_server, namespace=None, prefix=None):
+def safe_mount(mcp, sub_server, namespace=None, prefix=None, *, tool_names=None):
     """Mount a sub-server with namespace/prefix compatibility.
 
     FastMCP 2.x uses `prefix` parameter.
@@ -99,20 +101,32 @@ def safe_mount(mcp, sub_server, namespace=None, prefix=None):
         sub_server: FastMCP sub-server to mount.
         namespace: Namespace/prefix string (e.g., "stats").
         prefix: Alias for namespace (legacy).
+        tool_names: Leaf name to local name, before the namespace is added.
     """
     name = namespace or prefix
     import inspect
 
     sig = inspect.signature(mcp.mount)
     params = sig.parameters
+    options = {}
+    if tool_names:
+        if "tool_names" not in params:
+            raise RuntimeError("This FastMCP version cannot mount renamed peer tools")
+        options["tool_names"] = tool_names
 
     if "namespace" in params:
-        mcp.mount(sub_server, namespace=name)
+        mcp.mount(sub_server, namespace=name, **options)
     elif "prefix" in params:
-        mcp.mount(sub_server, prefix=name)
+        # 2.x overrides are final public names; 3.x renames precede the
+        # namespace transform. Keep this distinction at the API boundary.
+        if tool_names:
+            options["tool_names"] = {
+                old: f"{name}_{new}" if name else new for old, new in tool_names.items()
+            }
+        mcp.mount(sub_server, prefix=name, **options)
     else:
         # Fallback: try positional
-        mcp.mount(sub_server, name)
+        mcp.mount(sub_server, name, **options)
 
 
 # EOF

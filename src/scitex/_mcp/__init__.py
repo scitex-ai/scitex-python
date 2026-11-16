@@ -28,7 +28,6 @@ Usage:
 from __future__ import annotations
 
 import importlib
-import logging
 import os
 import threading
 import warnings
@@ -39,11 +38,12 @@ from scitex.helpers import load_scitex_env
 
 load_scitex_env()
 
+import scitex_logging as slogging
 from scitex_dev import try_import_optional
 
 from ._compat import get_tools_sync, mounted_namespaces, safe_mount
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 FastMCP = try_import_optional("fastmcp", "FastMCP", pkg="scitex")
 FASTMCP_AVAILABLE = FastMCP is not None
@@ -95,9 +95,7 @@ _SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 #     pandas + numpy via its ``_search`` / ``_plot`` submodules. Same
 #     cold-start waste as ``scitex-types`` (sac real-SIF re-verify of
 #     umbrella 2.30.8).
-_LOCAL_UNMOUNTABLE = frozenset(
-    {"scitex-orochi", "scitex-types", "scitex-str"}
-)
+_LOCAL_UNMOUNTABLE = frozenset({"scitex-orochi", "scitex-types", "scitex-str"})
 
 # Namespace overrides — registry's ``umbrella_subcommand`` may differ from
 # the prefix consumers already know. Apply these renames so existing tool
@@ -106,6 +104,7 @@ _NAMESPACE_ALIASES: dict[str, str] = {
     "crossref-local": "crossref",
     "openalex-local": "openalex",
     "agent-container": "agent_container",
+    "cloud": "hub",
 }
 
 # Per-peer resolve budget. Importing ONE peer's ``_mcp_server`` can hang at
@@ -140,7 +139,10 @@ def _env_gate_key(namespace: str) -> str:
 
 def _is_enabled(namespace: str) -> bool:
     """Honour ``SCITEX_MCP_USE_<NS>=0`` to skip a peer mount."""
-    return os.environ.get(_env_gate_key(namespace), "1") != "0"
+    legacy = {"hub": "cloud", "sdk": "app"}.get(namespace, namespace)
+    return all(
+        os.environ.get(_env_gate_key(ns), "1") != "0" for ns in (namespace, legacy)
+    )
 
 
 def _resolve_peer_mcp(import_name: str):
@@ -201,7 +203,14 @@ def _iter_registry() -> Iterable[tuple[str, str, str]]:
         return
 
     for pip_name, info in ECOSYSTEM.items():
+        if pip_name in {"scitex-app", "scitex-ui"}:
+            # SDK owns both implementations; never mount the retired copies.
+            continue
         if _mount_skip(pip_name, info):
+            continue
+        if pip_name == "scitex-sdk":
+            yield pip_name, "scitex_sdk.app", "sdk"
+            yield pip_name, "scitex_sdk.ui", "ui"
             continue
         import_name = info.get("import_name")
         if not import_name:
@@ -212,7 +221,7 @@ def _iter_registry() -> Iterable[tuple[str, str, str]]:
 
 
 def _resolve_one_peer_bounded(
-    import_name: str, namespace: str, timeout: float
+    import_name: str, namespace: str, timeout: float, *, prepare=None
 ) -> tuple[object, str | None]:
     """Resolve ONE peer's FastMCP in a bounded daemon thread.
 
@@ -234,7 +243,10 @@ def _resolve_one_peer_bounded(
 
     def _worker() -> None:
         try:
-            box["result"] = _resolve_peer_mcp(import_name)
+            peer = _resolve_peer_mcp(import_name)
+            box["result"] = (
+                prepare(peer, namespace) if peer is not None and prepare else peer
+            )
         except BaseException as exc:  # noqa: BLE001 — surfaced via box
             # BaseException: a peer may ``sys.exit()`` at import; record it as a
             # skip, never let it propagate out of the daemon thread.
@@ -254,7 +266,7 @@ def _resolve_one_peer_bounded(
 
 
 def _resolve_peers_bounded(
-    peers: list[tuple[str, str]], timeout: float
+    peers: list[tuple[str, str]], timeout: float, *, prepare=None
 ) -> tuple[list[tuple[str, object]], list[tuple[str, str]]]:
     """Resolve every peer's FastMCP, each bounded by ``timeout``, SERIALLY.
 
@@ -287,7 +299,9 @@ def _resolve_peers_bounded(
     resolved: list[tuple[str, object]] = []
     skipped: list[tuple[str, str]] = []
     for import_name, namespace in peers:
-        peer_mcp, reason = _resolve_one_peer_bounded(import_name, namespace, timeout)
+        peer_mcp, reason = _resolve_one_peer_bounded(
+            import_name, namespace, timeout, prepare=prepare
+        )
         if reason is not None:
             skipped.append((namespace, reason))
         elif peer_mcp is not None:
@@ -306,7 +320,7 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
          imports are never run concurrently (which would risk an import-lock
          deadlock across the full peer set).
       2. Peer surfaces needing brand/name adjustment (figrecipe plt_stx,
-         socialia social_*, linter, optional cloud mount).
+         socialia social_*).
       3. Umbrella-only inline tools (no peer owns them).
 
     Each peer is gated by ``SCITEX_MCP_USE_<NAMESPACE>=0`` (default enabled).
@@ -324,15 +338,14 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
     timeout = peer_timeout if peer_timeout is not None else _peer_timeout()
     mounted: set[str] = set()
 
-    peers = [
-        (import_name, namespace)
-        for _pip, import_name, namespace in iter_registry()
-        if _is_enabled(namespace)
-    ]
+    from ._mount_plan import prepare_mount
+    from ._mount_report import begin_report
 
-    resolved, skipped = _resolve_peers_bounded(peers, timeout)
+    peers, report = begin_report(mcp, iter_registry(), _is_enabled)
+    resolved, skipped = _resolve_peers_bounded(peers, timeout, prepare=prepare_mount)
 
     for namespace, reason in skipped:
+        report[namespace] = {"state": "unavailable", "reason": reason}
         logger.warning(
             "MCP peer %r %s — its tools will be unavailable this session",
             namespace,
@@ -340,13 +353,24 @@ def register_all_tools(mcp, *, iter_registry=None, peer_timeout=None) -> None:
         )
 
     # Mount on the MAIN thread. The slow, hang-prone part is the peer IMPORT
-    # (bounded above); the mount itself is fast and mutates shared parent-server
+    # and metadata discovery (bounded above); mounting mutates shared parent-server
     # state, so it stays single-threaded here to avoid concurrent-mutation races.
-    for namespace, peer_mcp in resolved:
+    public_names: set[str] = set()
+    for namespace, plan in resolved:
         try:
-            safe_mount(mcp, peer_mcp, namespace=namespace)
+            names = {namespace + "_" + name for name in plan.local_names}
+            if public_names & names:
+                raise ValueError(
+                    f"Duplicate peer tool names: {sorted(public_names & names)}"
+                )
+            safe_mount(
+                mcp, plan.server, namespace=namespace, tool_names=plan.tool_names
+            )
+            public_names.update(names)
             mounted.add(namespace)
+            report[namespace] = {"state": "mounted", "planned_names": sorted(names)}
         except Exception as exc:  # noqa: BLE001 — diagnostic, never fatal
+            report[namespace] = {"state": "mount-failed", "reason": str(exc)}
             logger.warning("MCP mount failed for %r: %s", namespace, exc)
 
     from ._peer_extras import register_peer_extras
@@ -439,19 +463,17 @@ def run_server(
     if not FASTMCP_AVAILABLE:
         import sys
 
-        print("=" * 60)
-        print("Requires 'fastmcp' package: pip install fastmcp")
-        print("=" * 60)
+        logger.error("Requires 'fastmcp' package: pip install fastmcp")
         sys.exit(1)
 
     if transport == "stdio":
         mcp.run(transport="stdio")
     elif transport == "sse":
-        print(f"Starting scitex MCP (SSE) on {host}:{port}")
-        print(f"Remote: ssh -R {port}:localhost:{port} remote-host")
+        logger.info("Starting scitex MCP (SSE) on %s:%s", host, port)
+        logger.info("Remote: ssh -R %s:localhost:%s remote-host", port, port)
         mcp.run(transport="sse", host=host, port=port)
     elif transport == "http":
-        print(f"Starting scitex MCP (HTTP) on {host}:{port}")
+        logger.info("Starting scitex MCP (HTTP) on %s:%s", host, port)
         mcp.run(transport="streamable-http", host=host, port=port)
     else:
         raise ValueError(f"Unknown transport: {transport}")
