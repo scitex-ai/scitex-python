@@ -28,23 +28,47 @@ import pytest
 # Generous budget for the heavy standalone CLI probe (peer mounts are slow).
 _MCP_CLI_TIMEOUT = 180
 
+# Wall-clock deadline for each peer's ``_mcp_server`` import when the tests
+# build their own umbrella. The production default (8s,
+# ``scitex._mcp._DEFAULT_PEER_TIMEOUT``) is a startup-latency bound: a peer
+# slower than that is SKIPPED, so its tools silently vanish from the umbrella.
+# On a loaded runner (32 xdist workers importing the whole ecosystem at once)
+# a healthy peer routinely needs longer than 8s, and the mount contract below
+# then fails for a reason that has nothing to do with the mount. These tests
+# check WHAT is mounted, not how fast, so they wait for each peer to finish
+# importing — still bounded, so a genuinely wedged peer fails the run.
+_PEER_RESOLVE_DEADLINE = 240.0
+
+# Per-test budget for tests that build the umbrella: up to one peer-resolve
+# deadline plus the standalone CLI probe, on top of the import itself.
+_UMBRELLA_TEST_TIMEOUT = int(_PEER_RESOLVE_DEADLINE + _MCP_CLI_TIMEOUT + 120)
+
 
 def _umbrella_tool_names() -> set:
     """All umbrella MCP tool names, enumerated in-process (no subprocess).
+
+    Builds a fresh umbrella through the real ``register_all_tools`` code path,
+    with the per-peer resolve budget raised to ``_PEER_RESOLVE_DEADLINE`` so a
+    peer that is merely slow to import (loaded CI runner) is waited for rather
+    than dropped. Peers already imported by the module-level umbrella resolve
+    instantly from ``sys.modules``; a peer whose import is still in flight is
+    waited on through the import lock.
 
     Includes both the umbrella's own local tools AND every registry-mounted
     peer's tools under their mount namespace. FastMCP 2.x resolves mounted
     sub-server tools lazily (they are absent from the parent ``get_tools``),
     so we enumerate each mounted server directly and re-apply its prefix.
     """
-    fastmcp = pytest.importorskip("fastmcp")  # noqa: F841
+    fastmcp = pytest.importorskip("fastmcp")
     try:
-        from scitex._mcp import FASTMCP_AVAILABLE, get_tools_sync
-        from scitex._mcp import mcp as mcp_server
+        from scitex._mcp import FASTMCP_AVAILABLE, get_tools_sync, register_all_tools
     except ImportError as exc:
         pytest.skip(f"umbrella MCP server unavailable: {exc}")
-    if not FASTMCP_AVAILABLE or mcp_server is None:
+    if not FASTMCP_AVAILABLE:
         pytest.skip("umbrella MCP server not initialized")
+
+    mcp_server = fastmcp.FastMCP(name="scitex-thin-wrapper-test")
+    register_all_tools(mcp_server, peer_timeout=_PEER_RESOLVE_DEADLINE)
 
     names = set(get_tools_sync(mcp_server).keys())
     for srv in getattr(mcp_server, "_mounted_servers", []) or []:
@@ -126,6 +150,7 @@ class TestWriterThinWrapper:
         # Assert
         assert expected_modules <= standalone_exports
 
+    @pytest.mark.timeout(_UMBRELLA_TEST_TIMEOUT)
     def test_umbrella_exposes_writer_mcp_tools(self):
         # The umbrella must mount the writer peer's tools (writer_* prefix).
         # Arrange
@@ -135,6 +160,7 @@ class TestWriterThinWrapper:
         # Assert
         assert writer_tools
 
+    @pytest.mark.timeout(_UMBRELLA_TEST_TIMEOUT)
     def test_every_standalone_writer_tool_is_reachable_via_umbrella(self):
         # The umbrella mounts the writer peer under a mount prefix, so a
         # standalone tool is "reachable" when some umbrella tool name ends
@@ -179,6 +205,7 @@ class TestSocialThinWrapper:
         # Assert
         assert not missing, f"scitex.social missing socialia classes: {sorted(missing)}"
 
+    @pytest.mark.timeout(_UMBRELLA_TEST_TIMEOUT)
     def test_every_standalone_social_tool_is_reachable_via_umbrella(self):
         # The umbrella mounts socialia under a mount prefix
         # (socialia_social_analytics_track, ...), so a standalone tool is
