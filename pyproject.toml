@@ -249,9 +249,8 @@ cli = [
 
 # Cloud Module - Cloud service integration (OPTIONAL peer: scitex-hub)
 # Use: pip install scitex[cloud]  (alias of scitex[hub])
-# Kept OUT of [all] so CI's matrix skips cloud/module/project when scitex-hub
-# (not yet released) is absent. scitex.cloud/.module/.project degrade with a
-# friendly install hint when scitex-hub is missing.
+# scitex.cloud/.module/.project degrade with a friendly install hint when
+# scitex-hub is missing.
 cloud = [
     "matplotlib",
     "scitex-hub>=0.19.0",
@@ -950,9 +949,7 @@ dev = [
     "scitex-browser>=0.1.15",
     "scitex-clew>=0.21.0",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
-    # scitex-cloud) is intentionally NOT in [dev] — it is unreleased, so listing
-    # it here would break CI's `.[all,dev]` resolve. Install explicitly via
-    # `pip install scitex[cloud]` when scitex-hub is available.
+    # scitex-cloud) reaches dev/CI installs through [all] (scitex[cloud] etc.).
     "scitex-container>=0.4.4",
     "scitex-dataset>=0.8.3",
     "scitex-dev>=0.62.30",
@@ -1022,9 +1019,7 @@ all = [
     "scitex[capture]",
     "scitex[clew]",
     "scitex[cli]",
-    # NOTE: scitex[cloud] / scitex[module] / scitex[project] (scitex-hub) are
-    # OPTIONAL peers deliberately kept OUT of [all] so CI's matrix runs without
-    # the unreleased scitex-hub. Install explicitly: pip install scitex[cloud].
+    "scitex[cloud]",
     "scitex[compat]",
     "scitex[config]",
     "scitex[container]",
@@ -1045,6 +1040,7 @@ all = [
     "scitex[gists]",
     "scitex[git]",
     "scitex[heavy]",
+    "scitex[hub]",
     "scitex[introspect]",
     "scitex[io]",
     "scitex[linalg]",
@@ -1052,6 +1048,7 @@ all = [
     "scitex[media]",
     "scitex[ml]",
     "scitex[msword]",
+    "scitex[module]",
     "scitex[nn]",
     "scitex[notebook]",
     "scitex[notification]",
@@ -1060,6 +1057,7 @@ all = [
     "scitex[path]",
     "scitex[pd]",
     "scitex[plt]",
+    "scitex[project]",
     "scitex[repro]",
     "scitex[reproduce]",
     "scitex[resource]",
