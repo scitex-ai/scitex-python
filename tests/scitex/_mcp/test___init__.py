@@ -284,15 +284,19 @@ def _run_probe(code: str) -> dict:
 
 
 def test_importing_mcp_module_does_not_build_server():
-    # Arrange / Act
-    result = _run_probe(_PROBE_IMPORT_ONLY)
+    # Arrange
+    probe = _PROBE_IMPORT_ONLY
+    # Act
+    result = _run_probe(probe)
     # Assert
     assert result == {"built": False, "resolver_threads": []}
 
 
 def test_mcp_attribute_builds_one_shared_server_on_first_access():
-    # Arrange / Act
-    result = _run_probe(_PROBE_ACCESS)
+    # Arrange
+    probe = _PROBE_ACCESS
+    # Act
+    result = _run_probe(probe)
     # Assert
     assert result == {"same_object": True, "name": "scitex"}
 
@@ -301,9 +305,10 @@ def test_unknown_module_attribute_raises_attribute_error():
     # Arrange
     from scitex import _mcp
 
-    # Act / Assert
-    with pytest.raises(AttributeError):
-        _mcp.no_such_attribute  # noqa: B018
+    # Act
+    has_attr = hasattr(_mcp, "no_such_attribute")
+    # Assert
+    assert has_attr is False
 
 
 # EOF
