@@ -13,13 +13,28 @@ from __future__ import annotations
 
 from scitex._mcp import (  # noqa: F401
     FASTMCP_AVAILABLE,
+    get_server,
     main,
-    mcp,
     register_all_tools,
     run_server,
 )
 
-__all__ = ["mcp", "run_server", "main", "register_all_tools", "FASTMCP_AVAILABLE"]
+__all__ = [
+    "mcp",
+    "get_server",
+    "run_server",
+    "main",
+    "register_all_tools",
+    "FASTMCP_AVAILABLE",
+]
+
+
+def __getattr__(name: str):
+    # ``mcp`` is built lazily by scitex._mcp (see its ``get_server``); forward
+    # the attribute instead of binding it at import, which would build it.
+    if name == "mcp":
+        return get_server()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 if __name__ == "__main__":
     main()

@@ -57,6 +57,7 @@ warnings.filterwarnings(
 
 __all__ = [
     "mcp",
+    "get_server",
     "run_server",
     "main",
     "register_all_tools",
@@ -95,9 +96,7 @@ _SKIP_CATEGORIES = frozenset({"umbrella", "template"})
 #     pandas + numpy via its ``_search`` / ``_plot`` submodules. Same
 #     cold-start waste as ``scitex-types`` (sac real-SIF re-verify of
 #     umbrella 2.30.8).
-_LOCAL_UNMOUNTABLE = frozenset(
-    {"scitex-orochi", "scitex-types", "scitex-str"}
-)
+_LOCAL_UNMOUNTABLE = frozenset({"scitex-orochi", "scitex-types", "scitex-str"})
 
 # Namespace overrides — registry's ``umbrella_subcommand`` may differ from
 # the prefix consumers already know. Apply these renames so existing tool
@@ -408,16 +407,17 @@ Use introspect_* tools to explore the API: introspect_dir("scitex.stats")
 """
 
 
-if FASTMCP_AVAILABLE:
-    mcp = FastMCP(name="scitex", instructions=_INSTRUCTIONS)
+def _build_server():
+    """Construct the umbrella FastMCP server and mount every peer onto it."""
+    server = FastMCP(name="scitex", instructions=_INSTRUCTIONS)
 
-    register_all_tools(mcp)
+    register_all_tools(server)
 
     # Annotate tools with the standardized Result envelope schema.
     try:
         from scitex_dev.types import RESULT_SCHEMA
 
-        for tool in get_tools_sync(mcp).values():
+        for tool in get_tools_sync(server).values():
             if getattr(tool, "output_schema", None) is None:
                 tool.output_schema = RESULT_SCHEMA
     except Exception:
@@ -425,9 +425,47 @@ if FASTMCP_AVAILABLE:
 
     from ._resources import register_resources
 
-    register_resources(mcp)
-else:
-    mcp = None
+    register_resources(server)
+    return server
+
+
+# The server is built LAZILY, on first access to ``scitex._mcp.mcp``.
+#
+# Building it mounts ~33 peers, each resolved in a bounded daemon thread
+# (``_resolve_one_peer_bounded``). A peer that overruns its budget is
+# abandoned while its import is still in flight, so subsequent imports run
+# concurrently with it. When the build ran at *module import*, every process
+# that merely imported ``scitex._mcp`` / ``scitex.mcp_server`` paid that cost
+# and that risk — including each of N pytest-xdist workers at collection time,
+# where CPU contention pushes healthy-but-slow peer imports (anything pulling
+# ``torch``) past the budget. A torch import broken by the resulting import
+# race can never be retried in the same process (torch>=2.15 refuses a second
+# initialisation), which surfaced as an unrelated test module failing to
+# collect in one xdist worker. Importing this module is now side-effect free;
+# only consumers that actually need the server (``run_server``, the CLI) build it.
+_server = None
+_server_lock = threading.Lock()
+
+
+def get_server():
+    """Return the umbrella FastMCP server, building it on first call.
+
+    Returns ``None`` when ``fastmcp`` is not installed.
+    """
+    global _server
+    if not FASTMCP_AVAILABLE:
+        return None
+    with _server_lock:
+        if _server is None:
+            _server = _build_server()
+    return _server
+
+
+def __getattr__(name: str):
+    # PEP 562: keeps ``from scitex._mcp import mcp`` and ``_mcp.mcp`` working.
+    if name == "mcp":
+        return get_server()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def run_server(
@@ -444,6 +482,7 @@ def run_server(
         print("=" * 60)
         sys.exit(1)
 
+    mcp = get_server()
     if transport == "stdio":
         mcp.run(transport="stdio")
     elif transport == "sse":
