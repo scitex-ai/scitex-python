@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Ecosystem peer pins: every `==` pin becomes `>=<PyPI latest>` (24 packages
+  moved forward, e.g. scitex-agent-container 0.21.11 -> 0.38.4, scitex-writer
+  2.24.1 -> 2.43.22). `scitex[all]` envs were installing ~6-month-old leaves;
+  `>=` cannot silently go stale again (operator decision 2026-11-16).
+
 ## [2.30.9] - Unreleased
 
 ### Changed
