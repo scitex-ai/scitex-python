@@ -101,7 +101,7 @@ dependencies = [
     "scitex-genai>=0.2.1",
     "scitex-gists>=0.1.8",
     "scitex-audit>=0.2.0",
-    "scitex-logging>=0.2.5",
+    "scitex-logging>=0.2.7",
     "scitex-dict>=0.1.8",
     "scitex-browser>=0.1.15",
     "scitex-str>=0.1.12",
@@ -461,7 +461,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
-    "scitex-logging>=0.2.5",
+    "scitex-logging>=0.2.7",
 ]
 
 # Media Module - Media display utilities (always available: scitex-etc is a
@@ -956,7 +956,7 @@ dev = [
     "scitex-etc>=0.2.1",
     "scitex-genai>=0.2.1",
     "scitex-io>=0.4.3",
-    "scitex-logging>=0.2.5",
+    "scitex-logging>=0.2.7",
     "scitex-notification>=0.2.9",
     "scitex-scholar>=1.29.2",
     "scitex-ssh>=1.2.1",
