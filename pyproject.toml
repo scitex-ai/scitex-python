@@ -956,6 +956,7 @@ dev = [
     "scitex-etc>=0.2.1",
     "scitex-genai>=0.2.1",
     "scitex-io>=0.4.3",
+    "scitex-logging>=0.2.5",
     "scitex-notification>=0.2.9",
     "scitex-scholar>=1.29.2",
     "scitex-ssh>=1.2.1",

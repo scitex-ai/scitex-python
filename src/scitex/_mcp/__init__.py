@@ -28,7 +28,6 @@ Usage:
 from __future__ import annotations
 
 import importlib
-import logging
 import os
 import threading
 import warnings
@@ -39,11 +38,15 @@ from scitex.helpers import load_scitex_env
 
 load_scitex_env()
 
+# Imported after load_scitex_env(): importing scitex_logging configures the
+# root logger when nothing else has, and the env loader's INFO records were
+# never shown before. Building the server already imported it via the peers.
+import scitex_logging as slogging
 from scitex_dev import try_import_optional
 
 from ._compat import get_tools_sync, mounted_namespaces, safe_mount
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 FastMCP = try_import_optional("fastmcp", "FastMCP", pkg="scitex")
 FASTMCP_AVAILABLE = FastMCP is not None
@@ -477,20 +480,18 @@ def run_server(
     if not FASTMCP_AVAILABLE:
         import sys
 
-        print("=" * 60)
-        print("Requires 'fastmcp' package: pip install fastmcp")
-        print("=" * 60)
+        logger.error("Requires 'fastmcp' package: pip install fastmcp")
         sys.exit(1)
 
     mcp = get_server()
     if transport == "stdio":
         mcp.run(transport="stdio")
     elif transport == "sse":
-        print(f"Starting scitex MCP (SSE) on {host}:{port}")
-        print(f"Remote: ssh -R {port}:localhost:{port} remote-host")
+        logger.info("Starting scitex MCP (SSE) on %s:%s", host, port)
+        logger.info("Remote: ssh -R %s:localhost:%s remote-host", port, port)
         mcp.run(transport="sse", host=host, port=port)
     elif transport == "http":
-        print(f"Starting scitex MCP (HTTP) on {host}:{port}")
+        logger.info("Starting scitex MCP (HTTP) on %s:%s", host, port)
         mcp.run(transport="streamable-http", host=host, port=port)
     else:
         raise ValueError(f"Unknown transport: {transport}")
