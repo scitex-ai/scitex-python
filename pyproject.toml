@@ -143,6 +143,9 @@ scitex-mcp-server = "scitex._mcp:main"
 [project.entry-points."scitex_dev.docs"]
 scitex = "scitex"
 
+[project.entry-points."scitex_dev.hierarchy"]
+scitex = "scitex.hierarchy:get_hierarchy_nodes"
+
 [project.entry-points."scitex_dev.skills"]
 scitex = "scitex"
 
