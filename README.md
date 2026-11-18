@@ -162,6 +162,10 @@ Downstream (standalone apps — own IO/GUI, unit tests)
 
 **One-line contract**: downstream does not know upstream exists; upstream does not duplicate downstream logic. See [01_ecosystem_01_upstream-and-downstream.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_01_upstream-and-downstream.md) for full rules (testing, cascade, interfaces) and [01_ecosystem_02_dependency-and-version-pinning.md](https://github.com/ywatanabe1989/scitex-dev/blob/main/src/scitex_dev/_skills/general/01_ecosystem_02_dependency-and-version-pinning.md) for dep-pinning.
 
+For navigation and search, the [umbrella hierarchy provider](docs/api/package-hierarchy.md)
+declares the SciTeX root, layers and its own package slot. Plain metadata is
+independent of SDK; typed records require the installed SDK hierarchy capability.
+
 ## Three Interfaces
 
 Every capability in the SciTeX umbrella is reachable through three surfaces, so humans and AI agents share one toolkit:
