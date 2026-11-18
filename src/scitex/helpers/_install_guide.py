@@ -226,9 +226,15 @@ def show_install_guide(module_name: Optional[str] = None) -> None:
         >>> show_install_guide("audio")
         >>> show_install_guide()  # Shows all modules
     """
-    print("\n" + "=" * 70)
-    print("SciTeX Installation Guide")
-    print("=" * 70)
+    import scitex_logging as slogging
+
+    # The guide is the output the caller asked for, so it goes to stdout
+    # verbatim; a level prefix on every table row would corrupt it.
+    console = slogging.getPlainConsole(__name__)
+
+    console.emit("\n" + "=" * 70)
+    console.emit("SciTeX Installation Guide")
+    console.emit("=" * 70)
 
     if module_name:
         if module_name in MODULE_REQUIREMENTS:
@@ -236,27 +242,27 @@ def show_install_guide(module_name: Optional[str] = None) -> None:
             result = check_module_deps(module_name)
             status = "Installed" if result["available"] else "Not installed"
 
-            print(f"\n{module_name} - {desc}")
-            print(f"  Status: {status}")
-            print(f"  Install: pip install scitex[{extra}]")
+            console.emit(f"\n{module_name} - {desc}")
+            console.emit(f"  Status: {status}")
+            console.emit(f"  Install: pip install scitex[{extra}]")
             if not result["available"]:
-                print(f"  Missing: {', '.join(result['missing'])}")
+                console.emit(f"  Missing: {', '.join(result['missing'])}")
         else:
-            print(f"\nModule '{module_name}' not found.")
+            console.emit(f"\nModule '{module_name}' not found.")
     else:
-        print("\nModule-oriented installation (install only what you need):\n")
+        console.emit("\nModule-oriented installation (install only what you need):\n")
 
         for mod_name, (required, extra, desc) in sorted(MODULE_REQUIREMENTS.items()):
             result = check_module_deps(mod_name)
             status = "[ok]" if result["available"] else "[--]"
-            print(f"  {status} {mod_name:12} pip install scitex[{extra}]")
+            console.emit(f"  {status} {mod_name:12} pip install scitex[{extra}]")
 
-        print("\nConvenience groups:\n")
-        print("  pip install scitex[science]  # scipy, matplotlib, scikit-learn")
-        print("  pip install scitex[dl]       # PyTorch, transformers")
-        print("  pip install scitex[all]      # Everything")
+        console.emit("\nConvenience groups:\n")
+        console.emit("  pip install scitex[science]  # scipy, matplotlib, scikit-learn")
+        console.emit("  pip install scitex[dl]       # PyTorch, transformers")
+        console.emit("  pip install scitex[all]      # Everything")
 
-    print("\n" + "=" * 70 + "\n")
+    console.emit("\n" + "=" * 70 + "\n")
 
 
 # EOF
