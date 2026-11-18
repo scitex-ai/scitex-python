@@ -52,12 +52,14 @@ reproducible, CLI-enabled experiment.
 
    @stx.session
    def main(
-       n_epochs=50,
-       learning_rate=0.001,
-       CONFIG=stx.session.INJECTED,
+       data_path="data.csv",               # an input -> --data-path
+       CONFIG=stx.session.INJECTED,        # ./config/*.yaml
        logger=stx.session.INJECTED,
    ):
-       logger.info(f"Training for {n_epochs} epochs at lr={learning_rate}")
+       params = CONFIG.TRAIN               # ./config/TRAIN.yaml
+       logger.info(
+           f"Training for {params.N_EPOCHS} epochs at lr={params.LEARNING_RATE}"
+       )
        return 0
 
    if __name__ == "__main__":
@@ -71,10 +73,16 @@ these so that the function body contains only experiment logic.
 **What it provides:**
 
 1. **Automatic CLI.** Function parameters become command-line arguments.
-   ``n_epochs=50`` becomes ``--n-epochs 50`` with no argparse code.
+   ``data_path="data.csv"`` becomes ``--data-path`` with no argparse code.
+   The CLI is for inputs (paths, subject IDs), not analysis parameters.
 
-2. **Config injection.** Parameters in ``./config/*.yaml`` are aggregated
-   into a single ``CONFIG`` dict and injected at runtime.
+2. **Config injection.** Analysis parameters live in ``./config/*.yaml``
+   (resolved against the working directory) and are aggregated into a
+   single ``CONFIG`` dict injected at runtime: ``config/TRAIN.yaml`` with
+   ``N_EPOCHS: 50`` is read as ``CONFIG.TRAIN.N_EPOCHS``. In
+   ``project-type: research`` projects, ``scitex-dev`` >= 0.64.0 lint rule
+   STX-S008 warns on numeric ``main()`` defaults and other hard-coded
+   parameters.
 
 3. **Reproducibility.** Random seeds are fixed. All parameters, stdout,
    and stderr are logged to the output directory.

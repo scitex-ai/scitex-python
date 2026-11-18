@@ -188,21 +188,26 @@ A typical research script combining session, I/O, plotting, and statistics:
 
    import scitex as stx
 
+   # Parameters live in ./config/SINE.yaml:
+   #   N: 200
+   #   NOISE: 0.1
+
    @stx.session
    def main(
-       n=200,
-       noise=0.1,
        CONFIG=stx.INJECTED,
        plt=stx.INJECTED,
+       rngg=stx.INJECTED,
        logger=stx.INJECTED,
    ):
        """Analyze noisy sine wave."""
        import numpy as np
 
+       n, noise = CONFIG.SINE.N, CONFIG.SINE.NOISE
+
        # Generate data
        x = np.linspace(0, 4 * np.pi, n)
        y_clean = np.sin(x)
-       y_noisy = y_clean + np.random.normal(0, noise, n)
+       y_noisy = y_clean + rngg("noise").normal(0, noise, n)
 
        # Save raw data
        stx.io.save({"x": x, "y_clean": y_clean, "y_noisy": y_noisy}, "data.npz")

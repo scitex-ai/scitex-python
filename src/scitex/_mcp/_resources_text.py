@@ -21,14 +21,20 @@ import numpy as np
 
 ## 1. @stx.session - Reproducible Experiment Tracking
 
-The MOST IMPORTANT pattern. Wrap your main function with @stx.session:
+The MOST IMPORTANT pattern. Wrap your main function with @stx.session.
+Analysis parameters live in config/*.yaml, never as numeric main() defaults
+(scitex-dev >= 0.64.0 STX-S008 flags those):
+
+```yaml
+# config/ANALYSIS.yaml  ->  CONFIG.ANALYSIS.N_SAMPLES
+N_SAMPLES: 100
+```
 
 ```python
 @stx.session
 def main(
-    # User parameters (become CLI arguments automatically)
+    # User inputs (become CLI arguments automatically): paths, ids
     input_file="data.csv",       # --input-file (default: data.csv)
-    n_samples=100,               # --n-samples (default: 100)
 
     # INJECTED parameters (auto-provided by session)
     CONFIG=stx.INJECTED,         # Session config with ID, paths
@@ -40,7 +46,7 @@ def main(
     \"\"\"This docstring becomes --help description.\"\"\"
 
     data = stx.io.load(input_file)
-    results = process(data, n_samples)
+    results = process(data, CONFIG.ANALYSIS.N_SAMPLES)
 
     stx.io.save(results, "results.csv")
     stx.io.save(fig, "plot.png", symlink_to="./data")

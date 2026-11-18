@@ -18,8 +18,10 @@
 ```bash
 pip install scitex[all]
 
-# Session example (script)
-python 01_session.py input.csv --n-samples 200
+# Session example (script): run from examples/ so ./config/ is found.
+# Parameters come from config/ANALYSIS.yaml (CONFIG.ANALYSIS.*); edit the YAML to change them.
+python 01_session.py
+python 01_session.py --data-path measured.csv   # optional input CSV with a "y" column
 
 # Notebooks
 jupyter notebook 02_io.ipynb
