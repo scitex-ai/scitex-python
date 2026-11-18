@@ -153,6 +153,55 @@ class TestSciTeXMainDocumentation:
         assert doc is not None
 
 
+# Runs main() in a fresh interpreter in which click cannot be imported --
+# a ``None`` entry in sys.modules makes ``import`` raise ImportError, exactly
+# as on an install without click.
+_MAIN_WITHOUT_CLICK = """
+import sys
+sys.modules["click"] = None
+from scitex.__main__ import main
+main()
+"""
+
+
+@pytest.fixture(scope="module")
+def main_without_click():
+    return subprocess.run(
+        [sys.executable, "-c", _MAIN_WITHOUT_CLICK],
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+
+
+class TestSciTeXMainMissingClick:
+    """The missing-dependency report is a scitex-logging diagnostic (PS-220)."""
+
+    def test_main_without_click_exits_one(self, main_without_click):
+        # Arrange
+        result = main_without_click
+        # Act
+        code = result.returncode
+        # Assert
+        assert code == 1
+
+    def test_reports_the_cli_extra_on_stderr(self, main_without_click):
+        # Arrange
+        result = main_without_click
+        # Act
+        stderr = result.stderr
+        # Assert
+        assert "pip install scitex[cli]" in stderr
+
+    def test_writes_nothing_to_stdout(self, main_without_click):
+        # Arrange
+        result = main_without_click
+        # Act
+        stdout = result.stdout
+        # Assert
+        assert stdout == ""
+
+
 if __name__ == "__main__":
     import os
 

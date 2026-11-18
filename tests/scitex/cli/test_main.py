@@ -184,4 +184,40 @@ class TestPeerMountSmoke:
         assert "Usage:" in result.output
 
 
+class TestLazyGroupUnresolvableSubcommand:
+    """A lazy subcommand whose module cannot be imported resolves to None.
+
+    The failure is recorded as a scitex-logging debug record (PS-220);
+    nothing is raised and nothing is written to stdout.
+    """
+
+    @staticmethod
+    def _group():
+        from scitex.cli.main import LazyGroup
+
+        return LazyGroup(
+            name="probe",
+            lazy_subcommands={
+                "ghost": ("scitex_no_such_module_for_lazy_probe", "cli", "ghost"),
+            },
+        )
+
+    def test_get_command_returns_none(self):
+        # Arrange
+        group = self._group()
+        # Act
+        cmd = group.get_command(None, "ghost")
+        # Assert
+        assert cmd is None
+
+    def test_get_command_writes_nothing_to_stdout(self, capsys):
+        # Arrange
+        group = self._group()
+        # Act
+        group.get_command(None, "ghost")
+        captured = capsys.readouterr()
+        # Assert
+        assert captured.out == ""
+
+
 # EOF

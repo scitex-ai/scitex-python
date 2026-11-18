@@ -91,7 +91,6 @@ class LazyGroup(click.Group):
         cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
         """
         import importlib
-        import logging
 
         module_path_or_candidates, attr_name, _ = self._lazy_subcommands[cmd_name]
         # Two shapes:
@@ -123,7 +122,9 @@ class LazyGroup(click.Group):
             if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
         if last_exc is not None:
-            logging.getLogger(__name__).debug(
+            import scitex_logging as slogging
+
+            slogging.getLogger(__name__).debug(
                 "Lazy-loaded subcommand %r unavailable (no candidate resolved): %s",
                 cmd_name,
                 last_exc,
