@@ -201,9 +201,11 @@ def register_umbrella_tools(mcp) -> None:
         """Return a runnable code example for a SciTeX topic (`plt`, `stats`, `session`, `io`, `scholar`, ...) — short, copy-pasteable snippets showing idiomatic usage. Use when the user asks "how do I use scitex.plt?", "show me a t-test example", "give me a session boilerplate"."""
         from scitex_dev.ecosystem import wrap_as_mcp
 
-        from scitex.usage import show
+        # _render, not show: show() also writes the text to stdout, which
+        # is the protocol channel under the stdio transport.
+        from scitex.usage import _render
 
-        return wrap_as_mcp(show, idempotent=True, topic=topic or None)
+        return wrap_as_mcp(_render, idempotent=True, topic=topic or None)
 
     @mcp.tool()
     def usage_list() -> str:
