@@ -90,4 +90,32 @@ def test_show_install_guide_for_a_module_returns_none():
     assert result is None
 
 
+_RULE = "=" * 70
+
+
+def test_show_install_guide_writes_unknown_module_guide_verbatim_to_stdout(capsys):
+    # Arrange — PS-220: the guide is the caller's requested output, so it is
+    # written to stdout exactly as before, with no logger level prefix.
+    expected = (
+        f"\n{_RULE}\nSciTeX Installation Guide\n{_RULE}\n"
+        "\nModule 'nope' not found.\n"
+        f"\n{_RULE}\n\n"
+    )
+    # Act
+    ig.show_install_guide("nope")
+    captured = capsys.readouterr()
+    # Assert
+    assert captured.out == expected
+
+
+def test_show_install_guide_writes_nothing_to_stderr(capsys):
+    # Arrange
+    module_name = "cli"
+    # Act
+    ig.show_install_guide(module_name)
+    captured = capsys.readouterr()
+    # Assert
+    assert captured.err == ""
+
+
 # EOF

@@ -180,4 +180,68 @@ def test_check_optional_deps_reports_false_for_dotted_name_with_missing_parent()
     assert result == {name: False}
 
 
+# Runs check_mcp_deps in a fresh interpreter in which `mcp` cannot be
+# imported -- a ``None`` entry in sys.modules makes ``import`` raise
+# ImportError, exactly as on an install without the [mcp] extra.
+_CHECK_MCP_WITHOUT_MCP = """
+import sys
+sys.modules["mcp"] = None
+from scitex.helpers._optional_deps import check_mcp_deps
+check_mcp_deps("demo")
+"""
+
+
+@pytest.fixture(scope="module")
+def check_mcp_without_mcp():
+    import subprocess
+
+    return subprocess.run(
+        [sys.executable, "-c", _CHECK_MCP_WITHOUT_MCP],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+
+
+def test_check_mcp_deps_without_mcp_exits_one(check_mcp_without_mcp):
+    # Arrange
+    result = check_mcp_without_mcp
+    # Act
+    code = result.returncode
+    # Assert
+    assert code == 1
+
+
+def test_check_mcp_deps_without_mcp_names_the_server_on_stderr(
+    check_mcp_without_mcp,
+):
+    # Arrange — PS-220: the missing-dependency report is a diagnostic, so it
+    # goes through scitex-logging on stderr.
+    result = check_mcp_without_mcp
+    # Act
+    stderr = result.stderr
+    # Assert
+    assert "MCP Server 'demo' requires the 'mcp' package." in stderr
+
+
+def test_check_mcp_deps_without_mcp_reports_install_hint_on_stderr(
+    check_mcp_without_mcp,
+):
+    # Arrange
+    result = check_mcp_without_mcp
+    # Act
+    stderr = result.stderr
+    # Assert
+    assert "pip install scitex[mcp]" in stderr
+
+
+def test_check_mcp_deps_without_mcp_writes_nothing_to_stdout(check_mcp_without_mcp):
+    # Arrange
+    result = check_mcp_without_mcp
+    # Act
+    stdout = result.stdout
+    # Assert
+    assert stdout == ""
+
+
 # EOF
