@@ -58,6 +58,20 @@ DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
     "socialia": ("social", "3.0"),
 }
 
+# Umbrella commands renamed to the noun/verb CLI convention (2026-11-19).
+# {mounted_name: ((new_name, attr_in_the_same_module), ...)}. The new names
+# are mounted from the same wrapper module; ``main.py`` keeps each old
+# name working as a hidden alias that prints a deprecation note.
+#   audit      — a verb group; split into the leaf `audit-security [PATH]`
+#                and the noun group `audit-tool {status,install}`.
+#   introspect — a verb group; renamed to the noun `introspection`.
+#   convert    — a verb group over .stx bundle files; renamed to `bundle`.
+RENAMED_MOUNTS: Dict[str, Tuple[Tuple[str, str], ...]] = {
+    "audit": (("audit-security", "audit_security"), ("audit-tool", "audit_tool")),
+    "introspect": (("introspection", "introspect"),),
+    "convert": (("bundle", "convert"),),
+}
+
 # NOTE on figrecipe/plt: NOT a deprecated duplicate. `scitex plt` mounts
 # the scitex-plt peer, a published identity-alias package for figrecipe
 # (`scitex_plt is figrecipe` -> True), and doctrine §5b's brand table
@@ -73,13 +87,14 @@ DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
 # to fit the help column.
 _FALLBACK_HELP: Dict[str, str] = {
     # scitex-internal wrappers (no peer in the registry)
-    "audit": "Security auditing tools.",
+    "audit-security": "Run security tools (Bandit, ShellCheck, pip-audit, GitHub).",
+    "audit-tool": "Check and install the tools audit-security runs.",
+    "bundle": "Convert and validate SciTeX bundle files (.figz/.pltz -> .stx).",
     "capture": "Screenshot capture tools.",
     "completion": "Shell tab-completion management (install, status).",
-    "convert": "File format conversion.",
     "docs": "Browse and search SciTeX documentation.",
     "event": "Event bus for async task results.",
-    "introspect": "Code introspection tools.",
+    "introspection": "Code introspection tools.",
     "mcp": "MCP server management.",
     "notebook": "Jupyter notebook tools.",
     "notification": "Notification and alerting tools.",
@@ -286,7 +301,16 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         sub = attr.replace("_", "-")
         out.setdefault(sub, (f"scitex.cli.{attr}", attr, _FALLBACK_HELP.get(sub, sub)))
 
-    # 3. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
+    # 3. Renamed umbrella commands (see RENAMED_MOUNTS above): mount the
+    # new names from the same module; main.py aliases the old names.
+    for old_name, new_mounts in RENAMED_MOUNTS.items():
+        spec = out.pop(old_name, None)
+        if spec is None:
+            continue
+        for new_name, new_attr in new_mounts:
+            out[new_name] = (spec[0], new_attr, _FALLBACK_HELP.get(new_name, spec[2]))
+
+    # 4. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
     # main.py re-adds them as hidden warn-phase deprecated aliases when
     # scitex-dev's click_compat is importable.
     for old_name in DEPRECATED_ALIASES:
@@ -305,7 +329,7 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
 # the non-Core minority keeps this table maintainable and keeps new
 # registry peers out of `Other`.
 _NON_CORE_CATEGORIES: Tuple[Tuple[str, frozenset], ...] = (
-    ("Data & Sync", frozenset({"convert"})),
+    ("Data & Sync", frozenset({"bundle"})),
     (
         "Service",
         frozenset(
@@ -314,13 +338,33 @@ _NON_CORE_CATEGORIES: Tuple[Tuple[str, frozenset], ...] = (
     ),
     (
         "Diagnostics",
-        frozenset({"audit", "benchmark", "linter", "pkg", "resource", "security"}),
+        frozenset(
+            {
+                "audit-security",
+                "audit-tool",
+                "benchmark",
+                "linter",
+                "pkg",
+                "resource",
+                "security",
+            }
+        ),
     ),
     (
         "Introspection",
-        frozenset({"dev", "docs", "introspect", "list-python-apis", "skills"}),
+        frozenset({"dev", "docs", "introspection", "list-python-apis", "skills"}),
     ),
-    ("Shell", frozenset({"completion", "repl"})),
+    (
+        "Shell",
+        frozenset(
+            {
+                "completion",
+                "install-shell-completion",
+                "print-shell-completion",
+                "repl",
+            }
+        ),
+    ),
 )
 
 # Canonical render order (§4a). Empty categories are omitted at render.

@@ -257,7 +257,7 @@ def list_tools(ctx, verbose, compact, as_json):
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.pass_context
 def list_python_apis(ctx, verbose, max_depth, as_json):
-    """List Python APIs (alias for: scitex introspect api scitex.scholar)."""
+    """List Python APIs (same as: scitex introspection list-api scitex.scholar)."""
     from scitex.cli.introspect import api
 
     ctx.invoke(

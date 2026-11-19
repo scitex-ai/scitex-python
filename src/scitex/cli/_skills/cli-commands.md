@@ -80,7 +80,7 @@ scitex mcp list-tools
 scitex mcp start
 
 # Security
-scitex audit run ./src --checks python deps
+scitex audit-security ./src --check python --check deps
 
 # Plotting
 scitex plt reproduce plot.yaml

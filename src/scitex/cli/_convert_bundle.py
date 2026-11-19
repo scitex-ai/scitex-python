@@ -19,33 +19,13 @@ def convert_bundle(input_path: Path, output_path: Path) -> None:
         output_path: Path for output .stx bundle
     """
 
-    def generate_bundle_id():
-        return str(uuid.uuid4())[:8]
-
-    def normalize_spec(spec):
-        return spec  # FTS handles normalization internally
-
-    # Determine bundle type from extension
-    ext = input_path.suffix
-    type_map = {
-        ".figz": "figure",
-        ".pltz": "plot",
-        ".statsz": "stats",
-    }
-    bundle_type = type_map.get(ext)
-
     # Read input bundle
     with zipfile.ZipFile(input_path, "r") as zf:
-        # Read spec
-        spec_data = zf.read("spec.json")
-        spec = json.loads(spec_data)
-
-        # Normalize to v2.0.0
-        normalized_spec = normalize_spec(spec, bundle_type)
-
-        # Ensure bundle_id
+        # The spec is carried over as-is (the FTS layer normalizes it on
+        # load); only a missing bundle_id is filled in.
+        normalized_spec = json.loads(zf.read("spec.json"))
         if "bundle_id" not in normalized_spec:
-            normalized_spec["bundle_id"] = generate_bundle_id()
+            normalized_spec["bundle_id"] = str(uuid.uuid4())[:8]
 
         # Copy all files to new bundle
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -14,8 +14,8 @@ scitex audio speak "Hello" --engine google
 ## audit
 
 ```bash
-scitex audit .
-scitex audit . --checks python deps
+scitex audit-security .
+scitex audit-security . --check python --check deps
 ```
 
 ## container
@@ -48,8 +48,8 @@ scitex notification backends
 ## repro
 
 ```bash
-scitex repro gen-id
-scitex repro gen-timestamp
+scitex repro get-id
+scitex repro get-timestamp
 ```
 
 ## tunnel

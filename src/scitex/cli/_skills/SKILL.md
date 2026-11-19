@@ -30,7 +30,7 @@ scitex config list
 scitex cloud clone user/project
 scitex scholar bibtex papers.bib
 scitex mcp start
-scitex audit run ./src
+scitex audit-security ./src
 scitex completion install      # tab-completion setup
 ```
 

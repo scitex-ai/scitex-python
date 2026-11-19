@@ -103,7 +103,13 @@ def completion():
     is_flag=True,
     help="Print the target rc file and completion script without writing.",
 )
-def completion_install(shell, dry_run):
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (install never prompts; accepted for scripts).",
+)
+def completion_install(shell, dry_run, yes):
     """
     Install shell completion for the scitex CLI.
 
@@ -113,6 +119,7 @@ def completion_install(shell, dry_run):
       scitex completion install --shell bash
       scitex completion install --dry-run             # Inspect, write nothing
     """
+    del yes  # appends one marked line to the rc file; nothing to confirm
     shell = _resolve_shell(shell)
     rc_file = _get_rc_file(shell)
     completion_script = _generate_completion_script(shell)
@@ -157,7 +164,8 @@ def completion_install(shell, dry_run):
 
 
 @completion.command("status")
-def completion_status():
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+def completion_status(as_json):
     """
     Check shell completion installation status.
 
@@ -168,17 +176,14 @@ def completion_status():
       - Installation status
 
     \b
-    Example:
+    Examples:
       scitex completion status
+      scitex completion status --json
     """
     import shutil
 
     shell = _detect_shell() or "unknown"
     rc_file = _get_rc_file(shell) if shell != "unknown" else "N/A"
-
-    click.secho("Shell Completion Status", fg="cyan", bold=True)
-    click.echo(f"  Shell: {shell}")
-    click.echo(f"  Config: {rc_file}")
 
     # Check if installed
     installed = False
@@ -187,6 +192,25 @@ def completion_status():
             content = f.read()
             if "scitex tab completion" in content:
                 installed = True
+
+    if as_json:
+        import json
+
+        click.echo(
+            json.dumps(
+                {
+                    "shell": shell,
+                    "rc_file": None if rc_file == "N/A" else rc_file,
+                    "installed": installed,
+                    "scitex_path": shutil.which("scitex"),
+                }
+            )
+        )
+        return
+
+    click.secho("Shell Completion Status", fg="cyan", bold=True)
+    click.echo(f"  Shell: {shell}")
+    click.echo(f"  Config: {rc_file}")
 
     status = (
         click.style("installed", fg="green")

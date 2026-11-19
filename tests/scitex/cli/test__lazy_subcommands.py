@@ -197,11 +197,14 @@ class TestCommandCategories:
         "name,expected",
         [
             ("io", "Core"),
-            ("convert", "Data & Sync"),
+            ("bundle", "Data & Sync"),
             ("mcp", "Service"),
-            ("audit", "Diagnostics"),
-            ("introspect", "Introspection"),
+            ("audit-security", "Diagnostics"),
+            ("audit-tool", "Diagnostics"),
+            ("introspection", "Introspection"),
             ("completion", "Shell"),
+            ("install-shell-completion", "Shell"),
+            ("print-shell-completion", "Shell"),
         ],
     )
     def test_representative_command_maps_to_expected_category(self, name, expected):

@@ -27,10 +27,10 @@ def event(ctx, as_json):
     \b
     Examples:
       scitex event emit --type test_complete --project figrecipe --status success
-      scitex event latest
-      scitex event latest --type test_complete
-      scitex event history --limit 10
-      scitex event types
+      scitex event show-latest
+      scitex event show-latest --type test_complete
+      scitex event list --limit 10
+      scitex event list-types
     """
     if ctx.invoked_subcommand is None:
         if as_json:
@@ -50,7 +50,14 @@ def event(ctx, as_json):
 @click.option("--source", default="local", help="Source: local, hpc, ci")
 @click.option("--payload", default=None, help="JSON payload string")
 def emit_cmd(event_type, project, status, source, payload):
-    """Emit an event."""
+    """Emit an event and print it as JSON.
+
+    \b
+    Examples:
+      scitex event emit --type test_complete --project figrecipe
+      scitex event emit --type test_complete --project figrecipe --status failure
+      scitex event emit --type job_done --project gpac --payload '{"job": 42}'
+    """
     from scitex.events import emit
 
     payload_dict = {}
@@ -67,26 +74,45 @@ def emit_cmd(event_type, project, status, source, payload):
     click.echo(json.dumps(ev.to_dict(), indent=2))
 
 
-@event.command("latest")
+@event.command("show-latest")
 @click.option("--type", "event_type", default=None, help="Filter by event type")
-def latest_cmd(event_type):
-    """Show the latest event."""
+@click.option("--json", "as_json", is_flag=True, help="Output as compact JSON")
+def latest_cmd(event_type, as_json):
+    """Show the latest event (exit 1 when there is none).
+
+    \b
+    Examples:
+      scitex event show-latest
+      scitex event show-latest --type test_complete
+      scitex event show-latest --json
+    """
     from scitex.events import latest
 
     data = latest(event_type)
     if data is None:
-        click.echo("No events found.")
+        click.echo("null" if as_json else "No events found.")
         raise SystemExit(1)
-    click.echo(json.dumps(data, indent=2))
+    click.echo(json.dumps(data) if as_json else json.dumps(data, indent=2))
 
 
-@event.command("history")
+@event.command("list")
 @click.option("--limit", default=20, help="Max events to show")
-def history_cmd(limit):
-    """Show recent event history."""
+@click.option("--json", "as_json", is_flag=True, help="Output as a JSON array")
+def history_cmd(limit, as_json):
+    """List recent events.
+
+    \b
+    Examples:
+      scitex event list
+      scitex event list --limit 10
+      scitex event list --json
+    """
     from scitex.events import history
 
     events = history(limit=limit)
+    if as_json:
+        click.echo(json.dumps(events))
+        return
     if not events:
         click.echo("No event history.")
         return
@@ -97,11 +123,21 @@ def history_cmd(limit):
         )
 
 
-@event.command("types")
-def types_cmd():
-    """List known event types."""
+@event.command("list-types")
+@click.option("--json", "as_json", is_flag=True, help="Output as a JSON object")
+def types_cmd(as_json):
+    """List known event types.
+
+    \b
+    Examples:
+      scitex event list-types
+      scitex event list-types --json
+    """
     from scitex.events import get_type_info, list_types
 
+    if as_json:
+        click.echo(json.dumps({t: get_type_info(t) for t in list_types()}))
+        return
     for t in list_types():
         info = get_type_info(t)
         desc = info.get("description", "")
@@ -109,6 +145,15 @@ def types_cmd():
         click.echo(f"  {t:20s} {desc}")
         if keys:
             click.echo(f"  {'':20s} payload: {keys}")
+
+
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
+
+alias_renamed(
+    event,
+    {"history": "list", "latest": "show-latest", "types": "list-types"},
+)
 
 
 # EOF

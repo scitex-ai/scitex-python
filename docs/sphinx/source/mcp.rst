@@ -53,7 +53,7 @@ Or install the MCP server globally:
 
 .. code-block:: bash
 
-   scitex mcp installation
+   scitex mcp show-installation
 
 Tool Categories
 ---------------
