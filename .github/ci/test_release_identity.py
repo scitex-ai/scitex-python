@@ -1718,7 +1718,7 @@ class SourceMetadataTests(unittest.TestCase):
         )
         # Assert
         assert result["metadata_source"] == {
-            "runtime_requirements": 630,
+            "runtime_requirements": 632,
             "extras": 77,
             "entry_point_groups": 3,
         }
@@ -1745,7 +1745,7 @@ class SourceMetadataTests(unittest.TestCase):
 
     def test_rehashed_wheel_cannot_change_declared_dependency_floor(self):
         # Arrange
-        headers = metadata().replace(b"scitex-dev==0.62.2", b"scitex-dev==0.0.1")
+        headers = metadata().replace(b"scitex-dev>=0.62.30", b"scitex-dev>=0.0.1")
         wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
         _, sdist_raw = whole_archives()
         RELEASE.wheel_identity(wheel_raw, VERSION)
