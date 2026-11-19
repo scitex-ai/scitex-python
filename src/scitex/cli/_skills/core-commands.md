@@ -17,13 +17,13 @@ scitex <subcommand> --help
 
 ```bash
 scitex audio        # TTS / speech synthesis
-scitex audit        # Security scanning
+scitex audit-security  # Security scanning
 scitex cloud        # Cloud sync and project management
 scitex container    # Container management
 scitex dataset      # Dataset fetching and search
 scitex dev          # Development utilities
 scitex docs         # Documentation building and serving
-scitex introspect   # Python API introspection
+scitex introspection   # Python API introspection
 scitex linter       # SciTeX linter
 scitex mcp          # MCP server management
 scitex notebook     # Jupyter notebook utilities

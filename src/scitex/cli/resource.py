@@ -28,14 +28,14 @@ def resource(ctx, help_recursive, as_json):
 
     \b
     Commands:
-      specs     Show system specifications
-      usage     Show current resource usage
-      monitor   Continuously monitor resource usage
+      show-specs  Show system specifications
+      show-usage  Show current resource usage
+      monitor     Continuously monitor resource usage
 
     \b
     Examples:
-      scitex resource specs              # Show system specs
-      scitex resource usage              # Current CPU/memory/GPU usage
+      scitex resource show-specs         # Show system specs
+      scitex resource show-usage         # Current CPU/memory/GPU usage
       scitex resource monitor --interval 5
     """
     if help_recursive:
@@ -66,7 +66,7 @@ def _print_help_recursive(ctx):
             click.echo(cmd.get_help(sub_ctx))
 
 
-@resource.command()
+@resource.command("show-specs")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.option(
     "--category",
@@ -91,9 +91,9 @@ def specs(as_json, category):
 
     \b
     Examples:
-      scitex resource specs
-      scitex resource specs --json
-      scitex resource specs --category cpu --category gpu
+      scitex resource show-specs
+      scitex resource show-specs --json
+      scitex resource show-specs --category cpu --category gpu
     """
     try:
         from scitex.resource import get_specs
@@ -144,7 +144,7 @@ def specs(as_json, category):
         sys.exit(1)
 
 
-@resource.command()
+@resource.command("show-usage")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def usage(as_json):
     """
@@ -152,49 +152,35 @@ def usage(as_json):
 
     \b
     Examples:
-      scitex resource usage
-      scitex resource usage --json
+      scitex resource show-usage
+      scitex resource show-usage --json
     """
     try:
-        from scitex.resource import get_processor_usages
-
-        usage_data = get_processor_usages()
-
+        record = _current_usage()
         if as_json:
             import json
 
-            click.echo(json.dumps(usage_data, indent=2, default=str))
+            click.echo(json.dumps(record, default=str))
         else:
             click.secho("Resource Usage", fg="cyan", bold=True)
             click.echo("=" * 50)
-
-            # CPU
-            cpu = usage_data.get("cpu", {})
-            click.secho("\nCPU:", fg="yellow")
-            click.echo(f"  Usage: {cpu.get('percent', 'N/A')}%")
-            click.echo(f"  Cores: {cpu.get('count', 'N/A')}")
-
-            # Memory
-            mem = usage_data.get("memory", {})
-            click.secho("\nMemory:", fg="yellow")
-            click.echo(f"  Used: {mem.get('percent', 'N/A')}%")
-            click.echo(f"  Total: {mem.get('total_gb', 'N/A')} GB")
-            click.echo(f"  Available: {mem.get('available_gb', 'N/A')} GB")
-
-            # GPU (if available)
-            gpu = usage_data.get("gpu", {})
-            if gpu:
-                click.secho("\nGPU:", fg="yellow")
-                for i, g in enumerate(gpu.get("devices", [])):
-                    click.echo(f"  [{i}] {g.get('name', 'Unknown')}")
-                    click.echo(
-                        f"      Memory: {g.get('memory_used', 'N/A')} / {g.get('memory_total', 'N/A')} MB"
-                    )
-                    click.echo(f"      Utilization: {g.get('utilization', 'N/A')}%")
+            for key, value in record.items():
+                click.echo(f"  {key}: {value}")
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
+
+
+def _current_usage() -> dict:
+    """One usage sample as a flat dict.
+
+    ``scitex.resource.get_processor_usages`` returns a one-row DataFrame
+    with columns ``Timestamp, CPU [%], RAM [GiB], GPU [%], VRAM [GiB]``.
+    """
+    from scitex.resource import get_processor_usages
+
+    return get_processor_usages().iloc[-1].to_dict()
 
 
 @resource.command()
@@ -220,8 +206,6 @@ def monitor(interval, count, log):
     try:
         import time
 
-        from scitex.resource import get_processor_usages
-
         click.echo(f"Monitoring resources (interval: {interval}s)")
         click.echo("Press Ctrl+C to stop")
         click.echo()
@@ -229,7 +213,7 @@ def monitor(interval, count, log):
         log_file = None
         if log:
             log_file = open(log, "w")
-            log_file.write("timestamp,cpu_percent,memory_percent,gpu_percent\n")
+            log_file.write("timestamp,cpu_percent,ram_gib,gpu_percent\n")
 
         iteration = 0
         try:
@@ -237,24 +221,21 @@ def monitor(interval, count, log):
                 if count and iteration >= count:
                     break
 
-                usage_data = get_processor_usages()
-                cpu_pct = usage_data.get("cpu", {}).get("percent", 0)
-                mem_pct = usage_data.get("memory", {}).get("percent", 0)
-                gpu_pct = 0
-                gpu_info = usage_data.get("gpu", {})
-                if gpu_info and gpu_info.get("devices"):
-                    gpu_pct = gpu_info["devices"][0].get("utilization", 0)
+                record = _current_usage()
+                cpu_pct = float(record["CPU [%]"])
+                mem_gib = float(record["RAM [GiB]"])
+                gpu_pct = float(record["GPU [%]"])
 
                 # Display
                 from datetime import datetime
 
                 ts = datetime.now().strftime("%H:%M:%S")
-                line = f"[{ts}] CPU: {cpu_pct:5.1f}%  MEM: {mem_pct:5.1f}%  GPU: {gpu_pct:5.1f}%"
+                line = f"[{ts}] CPU: {cpu_pct:5.1f}%  RAM: {mem_gib:6.2f} GiB  GPU: {gpu_pct:5.1f}%"
                 click.echo(line)
 
                 # Log
                 if log_file:
-                    log_file.write(f"{ts},{cpu_pct},{mem_pct},{gpu_pct}\n")
+                    log_file.write(f"{ts},{cpu_pct},{mem_gib},{gpu_pct}\n")
                     log_file.flush()
 
                 iteration += 1
@@ -270,6 +251,12 @@ def monitor(interval, count, log):
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
+
+
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
+
+alias_renamed(resource, {"specs": "show-specs", "usage": "show-usage"})
 
 
 if __name__ == "__main__":

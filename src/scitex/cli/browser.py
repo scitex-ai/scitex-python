@@ -15,9 +15,12 @@ from pathlib import Path
 
 import click
 
-# Browser session storage
-BROWSER_STATE_FILE = Path.home() / ".scitex" / "browser" / "sessions.json"
 XVFB_DISPLAY = ":99"
+
+
+def _state_file() -> Path:
+    """Browser session storage, resolved per call (follows $HOME)."""
+    return Path.home() / ".scitex" / "browser" / "sessions.json"
 
 
 def _ensure_xvfb_running():
@@ -52,15 +55,17 @@ def _ensure_xvfb_running():
 
 def _load_sessions():
     """Load browser session state."""
-    if BROWSER_STATE_FILE.exists():
-        return json.loads(BROWSER_STATE_FILE.read_text())
+    state_file = _state_file()
+    if state_file.exists():
+        return json.loads(state_file.read_text())
     return {}
 
 
 def _save_sessions(sessions):
     """Save browser session state."""
-    BROWSER_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    BROWSER_STATE_FILE.write_text(json.dumps(sessions, indent=2))
+    state_file = _state_file()
+    state_file.parent.mkdir(parents=True, exist_ok=True)
+    state_file.write_text(json.dumps(sessions, indent=2))
 
 
 @click.group(
@@ -284,9 +289,19 @@ def open(url, stealth, timeout, background):
 
 
 @browser.command()
-def list():
-    """List browser sessions."""
+@click.option("--json", "as_json", is_flag=True, help="Output sessions as JSON")
+def list(as_json):
+    """List browser sessions.
+
+    \b
+    Examples:
+        scitex browser list
+        scitex browser list --json
+    """
     sessions = _load_sessions()
+    if as_json:
+        click.echo(json.dumps(sessions))
+        return
     if not sessions:
         click.echo("No browser sessions found")
         return
@@ -296,16 +311,37 @@ def list():
         click.echo(f"  {bid}: mode={info.get('mode', '?')}, url={info.get('url', '?')}")
 
 
+def _mode_switch_json(browser_id, key, mode):
+    """JSON form of the show/hide guidance (no process is controlled)."""
+    return json.dumps(
+        {
+            "browser_id": browser_id,
+            "requested_mode": mode,
+            "switched": False,
+            "instruction": f"type '{key}' + Enter in the running browser's terminal",
+        }
+    )
+
+
 @browser.command()
 @click.argument("browser_id", required=False)
-def show(browser_id):
+@click.option("--json", "as_json", is_flag=True, help="Output the guidance as JSON")
+def show(browser_id, as_json):
     """
     Switch browser to visible/interactive mode
 
     \b
     For running browser, enter 's' in terminal.
     For background browser, use: scitex browser show <id>
+
+    \b
+    Examples:
+        scitex browser show
+        scitex browser show <browser_id> --json
     """
+    if as_json:
+        click.echo(_mode_switch_json(browser_id, "s", "interactive"))
+        return
     if not browser_id:
         click.echo("For running browser: type 's' + Enter")
         click.echo("For background: scitex browser show <browser_id>")
@@ -326,7 +362,18 @@ def show(browser_id):
     "--format", "paper_format", default="A4", help="Paper format (A4, Letter, etc.)"
 )
 @click.option("--margin", default="10mm", help="Page margins (e.g., 10mm, 1in)")
-def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, margin):
+@click.option(
+    "--dry-run", is_flag=True, help="Print what would be saved without fetching."
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (never prompts; an existing file is overwritten).",
+)
+def save_as_pdf(
+    url, output_path, wait_seconds, no_background, paper_format, margin, dry_run, yes
+):
     """
     Save a web page as PDF (print-style)
 
@@ -335,7 +382,15 @@ def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, mar
         scitex browser save-as-pdf https://example.com ./output.pdf
         scitex browser save-as-pdf https://nature.com/guidelines ./guidelines.pdf --wait-seconds 5
         scitex browser save-as-pdf https://example.com ./out.pdf --format Letter --margin 20mm
+        scitex browser save-as-pdf https://example.com ./out.pdf --dry-run
     """
+    del yes  # the PDF is written to OUTPUT_PATH without prompting
+    if dry_run:
+        click.echo(
+            f"[dry-run] Would save {url} as PDF to {output_path} "
+            f"({paper_format}, margin {margin})"
+        )
+        return
     from scitex.browser.pdf import save_as_pdf as _save_as_pdf
 
     try:
@@ -359,14 +414,23 @@ def save_as_pdf(url, output_path, wait_seconds, no_background, paper_format, mar
 
 @browser.command()
 @click.argument("browser_id", required=False)
-def hide(browser_id):
+@click.option("--json", "as_json", is_flag=True, help="Output the guidance as JSON")
+def hide(browser_id, as_json):
     """
     Switch browser to headless/stealth mode
 
     \b
     For running browser, enter 'h' in terminal.
     For background browser, use: scitex browser hide <id>
+
+    \b
+    Examples:
+        scitex browser hide
+        scitex browser hide <browser_id> --json
     """
+    if as_json:
+        click.echo(_mode_switch_json(browser_id, "h", "stealth"))
+        return
     if not browser_id:
         click.echo("For running browser: type 'h' + Enter")
         click.echo("For background: scitex browser hide <browser_id>")

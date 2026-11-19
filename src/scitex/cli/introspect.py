@@ -20,6 +20,7 @@ def _normalize_path(ctx, param, value):
 
 
 @click.group(
+    "introspection",
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
 )
@@ -37,20 +38,20 @@ def introspect(ctx, help_recursive, as_json):
 
     \b
     IPython-like introspection for any Python package:
-      q         - Function/class signature (like func?)
-      qq        - Full source code (like func??)
-      dir       - List module/class members (like dir())
-      api       - Full module API tree
-      docstring - Extract docstrings
-      exports   - Show __all__ exports
-      examples  - Find usage examples
+      show-signature  - Function/class signature (like func?)
+      show-source     - Full source code (like func??)
+      list-members    - List module/class members (like dir())
+      list-api        - Full module API tree
+      show-docstring  - Extract docstrings
+      list-exports    - Show __all__ exports
+      find-examples   - Find usage examples
 
     \b
     Examples:
-      scitex introspect q scitex.plt.plot
-      scitex introspect qq scitex.stats.run_test --max-lines 50
-      scitex introspect dir scitex.plt --kind functions
-      scitex introspect api scitex --max-depth 2
+      scitex introspection show-signature scitex.plt.plot
+      scitex introspection show-source scitex.stats.run_test --max-lines 50
+      scitex introspection list-members scitex.plt --kind functions
+      scitex introspection list-api scitex --max-depth 2
     """
     if help_recursive:
         from . import print_help_recursive
@@ -66,7 +67,7 @@ def introspect(ctx, help_recursive, as_json):
             click.echo(ctx.get_help())
 
 
-@introspect.command()
+@introspect.command("show-signature")
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option("--no-defaults", is_flag=True, help="Exclude default values")
 @click.option("--no-annotations", is_flag=True, help="Exclude type annotations")
@@ -77,9 +78,9 @@ def q(dotted_path, no_defaults, no_annotations, as_json):
 
     \b
     Examples:
-      scitex introspect q scitex.plt.plot
-      scitex introspect q scitex.audio.speak --json
-      scitex introspect q json.dumps
+      scitex introspection show-signature scitex.plt.plot
+      scitex introspection show-signature scitex.audio.speak --json
+      scitex introspection show-signature json.dumps
     """
     from scitex.introspect import q as get_q
 
@@ -110,7 +111,7 @@ def q(dotted_path, no_defaults, no_annotations, as_json):
                 click.echo(line)
 
 
-@introspect.command()
+@introspect.command("show-source")
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option("--max-lines", "-n", type=int, help="Limit output to N lines")
 @click.option("--no-decorators", is_flag=True, help="Exclude decorator lines")
@@ -121,8 +122,8 @@ def qq(dotted_path, max_lines, no_decorators, as_json):
 
     \b
     Examples:
-      scitex introspect qq scitex.plt.plot
-      scitex introspect qq scitex.audio.speak --max-lines 50
+      scitex introspection show-source scitex.plt.plot
+      scitex introspection show-source scitex.audio.speak --max-lines 50
     """
     from scitex.introspect import qq as get_qq
 
@@ -147,7 +148,7 @@ def qq(dotted_path, max_lines, no_decorators, as_json):
         click.echo(result["source"])
 
 
-@introspect.command("dir")
+@introspect.command("list-members")
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option(
     "--filter",
@@ -170,9 +171,9 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
 
     \b
     Examples:
-      scitex introspect dir scitex.plt
-      scitex introspect dir scitex.audio --kind functions
-      scitex introspect dir scitex.plt.AxisWrapper --filter all
+      scitex introspection list-members scitex.plt
+      scitex introspection list-members scitex.audio --kind functions
+      scitex introspection list-members scitex.plt.AxisWrapper --filter all
     """
     from scitex.introspect import dir as get_dir
 
@@ -200,14 +201,21 @@ def dir_cmd(dotted_path, filter, kind, inherited, as_json):
             click.echo(f"  {kind_str} {name_str}{summary}")
 
 
-@introspect.command()
+@introspect.command("list-api")
 @click.argument("dotted_path", callback=_normalize_path)
 @click.option("--max-depth", "-d", type=int, default=5, help="Max recursion depth")
 @click.option("--root-only", is_flag=True, help="Show only root-level items")
 @click.option("-v", "--verbose", count=True, help="Verbosity: -v +doc, -vv full doc")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def api(dotted_path, max_depth, root_only, verbose, as_json):
-    """List API tree with types and signatures. -v adds docstrings, -vv full docs."""
+    """List API tree with types and signatures. -v adds docstrings, -vv full docs.
+
+    \b
+    Examples:
+      scitex introspection list-api scitex.stats
+      scitex introspection list-api scitex --max-depth 2 --root-only
+      scitex introspection list-api scitex.io -v --json
+    """
     import importlib
 
     from scitex.introspect import list_api
@@ -278,3 +286,24 @@ def api(dotted_path, max_depth, root_only, verbose, as_json):
 from scitex.cli._introspect_advanced import register_advanced_commands
 
 register_advanced_commands(introspect)
+
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
+
+alias_renamed(
+    introspect,
+    {
+        "q": "show-signature",
+        "qq": "show-source",
+        "dir": "list-members",
+        "api": "list-api",
+        "docstring": "show-docstring",
+        "exports": "list-exports",
+        "examples": "find-examples",
+        "hierarchy": "show-hierarchy",
+        "hints": "show-hints",
+        "imports": "list-imports",
+        "deps": "list-deps",
+        "calls": "show-calls",
+    },
+)

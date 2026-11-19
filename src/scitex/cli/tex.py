@@ -31,13 +31,13 @@ def tex(ctx, help_recursive, as_json):
     Commands:
       compile    Compile LaTeX document to PDF
       preview    Preview LaTeX document
-      to-vec     Convert to vector format (SVG/PDF)
+      convert-to-vector  Convert to vector format (SVG/PDF/EPS)
 
     \b
     Examples:
       scitex tex compile paper.tex
       scitex tex preview paper.tex
-      scitex tex to-vec figure.tex --format svg
+      scitex tex convert-to-vector figure.tex --format svg
     """
     if help_recursive:
         _print_help_recursive(ctx)
@@ -87,7 +87,16 @@ def _print_help_recursive(ctx):
     help="Compilation timeout in seconds (default: 300)",
 )
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed compilation output")
-def compile(tex_file, output, engine, clean, timeout, verbose):
+@click.option(
+    "--dry-run", is_flag=True, help="Print the compile plan without running LaTeX."
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (compile never prompts; accepted for scripts).",
+)
+def compile(tex_file, output, engine, clean, timeout, verbose, dry_run, yes):
     """
     Compile LaTeX document to PDF
 
@@ -97,7 +106,16 @@ def compile(tex_file, output, engine, clean, timeout, verbose):
       scitex tex compile paper.tex --output ./output/paper.pdf
       scitex tex compile paper.tex --engine xelatex
       scitex tex compile paper.tex --clean --verbose
+      scitex tex compile paper.tex --dry-run
     """
+    del yes  # compile writes only its PDF and aux files; nothing to confirm
+    if dry_run:
+        path = Path(tex_file)
+        pdf = Path(output) if output else path.with_suffix(".pdf")
+        click.echo(f"[dry-run] Would compile {path} with {engine} -> {pdf}")
+        if clean:
+            click.echo("[dry-run] Would then remove auxiliary files")
+        return
     try:
         from scitex.tex import compile_tex
 
@@ -172,7 +190,7 @@ def preview(tex_file, viewer):
         sys.exit(1)
 
 
-@tex.command("to-vec")
+@tex.command("convert-to-vector")
 @click.argument("tex_file", type=click.Path(exists=True))
 @click.option(
     "--format",
@@ -183,7 +201,16 @@ def preview(tex_file, viewer):
     help="Output format (default: svg)",
 )
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
-def to_vec(tex_file, fmt, output):
+@click.option(
+    "--dry-run", is_flag=True, help="Print the output path without converting."
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (conversion never prompts; accepted for scripts).",
+)
+def to_vec(tex_file, fmt, output, dry_run, yes):
     """
     Convert LaTeX to vector format
 
@@ -192,20 +219,21 @@ def to_vec(tex_file, fmt, output):
 
     \b
     Examples:
-      scitex tex to-vec equation.tex
-      scitex tex to-vec equation.tex --format pdf
-      scitex tex to-vec figure.tex --output ./vectors/fig.svg
+      scitex tex convert-to-vector equation.tex
+      scitex tex convert-to-vector equation.tex --format pdf
+      scitex tex convert-to-vector figure.tex --output ./vectors/fig.svg
+      scitex tex convert-to-vector equation.tex --dry-run
     """
+    del yes  # conversion writes only the output file; nothing to confirm
+    path = Path(tex_file)
+    output_path = Path(output) if output else path.with_suffix(f".{fmt}")
+    if dry_run:
+        click.echo(f"[dry-run] Would convert {path} -> {output_path}")
+        return
     try:
         from scitex.tex import to_vec as convert_to_vec
 
-        path = Path(tex_file)
         click.echo(f"Converting: {path.name} -> {fmt.upper()}")
-
-        if output:
-            output_path = Path(output)
-        else:
-            output_path = path.with_suffix(f".{fmt}")
 
         result = convert_to_vec(path, output_path, format=fmt)
 
@@ -316,6 +344,12 @@ def check(tex_file):
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
+
+
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
+
+alias_renamed(tex, {"to-vec": "convert-to-vector"})
 
 
 if __name__ == "__main__":
