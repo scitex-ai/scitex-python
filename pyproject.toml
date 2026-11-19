@@ -140,6 +140,9 @@ scitex-pkg = "scitex.cli.pkg:pkg"
 # and break shell-completion eval.
 scitex-mcp-server = "scitex._mcp:main"
 
+[project.entry-points."scitex_dev.hierarchy"]
+scitex = "scitex"
+
 [project.entry-points."scitex_dev.docs"]
 scitex = "scitex"
 
