@@ -127,7 +127,11 @@ command -v uv >/dev/null
 # the complete frontend/backend normally into an exclusive target, then build
 # from the sdist without creating another virtual environment.
 "$PY" -c 'import tomllib; x=tomllib.load(open("pyproject.toml","rb")); assert x["build-system"] == {"requires":["hatchling"],"build-backend":"hatchling.build"}'
-uv pip install --python "$PY" --target="$TMPDIR/site" build hatchling
+# Pin the reviewed producer: the last published umbrella (2.30.8) came from
+# Hatchling 1.30.1. Hatchling 1.33 emits Metadata-Version 2.5, which
+# release-identity.py refuses (it admits 2.1-2.4), so an unpinned backend
+# would break the release at write-proof.
+uv pip install --python "$PY" --target="$TMPDIR/site" build "hatchling==1.30.1"
 # In-wheel Sphinx docs bundle (scitex-dev PS-121), built here at release time
 # and never committed: the scitex-cards release pattern. It is rendered AFTER
 # the clean-source check, in owned scratch (venv, doctrees and HTML all live

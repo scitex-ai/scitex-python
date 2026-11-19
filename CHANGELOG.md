@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- The wheel now ships the Sphinx HTML docs bundle at `scitex/_sphinx_html/`,
+  which scitex-cloud serves at https://scitex.ai/apps/docs/ (scitex-dev
+  PS-121, PS-128). The release build renders `docs/sphinx/` and declares the
+  gitignored bundle under the wheel and sdist `artifacts`; git tracks no
+  generated HTML. The release verifier admits the bundle only when the wheel
+  and sdist copies match byte for byte and carry no Sphinx build caches.
+
+### Fixed
+- Release path on develop would have refused every release; repaired with
+  this change: the verifier's pinned `.gitignore` hash and frozen producer
+  metadata fixture were stale, the build installed an unpinned Hatchling
+  (1.33 emits Metadata-Version 2.5, which the verifier refuses; now pinned to
+  1.30.1, the producer of 2.30.8), and the gitignored
+  `src/scitex/.claude/mcp-config.json` was still tracked, so Hatchling shipped
+  a wheel member the verifier refuses (now untracked; nothing reads it).
+
 ### Changed
 - Ecosystem peer pins: every `==` pin becomes `>=<PyPI latest>` (24 packages
   moved forward, e.g. scitex-agent-container 0.21.11 -> 0.38.4, scitex-writer
