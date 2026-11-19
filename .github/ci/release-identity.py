@@ -414,6 +414,13 @@ def selected_paths(entries, project, ignore_raw):
         if process.returncode not in {0, 1}:
             raise ValueError("public selection failed")
         excluded = set(filter(None, output.decode().split("\0")))
+    # Hatchling walks the checkout and follows tracked links that Git's
+    # ignore rules exclude; a directory link then shadows the directory it
+    # points to and drops selected files from the sdist (13 docs pages via
+    # session/.claude/agents), and an absolute link breaks the sdist->wheel
+    # build. Such links must be untracked, not reinterpreted here.
+    if any(entries[name][0] == "120000" for name in excluded):
+        raise ValueError("tracked link excluded by the reviewed ignore rules")
     selected = {
         name
         for name, row in entries.items()

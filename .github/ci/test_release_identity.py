@@ -1460,6 +1460,32 @@ class UmbrellaSelectionTests(unittest.TestCase):
         # Assert
         assert refused
 
+    def test_tracked_link_under_ignored_path_refuses_selection(self):
+        # Arrange
+        entries = dict(RELEASE.git_tree(SOURCE, REPOSITORY))
+        entries["data/scholar"] = ("120000", "0" * 40, None)
+        # Act
+        refused = refusal(
+            lambda: RELEASE.selected_paths(
+                entries,
+                tomllib.loads(PYPROJECT.decode()),
+                git("show", SOURCE + ":.gitignore"),
+            )
+        )
+        # Assert
+        assert refused
+
+    def test_real_tree_tracks_no_ignored_link(self):
+        # Arrange
+        entries = RELEASE.git_tree(SOURCE, REPOSITORY)
+        ignore = git("show", SOURCE + ":.gitignore")
+        # Act
+        _, selected = RELEASE.selected_paths(
+            entries, tomllib.loads(PYPROJECT.decode()), ignore
+        )
+        # Assert
+        assert {name for name, row in entries.items() if row[0] == "120000"} <= selected
+
     def test_new_force_include_cannot_change_reviewed_package_mapping(self):
         # Arrange
         entries = RELEASE.git_tree(SOURCE, REPOSITORY)
