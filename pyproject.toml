@@ -1143,13 +1143,14 @@ artifacts = [
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-pythonpath = ["src"]
+pythonpath = ["src", "tests"]
 testpaths = ["tests"]
 cache_dir = ".pytest_cache"
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
+    "-p", "_database_isolation",
     "-v",
     "--tb=short",
     "--strict-markers",

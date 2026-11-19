@@ -21,6 +21,7 @@ jobs:
   pytest-matrix:
     uses: scitex-ai/.github/.github/workflows/pytest-matrix.yml@main
     with:
+      postgres: true
       pre_test_command: |
         owned=$(mktemp -d "${RUNNER_TEMP:?}/scitex-matrix-context.XXXXXXXX")
         mkdir -p "$owned/tmp" "$owned/cache" "$owned/config" "$owned/scitex" "$owned/mpl"
