@@ -14,27 +14,39 @@ Basic Usage
 
    @stx.session
    def main(
-       data_path="data.csv",       # CLI: --data-path data.csv
-       threshold=0.5,              # CLI: --threshold 0.7
+       data_path="data.csv",       # CLI: --data-path data.csv (an input)
        CONFIG=stx.INJECTED,        # Auto-injected session config
        plt=stx.INJECTED,           # Pre-configured matplotlib
        logger=stx.INJECTED,        # Session logger
    ):
        """Analyze experimental data."""
        data = stx.io.load(data_path)
-       result = process(data, threshold)
+       result = process(data, CONFIG.ANALYSIS.THRESHOLD)
        stx.io.save(result, "output.csv")
        return 0  # exit code (0 = success)
 
    if __name__ == "__main__":
        main()  # No arguments triggers CLI mode
 
-Run from the command line:
+with the analysis parameters in ``config/ANALYSIS.yaml``:
+
+.. code-block:: yaml
+
+   # ./config/ANALYSIS.yaml  ->  CONFIG.ANALYSIS.THRESHOLD
+   THRESHOLD: 0.5
+
+Run from the command line, in the directory that holds ``config/``:
 
 .. code-block:: bash
 
-   python my_script.py --data-path experiment.csv --threshold 0.3
-   python my_script.py --help  # Shows all parameters with defaults
+   python my_script.py --data-path experiment.csv
+   python my_script.py --help  # Shows CLI arguments and CONFIG values
+
+Analysis parameters (thresholds, window sizes, sample counts, seeds) belong
+in ``config/*.yaml``, not in ``main()`` signature defaults: the CLI is for
+inputs such as file paths or subject IDs. In ``project-type: research``
+projects, ``scitex-dev`` >= 0.64.0 lint rule STX-S008 warns on numeric
+``main()`` defaults and other hard-coded parameters.
 
 How It Works
 ------------
@@ -117,7 +129,7 @@ Only request the parameters you need:
 .. code-block:: python
 
    @stx.session
-   def main(n=100, CONFIG=stx.INJECTED):
+   def main(CONFIG=stx.INJECTED):
        """Minimal example -- only CONFIG injected."""
        print(f"Session ID: {CONFIG.ID}")
        print(f"Output dir: {CONFIG.SDIR_RUN}")
@@ -131,8 +143,8 @@ dot-notation access:
 
 .. code-block:: python
 
-   CONFIG["MODEL"]["hidden_size"]   # dict-style
-   CONFIG.MODEL.hidden_size         # dot-style (equivalent)
+   CONFIG["MODEL"]["HIDDEN_SIZE"]   # dict-style
+   CONFIG.MODEL.HIDDEN_SIZE         # dot-style (equivalent)
 
 It contains:
 
@@ -147,19 +159,25 @@ It contains:
    CONFIG.ARGS           # Parsed CLI arguments as dict
    CONFIG.EXIT_STATUS    # 0 (success), 1 (error), or None
 
-Any YAML files in ``./config/`` are merged into CONFIG:
+Any YAML files in ``./config/`` (resolved against the working directory)
+are merged into CONFIG. The file stem becomes the namespace and every key is
+upper-cased at load time:
 
 .. code-block:: yaml
 
    # ./config/EXPERIMENT.yaml
-   learning_rate: 0.001
-   batch_size: 32
+   LEARNING_RATE: 0.001
+   BATCH_SIZE: 32
 
 .. code-block:: python
 
    # Accessible as:
-   CONFIG.EXPERIMENT.learning_rate  # 0.001
-   CONFIG.EXPERIMENT.batch_size     # 32
+   CONFIG.EXPERIMENT.LEARNING_RATE  # 0.001
+   CONFIG.EXPERIMENT.BATCH_SIZE     # 32
+
+There is no command-line override for ``CONFIG`` values: to change a
+parameter, edit the YAML. Each run freezes the values it used in
+``CONFIGS/CONFIG.yaml``.
 
 Decorator Options
 -----------------

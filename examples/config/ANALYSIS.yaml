@@ -1,0 +1,4 @@
+# Analysis parameters for 01_session.py, read as CONFIG.ANALYSIS.<KEY>.
+# Every number that shapes a result lives here, not in the script.
+N_SAMPLES: 100   # points on the sine wave
+NOISE_STD: 0.1   # standard deviation of the added Gaussian noise

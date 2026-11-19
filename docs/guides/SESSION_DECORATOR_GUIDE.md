@@ -53,15 +53,34 @@ from scitex.session import session
 import scitex as stx
 
 @session
-def analyze(data_path: str, threshold: float = 0.5):
+def analyze(data_path: str, CONFIG=stx.session.INJECTED):
     """Analyze data file."""
     data = stx.io.load(data_path)
-    result = process(data, threshold)
+    result = process(data, CONFIG.ANALYSIS.THRESHOLD)  # config/ANALYSIS.yaml
     stx.io.save(result, "output.csv")
     return 0
 ```
 
+```yaml
+# config/ANALYSIS.yaml
+THRESHOLD: 0.5
+```
+
 **80% less boilerplate!**
+
+## Where parameters live
+
+Analysis parameters (thresholds, window sizes, sample counts, seeds) go in
+`config/*.yaml`, not in function signature defaults or on the command line.
+The session loads `./config/*.yaml` (resolved against the working directory)
+into the injected `CONFIG`: the file stem is the namespace and keys are
+upper-cased, so `config/ANALYSIS.yaml` with `THRESHOLD: 0.5` is read as
+`CONFIG.ANALYSIS.THRESHOLD`. CLI arguments are for inputs such as file paths
+or subject IDs. There is no CLI override for `CONFIG` values: edit the YAML,
+and each run freezes the values it used in `CONFIGS/CONFIG.yaml`.
+
+In `project-type: research` projects, `scitex-dev` >= 0.64.0 lint rule
+STX-S008 warns on numeric signature defaults and other hard-coded parameters.
 
 ## Features
 
@@ -110,39 +129,39 @@ Run: `python script.py`
 def analyze(
     data_path: str,
     output_name: str = "results.csv",
-    threshold: float = 0.5,
     verbose: bool = False,
+    CONFIG=stx.session.INJECTED,
 ):
     """Analyze data file.
 
     Args:
         data_path: Path to input data file
         output_name: Name for output file
-        threshold: Analysis threshold value
         verbose: Print detailed information
     """
     if verbose:
         print(f"Loading data from {data_path}")
 
     data = load_data(data_path)
-    result = process(data, threshold)
+    result = process(data, CONFIG.ANALYSIS.THRESHOLD)  # config/ANALYSIS.yaml
     stx.io.save(result, output_name)
 
     return 0
 ```
 
-Run:
+Run (from the directory that holds `config/`):
 ```bash
-python script.py --help  # See auto-generated help
-python script.py --data-path data.csv --threshold 0.7 --verbose
+python script.py --help  # See auto-generated help and CONFIG values
+python script.py --data-path data.csv --verbose
 ```
 
 ### 3. With Session Options
 
 ```python
 @session(verbose=True, notify=True, agg=True)
-def process_dataset(input_dir: str, n_samples: int = 1000):
+def process_dataset(input_dir: str, CONFIG=stx.session.INJECTED):
     """Process dataset with custom session settings."""
+    n_samples = CONFIG.DATASET.N_SAMPLES  # config/DATASET.yaml
     print(f"Processing {n_samples} samples from {input_dir}")
     # Your code here
     return 0
@@ -152,26 +171,22 @@ def process_dataset(input_dir: str, n_samples: int = 1000):
 
 ```python
 @session
-def create_plots(n_plots: int = 5):
-    """Create multiple plots.
+def create_plots(CONFIG=stx.session.INJECTED, rngg=stx.session.INJECTED):
+    """Create one plot per channel; sizes come from config/PLOTS.yaml."""
+    params = CONFIG.PLOTS  # N_PLOTS: 5, N_POINTS: 100
 
-    Args:
-        n_plots: Number of plots to create
-    """
-    import numpy as np
+    data = rngg("demo").standard_normal((params.N_POINTS, params.N_PLOTS))
 
-    data = np.random.randn(100, n_plots)
-
-    for i in range(n_plots):
-        fig, ax = plt.subplots()
+    for i in range(params.N_PLOTS):
+        fig, ax = stx.plt.subplots()
         ax.plot(data[:, i])
         ax.set_title(f"Plot {i+1}")
-        plt.savefig(f"plot_{i+1:02d}.png")
+        stx.io.save(fig, f"plot_{i+1:02d}.png")
 
     return 0
 ```
 
-Run: `python script.py --n-plots 10`
+Run: `python script.py` (to change the number of plots, edit `config/PLOTS.yaml`)
 
 ## Supported Types
 
@@ -196,6 +211,9 @@ python script.py \
     --ratio 0.5 \
     --flag  # Boolean: present = True
 ```
+
+Numeric types are supported, but numbers that shape a result belong in
+`config/*.yaml` (see [Where parameters live](#where-parameters-live)).
 
 ## Session Options
 
@@ -224,7 +242,7 @@ def analyze(data_path: str):
     # - rng: RandomStateManager for reproducible random numbers
 
     print(f"Session ID: {CONFIG['ID']}")
-    print(f"Output directory: {CONFIG['SDIR']}")
+    print(f"Output directory: {CONFIG['SDIR_RUN']}")
 
     # Use rng for reproducible random numbers
     random_data = rng.numpy.randn(100, 10)

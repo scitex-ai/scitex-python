@@ -19,7 +19,6 @@ logging, and organized output directories.
 
    @stx.session
    def main(
-       n_samples=100,
        CONFIG=stx.session.INJECTED,
        plt=stx.session.INJECTED,
        logger=stx.session.INJECTED,
@@ -27,7 +26,7 @@ logging, and organized output directories.
        """Generate sample data and plot."""
        import numpy as np
 
-       x = np.linspace(0, 2 * np.pi, n_samples)
+       x = np.linspace(0, 2 * np.pi, CONFIG.ANALYSIS.N_SAMPLES)
        y = np.sin(x)
 
        fig, ax = stx.plt.subplots()
@@ -39,12 +38,28 @@ logging, and organized output directories.
    if __name__ == "__main__":
        main()
 
-Run from the command line -- arguments are generated automatically from
-the function signature:
+The analysis parameters live in ``config/ANALYSIS.yaml`` (the file stem is
+the namespace; keys are upper-cased):
+
+.. code-block:: yaml
+
+   # ./config/ANALYSIS.yaml  ->  CONFIG.ANALYSIS.N_SAMPLES
+   N_SAMPLES: 100
+
+Run it from the directory that holds ``config/`` (``./config/`` is resolved
+against the working directory):
 
 .. code-block:: bash
 
-   python script.py --n-samples 200
+   python script.py
+   python script.py --help   # CLI arguments + the CONFIG values found
+
+Non-numeric inputs such as file paths become CLI arguments from the
+function signature (``data_path="data.csv"`` -> ``--data-path``). Numbers
+that shape a result belong in ``config/*.yaml``; there is no CLI override
+for ``CONFIG`` values, so edit the YAML to change one. In
+``project-type: research`` projects, ``scitex-dev`` >= 0.64.0 lint rule
+STX-S008 warns on numeric ``main()`` defaults.
 
 Parameters marked with ``stx.session.INJECTED`` are provided by the
 session runtime. You never pass them yourself:

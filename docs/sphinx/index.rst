@@ -42,11 +42,13 @@ AGPL-3.0 -- because research infrastructure deserves the same freedoms as the so
 
    import scitex as stx
 
+   # ./config/ANALYSIS.yaml holds the parameters: N_SAMPLES: 100, NOISE_STD: 0.1
    @stx.session
-   def main(n_samples=100, plt=stx.INJECTED):
+   def main(CONFIG=stx.INJECTED, plt=stx.INJECTED, rngg=stx.INJECTED):
        import numpy as np
-       x = np.linspace(0, 2 * np.pi, n_samples)
-       y = np.sin(x) + np.random.normal(0, 0.1, n_samples)
+       p = CONFIG.ANALYSIS
+       x = np.linspace(0, 2 * np.pi, p.N_SAMPLES)
+       y = np.sin(x) + rngg("noise").normal(0, p.NOISE_STD, p.N_SAMPLES)
 
        fig, ax = plt.subplots()
        ax.plot_line(x, y)

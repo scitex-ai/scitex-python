@@ -45,17 +45,17 @@ The Session Model
 
     @stx.session
     def main(
-        lr=0.001,               # --lr 0.01
-        epochs=100,             # --epochs 50
+        data_path="data.csv",   # --data-path (an input, not a parameter)
         CONFIG=stx.INJECTED,    # from ./config/*.yaml
         plt=stx.INJECTED,       # pre-configured matplotlib
         logger=stx.INJECTED,    # session logger
     ):
         """Train a model. Docstring becomes --help text."""
-        logger.info(f"Training with lr={lr}, epochs={epochs}")
+        params = CONFIG.TRAIN   # ./config/TRAIN.yaml: LR: 0.001, EPOCHS: 100
+        logger.info(f"Training with lr={params.LR}, epochs={params.EPOCHS}")
 
         # stx.io.save paths are relative to session output dir
-        stx.io.save({"lr": lr, "epochs": epochs}, "params.yaml")
+        stx.io.save({"lr": params.LR, "epochs": params.EPOCHS}, "params.yaml")
 
         return 0
 
@@ -145,31 +145,32 @@ records the file's SHA-256 hash to a local provenance database. This enables:
 Configuration
 -------------
 
-SciTeX uses a priority-based config system:
-
-1. **CLI flags** (highest priority): ``--lr 0.01``
-2. **Config files**: ``./config/*.yaml`` (merged alphabetically)
-3. **Function defaults** (lowest priority): ``lr=0.001``
+Analysis parameters live in ``./config/*.yaml``, which the session loads
+into ``CONFIG`` (``./config/`` is resolved against the working directory).
+Each file stem becomes a namespace and every key is upper-cased at load
+time. ``main()`` arguments become CLI flags and are meant for inputs such
+as file paths or subject IDs; they are separate from ``CONFIG`` and do not
+override it. To change a parameter, edit the YAML: each run freezes the
+values it used in ``CONFIGS/CONFIG.yaml``. In ``project-type: research``
+projects, ``scitex-dev`` >= 0.64.0 lint rule STX-S008 warns on numeric
+``main()`` defaults and other hard-coded parameters.
 
 .. code-block:: yaml
 
-    # config/experiment.yaml
+    # config/EXPERIMENT.yaml
     DATA_DIR: ./data
     MODEL:
-      hidden_size: 256
-      dropout: 0.1
-
-    # config/PATH.yaml
-    OUTPUT_DIR: ${HOME}/results    # env var substitution
+      HIDDEN_SIZE: 256
+      DROPOUT: 0.1
 
 Access in code:
 
 .. code-block:: python
 
     @stx.session
-    def main(CONFIG=stx.INJECTED, **kw):
-        data_dir = CONFIG["DATA_DIR"]
-        hidden = CONFIG["MODEL"]["hidden_size"]
+    def main(CONFIG=stx.INJECTED):
+        data_dir = CONFIG.EXPERIMENT.DATA_DIR
+        hidden = CONFIG.EXPERIMENT.MODEL.HIDDEN_SIZE
 
 Best Practices
 --------------
@@ -177,5 +178,5 @@ Best Practices
 1. **One session per script**: Each ``.py`` file should have one ``@stx.session`` function
 2. **Use relative paths in save/load**: They resolve relative to the session output directory
 3. **Return 0 for success**: The exit code determines the output directory name (``FINISHED_SUCCESS`` vs ``FINISHED_ERROR``)
-4. **Put config in** ``./config/*.yaml``: Keeps parameters separate from code
+4. **Put every analysis parameter in** ``./config/*.yaml``: Keeps parameters separate from code (no numeric ``main()`` defaults)
 5. **Use** ``stx.repro.fix_seeds(42)`` **for determinism**: Fixes numpy, torch, random seeds in one call
