@@ -1109,6 +1109,19 @@ exclude = [
     "src/scitex/scholar/docs/to_claude",
     "src/scitex/scholar/data/impact_factor/impact_factor.db",
 ]
+# In-wheel Sphinx docs bundle (PS-121). scitex-cloud serves package docs from
+# the installed scitex/_sphinx_html/. The bundle is GENERATED at release time
+# by .github/ci/build-in-sif.sh and stays gitignored, so it reaches the wheel
+# only through hatchling's `artifacts` (its mechanism for shipping VCS-ignored
+# files). Same shape as scitex-cards. The sdist target carries the identical
+# list because `python -m build` builds the wheel FROM the sdist: a wheel does
+# not inherit what the sdist lacks. Artifacts ignore `exclude`, so the Sphinx
+# build caches are negated here. .github/ci/release-identity.py pins this list.
+artifacts = [
+    "src/scitex/_sphinx_html/**/*",
+    "!src/scitex/_sphinx_html/.doctrees/**",
+    "!src/scitex/_sphinx_html/.buildinfo",
+]
 
 
 [tool.hatch.build.targets.sdist]
@@ -1121,6 +1134,11 @@ exclude = [
     "src/scitex/scholar/library",
     "src/scitex/scholar/docs/to_claude",
     "src/scitex/scholar/data/impact_factor/impact_factor.db",
+]
+artifacts = [
+    "src/scitex/_sphinx_html/**/*",
+    "!src/scitex/_sphinx_html/.doctrees/**",
+    "!src/scitex/_sphinx_html/.buildinfo",
 ]
 
 [tool.pytest.ini_options]
