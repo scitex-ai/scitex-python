@@ -1,0 +1,24 @@
+# PROTOTYPE of the thin `scitex` core (design: docs/proposals/THIN_CORE_ENTRY_POINTS.md).
+# NOT built or released by CI. Version is a dev pre-release so that a leaf's
+# `scitex>=3.0.0.dev0` can only be satisfied by this local build, never by the
+# 2.x umbrella on PyPI.
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scitex"
+version = "3.0.0.dev0"
+description = "Thin SciTeX core: `import scitex as stx; stx.<module>` for every installed SciTeX package"
+requires-python = ">=3.10"
+license = "AGPL-3.0-only"
+dependencies = []  # stdlib only, by design
+
+[project.optional-dependencies]
+# Per-module extras keep today's `pip install 'scitex[io]'` spelling working.
+io = ["scitex-io"]
+str = ["scitex-str"]
+all = ["scitex[io,str]"]  # the real one lists every leaf
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scitex"]
