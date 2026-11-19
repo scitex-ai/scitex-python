@@ -35,6 +35,13 @@ HELPER_SHA = hashlib.sha256(HELPER.read_bytes()).hexdigest()
 SPEC = importlib.util.spec_from_file_location("owned_umbrella_release_identity", HELPER)
 RELEASE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(RELEASE)
+DOCS = RELEASE.DOCS
+# Synthetic stand-in for the release-time Sphinx bundle (gitignored, untracked).
+DOCS_FILES = {
+    "index.html": b"<html>scitex docs</html>\n",
+    "_static/basic.css": b"body { margin: 0 }\n",
+    "api/scitex.io.html": b"<html>io</html>\n",
+}
 CONFIG = "scitex/cli/__init__.py"
 SCRIPT = "scitex/__version__.py"
 PREFIX = "repos/scitex-ai/scitex-python"
@@ -201,12 +208,14 @@ def wheel(
         b"Root-Is-Purelib: true\nTag: py3-none-any\n"
     ),
     license_body=LICENSE_BYTES,
+    docs=DOCS_FILES,
 ):
     bodies = (
         {CONFIG: CONFIG_BYTES, SCRIPT: SCRIPT_BYTES, "scitex/__init__.py": INIT_BYTES}
         if files is None
         else dict(files)
     )
+    bodies.update({DOCS.WHEEL + name: body for name, body in (docs or {}).items()})
     bodies[metadata_owner + "/METADATA"] = (
         metadata(version) if metadata_body is None else metadata_body
     )
@@ -240,6 +249,7 @@ def sdist(
     additions=None,
     omit=(),
     metadata_body=None,
+    docs=DOCS_FILES,
 ):
     bodies = (
         {
@@ -250,6 +260,7 @@ def sdist(
         if files is None
         else dict(files)
     )
+    bodies.update({DOCS.SOURCE + name: body for name, body in (docs or {}).items()})
     bodies.update(
         {
             "pyproject.toml": project,
@@ -1485,6 +1496,118 @@ class UmbrellaSelectionTests(unittest.TestCase):
         ]
         # Assert
         assert results == [1, 1]
+
+
+class DocsBundleTests(unittest.TestCase):
+    """The release-time Sphinx bundle (PS-121) is admitted only as reviewed."""
+
+    def test_docs_bundle_identity_is_bound_into_the_source_proof(self):
+        # Arrange
+        wheel_raw, sdist_raw = whole_archives()
+        # Act
+        identity = RELEASE.source_payload_identity(
+            wheel_raw, sdist_raw, SOURCE, REPOSITORY
+        )
+        # Assert
+        assert identity["docs_bundle"]["members"] == len(DOCS_FILES)
+
+    def test_docs_less_wheel_is_refused_rather_than_shipped(self):
+        # Arrange
+        wheel_raw = wheel(files=public_wheel_files(), docs=None)
+        sdist_raw = sdist(files=public_source_files(), docs=None)
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="no docs bundle index",
+        )
+        # Assert
+        assert refused
+
+    def test_wheel_bundle_must_equal_sdist_bundle(self):
+        # Arrange
+        docs = {**DOCS_FILES, "index.html": b"<html>tampered</html>\n"}
+        wheel_raw = wheel(files=public_wheel_files(), docs=docs)
+        _, sdist_raw = whole_archives()
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="docs bundles differ",
+        )
+        # Assert
+        assert refused
+
+    def test_sphinx_build_caches_are_refused(self):
+        # Arrange
+        docs = {**DOCS_FILES, ".doctrees/index.doctree": b"cache"}
+        wheel_raw = wheel(files=public_wheel_files(), docs=docs)
+        sdist_raw = sdist(files=public_source_files(), docs=docs)
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="build caches",
+        )
+        # Assert
+        assert refused
+
+    def test_tracked_docs_bundle_is_refused(self):
+        # Arrange
+        entries = dict(RELEASE.git_tree(SOURCE, REPOSITORY))
+        entries[DOCS.SOURCE + "index.html"] = entries["LICENSE"]
+        ignore = git("show", SOURCE + ":.gitignore")
+        # Act
+        refused = refusal(
+            lambda: RELEASE.selected_paths(
+                entries, tomllib.loads(PYPROJECT.decode()), ignore
+            ),
+            message="must not be tracked",
+        )
+        # Assert
+        assert refused
+
+    def test_wheel_target_must_declare_the_reviewed_artifacts(self):
+        # Arrange
+        entries = RELEASE.git_tree(SOURCE, REPOSITORY)
+        project = tomllib.loads(PYPROJECT.decode())
+        del project["tool"]["hatch"]["build"]["targets"]["wheel"]["artifacts"]
+        ignore = git("show", SOURCE + ":.gitignore")
+        # Act
+        refused = refusal(
+            lambda: RELEASE.selected_paths(entries, project, ignore),
+            message="Hatch mapping changed",
+        )
+        # Assert
+        assert refused
+
+    def test_reviewed_artifacts_are_the_ones_pyproject_declares(self):
+        # Arrange
+        build = tomllib.loads(PYPROJECT.decode())["tool"]["hatch"]["build"]
+        # Act
+        declared = [build["targets"][name]["artifacts"] for name in ("wheel", "sdist")]
+        # Assert
+        assert declared == [DOCS.ARTIFACTS, DOCS.ARTIFACTS]
+
+    def test_bundle_cli_reports_identity_of_built_archives(self):
+        # Arrange
+        wheel_raw, sdist_raw = whole_archives()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "w.whl").write_bytes(wheel_raw)
+            (root / "s.tar.gz").write_bytes(sdist_raw)
+            command = [sys.executable, "-I", "-S", "-B", str(HERE / "release_docs_bundle.py")]
+            # Act
+            result = subprocess.run(
+                [*command, str(root / "w.whl"), str(root / "s.tar.gz")],
+                capture_output=True,
+                timeout=7,
+            )
+        # Assert
+        assert result.returncode == 0 and b'"members": 3' in result.stdout
 
 
 class SourceMetadataTests(unittest.TestCase):

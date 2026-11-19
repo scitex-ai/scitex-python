@@ -128,11 +128,28 @@ command -v uv >/dev/null
 # from the sdist without creating another virtual environment.
 "$PY" -c 'import tomllib; x=tomllib.load(open("pyproject.toml","rb")); assert x["build-system"] == {"requires":["hatchling"],"build-backend":"hatchling.build"}'
 uv pip install --python "$PY" --target="$TMPDIR/site" build hatchling
+# In-wheel Sphinx docs bundle (scitex-dev PS-121), built here at release time
+# and never committed: the scitex-cards release pattern. It is rendered AFTER
+# the clean-source check, in owned scratch (venv, doctrees and HTML all live
+# under $TMPDIR), then copied into the gitignored src/scitex/_sphinx_html/ that
+# pyproject.toml's sdist and wheel `artifacts` carry. A missing index.html
+# fails here; release-identity.py additionally refuses a docs-less wheel.
+DOCS_DIR=src/scitex/_sphinx_html
+[ ! -e "$DOCS_DIR" ] && [ ! -L "$DOCS_DIR" ] || { echo "::error::stale docs bundle refused"; exit 1; }
+uv venv --quiet --python "$PY" "$TMPDIR/docs-venv"
+uv pip install --python "$TMPDIR/docs-venv/bin/python" -e ".[docs]" -r docs/sphinx/requirements.txt
+"$TMPDIR/docs-venv/bin/sphinx-build" -b html -d "$TMPDIR/docs-doctrees" docs/sphinx "$TMPDIR/docs-html"
+rm -f -- "$TMPDIR/docs-html/.buildinfo"
+[ -f "$TMPDIR/docs-html/index.html" ] || { echo "::error::sphinx produced no index.html; the wheel would ship without docs"; exit 1; }
+cp -R -- "$TMPDIR/docs-html" "$DOCS_DIR"
 export PYTHONPATH="$TMPDIR/site"
 [ ! -e dist ] && [ ! -L dist ] || { echo "::error::stale release output refused"; exit 1; }
 "$PY" -m build --no-isolation --outdir dist
 WHEELS=(dist/*.whl)
 [ "${#WHEELS[@]}" -eq 1 ] && [ -f "${WHEELS[0]}" ]
+# Assert on the BUILT archives, not the working tree: a correct sphinx build
+# plus a wrong `artifacts` list would otherwise yield a green, docs-less wheel.
+"$PY" -I -S -B .github/ci/release_docs_bundle.py "${WHEELS[0]}" dist/*.tar.gz
 # Resolve the actual wheel's full runtime dependencies into a fresh target.
 # -I -S keeps both the source checkout and baked site-packages out of imports.
 uv pip install --python "$PY" --target="$TMPDIR/wheel-site" "${WHEELS[0]}"
