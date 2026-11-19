@@ -21,9 +21,13 @@ import os
 import pytest
 
 from scitex.cli._lazy_subcommands import (
+    _FALLBACK_HELP,
+    _PEER_CLI_PROBES,
     CATEGORY_ORDER,
     DEPRECATED_ALIASES,
-    _PEER_CLI_PROBES,
+    _peer_cli_candidates,
+    _peer_cli_present,
+    _peer_installed,
     build_lazy_subcommands,
     command_category,
 )
@@ -110,14 +114,64 @@ class TestFallbackHelp:
     @pytest.mark.parametrize(
         "sub", ["dataset", "git", "hpc", "newb", "datetime", "social", "tunnel"]
     )
-    def test_known_peer_help_is_not_the_bare_name(self, sub):
+    def test_known_peer_fallback_is_not_the_bare_name(self, sub):
+        # Arrange
+        table = _FALLBACK_HELP
+        # Act
+        help_text = table.get(sub, sub)
+        # Assert
+        assert help_text != sub
+
+    def test_mounted_known_peer_help_is_not_the_bare_name(self):
         pytest.importorskip("scitex_dev")
         # Arrange
         subcommands = build_lazy_subcommands(_cli_dir())
+        known = ["dataset", "git", "hpc", "newb", "datetime", "social", "tunnel"]
         # Act
-        _path, _attr, help_text = subcommands[sub]
+        bare = [
+            name
+            for name in known
+            if name in subcommands and subcommands[name][2] == name
+        ]
         # Assert
-        assert help_text != sub
+        assert bare == []
+
+
+class TestOnlyResolvablePeersAreAdvertised:
+    """Unavailable peers are not listed, so no listed name resolves to nothing."""
+
+    def test_uninstalled_peer_is_not_present(self):
+        # Arrange
+        candidates = _peer_cli_candidates("scitex_no_such_peer_for_probe")
+        # Act
+        present = _peer_cli_present(candidates)
+        # Assert
+        assert present is False
+
+    def test_installed_package_without_cli_module_is_not_present(self):
+        # Arrange
+        candidates = _peer_cli_candidates("json")
+        # Act
+        present = _peer_cli_present(candidates)
+        # Assert
+        assert present is False
+
+    def test_installed_peer_with_cli_module_is_present(self):
+        pytest.importorskip("scitex_scholar")
+        # Arrange
+        candidates = _peer_cli_candidates("scitex_scholar")
+        # Act
+        present = _peer_cli_present(candidates)
+        # Assert
+        assert present is True
+
+    def test_uninstalled_peer_is_not_installed(self):
+        # Arrange
+        name = "scitex_no_such_peer_for_probe"
+        # Act
+        installed = _peer_installed(name)
+        # Assert
+        assert installed is False
 
 
 class TestCommandCategories:
