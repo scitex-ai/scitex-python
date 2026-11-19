@@ -1406,7 +1406,7 @@ class UmbrellaSelectionTests(unittest.TestCase):
             len(set(source_files) & set(RELEASE.PUBLIC_LINKS)),
         )
         # Assert
-        assert (result[0], result[2]) == (68, 7)
+        assert (result[0], result[2]) == (69, 7)
 
     def test_all_reviewed_git_link_literals_are_preserved_without_dereference(self):
         # Arrange
