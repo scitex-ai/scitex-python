@@ -78,7 +78,9 @@ jobs:
     needs: [admission, preflight, test]
     if: needs.admission.outputs.native_authorized == 'true'
     runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu"]}') }}
-    timeout-minutes: 30
+    # The Sphinx docs bundle for the wheel (PS-121) is rendered in this job;
+    # a cold docs install plus the ~6 min Sphinx build needs the headroom.
+    timeout-minutes: 60
     env:
       RELEASE_COMMIT: ${{ needs.preflight.outputs.commit }}
     steps:
@@ -86,7 +88,7 @@ jobs:
         with:
           ref: ${{ needs.preflight.outputs.commit }}
           fetch-depth: 0
-      - name: Build and verify one wheel and one sdist
+      - name: Build the docs bundle, then verify one wheel and one sdist
         run: bash .github/ci/exec-in-sif.sh build-in-sif.sh 3.12
       - uses: actions/upload-artifact@v4
         with:

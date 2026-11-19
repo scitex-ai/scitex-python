@@ -231,7 +231,13 @@ def docs_search(query, package, max_results, as_json):
 @click.option(
     "--dry-run", is_flag=True, help="Show what would be built without building"
 )
-def docs_build(package, fmt, as_json, dry_run):
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (build never prompts; accepted for scripts).",
+)
+def docs_build(package, fmt, as_json, dry_run, yes):
     """Build Sphinx documentation for SciTeX packages.
 
     \b
@@ -240,6 +246,7 @@ def docs_build(package, fmt, as_json, dry_run):
       scitex docs build --package scitex-writer
       scitex docs build --dry-run
     """
+    del yes  # build writes generated HTML only; nothing to confirm
     if dry_run:
         from scitex_dev.docs import get_docs
 

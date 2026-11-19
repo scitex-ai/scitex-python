@@ -7,11 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- The wheel now ships the Sphinx HTML docs bundle at `scitex/_sphinx_html/`,
+  which scitex-cloud serves at https://scitex.ai/apps/docs/ (scitex-dev
+  PS-121, PS-128). The release build renders `docs/sphinx/` and declares the
+  gitignored bundle under the wheel and sdist `artifacts`; git tracks no
+  generated HTML. The release verifier admits the bundle only when the wheel
+  and sdist copies match byte for byte and carry no Sphinx build caches.
+
+### Fixed
+- Release path on develop would have refused every release; repaired with
+  this change: the verifier's pinned `.gitignore` hash and frozen producer
+  metadata fixture were stale, the build installed an unpinned Hatchling
+  (1.33 emits Metadata-Version 2.5, which the verifier refuses; now pinned to
+  1.30.1, the producer of 2.30.8), and the gitignored
+  `src/scitex/.claude/mcp-config.json` was still tracked, so Hatchling shipped
+  a wheel member the verifier refuses (now untracked; nothing reads it).
+
 ### Changed
+- CLI: umbrella commands follow the noun/verb convention that
+  `scitex-dev ecosystem audit-cli` enforces. Old names keep working as hidden
+  aliases that print a one-line deprecation note to stderr (removed in v3.0):
+  `audit [PATH]` -> `audit-security [PATH]`, `audit status|install` ->
+  `audit-tool status|install`, `convert` -> `bundle` (`convert file` ->
+  `bundle convert`), `introspect` -> `introspection` (`q` -> `show-signature`,
+  `qq` -> `show-source`, `dir` -> `list-members`, `api` -> `list-api`,
+  `docstring` -> `show-docstring`, `exports` -> `list-exports`, `examples` ->
+  `find-examples`, `hierarchy` -> `show-hierarchy`, `hints` -> `show-hints`,
+  `imports` -> `list-imports`, `deps` -> `list-deps`, `calls` -> `show-calls`),
+  `event history|latest|types` -> `event list|show-latest|list-types`,
+  `resource specs|usage` -> `resource show-specs|show-usage`,
+  `repro gen-id|gen-timestamp` -> `repro get-id|get-timestamp`,
+  `mcp installation` -> `mcp show-installation`, `social me|analytics` ->
+  `social show-profile|show-analytics`, `social mcp installation` ->
+  `social mcp show-installation`, `tex to-vec` -> `tex convert-to-vector`.
+- CLI: read commands gained `--json`, mutating commands `--dry-run` and
+  `--yes`; every leaf help has examples; the root help shows the version and
+  where configuration lives; new top-level `install-shell-completion` and
+  `print-shell-completion` (the `completion` group stays).
+- CLI: `scitex skills` reads the skill registry from `scitex_dev.ecosystem`
+  (it imported a module that does not exist) and gains `skills install`.
 - Ecosystem peer pins: every `==` pin becomes `>=<PyPI latest>` (24 packages
   moved forward, e.g. scitex-agent-container 0.21.11 -> 0.38.4, scitex-writer
   2.24.1 -> 2.43.22). `scitex[all]` envs were installing ~6-month-old leaves;
   `>=` cannot silently go stale again (operator decision 2026-11-16).
+
+### Fixed
+- `scitex bundle convert` (was `convert file`) crashed on every input
+  (`normalize_spec` was called with two arguments); `resource show-usage` and
+  `resource monitor` read the usage DataFrame as a dict and crashed.
 
 ## [2.30.9] - Unreleased
 

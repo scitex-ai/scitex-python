@@ -129,7 +129,7 @@ def register_all_tools(mcp):
 - Single source of truth: the ecosystem registry + each downstream package
 - API parity: `scitex.writer` ≈ `scitex_writer`, `scitex.social` ≈ `socialia`
 - MCP tools auto-mounted from each peer's `_mcp_server` — no umbrella maintenance
-- Use `scitex introspect api` to verify consistency
+- Use `scitex introspection list-api` to verify consistency
 
 ### Enhanced Wrapper (scitex.plt, scitex.scholar)
 
@@ -149,8 +149,8 @@ from . import ax, color, gallery, styles             # Local scitex features
 
 ```bash
 # Via scitex (hyphen or underscore both work)
-scitex introspect api scitex-writer  # → 37 items
-scitex introspect api scitex.writer  # → 37 items
+scitex introspection list-api scitex-writer  # → 37 items
+scitex introspection list-api scitex.writer  # → 37 items
 
 # Standalone
 scitex-writer --help

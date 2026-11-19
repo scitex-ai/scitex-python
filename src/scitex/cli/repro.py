@@ -28,15 +28,15 @@ def repro(ctx, help_recursive, as_json):
 
     \b
     Commands:
-      gen-id         Generate unique identifier
-      gen-timestamp  Generate timestamp
+      get-id         Get new unique identifier(s)
+      get-timestamp  Get the current timestamp
       hash           Hash array/file for reproducibility
       seed           Set random seed across all libraries
 
     \b
     Examples:
-      scitex repro gen-id              # Generate unique ID
-      scitex repro gen-timestamp       # Generate timestamp
+      scitex repro get-id              # Get a new unique ID
+      scitex repro get-timestamp       # Get the current timestamp
       scitex repro hash data.npy       # Hash array file
       scitex repro seed 42             # Set random seed
     """
@@ -68,38 +68,47 @@ def _print_help_recursive(ctx):
             click.echo(cmd.get_help(sub_ctx))
 
 
-@repro.command("gen-id")
+@repro.command("get-id")
 @click.option("--length", "-l", type=int, default=8, help="ID length (default: 8)")
 @click.option("--prefix", "-p", default="", help="Prefix to add to ID")
 @click.option("--count", "-n", type=int, default=1, help="Number of IDs to generate")
-def gen_id(length, prefix, count):
+@click.option("--json", "as_json", is_flag=True, help="Output as a JSON array")
+def gen_id(length, prefix, count, as_json):
     """
-    Generate unique identifier(s)
+    Get new unique identifier(s)
 
     \b
     Examples:
-      scitex repro gen-id
-      scitex repro gen-id --length 12
-      scitex repro gen-id --prefix exp_
-      scitex repro gen-id --count 5
+      scitex repro get-id
+      scitex repro get-id --length 12
+      scitex repro get-id --prefix exp_
+      scitex repro get-id --count 5 --json
     """
     try:
         from scitex.repro import gen_ID
 
+        ids = []
         for _ in range(count):
             id_str = gen_ID()
             if length != 8:
                 id_str = id_str[:length]
             if prefix:
                 id_str = f"{prefix}{id_str}"
-            click.echo(id_str)
+            ids.append(id_str)
+        if as_json:
+            import json
+
+            click.echo(json.dumps(ids))
+        else:
+            for id_str in ids:
+                click.echo(id_str)
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
 
 
-@repro.command("gen-timestamp")
+@repro.command("get-timestamp")
 @click.option(
     "--format",
     "-f",
@@ -109,9 +118,10 @@ def gen_id(length, prefix, count):
     help="Timestamp format (default: iso)",
 )
 @click.option("--utc", is_flag=True, help="Use UTC timezone")
-def gen_timestamp(fmt, utc):
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+def gen_timestamp(fmt, utc, as_json):
     """
-    Generate timestamp
+    Get the current timestamp
 
     \b
     Formats:
@@ -122,9 +132,9 @@ def gen_timestamp(fmt, utc):
 
     \b
     Examples:
-      scitex repro gen-timestamp
-      scitex repro gen-timestamp --format file
-      scitex repro gen-timestamp --format human --utc
+      scitex repro get-timestamp
+      scitex repro get-timestamp --format file
+      scitex repro get-timestamp --format human --utc --json
     """
     try:
         from datetime import datetime, timezone
@@ -147,7 +157,12 @@ def gen_timestamp(fmt, utc):
         else:
             ts = make_timestamp()
 
-        click.echo(ts)
+        if as_json:
+            import json
+
+            click.echo(json.dumps({"timestamp": ts, "format": fmt, "utc": utc}))
+        else:
+            click.echo(ts)
 
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
@@ -263,6 +278,12 @@ def seed(seed, verbose):
     except Exception as e:
         click.secho(f"Error: {e}", fg="red", err=True)
         sys.exit(1)
+
+
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
+
+alias_renamed(repro, {"gen-id": "get-id", "gen-timestamp": "get-timestamp"})
 
 
 if __name__ == "__main__":

@@ -5,9 +5,10 @@
 SciTeX MCP CLI - Model Context Protocol server management commands.
 
 Commands:
-- scitex mcp list       List all available MCP tools
-- scitex mcp doctor     Check MCP server health and configuration
-- scitex mcp serve      Start the unified MCP server
+- scitex mcp list-tools         List all available MCP tools
+- scitex mcp doctor             Check MCP server health and configuration
+- scitex mcp start              Start the unified MCP server
+- scitex mcp show-installation  Show the Claude Desktop configuration
 """
 
 import click
@@ -57,6 +58,12 @@ def list_tools(
 
     Verbosity: (none) names, -v signatures, -vv +description, -vvv full.
     Signatures are expanded by default; use -c/--compact for single line.
+
+    \b
+    Examples:
+      scitex mcp list-tools
+      scitex mcp list-tools -v --module stats
+      scitex mcp list-tools --json --summary
     """  # noqa: D301
     import warnings
 
@@ -214,7 +221,13 @@ def list_tools(
 @mcp.command("doctor")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed diagnostics")
 def doctor(verbose: bool):
-    """Check MCP server health and configuration."""
+    """Check MCP server health and configuration.
+
+    \b
+    Examples:
+      scitex mcp doctor
+      scitex mcp doctor --verbose
+    """
     issues = []
     warnings = []
 
@@ -384,8 +397,29 @@ def _print_help_recursive(ctx):
 @click.option(
     "--port", "-p", default=8085, type=int, help="Port to bind (default: 8085)"
 )
-def start(transport: str, host: str, port: int):
-    """Start the unified MCP server."""
+@click.option(
+    "--dry-run", is_flag=True, help="Print the server settings without starting it."
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (start never prompts; accepted for scripts).",
+)
+def start(transport: str, host: str, port: int, dry_run: bool, yes: bool):
+    """Start the unified MCP server.
+
+    \b
+    Examples:
+      scitex mcp start
+      scitex mcp start --transport http --port 8085
+      scitex mcp start --transport sse --dry-run
+    """
+    del yes  # starting the server changes no files; nothing to confirm
+    if dry_run:
+        where = "" if transport == "stdio" else f" on {host}:{port}"
+        click.echo(f"[dry-run] Would start the SciTeX MCP server ({transport}){where}")
+        return
     try:
         from scitex._mcp import run_server
     except ImportError:
@@ -396,19 +430,45 @@ def start(transport: str, host: str, port: int):
     run_server(transport=transport, host=host, port=port)
 
 
-@mcp.command("installation")
-def installation():
-    """Show Claude Desktop configuration for SciTeX MCP server."""
+@mcp.command("show-installation")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+def installation(as_json: bool):
+    """Show Claude Desktop configuration for SciTeX MCP server.
+
+    \b
+    Examples:
+      scitex mcp show-installation
+      scitex mcp show-installation --json
+    """
     import shutil
     import sys
 
     from scitex import __version__
 
+    scitex_path = shutil.which("scitex")
+    if as_json:
+        import json
+
+        click.echo(
+            json.dumps(
+                {
+                    "version": __version__,
+                    "scitex_path": scitex_path,
+                    "python_path": sys.executable,
+                    "mcpServers": {
+                        "scitex": {
+                            "command": scitex_path or "/path/to/.venv/bin/scitex",
+                            "args": ["mcp", "start"],
+                        }
+                    },
+                }
+            )
+        )
+        return
+
     click.secho(f"SciTeX MCP Server v{__version__}", fg="cyan", bold=True)
     click.echo()
 
-    # Get actual path
-    scitex_path = shutil.which("scitex")
     python_path = sys.executable
 
     if scitex_path:
@@ -428,6 +488,12 @@ def installation():
   "args": ["mcp", "start"]
 }}"""
     click.secho(config, fg="yellow")
+
+
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
+
+alias_renamed(mcp, {"installation": "show-installation"})
 
 
 # EOF

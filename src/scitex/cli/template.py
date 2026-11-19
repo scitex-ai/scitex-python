@@ -202,7 +202,15 @@ def list_code_templates_cmd(as_json):
 @click.option(
     "--dry-run", is_flag=True, help="Show what would be done without making changes."
 )
-def clone(template_type, destination, git_strategy, branch, tag, as_json, dry_run):
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (clone never prompts; accepted for scripts).",
+)
+def clone(
+    template_type, destination, git_strategy, branch, tag, as_json, dry_run, yes
+):
     """
     Clone a project template
 
@@ -228,6 +236,7 @@ def clone(template_type, destination, git_strategy, branch, tag, as_json, dry_ru
       scitex template clone pip-project ./my-package --git-strategy parent
       scitex template clone paper ./manuscript --branch develop
     """
+    del yes  # clone writes only into DESTINATION; nothing to confirm
     # Validate mutual exclusivity
     if branch and tag:
         click.echo("Error: Cannot specify both --branch and --tag", err=True)

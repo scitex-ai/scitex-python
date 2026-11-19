@@ -83,7 +83,7 @@ dependencies = [
     # App SDK — unified file storage for local + cloud
     "scitex-app>=0.26.1",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.62.30",
+    "scitex-dev>=0.64.3",
     "scitex-io>=0.4.3",
     "scitex-stats>=1.0.0",
     "scitex-audio>=0.3.0",
@@ -952,7 +952,7 @@ dev = [
     # scitex-cloud) reaches dev/CI installs through [all] (scitex[cloud] etc.).
     "scitex-container>=0.4.4",
     "scitex-dataset>=0.8.3",
-    "scitex-dev>=0.62.30",
+    "scitex-dev>=0.64.3",
     "scitex-etc>=0.2.1",
     "scitex-genai>=0.2.1",
     "scitex-io>=0.4.3",
@@ -1090,7 +1090,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev>=0.62.30"]
+linter = ["scitex-dev>=0.64.3"]
 orochi = ["scitex-orochi>=0.17.0"]
 agent-container = ["scitex-agent-container>=0.38.4"]
 
@@ -1109,6 +1109,19 @@ exclude = [
     "src/scitex/scholar/docs/to_claude",
     "src/scitex/scholar/data/impact_factor/impact_factor.db",
 ]
+# In-wheel Sphinx docs bundle (PS-121). scitex-cloud serves package docs from
+# the installed scitex/_sphinx_html/. The bundle is GENERATED at release time
+# by .github/ci/build-in-sif.sh and stays gitignored, so it reaches the wheel
+# only through hatchling's `artifacts` (its mechanism for shipping VCS-ignored
+# files). Same shape as scitex-cards. The sdist target carries the identical
+# list because `python -m build` builds the wheel FROM the sdist: a wheel does
+# not inherit what the sdist lacks. Artifacts ignore `exclude`, so the Sphinx
+# build caches are negated here. .github/ci/release-identity.py pins this list.
+artifacts = [
+    "src/scitex/_sphinx_html/**/*",
+    "!src/scitex/_sphinx_html/.doctrees/**",
+    "!src/scitex/_sphinx_html/.buildinfo",
+]
 
 
 [tool.hatch.build.targets.sdist]
@@ -1121,6 +1134,11 @@ exclude = [
     "src/scitex/scholar/library",
     "src/scitex/scholar/docs/to_claude",
     "src/scitex/scholar/data/impact_factor/impact_factor.db",
+]
+artifacts = [
+    "src/scitex/_sphinx_html/**/*",
+    "!src/scitex/_sphinx_html/.doctrees/**",
+    "!src/scitex/_sphinx_html/.buildinfo",
 ]
 
 [tool.pytest.ini_options]

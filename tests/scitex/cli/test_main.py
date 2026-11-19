@@ -220,4 +220,275 @@ class TestLazyGroupUnresolvableSubcommand:
         assert captured.out == ""
 
 
+# =========================================================================== #
+# CLI standardization (2026-11-19): --json / --dry-run / --yes and root help  #
+# =========================================================================== #
+# Environment variables are set with CliRunner's own ``env=``; each test gets
+# its own $XDG_RUNTIME_DIR so scitex-dev's once-per-shell alias note fires.
+
+import json as _json
+import zipfile as _zipfile
+
+
+@pytest.fixture
+def invoke(tmp_path_factory):
+    """Run the CLI in a fresh shell session (own $XDG_RUNTIME_DIR)."""
+    runtime = tmp_path_factory.mktemp("runtime")
+
+    def _run(args, env=None, **kwargs):
+        merged = {"XDG_RUNTIME_DIR": str(runtime), **(env or {})}
+        return CliRunner().invoke(
+            cli, args, catch_exceptions=False, env=merged, **kwargs
+        )
+
+    return _run
+
+
+def _stdout_json(result):
+    return _json.loads(result.stdout)
+
+
+def _tree(path):
+    return sorted(p.relative_to(path) for p in path.rglob("*"))
+
+
+# --------------------------------------------------------------------------- #
+# --json prints valid JSON                                                     #
+# --------------------------------------------------------------------------- #
+
+
+class TestJsonFlag:
+    @pytest.mark.parametrize(
+        "args,expected_key",
+        [
+            (["repro", "get-timestamp", "--json"], "timestamp"),
+            (["audit-tool", "status", "--json"], "pip-audit"),
+            (["mcp", "show-installation", "--json"], "mcpServers"),
+            (["config", "show", "logs", "--json"], "path"),
+            (["completion", "status", "--json"], "installed"),
+            (["browser", "show", "--json"], "instruction"),
+            (["browser", "hide", "--json"], "instruction"),
+        ],
+        ids=lambda v: " ".join(v) if isinstance(v, list) else str(v),
+    )
+    def test_json_object_has_its_key(self, invoke, args, expected_key):
+        # Arrange
+        key = expected_key
+        # Act
+        payload = _stdout_json(invoke(args))
+        # Assert
+        assert key in payload
+
+    def test_repro_get_id_json_is_a_list_of_ids(self, invoke):
+        # Arrange
+        args = ["repro", "get-id", "--count", "2", "--json"]
+        # Act
+        payload = _stdout_json(invoke(args))
+        # Assert
+        assert len(payload) == 2
+
+    def test_browser_list_json_is_an_object(self, invoke, tmp_path):
+        # Arrange
+        env = {"HOME": str(tmp_path)}
+        # Act
+        payload = _stdout_json(invoke(["browser", "list", "--json"], env=env))
+        # Assert
+        assert payload == {}
+
+    def test_skills_install_dry_run_json_names_the_destination(self, invoke, tmp_path):
+        # Arrange
+        args = ["skills", "install", "--package", "scitex-dev", "--dest", str(tmp_path)]
+        # Act
+        payload = _stdout_json(invoke([*args, "--dry-run", "--json"]))
+        # Assert
+        assert payload["dest"] == str(tmp_path)
+
+    def test_event_list_json_is_an_array(self, invoke):
+        pytest.importorskip("scitex_events")
+        # Arrange
+        args = ["event", "list", "--limit", "1", "--json"]
+        # Act
+        payload = _stdout_json(invoke(args))
+        # Assert
+        assert isinstance(payload, list)
+
+
+# --------------------------------------------------------------------------- #
+# --dry-run changes nothing                                                    #
+# --------------------------------------------------------------------------- #
+
+
+class TestDryRunFlag:
+    def test_tex_compile_dry_run_writes_nothing(self, invoke, tmp_path):
+        # Arrange
+        tex = tmp_path / "paper.tex"
+        tex.write_text("\\documentclass{article}\\begin{document}x\\end{document}")
+        before = _tree(tmp_path)
+        # Act
+        invoke(["tex", "compile", str(tex), "--dry-run"])
+        # Assert
+        assert _tree(tmp_path) == before
+
+    def test_tex_convert_to_vector_dry_run_writes_nothing(self, invoke, tmp_path):
+        # Arrange
+        tex = tmp_path / "eq.tex"
+        tex.write_text("$x$")
+        before = _tree(tmp_path)
+        # Act
+        invoke(["tex", "convert-to-vector", str(tex), "--dry-run"])
+        # Assert
+        assert _tree(tmp_path) == before
+
+    def test_bundle_convert_dry_run_writes_nothing(self, invoke, tmp_path):
+        # Arrange
+        figz = tmp_path / "fig.figz"
+        with _zipfile.ZipFile(figz, "w") as zf:
+            zf.writestr("spec.json", _json.dumps({"kind": "figure"}))
+        before = _tree(tmp_path)
+        # Act
+        invoke(["bundle", "convert", str(figz), "--dry-run"])
+        # Assert
+        assert _tree(tmp_path) == before
+
+    def test_browser_save_as_pdf_dry_run_writes_nothing(self, invoke, tmp_path):
+        # Arrange
+        out = tmp_path / "o.pdf"
+        # Act
+        invoke(["browser", "save-as-pdf", "https://example.com", str(out), "--dry-run"])
+        # Assert
+        assert _tree(tmp_path) == []
+
+    def test_skills_install_dry_run_writes_nothing(self, invoke, tmp_path):
+        # Arrange
+        args = ["skills", "install", "--package", "scitex-dev", "--dest", str(tmp_path)]
+        # Act
+        invoke([*args, "--dry-run"])
+        # Assert
+        assert _tree(tmp_path) == []
+
+    def test_config_init_dry_run_creates_no_directory(self, invoke, tmp_path):
+        # Arrange
+        env = {"SCITEX_DIR": str(tmp_path / "scitex")}
+        # Act
+        invoke(["config", "init", "--dry-run"], env=env)
+        # Assert
+        assert _tree(tmp_path) == []
+
+    def test_install_shell_completion_dry_run_leaves_home_untouched(
+        self, invoke, tmp_path
+    ):
+        # Arrange
+        env = {"HOME": str(tmp_path), "SCITEX_DIR": str(tmp_path / ".scitex")}
+        # Act
+        invoke(["install-shell-completion", "--shell", "bash", "--dry-run"], env=env)
+        # Assert
+        assert _tree(tmp_path) == []
+
+    def test_mcp_start_dry_run_returns_without_serving(self, invoke):
+        # Arrange
+        args = ["mcp", "start", "--transport", "http", "--port", "1", "--dry-run"]
+        # Act
+        result = invoke(args)
+        # Assert
+        assert result.exit_code == 0 and "[dry-run]" in result.stdout
+
+
+class TestBundleConvert:
+    """`bundle convert` writes a .stx (the helper used to crash on every call)."""
+
+    def test_convert_writes_stx_with_a_bundle_id(self, invoke, tmp_path):
+        # Arrange
+        figz = tmp_path / "fig.figz"
+        with _zipfile.ZipFile(figz, "w") as zf:
+            zf.writestr("spec.json", _json.dumps({"kind": "figure"}))
+        # Act
+        invoke(["bundle", "convert", str(figz)])
+        # Assert
+        with _zipfile.ZipFile(tmp_path / "fig.stx") as zf:
+            assert _json.loads(zf.read("spec.json"))["bundle_id"]
+
+
+# --------------------------------------------------------------------------- #
+# --yes runs without any prompt (stdin is empty; a prompt would abort)         #
+# --------------------------------------------------------------------------- #
+
+
+class TestYesFlag:
+    def test_config_init_yes_completes_without_input(self, invoke, tmp_path):
+        # Arrange
+        env = {"SCITEX_DIR": str(tmp_path / "scitex")}
+        # Act
+        result = invoke(["config", "init", "--yes"], input="", env=env)
+        # Assert
+        assert result.exit_code == 0 and (tmp_path / "scitex").is_dir()
+
+    def test_skills_install_yes_installs_without_input(self, invoke, tmp_path):
+        # Arrange
+        args = ["skills", "install", "--package", "scitex-dev", "--dest", str(tmp_path)]
+        # Act
+        result = invoke([*args, "--yes"], input="")
+        # Assert
+        assert result.exit_code == 0 and _tree(tmp_path)
+
+    @pytest.mark.parametrize(
+        "args",
+        [
+            ["audit-tool", "install", "--dry-run", "-y"],
+            ["mcp", "start", "--dry-run", "--yes"],
+            ["template", "clone", "minimal", "./x", "--dry-run", "--yes"],
+            ["install-shell-completion", "--dry-run", "--yes"],
+        ],
+        ids=lambda a: " ".join(a),
+    )
+    def test_yes_is_accepted_and_exits_zero_without_input(self, invoke, args):
+        # Arrange
+        stdin = ""
+        # Act
+        result = invoke(args, input=stdin)
+        # Assert
+        assert result.exit_code == 0
+
+
+# --------------------------------------------------------------------------- #
+# Root help and shell completion                                               #
+# --------------------------------------------------------------------------- #
+
+
+class TestRootHelp:
+    def test_root_help_opens_with_the_version(self, invoke):
+        # Arrange
+        from scitex.__version__ import __version__
+
+        # Act
+        result = invoke(["--help"])
+        # Assert
+        assert f"scitex (v{__version__})" in result.stdout
+
+    def test_root_help_documents_config_location(self, invoke):
+        # Arrange
+        args = ["--help"]
+        # Act
+        result = invoke(args)
+        # Assert
+        assert "~/.scitex/" in result.stdout
+
+    def test_print_shell_completion_prints_a_script(self, invoke):
+        # Arrange
+        args = ["print-shell-completion", "--shell", "bash"]
+        # Act
+        result = invoke(args)
+        # Assert
+        assert "_SCITEX_COMPLETE" in result.stdout
+
+    def test_completion_group_still_installs(self, invoke, tmp_path):
+        # Arrange
+        env = {"HOME": str(tmp_path)}
+        # Act
+        result = invoke(
+            ["completion", "install", "--shell", "bash", "--dry-run"], env=env
+        )
+        # Assert
+        assert result.exit_code == 0
+
+
 # EOF

@@ -84,8 +84,8 @@ Python code introspection for exploring APIs.
 
 .. code-block:: bash
 
-   scitex introspect api <module>       # List APIs for a module
-   scitex introspect source <function>  # View source code of a function
+   scitex introspection list-api <module>        # List APIs for a module
+   scitex introspection show-source <function>   # View source code of a function
 
 Dev
 ---

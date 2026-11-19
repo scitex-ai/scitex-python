@@ -58,6 +58,20 @@ DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
     "socialia": ("social", "3.0"),
 }
 
+# Umbrella commands renamed to the noun/verb CLI convention (2026-11-19).
+# {mounted_name: ((new_name, attr_in_the_same_module), ...)}. The new names
+# are mounted from the same wrapper module; ``main.py`` keeps each old
+# name working as a hidden alias that prints a deprecation note.
+#   audit      — a verb group; split into the leaf `audit-security [PATH]`
+#                and the noun group `audit-tool {status,install}`.
+#   introspect — a verb group; renamed to the noun `introspection`.
+#   convert    — a verb group over .stx bundle files; renamed to `bundle`.
+RENAMED_MOUNTS: Dict[str, Tuple[Tuple[str, str], ...]] = {
+    "audit": (("audit-security", "audit_security"), ("audit-tool", "audit_tool")),
+    "introspect": (("introspection", "introspect"),),
+    "convert": (("bundle", "convert"),),
+}
+
 # NOTE on figrecipe/plt: NOT a deprecated duplicate. `scitex plt` mounts
 # the scitex-plt peer, a published identity-alias package for figrecipe
 # (`scitex_plt is figrecipe` -> True), and doctrine §5b's brand table
@@ -73,13 +87,14 @@ DEPRECATED_ALIASES: Dict[str, Tuple[str, str]] = {
 # to fit the help column.
 _FALLBACK_HELP: Dict[str, str] = {
     # scitex-internal wrappers (no peer in the registry)
-    "audit": "Security auditing tools.",
+    "audit-security": "Run security tools (Bandit, ShellCheck, pip-audit, GitHub).",
+    "audit-tool": "Check and install the tools audit-security runs.",
+    "bundle": "Convert and validate SciTeX bundle files (.figz/.pltz -> .stx).",
     "capture": "Screenshot capture tools.",
     "completion": "Shell tab-completion management (install, status).",
-    "convert": "File format conversion.",
     "docs": "Browse and search SciTeX documentation.",
     "event": "Event bus for async task results.",
-    "introspect": "Code introspection tools.",
+    "introspection": "Code introspection tools.",
     "mcp": "MCP server management.",
     "notebook": "Jupyter notebook tools.",
     "notification": "Notification and alerting tools.",
@@ -155,7 +170,57 @@ _PEER_CLI_PROBES: tuple[tuple[str, str], ...] = (
     ("cli", "main"),  # scitex-capture, scitex-security, scitex-agent-container
     ("_cli._app", "app"),  # scitex-app
     ("_cli_main", "cli"),  # scitex-scholar (entry point scitex_scholar._cli_main:cli)
+    ("_cli", "cli"),  # crossref-local, openalex-local (`main` is a plain function)
+    ("cli", "cli"),  # crossref-local, openalex-local (legacy module path)
+    ("cli", "main_group"),  # scitex-msword
 )
+
+
+# Published identity-alias packages: the alias imports as its target
+# (`scitex_plt is figrecipe`), so its CLI modules live in the target's tree.
+_IDENTITY_ALIASES: Dict[str, str] = {"scitex_plt": "figrecipe"}
+
+
+def _peer_cli_present(candidates: tuple[tuple[str, str], ...]) -> bool:
+    """Return True when the peer is installed AND ships a probed CLI module.
+
+    Imports nothing: ``find_spec`` on a top-level name only locates the
+    package, and the candidate submodules are checked as files on disk.
+    A peer that is not installed, or installed without any CLI module
+    (scitex-str, scitex-session, ...), must not be advertised: its name
+    would resolve to no command, which `scitex --help` lists but click
+    then rejects, and which scitex-dev's CLI audit refuses as incomplete
+    public command discovery (§1a, ``missing-command``).
+    """
+    import importlib.util
+
+    top = candidates[0][0].split(".", 1)[0]
+    top = _IDENTITY_ALIASES.get(top, top)
+    try:
+        spec = importlib.util.find_spec(top)
+    except (ImportError, ValueError):
+        return False
+    if spec is None or not spec.submodule_search_locations:
+        return False
+    for module_path, _attr in candidates:
+        parts = module_path.split(".")[1:]
+        for base in spec.submodule_search_locations:
+            path = os.path.join(base, *parts)
+            if os.path.isfile(path + ".py") or os.path.isfile(
+                os.path.join(path, "__init__.py")
+            ):
+                return True
+    return False
+
+
+def _peer_installed(import_name: str) -> bool:
+    """Return True when the peer's top-level package is importable (no import)."""
+    import importlib.util
+
+    try:
+        return importlib.util.find_spec(import_name) is not None
+    except (ImportError, ValueError):
+        return False
 
 
 def _peer_cli_candidates(import_name: str) -> tuple[tuple[str, str], ...]:
@@ -186,6 +251,7 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
     """
     out: Dict[str, LazySpec] = {}
     have_wrapper = _wrapper_inventory(cli_dir)
+    peer_wrappers: set[str] = set()
 
     # 1. Registry-driven peer dispatch (no per-peer wrapper file needed).
     try:
@@ -207,11 +273,19 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         # LazyGroup._load_lazy walks the candidates at invocation time
         # and returns the first one that resolves. An on-disk wrapper
         # file in scitex/cli/<short>.py acts as an explicit override.
+        # Only advertise what can resolve (see _peer_cli_present): a wrapper
+        # override needs its peer installed, a direct mount needs the peer's
+        # CLI module on disk. Unavailable peers stay out of help instead of
+        # being listed and then rejected as "No such command".
         help_text = _registry_subcommand_help(imp) or _FALLBACK_HELP.get(sub) or sub
         if attr in have_wrapper:
-            out[sub] = (f"scitex.cli.{attr}", attr, help_text)
+            peer_wrappers.add(attr)
+            if _peer_installed(imp):
+                out[sub] = (f"scitex.cli.{attr}", attr, help_text)
         else:
-            out[sub] = (_peer_cli_candidates(imp), attr, help_text)
+            candidates = _peer_cli_candidates(imp)
+            if _peer_cli_present(candidates):
+                out[sub] = (candidates, attr, help_text)
 
     # 2. scitex-internal wrappers (no peer in the registry).
     registered_attrs = {
@@ -220,12 +294,23 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
         if isinstance(spec[0], str) and spec[0].startswith("scitex.cli.")
     }
     for attr in have_wrapper:
-        if attr in registered_attrs:
+        # A peer's override wrapper skipped in step 1 (peer not installed)
+        # must not come back here as if it were scitex-internal.
+        if attr in registered_attrs or attr in peer_wrappers:
             continue
         sub = attr.replace("_", "-")
         out.setdefault(sub, (f"scitex.cli.{attr}", attr, _FALLBACK_HELP.get(sub, sub)))
 
-    # 3. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
+    # 3. Renamed umbrella commands (see RENAMED_MOUNTS above): mount the
+    # new names from the same module; main.py aliases the old names.
+    for old_name, new_mounts in RENAMED_MOUNTS.items():
+        spec = out.pop(old_name, None)
+        if spec is None:
+            continue
+        for new_name, new_attr in new_mounts:
+            out[new_name] = (spec[0], new_attr, _FALLBACK_HELP.get(new_name, spec[2]))
+
+    # 4. Retired duplicate namespaces (see DEPRECATED_ALIASES above).
     # main.py re-adds them as hidden warn-phase deprecated aliases when
     # scitex-dev's click_compat is importable.
     for old_name in DEPRECATED_ALIASES:
@@ -244,20 +329,42 @@ def build_lazy_subcommands(cli_dir: str) -> Dict[str, LazySpec]:
 # the non-Core minority keeps this table maintainable and keeps new
 # registry peers out of `Other`.
 _NON_CORE_CATEGORIES: Tuple[Tuple[str, frozenset], ...] = (
-    ("Data & Sync", frozenset({"convert"})),
+    ("Data & Sync", frozenset({"bundle"})),
     (
         "Service",
-        frozenset({"agent-container", "container", "hub", "mcp", "orochi", "ssh", "tunnel"}),
+        frozenset(
+            {"agent-container", "container", "hub", "mcp", "orochi", "ssh", "tunnel"}
+        ),
     ),
     (
         "Diagnostics",
-        frozenset({"audit", "benchmark", "linter", "pkg", "resource", "security"}),
+        frozenset(
+            {
+                "audit-security",
+                "audit-tool",
+                "benchmark",
+                "linter",
+                "pkg",
+                "resource",
+                "security",
+            }
+        ),
     ),
     (
         "Introspection",
-        frozenset({"dev", "docs", "introspect", "list-python-apis", "skills"}),
+        frozenset({"dev", "docs", "introspection", "list-python-apis", "skills"}),
     ),
-    ("Shell", frozenset({"completion", "repl"})),
+    (
+        "Shell",
+        frozenset(
+            {
+                "completion",
+                "install-shell-completion",
+                "print-shell-completion",
+                "repl",
+            }
+        ),
+    ),
 )
 
 # Canonical render order (§4a). Empty categories are omitted at render.
