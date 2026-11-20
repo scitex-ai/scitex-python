@@ -1,82 +1,36 @@
 ---
 description: |
-  [TOPIC] Python API — scitex umbrella surface
-  [DETAILS] Top-level `scitex.*` exposes lazy sub-modules (io, plt, stats, ...) plus the `@scitex.session` decorator and `scitex.INJECTED` sentinel. Full per-module APIs live in the sister-package skills.
+  [TOPIC] Python API — scitex umbrella
+  [DETAILS] Selected lazy Python facades, the session decorator and sentinel, and the owning source map. Domain APIs belong to leaf packages; availability is version-dependent.
 tags: [scitex-python-api]
 ---
 
-# Python API — scitex umbrella
+# Python API — scitex
 
-The umbrella surface is intentionally thin: it exposes sub-modules and a
-small set of top-level helpers. Look at the sister-package skill for
-full method-level docs.
+```python
+import scitex
 
-## Top-level helpers
-
-| Name | Kind | Purpose |
-|------|------|---------|
-| `scitex.__version__` | str | Umbrella version |
-| `scitex.session` | decorator + module | `@scitex.session` wraps `main()` for reproducible runs; also accessible as `scitex.session.start(...)` etc. |
-| `scitex.INJECTED` | sentinel | Marker for `@scitex.session` parameters that should be auto-injected (`CONFIG`, `plt`, `logger`, ...). |
-
-## Sub-module map
-
-External standalones (re-exported lazily — see `_EXTERNAL_REEXPORTS` in
-`src/scitex/__init__.py`):
-
-```text
-scitex.io          → scitex_io
-scitex.plt         → scitex_plt
-scitex.stats       → scitex_stats
-scitex.scholar     → scitex_scholar
-scitex.writer      → scitex_writer
-scitex.cloud       → scitex_cloud
-scitex.container   → scitex_container
-scitex.notebook    → scitex_notebook
-scitex.notification → scitex_notification
-scitex.audio       → scitex_audio
-scitex.dataset     → scitex_dataset
-scitex.app         → scitex_app
-scitex.audit       → scitex_audit
-scitex.compat      → scitex_compat
-scitex.repro       → scitex_repro
-scitex.dict        → scitex_dict
-scitex.str         → scitex_str
-scitex.logging     → scitex_logging
-scitex.browser     → scitex_browser
-scitex.parallel    → scitex_parallel
-scitex.path        → scitex_path
-scitex.db          → scitex_db
-scitex.types       → scitex_types
-scitex.template    → scitex_template
-scitex.benchmark   → scitex_benchmark
-scitex.context     → scitex_context
-scitex.cv          → scitex_cv
-scitex.introspect  → scitex_introspect
-scitex.msword      → scitex_msword
-scitex.os          → scitex_os
-scitex.security    → scitex_security
-scitex.tex         → scitex_tex
-scitex.etc         → scitex_etc
-scitex.gists       → scitex_gists
+print(scitex.__version__)
 ```
 
-Native sub-modules (live under `src/scitex/<name>/`):
+| Entry point | Responsibility | Owning package |
+|---|---|---|
+| `scitex.io` | Scientific file I/O | scitex-io |
+| `scitex.plt` | Figures and recipes | figrecipe |
+| `scitex.stats` | Statistical methods | scitex-stats |
+| `scitex.scholar` | Literature tools | scitex-scholar |
+| `scitex.writer` | Manuscript tools | scitex-writer |
+| `scitex.session` | Decorator/module for experiment lifecycle | scitex-session |
+| `scitex.clew` | Recorded provenance and verification | scitex-clew |
 
-```text
-scitex.gen scitex.config scitex.decorators scitex.dsp scitex.gen
-scitex.linalg scitex.module scitex.nn scitex.pd scitex.project
-... (see src/scitex/ for the full list)
-```
+For injection into session-decorated functions, use `scitex.session.INJECTED`.
+Top-level `scitex.INJECTED` is a deprecated compatibility alias. Follow the session
+package's documented parameter and execution contracts.
 
-## Lazy loading
+The full source mapping is in `scitex.re_export.EXTERNAL_REEXPORTS`, with facade
+initialization in `scitex.__init__`. Consult those sources instead of maintaining
+a second exhaustive module list. Lazy access can import a leaf and its optional
+requirements; it does not guarantee a fixed startup time or configured service.
 
-Every sub-module is wrapped by `_LazyModule` or `importlib.util.LazyLoader`.
-`import scitex` is sub-second; sub-module bodies execute only on first
-attribute access. Missing optional deps raise a friendly `ImportError`.
-
-## Per-module documentation
-
-Load the sister-package skill — e.g. `scitex-io`, `scitex-plt`,
-`scitex-stats`, `scitex-scholar`, `scitex-writer`, `scitex-cloud`. The
-umbrella does not duplicate that content.
+A Python facade alone is not evidence of an installed CLI, MCP tool or Web API.
+Check each interface in the actual environment before claiming availability.
