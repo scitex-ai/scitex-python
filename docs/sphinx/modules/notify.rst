@@ -1,4 +1,4 @@
-notify Module (``stx.notify``)
-==============================
+Notifications (``scitex.notification``)
+=======================================
 
-See :doc:`/api/scitex.notify` for the auto-generated Python API.
+See :doc:`/source/api/notification` for the auto-generated Python API.

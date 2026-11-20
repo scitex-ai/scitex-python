@@ -112,4 +112,4 @@ Other Functions
 API Reference
 -------------
 
-See :doc:`/api/scitex.io` for the auto-generated Python API.
+See :doc:`/source/api/io` for the auto-generated Python API.

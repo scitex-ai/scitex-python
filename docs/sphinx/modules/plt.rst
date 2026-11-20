@@ -158,4 +158,4 @@ See the :doc:`/gallery` for visual examples.
 API Reference
 -------------
 
-See :doc:`/api/scitex.plt` for the auto-generated Python API.
+See :doc:`/source/api/plt` for the auto-generated Python API.
