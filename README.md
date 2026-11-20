@@ -676,7 +676,7 @@ Each package exposes the ecosystem via up to six interfaces: Python library, CLI
 |---------|--------|-----------|-------------|
 | [scitex-agent-container](https://github.com/ywatanabe1989/scitex-agent-container) | `stx.agent_container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP — · Skills ⭐⭐ · Hook — · HTTP — | Declarative YAML-based AI agent lifecycle management (tmux/screen/SSH) |
 | [scitex-app](https://github.com/ywatanabe1989/scitex-app) | `stx.app` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | App-developer SDK for SciTeX workspace apps |
-| [scitex-audit](https://github.com/ywatanabe1989/scitex-audit) | `stx.audit` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐ · Hook — · HTTP — | Unified repo security scanner for scientific Python projects |
+| [scitex-security](https://github.com/scitex-ai/scitex-security) | `stx.audit` | Py ⭐ · CLI ⭐⭐⭐ · MCP ⭐ · Skills ⭐ · Hook — · HTTP — | Unified repo security scanner for scientific Python projects |
 | [scitex-clew](https://github.com/ywatanabe1989/scitex-clew) | `stx.clew` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Hash-based reproducibility verification for scientific pipelines |
 | [scitex-container](https://github.com/ywatanabe1989/scitex-container) | `stx.container` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Unified container management for Apptainer/Singularity + Docker |
 | [scitex-dev](https://github.com/ywatanabe1989/scitex-dev) | `stx.dev` | Py ⭐⭐ · CLI ⭐⭐⭐ · MCP ⭐⭐ · Skills ⭐⭐ · Hook — · HTTP — | Developer utilities for maintaining the whole SciTeX ecosystem |

@@ -58,7 +58,7 @@ def audit_security(path, as_json, save, checks):
       scitex audit-security . --save report.json # Save report
       scitex audit-security . -c python -c shell # Python + shell only
     """
-    from scitex_audit._format import format_json, format_text
+    from scitex_security._format import format_json, format_text
 
     from scitex.audit import audit as do_audit
 

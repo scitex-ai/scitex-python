@@ -123,7 +123,7 @@ CROSS_PACKAGE_IMPORTS = [
     "scitex_audio._mcp.handlers",
     "scitex_audio._utils",
     "scitex_audio.mcp_server",
-    "scitex_audit._format",
+    "scitex_security._format",
     "scitex_clew",
     "scitex_clew._db",
     "scitex_clew._logging",
