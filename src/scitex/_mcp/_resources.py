@@ -37,8 +37,20 @@ def _get_scholar_dir() -> Path:
     return SCITEX_SCHOLAR_DIR
 
 
-def register_resources(mcp) -> None:
-    """Register all umbrella MCP documentation resources."""
+def register_resources(mcp, *, package_policy=None) -> None:
+    """Admit static umbrella docs and Scholar data resources by their real owner."""
+    from ._exposure import is_exposed, load_package_policy
+
+    package_policy = load_package_policy(package_policy)
+    if not is_exposed("scitex", "scitex", package_policy):
+        return
+    _register_static_resources(mcp)
+    if is_exposed("scitex-scholar", "scholar", package_policy):
+        _register_scholar_resources(mcp)
+
+
+def _register_static_resources(mcp) -> None:
+    """Register static umbrella documentation without reading domain data."""
 
     @mcp.resource("scitex://cheatsheet")
     def cheatsheet() -> str:
@@ -84,6 +96,10 @@ def register_resources(mcp) -> None:
     def figrecipe_integration() -> str:
         """stx.plt integration with FigRecipe for reproducible figures."""
         return FIGRECIPE_INTEGRATION
+
+
+def _register_scholar_resources(mcp) -> None:
+    """Register existing Scholar readers only after owner admission."""
 
     @mcp.resource("scholar://library")
     def list_library_projects() -> str:

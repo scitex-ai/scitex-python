@@ -120,8 +120,10 @@ readonly OWNED_TMP_ID
 export TMPDIR="$OWNED_TMPDIR"
 
 driver_body() {
+source .github/ci/docs-build-env.sh
+prepare_docs_environment "$PY"
 # No credential exchange is attempted before this full immutable-artifact gate.
-"$PY" -I -S -B .github/ci/release-identity.py verify-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT" --revalidate
+"$DOC_PY" -I -B -X "pycache_prefix=$PYTHONPYCACHEPREFIX" .github/ci/release-identity.py verify-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT" --require-derived-docs --revalidate
 DIST=(dist/*.whl dist/*.tar.gz)
 [ "${#DIST[@]}" -eq 2 ]
 export TMPDIR UV_CACHE_DIR="$TMPDIR/uv-cache" XDG_CACHE_HOME="$TMPDIR"
@@ -146,7 +148,7 @@ PY
 test -n "$MINTED"
 # Recheck bytes immediately before the upload; the network membership/tag
 # check already completed before OIDC, and was not replaced by quota fallback.
-"$PY" -I -S -B .github/ci/release-identity.py verify-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT"
+"$DOC_PY" -I -B -X "pycache_prefix=$PYTHONPYCACHEPREFIX" .github/ci/release-identity.py verify-proof --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT" --require-derived-docs
 TWINE_USERNAME=__token__ TWINE_PASSWORD="$MINTED" "$PY" -m twine upload --non-interactive --disable-progress-bar "${DIST[@]}"
 unset MINTED
 echo "PUBLISH-OK: verified scitex wheel and sdist uploaded"

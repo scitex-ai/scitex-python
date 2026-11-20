@@ -29,7 +29,25 @@ if not __debug__:
     raise RuntimeError("Release identity controls require assertions enabled")
 
 HERE = Path(__file__).parent
-REPOSITORY = HERE.parent.parent
+CODE_REPOSITORY = HERE.parent.parent
+# This immutable historical source matches ALL frozen metadata below. It is
+# not current product-source qualification; the real v2 producer is separate.
+SOURCE = "644558f8203a647b573064b76ed6250dd849f8ac"
+_FROZEN_CHECKOUT = tempfile.TemporaryDirectory(prefix="umbrella-frozen-source-")
+REPOSITORY = Path(_FROZEN_CHECKOUT.name) / "source"
+_GIT_ENV = {
+    "PATH": "/usr/bin:/bin", "LANG": "C.UTF-8",
+    "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": "/dev/null",
+}
+subprocess.run(
+    ["/usr/bin/git", "clone", "--shared", "--no-checkout", "--template=",
+     str(CODE_REPOSITORY), str(REPOSITORY)],
+    check=True, capture_output=True, timeout=7, env=_GIT_ENV,
+)
+subprocess.run(
+    ["/usr/bin/git", "-C", str(REPOSITORY), "checkout", "--detach", SOURCE],
+    check=True, capture_output=True, timeout=7, env=_GIT_ENV,
+)
 HELPER = HERE / "release-identity.py"
 HELPER_SHA = hashlib.sha256(HELPER.read_bytes()).hexdigest()
 SPEC = importlib.util.spec_from_file_location("owned_umbrella_release_identity", HELPER)
@@ -55,7 +73,8 @@ def git(*arguments):
     ).stdout
 
 
-SOURCE = git("rev-parse", "HEAD").decode().strip()
+if git("rev-parse", "HEAD").decode().strip() != SOURCE:
+    raise RuntimeError("historical fixture checkout identity differs")
 PYPROJECT = git("show", SOURCE + ":pyproject.toml")
 PROJECT = tomllib.loads(PYPROJECT.decode())["project"]
 VERSION = PROJECT["version"]
@@ -68,7 +87,8 @@ INIT_BYTES = git("show", SOURCE + ":src/scitex/__init__.py")
 LICENSE_BYTES = git("show", SOURCE + ":LICENSE")
 
 # Frozen static metadata from the existing Hatchling 1.27.0 producer, bound to
-# public f34 pyproject (42 core requirements / 77 extras). No backend build.
+# historical 644558 pyproject (42 core requirements / 77 extras). No backend
+# build. The helper under test remains the CURRENT prototype implementation.
 PRODUCER_HEADERS = zlib.decompress(
     base64.b85decode(
         b"c$}r3U3c8J5r*&eEA}oorew*E6RWjPoy2W(>U<nKZBI{6FR&!E3yUOZ5|p(4^&ODhl@{|3fK4xw*xYA85&#D?gO|"

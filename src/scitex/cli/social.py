@@ -13,14 +13,15 @@ import subprocess
 import sys
 
 import click
+from scitex_dev.ecosystem import CliHelp, Example, SpecCommand, SpecGroup
 
 
 def _run_socialia(*args, json_output: bool = False) -> int:
     """Run socialia CLI command."""
     cmd = [sys.executable, "-m", "socialia"]
+    cmd.extend(args)
     if json_output:
         cmd.append("--json")
-    cmd.extend(args)
 
     result = subprocess.run(cmd)
     return result.returncode
@@ -34,6 +35,20 @@ def _check_socialia() -> bool:
         return True
     except ImportError:
         return False
+
+
+def _preview_socialia(args, as_json):
+    """Describe the exact provider command without launching it."""
+    command = [sys.executable, "-m", "socialia"]
+    command.extend(args)
+    if as_json:
+        from scitex_dev import wrap_as_cli
+
+        wrap_as_cli(lambda: {"dry_run": True, "command": command}, as_json=True)
+    else:
+        import shlex
+
+        click.echo("[dry-run] Would run: " + shlex.join(command))
 
 
 @click.group(
@@ -64,7 +79,7 @@ def social(ctx, help_recursive, as_json):
       scitex social post twitter "Hello from SciTeX!"
       scitex social post linkedin "Research update"
       scitex social status
-      scitex social analytics twitter
+      scitex social analytics show-realtime
 
     \b
     Environment Variables (SCITEX_SOCIAL_ prefix):
@@ -147,20 +162,24 @@ def post(platform, text, file, reply_to, quote, subreddit, title, dry_run, as_js
     "--dry-run", is_flag=True, help="Show what would be deleted without deleting"
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def delete(platform, post_id, dry_run, as_json):
+@click.option("--yes", "-y", is_flag=True, help="Confirm deletion of the selected post.")
+def delete(platform, post_id, dry_run, as_json, yes):
     """
-    Delete a post from a platform
+    Preview deletion; require --yes to delete a post from a platform.
 
     \b
     Examples:
       scitex social delete twitter 1234567890
-      scitex social delete reddit abc123
+      scitex social delete reddit abc123 --yes
       scitex social delete twitter 1234567890 --dry-run
     """
-    if dry_run:
-        click.echo(f"[dry-run] Would delete post {post_id} from {platform}")
-        sys.exit(0)
-    sys.exit(_run_socialia("delete", platform, post_id, json_output=as_json))
+    args = ["delete-post", platform, post_id, "--yes"]
+    if as_json:
+        args.append("--json")
+    if dry_run or not yes:
+        _preview_socialia(args, as_json)
+        return
+    sys.exit(_run_socialia(*args))
 
 
 @social.command()
@@ -227,7 +246,7 @@ def feed(platform, limit, mentions, as_json):
     sys.exit(_run_socialia(*args, json_output=as_json))
 
 
-@social.command()
+@social.command("show-me")
 @click.argument("platform", type=click.Choice(["twitter", "linkedin", "reddit"]))
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 def me(platform, as_json):
@@ -236,34 +255,79 @@ def me(platform, as_json):
 
     \b
     Examples:
-      scitex social me twitter
-      scitex social me linkedin --json
+      scitex social show-me twitter
+      scitex social show-me linkedin --json
     """
-    sys.exit(_run_socialia("me", platform, json_output=as_json))
+    sys.exit(_run_socialia("show-me", platform, json_output=as_json))
 
 
-@social.command()
-@click.argument("platform", type=click.Choice(["twitter", "youtube", "ga"]))
-@click.option("--days", "-d", type=int, default=7, help="Number of days to analyze")
-@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
-def analytics(platform, days, as_json):
-    """
-    Get analytics for a platform
+@social.group(
+    "analytics",
+    cls=SpecGroup,
+    invoke_without_command=True,
+    help_spec=CliHelp(
+        summary="Read Google Analytics reports through Socialia.",
+        examples=(Example("{prog} show-pageviews --start 30daysAgo --json"),),
+    ),
+)
+@click.pass_context
+def analytics(ctx):
+    """Show report choices without starting a provider process."""
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
 
-    \b
-    Platforms:
-      twitter  - Tweet engagement metrics
-      youtube  - Channel and video statistics
-      ga       - Google Analytics reports
 
-    \b
-    Examples:
-      scitex social analytics twitter
-      scitex social analytics youtube --days 30
-      scitex social analytics ga --json
-    """
-    args = ["analytics", platform, "--days", str(days)]
+@analytics.command(
+    "show-realtime",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show realtime active users.",
+        examples=(Example("{prog} --json"),),
+    ),
+)
+@click.option("--json", "as_json", is_flag=True, help="Output provider JSON.")
+def analytics_realtime(as_json):
+    """Delegate the realtime read to the provider."""
+    sys.exit(_run_socialia("analytics", "show-realtime", json_output=as_json))
+
+
+@analytics.command(
+    "show-pageviews",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show page view metrics.",
+        examples=(Example("{prog} --start 30daysAgo --json"),),
+    ),
+)
+@click.option("--start", default="7daysAgo", help="Start date, interpreted by Socialia.")
+@click.option("--end", default="today", help="End date, interpreted by Socialia.")
+@click.option("--path", default=None, help="Filter by page path.")
+@click.option("--json", "as_json", is_flag=True, help="Output provider JSON.")
+def analytics_pageviews(start, end, path, as_json):
+    """Delegate report dates and path without changing provider semantics."""
+    args = ["analytics", "show-pageviews", "--start", start, "--end", end]
+    if path is not None:
+        args.extend(["--path", path])
     sys.exit(_run_socialia(*args, json_output=as_json))
+
+
+@analytics.command(
+    "show-sources",
+    cls=SpecCommand,
+    help_spec=CliHelp(
+        summary="Show traffic sources.",
+        examples=(Example("{prog} --json"),),
+    ),
+)
+@click.option("--start", default="7daysAgo", help="Start date, interpreted by Socialia.")
+@click.option("--end", default="today", help="End date, interpreted by Socialia.")
+@click.option("--json", "as_json", is_flag=True, help="Output provider JSON.")
+def analytics_sources(start, end, as_json):
+    """Delegate traffic source dates to the provider."""
+    sys.exit(_run_socialia(
+        "analytics", "show-sources", "--start", start, "--end", end,
+        json_output=as_json,
+    ))
 
 
 @social.command()
@@ -314,11 +378,11 @@ def mcp(ctx, as_json):
       start        - Start the MCP server
       doctor       - Check MCP server health
       list-tools   - List available MCP tools
-      installation - Show Claude Desktop configuration
+      show-installation - Show MCP client configuration
 
     \b
     Examples:
-      scitex social mcp start
+      scitex social mcp start --yes
       scitex social mcp doctor
     """
     if ctx.invoked_subcommand is None:
@@ -331,15 +395,24 @@ def mcp(ctx, as_json):
 
 
 @mcp.command()
-def start():
+@click.option("--dry-run", is_flag=True, help="Preview without starting the server.")
+@click.option("--yes", "-y", is_flag=True, help="Confirm starting the MCP server.")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
+def start(dry_run, yes, as_json):
     """
-    Start the MCP server
+    Preview the MCP server command; require --yes to start it.
 
     \b
     Example:
-      scitex social mcp start
+      scitex social mcp start --yes
     """
-    sys.exit(_run_socialia("mcp", "start"))
+    args = ["mcp", "start", "--yes"]
+    if as_json:
+        args.append("--json")
+    if dry_run or not yes:
+        _preview_socialia(args, as_json)
+        return
+    sys.exit(_run_socialia(*args))
 
 
 @mcp.command()
@@ -355,27 +428,36 @@ def doctor():
 
 
 @mcp.command("list-tools")
-def list_tools():
+@click.option("--json", "as_json", is_flag=True, help="Output the provider tool catalog as JSON.")
+def list_tools(as_json):
     """
     List available MCP tools
 
     \b
     Example:
       scitex social mcp list-tools
+      scitex social mcp list-tools --json
     """
-    sys.exit(_run_socialia("mcp", "list-tools"))
+    sys.exit(_run_socialia("mcp", "list-tools", json_output=as_json))
 
 
-@mcp.command()
-def installation():
+@mcp.command("show-installation")
+@click.option("--json", "as_json", is_flag=True, help="Output provider configuration as JSON.")
+def installation(as_json):
     """
-    Show Claude Desktop configuration
+    Show provider MCP client configuration
 
     \b
     Example:
-      scitex social mcp installation
+      scitex social mcp show-installation
     """
-    sys.exit(_run_socialia("mcp", "installation"))
+    sys.exit(_run_socialia("mcp", "show-installation", json_output=as_json))
+
+
+from scitex_dev.ecosystem import deprecated_alias
+
+deprecated_alias(social, "me", target=("show-me",), remove_in="3.0")
+deprecated_alias(mcp, "installation", target=("show-installation",), remove_in="3.0")
 
 
 if __name__ == "__main__":

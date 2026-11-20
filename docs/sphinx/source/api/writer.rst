@@ -76,7 +76,7 @@ Create a new project:
 
 .. code-block:: bash
 
-   scitex template clone paper my_paper
+   scitex dev template clone paper my_paper --yes
 
 Key Classes
 -----------

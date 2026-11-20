@@ -20,12 +20,12 @@ itself -- it delegates to sub-packages.
 .. code-block:: text
 
    scitex (this package) -- orchestrator, templates, CLI, MCP server
-     |-- scitex.app  <-  scitex-app   (runtime SDK: file I/O, config, validation)
-     |-- scitex.ui   <-  scitex-ui    (React/TS components: workspace, data-table)
+     |-- scitex.app  <-  scitex_sdk.app   (runtime SDK: file I/O, config, validation)
+     |-- scitex.ui   <-  scitex_sdk.ui    (React/TS components: workspace, data-table)
      +-- scitex.plt  <-  figrecipe    (figures: plotting, diagrams, recipes)
 
-- **scitex-app** (`docs <https://scitex-app.readthedocs.io/>`_): Runtime SDK that apps import at execution time
-- **scitex-ui** (`docs <https://scitex-ui.readthedocs.io/>`_): Shared React/TypeScript component library
+- **scitex-sdk app component** (`source <https://github.com/scitex-ai/scitex-sdk>`_): Runtime SDK that apps import at execution time
+- **scitex-sdk UI component** (`source <https://github.com/scitex-ai/scitex-sdk>`_): Shared React/TypeScript component library
 - **figrecipe** (`docs <https://figrecipe.readthedocs.io/>`_): Reference app -- figures, diagrams, recipes
 
 Four Freedoms for Research

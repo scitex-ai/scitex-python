@@ -1,53 +1,30 @@
 ---
-description: The 'scitex' root CLI command — entry point, available subcommand groups, and how to get help for any command.
+description: SciTeX console entry point, metadata discovery, canonical paths and independent exposure states.
 ---
 
-# Core CLI Commands
+# Core CLI discovery
 
-## Entry point
-
-The `scitex` CLI is installed as a console script pointing to `scitex.cli.main:cli`.
+The packaging entry point is `scitex.__main__:main`, which checks CLI
+dependencies and delegates to the Click group in `scitex.cli.main`.
 
 ```bash
+scitex --version
 scitex --help
-scitex <subcommand> --help
+scitex --json
+scitex dev cli list --package scitex-sdk --json
 ```
 
-## Available subcommand groups
+The shared `scitex_dev.cli_providers.list_cli_providers` reader inspects the
+same interpreter's installed metadata without loading provider entry points.
+An owner can declare `scitex.cli` capability metadata or explicitly decline
+its CLI name. Legacy canonical console evidence remains labelled unverified.
+The umbrella applies naming and retirement policy to eligible declarations.
 
-```bash
-scitex audio        # TTS / speech synthesis
-scitex audit        # Security scanning
-scitex cloud        # Cloud sync and project management
-scitex container    # Container management
-scitex dataset      # Dataset fetching and search
-scitex dev          # Development utilities
-scitex docs         # Documentation building and serving
-scitex introspect   # Python API introspection
-scitex linter       # SciTeX linter
-scitex mcp          # MCP server management
-scitex notebook     # Jupyter notebook utilities
-scitex notification # Send notifications
-scitex plt          # Plotting utilities
-scitex repro        # Reproducibility tools
-scitex scholar      # Literature management
-scitex security     # GitHub security alerts
-scitex social       # Social media posting
-scitex stats        # Statistical analysis
-scitex template     # Code templates
-scitex tunnel       # SSH tunnel management
-scitex web          # Web scraping
-scitex writer       # LaTeX manuscript tools
-```
+Normal help, JSON and completion use visible metadata. A requested provider
+parser is loaded lazily. An ordinary declared console launcher runs in a child
+only when invoked. Recursive inspection may load several parser modules.
 
-## Getting help
-
-```bash
-# Root help
-scitex --help
-
-# Subcommand help
-scitex audio --help
-scitex scholar --help
-scitex scholar fetch --help
-```
+Developer tools belong under `scitex dev`; use `scitex dev --help`. The
+canonical products include `sdk`, `cards`, `clew` and `ssh`. The exact set is
+environment-dependent. CLI exposure does not imply Python import availability,
+MCP enablement, hosted API admission or client-loaded skill context.
