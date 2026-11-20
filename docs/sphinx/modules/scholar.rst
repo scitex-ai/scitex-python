@@ -128,4 +128,4 @@ Storage Architecture
 API Reference
 -------------
 
-See :doc:`/api/scitex.scholar` for the auto-generated Python API.
+See :doc:`/source/api/scholar` for the auto-generated Python API.

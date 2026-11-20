@@ -90,4 +90,4 @@ Key Functions
 API Reference
 -------------
 
-See :doc:`/api/scitex.clew` for the auto-generated Python API.
+See :doc:`/source/api/clew` for the auto-generated Python API.

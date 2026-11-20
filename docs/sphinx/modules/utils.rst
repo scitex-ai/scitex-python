@@ -1,4 +1,4 @@
-utils Module (``stx.utils``)
-============================
+Utility namespaces
+==================
 
-See :doc:`/api/scitex.utils` for the auto-generated Python API.
+See :doc:`/source/api/utils` for the supported path, text and data I/O namespaces.

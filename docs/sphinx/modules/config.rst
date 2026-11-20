@@ -84,4 +84,4 @@ Utility Functions
 API Reference
 -------------
 
-See :doc:`/api/scitex.config` for the auto-generated Python API.
+See :doc:`/source/api/config` for the auto-generated Python API.

@@ -1,4 +1,4 @@
 dict Module (``stx.dict``)
 ==========================
 
-See :doc:`/api/scitex.dict` for the auto-generated Python API.
+See :doc:`/source/api/dict` for the auto-generated Python API.

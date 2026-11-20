@@ -76,4 +76,4 @@ Auto-Ordering
 API Reference
 -------------
 
-See :doc:`/api/scitex.decorators` for the auto-generated Python API.
+See :doc:`/source/api/decorators` for the auto-generated Python API.

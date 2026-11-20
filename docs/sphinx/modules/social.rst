@@ -1,4 +1,4 @@
 social Module (``stx.social``)
 ==============================
 
-See :doc:`/api/scitex.social` for the auto-generated Python API.
+See :doc:`/source/api/social` for the auto-generated Python API.

@@ -76,4 +76,4 @@ Architectures
 API Reference
 -------------
 
-See :doc:`/api/scitex.nn` for the auto-generated Python API.
+See :doc:`/source/api/nn` for the auto-generated Python API.

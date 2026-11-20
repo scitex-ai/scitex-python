@@ -82,4 +82,4 @@ Python API
 API Reference
 -------------
 
-See :doc:`/api/scitex.template` for the auto-generated Python API.
+See :doc:`/source/api/template` for the auto-generated Python API.

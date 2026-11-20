@@ -33,4 +33,4 @@ Quick Reference
 API Reference
 -------------
 
-See :doc:`/api/scitex.gen` for the auto-generated Python API.
+See :doc:`/source/api/gen` for the auto-generated Python API.

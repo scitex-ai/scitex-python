@@ -207,4 +207,4 @@ Best Practices
 API Reference
 -------------
 
-See :doc:`/api/scitex.session` for the auto-generated Python API.
+See :doc:`/source/api/session` for the auto-generated Python API.

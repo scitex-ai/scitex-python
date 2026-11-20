@@ -42,4 +42,4 @@ Available Functions
 API Reference
 -------------
 
-See :doc:`/api/scitex.pd` for the auto-generated Python API.
+See :doc:`/source/api/pd` for the auto-generated Python API.

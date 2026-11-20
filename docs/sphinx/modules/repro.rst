@@ -67,4 +67,4 @@ Available Functions
 API Reference
 -------------
 
-See :doc:`/api/scitex.repro` for the auto-generated Python API.
+See :doc:`/source/api/repro` for the auto-generated Python API.
