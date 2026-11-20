@@ -129,9 +129,7 @@ class TestExternalFallback:
     """When the primary ``external`` is unimportable but a ``fallback``
     external IS importable, ``_LazyModule`` resolves to the fallback.
 
-    This is the scitex.security case: ADR-0001 routed it to
-    ``scitex_audit.github`` while ADR-0002 made ``scitex_security`` the
-    unified home — the fallback keeps it reachable whichever is installed.
+    Security itself now resolves directly to the canonical provider.
     """
 
     def test_fallback_used_when_primary_external_missing(self):
@@ -179,3 +177,32 @@ class TestExternalFallback:
         module = importlib.import_module("scitex.security")
         # Assert
         assert hasattr(module, "check_github_alerts")
+
+
+class TestCanonicalSecurityProvider:
+    def test_audit_and_security_resolve_to_active_package(self):
+        # Arrange
+        import importlib
+
+        from scitex_security import audit, check_github_alerts
+        # Act
+        audit_module = importlib.import_module('scitex.audit')
+        security_module = importlib.import_module('scitex.security')
+        # Assert
+        assert audit_module.audit is audit
+        assert security_module.check_github_alerts is check_github_alerts
+        assert security_module.audit is audit
+
+    def test_dependency_extras_do_not_install_retired_package(self):
+        # Arrange
+        from pathlib import Path
+        tomllib = pytest.importorskip("tomllib")
+        project = tomllib.loads((Path(__file__).resolve().parents[2] / 'pyproject.toml').read_text())['project']
+        # Act
+        dependencies = project['dependencies']
+        extras = project['optional-dependencies']
+        # Assert
+        assert not any('scitex-audit' in item for item in dependencies)
+        for name in ['audit', 'security']:
+            assert any(item.startswith('scitex-security>=') for item in extras[name])
+            assert not any('scitex-audit' in item for item in extras[name])

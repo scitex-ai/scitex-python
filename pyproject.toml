@@ -100,7 +100,7 @@ dependencies = [
     "scitex-etc>=0.2.1",  # media shipped here; scitex.media re-exports scitex_etc.media
     "scitex-genai>=0.2.1",
     "scitex-gists>=0.1.8",
-    "scitex-audit>=0.2.0",
+    "scitex-security>=0.2.0",
     "scitex-logging>=0.2.7",
     "scitex-dict>=0.1.8",
     "scitex-browser>=0.1.15",
@@ -112,10 +112,6 @@ dependencies = [
     "scitex-msword>=0.3.2",
     "scitex-os>=0.1.9",
     "scitex-pd>=0.1.6",  # pandas utilities — pinned-in-core so scitex.pd works out of the box
-    # scitex-security DROPPED here per ADR-0001 (scitex-dev #139) —
-    # absorbed into scitex-audit. The [security] extra now installs
-    # scitex-audit; scitex-python's main deps no longer pull the
-    # deprecated 0.1.4 standalone.
     "scitex-tex>=0.1.8",
     "figrecipe>=0.44.7",
     "scitex-ui>=0.23.1",
@@ -191,7 +187,7 @@ audio = [
 
 # Audit Module - Code and security auditing
 # Use: pip install scitex[audit]
-audit = ["scitex-audit>=0.2.0"]
+audit = ["scitex-security>=0.2.0"]
 
 # Benchmark Module - Performance monitoring
 # Use: pip install scitex[benchmark]
@@ -664,13 +660,9 @@ scholar = [
 # Use: pip install scitex[schema]
 schema = []
 
-# Security Module - Security utilities. Absorbed into scitex-audit
-# per ADR-0001 (scitex-dev #139, Accepted 2026-06-07); `scitex.security`
-# lazily resolves to `scitex_audit.github` (see src/scitex/re_export.py
-# "security" mapping). The standalone `scitex-security` 0.2.0 is a
-# deprecated thin shim and is NOT pulled here.
+# Canonical security scanner and GitHub alerts (ADR-0002).
 # Use: pip install scitex[security]
-security = ["scitex-audit>=0.2.0"]
+security = ["scitex-security>=0.2.0"]
 
 # Session Module - Session management
 # Use: pip install scitex[session]
@@ -945,7 +937,7 @@ dev = [
     "scipy",
     "scitex-agent-container>=0.38.4",
     "scitex-audio>=0.3.0",
-    "scitex-audit>=0.2.0",
+    "scitex-security>=0.2.0",
     "scitex-browser>=0.1.15",
     "scitex-clew>=0.21.0",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly

@@ -157,18 +157,14 @@ notify = notification  # Backward compat alias
 git = _LazyModule("git", external="scitex_git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
 canvas = _LazyModule("canvas")  # Canvas utilities for figure composition
-security = _LazyModule(
-    "security", external="scitex_audit.github", fallback="scitex_security"
-)  # ADR-0001 (#139) routed scitex.security → scitex_audit.github; ADR-0002
-# (#142) then made scitex_security the unified home (scitex-audit = deprecated
-# shim). Prefer scitex_audit.github when present, fall back to scitex_security.
+security = _LazyModule("security", external="scitex_security")
 benchmark = _LazyModule(
     "benchmark", external="scitex_benchmark"
 )  # Benchmarking utilities
 bridge = _LazyModule("bridge", external="scitex_bridge")  # Bridge utilities
 browser = _LazyModule("browser", external="scitex_browser")  # Browser automation
 compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilities
-audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
+audit = _LazyModule("audit", external="scitex_security")  # Security auditing
 events = _LazyModule("events", external="scitex_events")  # Event system
 media = _LazyModule(
     "media", external="scitex_etc.media"
