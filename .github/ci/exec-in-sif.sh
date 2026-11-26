@@ -116,12 +116,62 @@ else
     GPFS_STATE="absent (scratch under \$HOME, no GPFS bind)"
 fi
 
+# Test-driver scratch and shared uv cache (#430). Release drivers
+# (build/publish) are unchanged: host /tmp, per-leg cache.
+#
+# * Shared uv cache: ONE persistent cache per host, bound into the container
+#   and named in SCITEX_CI_UV_CACHE_DIR. uv documents its cache as safe for
+#   concurrent readers and writers, so every runner on the host shares it, and
+#   a leg links the [all,dev] closure out of a warm cache instead of
+#   downloading and unpacking ~12 GiB into a cold per-leg cache.
+# * Same filesystem: uv only hard-links from the cache when the install target
+#   is on the cache's filesystem, so the cache sits next to the container /tmp.
+#
+# CI_SCRATCH_ROOT (optional, runner .env): a host directory that holds both.
+#   $CI_SCRATCH_ROOT/tmp is bound over the container /tmp, and
+#   $CI_SCRATCH_ROOT/uv-cache is the shared cache. Use it to keep CI off the
+#   root filesystem (e.g. /scratch/<user>/ci).
+# Unset on the compute nodes: host /tmp plus $HOME/.cache/scitex-ci/uv-cache,
+#   both on the root filesystem.
+# Unset on Spartan: the per-leg cache is kept. Its GPFS spans nodes and is not
+#   the node-local /tmp, so a shared cache there would only copy.
+UV_CACHE_STATE="per-leg (driver default)"
+TMP_STATE="host /tmp"
+unset SCITEX_CI_UV_CACHE_DIR
+if [ "$INNER" = run-in-sif.sh ]; then
+    SHARED_UV_CACHE=""
+    if [ -n "${CI_SCRATCH_ROOT:-}" ]; then
+        [[ "$CI_SCRATCH_ROOT" = /* ]] && [ -d "$CI_SCRATCH_ROOT" ] && [ ! -L "$CI_SCRATCH_ROOT" ] || {
+            echo "::error::CI_SCRATCH_ROOT must be an existing absolute directory (not a symlink): $CI_SCRATCH_ROOT"
+            exit 1
+        }
+        mkdir -p -m 700 "$CI_SCRATCH_ROOT/tmp"
+        [ ! -L "$CI_SCRATCH_ROOT/tmp" ] || { echo "::error::$CI_SCRATCH_ROOT/tmp is a symlink"; exit 1; }
+        APPTAINER_ARGV+=(--bind "$CI_SCRATCH_ROOT/tmp:/tmp")
+        TMP_STATE="$CI_SCRATCH_ROOT/tmp bound at /tmp"
+        SHARED_UV_CACHE="$CI_SCRATCH_ROOT/uv-cache"
+    elif [ ! -d "$GPFS_PROJECT" ]; then
+        SHARED_UV_CACHE="$HOME/.cache/scitex-ci/uv-cache"
+    fi
+    if [ -n "$SHARED_UV_CACHE" ]; then
+        mkdir -p "$SHARED_UV_CACHE"
+        [ ! -L "$SHARED_UV_CACHE" ] || {
+            echo "::error::shared uv cache must not be a symlink: $SHARED_UV_CACHE"; exit 1;
+        }
+        APPTAINER_ARGV+=(--bind "$SHARED_UV_CACHE")
+        export SCITEX_CI_UV_CACHE_DIR="$SHARED_UV_CACHE"
+        UV_CACHE_STATE="shared $SHARED_UV_CACHE (bound)"
+    fi
+fi
+
 # Echo the resolved plan: when a run fails on an unfamiliar node, the FIRST
 # question is which of the two profiles it took.
 echo "exec-in-sif: apptainer=$APPTAINER (via $APPTAINER_FROM)"
 echo "exec-in-sif: sif=$SIF"
 echo "exec-in-sif: $GPFS_PROJECT $GPFS_STATE"
 echo "exec-in-sif: APPTAINER_TMPDIR=$APPTAINER_TMPDIR"
+echo "exec-in-sif: /tmp $TMP_STATE"
+echo "exec-in-sif: uv cache $UV_CACHE_STATE"
 echo "exec-in-sif: + $APPTAINER ${APPTAINER_ARGV[*]} $SIF bash .github/ci/$INNER $*"
 
 exec "$APPTAINER" "${APPTAINER_ARGV[@]}" "$SIF" bash ".github/ci/$INNER" "$@"

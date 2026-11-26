@@ -49,7 +49,7 @@ owned_birth() {
 }
 
 cleanup_owned_tmp() {
-    local result=$? cleanup_result=0 current_id='' attempt=0
+    local result=$? cleanup_result=0 current_id='' attempt=0 reason=''
     trap - EXIT INT TERM
     unset MINTED
     # Reaping the body alone is insufficient when a descendant remains.
@@ -72,9 +72,16 @@ cleanup_owned_tmp() {
                 /usr/bin/rm -rf --one-file-system -- "$OWNED_TMPDIR" || cleanup_result=$?
         else
             cleanup_result=1
+            # Name the refusal, so the next leaked scratch can be diagnosed.
+            if [ -L "$OWNED_TMPDIR" ]; then reason='root is a symlink'
+            elif [ ! -d "$OWNED_TMPDIR" ]; then reason='root is not a directory'
+            elif [ "$current_id" != "$OWNED_TMP_ID" ]; then
+                reason="identity changed ($OWNED_TMP_ID -> ${current_id:-unreadable})"
+            else reason='owned child group remains'
+            fi
         fi
         if [ "$cleanup_result" -ne 0 ]; then
-            echo "::error::owned temporary cleanup refused or failed" >&2
+            echo "::error::owned temporary cleanup refused or failed: ${reason:-rm exited $cleanup_result} ($OWNED_TMPDIR)" >&2
             [ "$result" -ne 0 ] || result=1
         fi
     fi
@@ -151,11 +158,26 @@ export TMPDIR="$OWNED_TMPDIR/tmp"
 mkdir -m 700 "$TMPDIR"
 mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache"
 
-# The HPC compute-node $HOME is READ-ONLY inside the container, so uv/pip cannot
-# create their default caches under ~/.cache — point them at the writable
-# scratch instead (else `uv pip install` dies: "failed to create directory
-# ~/.cache/uv: File exists / read-only").
-export UV_CACHE_DIR="$TMPDIR/uv-cache"
+# uv cache. exec-in-sif.sh binds ONE persistent, per-host cache into the
+# container and names it in SCITEX_CI_UV_CACHE_DIR (#430). With it, a leg
+# links the [all,dev] closure out of a warm cache instead of downloading and
+# unpacking ~12 GiB into a cold per-leg cache. uv documents its cache as safe
+# for concurrent readers and writers, so every runner on the host shares it.
+# The cache is NOT part of the owned scratch and survives the leg; only the
+# install target below is removed on exit.
+#
+# Fallback: without a usable shared cache (e.g. the HPC compute-node $HOME is
+# READ-ONLY inside the container, so ~/.cache/uv cannot be created), use a
+# per-leg cache inside the owned scratch, as before.
+if [ -n "${SCITEX_CI_UV_CACHE_DIR:-}" ] && [[ "$SCITEX_CI_UV_CACHE_DIR" = /* ]] &&
+   [ -d "$SCITEX_CI_UV_CACHE_DIR" ] && [ ! -L "$SCITEX_CI_UV_CACHE_DIR" ] &&
+   [ -w "$SCITEX_CI_UV_CACHE_DIR" ]; then
+    export UV_CACHE_DIR="$SCITEX_CI_UV_CACHE_DIR"
+    echo "uv cache: shared $UV_CACHE_DIR"
+else
+    export UV_CACHE_DIR="$TMPDIR/uv-cache"
+    echo "uv cache: per-leg $UV_CACHE_DIR (no usable SCITEX_CI_UV_CACHE_DIR)"
+fi
 export XDG_CACHE_HOME="$TMPDIR"
 export PIP_CACHE_DIR="$TMPDIR/pip-cache"
 
