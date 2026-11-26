@@ -116,12 +116,57 @@ else
     GPFS_STATE="absent (scratch under \$HOME, no GPFS bind)"
 fi
 
+# Test-driver scratch and shared uv cache (#430). Release drivers
+# (build/publish) are unchanged: host /tmp, per-leg cache.
+#
+# One host directory, ROOT, is bound into the container as a SINGLE mount:
+#   ROOT/uv-cache  ONE persistent uv cache per host, shared by every runner.
+#                  uv documents its cache as safe for concurrent readers and
+#                  writers.
+#   ROOT/tmp       parent of each leg's owned scratch (install target, tmp),
+#                  which the driver removes on exit.
+# A single mount matters: uv links the install target out of the cache, and
+# link(2) fails with EXDEV across mount points even on one filesystem (measured:
+# two binds made uv fall back to a full copy). Linked, a warm leg no longer
+# re-downloads and unpacks the ~12 GiB [all,dev] closure.
+#
+# ROOT = CI_SCRATCH_ROOT (runner .env; e.g. /scratch/<user>/ci-scratch to keep CI
+#        off the root filesystem), else $HOME/.cache/scitex-ci on the compute
+#        nodes. Spartan (GPFS, no CI_SCRATCH_ROOT) keeps host /tmp and the
+#        per-leg cache: its GPFS spans nodes and is not node-local.
+UV_CACHE_STATE="per-leg (driver default)"
+unset SCITEX_CI_SCRATCH_ROOT SCITEX_CI_UV_CACHE_DIR
+if [ "$INNER" = run-in-sif.sh ]; then
+    CI_ROOT="${CI_SCRATCH_ROOT:-}"
+    if [ -z "$CI_ROOT" ] && [ ! -d "$GPFS_PROJECT" ]; then
+        CI_ROOT="$HOME/.cache/scitex-ci"
+    fi
+    if [ -n "$CI_ROOT" ]; then
+        [[ "$CI_ROOT" = /* ]] || { echo "::error::CI_SCRATCH_ROOT must be absolute: $CI_ROOT"; exit 1; }
+        mkdir -p "$CI_ROOT"
+        CI_ROOT="$(realpath -- "$CI_ROOT")"
+        mkdir -p -m 700 "$CI_ROOT/tmp" "$CI_ROOT/uv-cache"
+        for d in "$CI_ROOT/tmp" "$CI_ROOT/uv-cache"; do
+            [ -d "$d" ] && [ ! -L "$d" ] || { echo "::error::$d must be a real directory"; exit 1; }
+        done
+        # A killed job cannot run its EXIT trap. Sweep owned scratch that no
+        # leg can still be using (job timeout 45 min; threshold 1 day).
+        find "$CI_ROOT/tmp" -mindepth 1 -maxdepth 1 -type d -name 'ci-scitex-*' -mmin +1440 \
+            -exec rm -rf --one-file-system -- {} + 2>/dev/null || true
+        APPTAINER_ARGV+=(--bind "$CI_ROOT")
+        export SCITEX_CI_SCRATCH_ROOT="$CI_ROOT/tmp"
+        export SCITEX_CI_UV_CACHE_DIR="$CI_ROOT/uv-cache"
+        UV_CACHE_STATE="shared $SCITEX_CI_UV_CACHE_DIR, scratch $SCITEX_CI_SCRATCH_ROOT (one bind: $CI_ROOT)"
+    fi
+fi
+
 # Echo the resolved plan: when a run fails on an unfamiliar node, the FIRST
 # question is which of the two profiles it took.
 echo "exec-in-sif: apptainer=$APPTAINER (via $APPTAINER_FROM)"
 echo "exec-in-sif: sif=$SIF"
 echo "exec-in-sif: $GPFS_PROJECT $GPFS_STATE"
 echo "exec-in-sif: APPTAINER_TMPDIR=$APPTAINER_TMPDIR"
+echo "exec-in-sif: uv cache $UV_CACHE_STATE"
 echo "exec-in-sif: + $APPTAINER ${APPTAINER_ARGV[*]} $SIF bash .github/ci/$INNER $*"
 
 exec "$APPTAINER" "${APPTAINER_ARGV[@]}" "$SIF" bash ".github/ci/$INNER" "$@"

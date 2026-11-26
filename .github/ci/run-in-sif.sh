@@ -31,7 +31,14 @@ export LC_ALL=C.UTF-8 LANG=C.UTF-8
 # path that does NOT resolve inside the container; tests (tmp_path) and the
 # install target both need a working, writable tmp. Node-local /tmp is writable
 # + ephemeral and per-version-isolated so concurrent matrix legs don't collide.
-SCRATCH_PREFIX="/tmp/ci-scitex-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}-$V-"
+# exec-in-sif.sh may name a scratch parent on the same mount as the shared uv
+# cache (SCITEX_CI_SCRATCH_ROOT, #430); otherwise node-local /tmp as before.
+SCRATCH_ROOT="${SCITEX_CI_SCRATCH_ROOT:-/tmp}"
+[[ "$SCRATCH_ROOT" = /* ]] && [ -d "$SCRATCH_ROOT" ] && [ ! -L "$SCRATCH_ROOT" ] || {
+    echo "::error::scratch root must be an existing real directory: $SCRATCH_ROOT"
+    exit 1
+}
+SCRATCH_PREFIX="$SCRATCH_ROOT/ci-scitex-${GITHUB_RUN_ID:?}-${GITHUB_RUN_ATTEMPT:?}-$V-"
 
 # BEGIN owned temporary-root lifecycle
 OWNED_TMPDIR=""
@@ -49,7 +56,7 @@ owned_birth() {
 }
 
 cleanup_owned_tmp() {
-    local result=$? cleanup_result=0 current_id='' attempt=0
+    local result=$? cleanup_result=0 current_id='' attempt=0 reason=''
     trap - EXIT INT TERM
     unset MINTED
     # Reaping the body alone is insufficient when a descendant remains.
@@ -72,9 +79,16 @@ cleanup_owned_tmp() {
                 /usr/bin/rm -rf --one-file-system -- "$OWNED_TMPDIR" || cleanup_result=$?
         else
             cleanup_result=1
+            # Name the refusal, so the next leaked scratch can be diagnosed.
+            if [ -L "$OWNED_TMPDIR" ]; then reason='root is a symlink'
+            elif [ ! -d "$OWNED_TMPDIR" ]; then reason='root is not a directory'
+            elif [ "$current_id" != "$OWNED_TMP_ID" ]; then
+                reason="identity changed ($OWNED_TMP_ID -> ${current_id:-unreadable})"
+            else reason='owned child group remains'
+            fi
         fi
         if [ "$cleanup_result" -ne 0 ]; then
-            echo "::error::owned temporary cleanup refused or failed" >&2
+            echo "::error::owned temporary cleanup refused or failed: ${reason:-rm exited $cleanup_result} ($OWNED_TMPDIR)" >&2
             [ "$result" -ne 0 ] || result=1
         fi
     fi
@@ -133,7 +147,7 @@ OWNED_TMPDIR="$(/usr/bin/mktemp -d "${SCRATCH_PREFIX}XXXXXX")"
 readonly OWNED_TMPDIR
 suffix="${OWNED_TMPDIR#"$SCRATCH_PREFIX"}"
 [[ "$OWNED_TMPDIR" = "$SCRATCH_PREFIX"* && "$suffix" =~ ^[[:alnum:]]{6}$ ]]
-[ "${OWNED_TMPDIR%/*}" = /tmp ] && [ ! -L "$OWNED_TMPDIR" ] && [ -d "$OWNED_TMPDIR" ]
+[ "${OWNED_TMPDIR%/*}" = "$SCRATCH_ROOT" ] && [ ! -L "$OWNED_TMPDIR" ] && [ -d "$OWNED_TMPDIR" ]
 OWNED_TMP_ID="$(stat -c '%d:%i:%u:%a' -- "$OWNED_TMPDIR")"
 [ "${OWNED_TMP_ID##*:}" = 700 ]
 [ "$(stat -c '%u' -- "$OWNED_TMPDIR")" = "$(id -u)" ]
@@ -151,11 +165,27 @@ export TMPDIR="$OWNED_TMPDIR/tmp"
 mkdir -m 700 "$TMPDIR"
 mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache"
 
-# The HPC compute-node $HOME is READ-ONLY inside the container, so uv/pip cannot
-# create their default caches under ~/.cache — point them at the writable
-# scratch instead (else `uv pip install` dies: "failed to create directory
-# ~/.cache/uv: File exists / read-only").
-export UV_CACHE_DIR="$TMPDIR/uv-cache"
+# uv cache. exec-in-sif.sh binds ONE persistent, per-host cache into the
+# container, on the same mount as SCRATCH_ROOT, and names it in
+# SCITEX_CI_UV_CACHE_DIR (#430). With it, a leg
+# links the [all,dev] closure out of a warm cache instead of downloading and
+# unpacking ~12 GiB into a cold per-leg cache. uv documents its cache as safe
+# for concurrent readers and writers, so every runner on the host shares it.
+# The cache is NOT part of the owned scratch and survives the leg; only the
+# install target below is removed on exit.
+#
+# Fallback: without a usable shared cache (e.g. the HPC compute-node $HOME is
+# READ-ONLY inside the container, so ~/.cache/uv cannot be created), use a
+# per-leg cache inside the owned scratch, as before.
+if [ -n "${SCITEX_CI_UV_CACHE_DIR:-}" ] && [[ "$SCITEX_CI_UV_CACHE_DIR" = /* ]] &&
+   [ -d "$SCITEX_CI_UV_CACHE_DIR" ] && [ ! -L "$SCITEX_CI_UV_CACHE_DIR" ] &&
+   [ -w "$SCITEX_CI_UV_CACHE_DIR" ]; then
+    export UV_CACHE_DIR="$SCITEX_CI_UV_CACHE_DIR"
+    echo "uv cache: shared $UV_CACHE_DIR"
+else
+    export UV_CACHE_DIR="$TMPDIR/uv-cache"
+    echo "uv cache: per-leg $UV_CACHE_DIR (no usable SCITEX_CI_UV_CACHE_DIR)"
+fi
 export XDG_CACHE_HOME="$TMPDIR"
 export PIP_CACHE_DIR="$TMPDIR/pip-cache"
 

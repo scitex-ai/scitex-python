@@ -28,7 +28,7 @@ owned_birth() {
 }
 
 cleanup_owned_tmp() {
-    local result=$? cleanup_result=0 current_id='' attempt=0
+    local result=$? cleanup_result=0 current_id='' attempt=0 reason=''
     trap - EXIT INT TERM
     unset MINTED
     # Reaping the body alone is insufficient when a descendant remains.
@@ -51,9 +51,16 @@ cleanup_owned_tmp() {
                 /usr/bin/rm -rf --one-file-system -- "$OWNED_TMPDIR" || cleanup_result=$?
         else
             cleanup_result=1
+            # Name the refusal, so the next leaked scratch can be diagnosed.
+            if [ -L "$OWNED_TMPDIR" ]; then reason='root is a symlink'
+            elif [ ! -d "$OWNED_TMPDIR" ]; then reason='root is not a directory'
+            elif [ "$current_id" != "$OWNED_TMP_ID" ]; then
+                reason="identity changed ($OWNED_TMP_ID -> ${current_id:-unreadable})"
+            else reason='owned child group remains'
+            fi
         fi
         if [ "$cleanup_result" -ne 0 ]; then
-            echo "::error::owned temporary cleanup refused or failed" >&2
+            echo "::error::owned temporary cleanup refused or failed: ${reason:-rm exited $cleanup_result} ($OWNED_TMPDIR)" >&2
             [ "$result" -ne 0 ] || result=1
         fi
     fi
