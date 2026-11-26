@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.30.13] - 2026-11-27
+
+### Changed
+- `scitex[clew]` also installs `scitex-dev[local-store]`, which bundles
+  PostgreSQL server binaries (CPython <= 3.12) for the per-user local
+  provenance store. A fresh machine therefore records and verifies provenance
+  with no store configuration (scitex-dev#1111).
+- Member floors raised to PyPI latest (`scripts/release/sync_member_floors.py
+  --write`): `scitex-dev>=0.67.0` (an unset `SCITEX_STORE_DSN` now resolves
+  to a per-user local store, never a fleet host), `scitex-clew>=0.37.1`,
+  `scitex-writer>=2.45.1`.
+
 ## [2.30.12] - 2026-11-26
 
 ### Added
