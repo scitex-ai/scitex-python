@@ -19,11 +19,12 @@ import sys
 import tarfile
 import tempfile
 import time
-import tomllib
 import unittest
 import zipfile
 import zlib
 from pathlib import Path
+
+import tomllib
 
 if not __debug__:
     raise RuntimeError("Release identity controls require assertions enabled")
@@ -78,63 +79,62 @@ LICENSE_BYTES = git("show", SOURCE + ":LICENSE")
 # public pyproject (42 core requirements / 77 extras). No backend build.
 PRODUCER_HEADERS = zlib.decompress(
     base64.b85decode(
-        b"c-p0%+mhS35r*&QDRk!>Q{y@KG>KjD?mEd<yoa(kNu^S`fJlr44@uAfs2Szy1CWwNL;MXiHy68WlV5`rj@^wP+@GWqm2"
-        b"jf?hcs5{_GWRpygvI`H1cL)OXcLl*~y)&7t6P2U;3sIW_PpruqbuY8M%?IRa?3Eb>}v^UDRr2{QbqPHlYaFI(4hcf$g1"
-        b"Y*9*~Bi||bU2T|{=vS+^<{Z*E(`1|KiH;cdOMs{K?pD#Afb@t}`e68H3UoCwJ=ev7v*ou|Bc>Ct<`S^xKH$3=hDL?44Z"
-        b"~U``^Y8vx)M&9ZQdDjuD_z>9(oZcv%T8P6wAuZCZ}45eUi@Z6c_+=>g3gt-y|iZ^djB_5$VRC8X7R7y_IGme&%N2=kH-"
-        b"@JwEtN`y+8Y;O5Yx``1s(P#*Qub;V-{_Dz26<3f<PbBk^Zd`&Rz+<M$tb{_^qcZ*q69O=WL}wkZy6^Slw|Mzyl2r7*2;"
-        b"zUQs%ji`%OI?vzP=l&`FR=Iip*x1Ffv7cMD_9Yda(Pem>c767JE&LyDl{CJU<W|<Y3k|jS;@hgXi<_Ip^`cmO=R4*T^v"
-        b"Bl8wvyH2LtpvllroTed*4Iz?3Z%*<N4?P`#!Pw#g`$5-uY!`oos@^FJF8?mFz-Mt$Tv|hF%-dG{NALXxF{(ufb$L1pJ?"
-        b"_=JLyn7xPUn=9^s3H+lM7e$$;F&W8#e+WY)tyY_uVnrZuH*l_2A87?bP56xEBY8{$sZZSW$e!gjj(Z2X_m{)Ka`qteGB"
-        b"cF6WfBn-iZz*X{e*aIp>T5p`Kg(~u@*TYxuiq@*zZ)9tc>M=u-OXYph41yZeQkB$UB7>K?W=nkQDv>lyZ7(jEMLU;Zq?"
-        b"ezQg!nEyBEvr>*eby&<ba@ana?z>2}kLou7QfI<!f2qpgIEuI_fCsi#->6O-t=@Jg4jmKPM^$C?hzRs6F~5H}P<A}inc"
-        b"8^6BX1?*z^lERF>x6+Kz1x1y$ydNHSK|U|cRKktryd{~|x6Am`E-q-u|Hq|YyW9@#O1@3C8f%AoNF|2?UR^J*C_<I{cX"
-        b"&e((v|6l`0?i#k~HG~V$+XNtuxwoGWR-TpP_$Ht=FLokMHxEfEpXtuCawK38vLfuC(5FtZSMI)5|cCjL)Qcg|_Kl(+R&"
-        b"!*0Rn~ZZi_pZ|kb@{ww0Xk$!Pa7h%hdu7w{h7t71HWCdBj0NcR4Ap56vhapE5;{Qpvx7&5nreC)od*4;u{oJ>z30~G#R"
-        b"sPz?2WQ01!Y^5^8^)jTD}tfso~P8%SKchI|FDpul*PMui)Rz$S^T6rnjVGH!MA%-OkF>Vu-0u%Sb=ij(<LNJtCjz4zNh"
-        b")QFw6F;u5ys?_<oF7m*v75mW6cN`tdKTP6QXtJGWU2Bkt>Kq4J!z*2r5wJCve+=iBo2@>SNzZZB)$>njJ|%J9mZI*pd="
-        b"tbzAP{0wv%##oMBOWhQWtdwZ8sB&ZEkOj3~*K(ZVv#inIa?IvszEL->sV~FYm<L^#Z5-9CL@m6BSdAe`mhY-no?%tqSC"
-        b"M_YufDmmj9&Q|IZO4m>TQmyLulsb|63o+WqWJ=(9|5J2rU+zr+mi?o?4~v+1zCwbX~0-qk@_;JL@*G@nJl>ewtQh5u0t"
-        b"2W|toljSn&l-V}3!4)aEi-v<a;Y-Kwi*AI*J+bk^oI|#dLOQrMd{c0a6WM@MkwUoM&WwuUzh|id?2C5!>M*gZ0jLL1nn"
-        b"*jpc?H=kp=lWLUsII#0>b_a!J3*)9gSyRAb*=BSR4sP*My)rFPX@2>nz3XJLpR&|J0nBf)u{X%Snmwgd1_bcZhcv-R4Y"
-        b"vW@jGD*qn>t^_uBFvTen+>6oSojer^kiM@Dn+{Ibu0df$WcScvvD<7e;+lg9ggT^{81u$`0E&upUPp-hT9SMBLiZ<(ZQ"
-        b"x#U-?+Yp*DrsBOtqw^m19u5C$^0U=}R*lp>_cb0W#j0jMTNb`sJuuPQc7<=~EvNH4ZOV;bwWY_re^V7(#!N9JuX5Bk6V"
-        b"{u5`-$>DIW&w^u~M~iyMp651-{$}ljpwmzMiwwg;8DSJ@raDA3~{oWBceb>%Ev>G_o!@HD&tS>};@4E9579AA;X0$Me@"
-        b"c+i?oy#`Fp6$CM`5;v~g6!{m_iWSUHJn@p?ITqoD$H22B2IjQVxc3p=(B`b$#y;)vyjSksRF8`Pv<yt&uOPLmr*;A&$X"
-        b"*QK>a*|zTnr!-^t}foP8~>PhW%5t+uuP+-p4as!Ia<EeG-u1S)JB(^p>-}^vtM$O*kxNC6TMuEL*kdopC*EtCX>W4*J|"
-        b"8X-fxI-jqGN44By}+9nCg5rl*+}PBvZ03BDhKMeeJe=CGM2k2!6ofe*ag81i3VEid!GM~anZtgf<_t?HXR=lafRU1$9i"
-        b"dl&pm_R6EfPOlPyf5}<gbl+BfURPz-xf$~rJjyT2PO}o?C%pG|hnDvj^6ndDH;jRoOlu$2?pD2X<5=Tb8CMl<BO5uFXX"
-        b"Td;X(P^j`K>M*(Rwe<Fi=sK{w4CRUzipe@5M8^rmJeTDr!bRV|Pv7>vUq(hsh$#`6b^E;vIvt+T1d7HY3@IG7p-DnLl;"
-        b"9sqgZE)ewxapusz4k#>}jvDmG$jOZt93}%^ol~3>vQ+vUSCP$VV(2X>IV(lBz@j|A1;mS>=*I7=kDx-V|&K;Ha8!5B3@"
-        b"F0v4*|vPBO_gWt!)0l+DVAM!Tk605ogyaM&F#9Gkzv<?QbMnv8!v|IxF|O_jttl1qK-0}d`9(%f>MmC){?hHGqU+`{=m"
-        b"i08lqmt{`#JL#(ghLr<2>1RX#*NT26mpDLU61nc2qLQ@M>N3X8V@NHY2Rk5<vIsOA043`Dq&3Q~-=_S6iC1ft>AI0Es$"
-        b"2qdG`0a0jO7`V75bYJm0^MKCG0qkv}rw+-VxtXEy1}ZH`<QNq-aL_)f-btmM5`vw*C@;RgWp4wPTh1Wc#?RiTyk;lF_I"
-        b"F@`GQ?W(jn#}Dv1&Cd-G*@Js|PT8F<ELOyc=ip8i+@hIk6`U=v|<MQM6Je*r~gjKx6ml6pm|b%a|2C#Z#Ceke)svO(@J"
-        b"DI}NB2gcN3wn<~s8lvJ2O3!pH=Tt;CAjgZ0&fmmS%$&|tj8W0LI#1aZKh@xc_f`q~hvJ-_FVx|f+$RLFo1}6$L1f>*ak"
-        b"e?{bFvF_6iNXvb6NMRM!0ftZD9jK=D$F1}*(jwLLScq*q%ccymw6DcCfl6C3?j6`4B}4{5D>B1CYdVCFas542nC8Uh>="
-        b"U`mMsE<EE0hsFcyK4R7wO!8BKLvn49Xl5QTMJkc@O)n40>Vkb?0`nna-=wwUU=AO&?@kc_erkcx#`7>k8kn2Uv4n1ezs"
-        b"0+kg5nhLcr#)D!376y4;0SmB5lu2>t2`s=$kP`t`f+Pf335%%!D}e$5R*H@VSP423U=b`5U?os2z#<GX0xWDbjr9>l2("
-        b"S>E5@1pMRDgxKI4=Xaga8Zj69E=vumB6Ax7pbM3a~JU1y}^zaSCJ#uu|4UdOTx-(%=b`M6NbrMI|#+CW#zX!Yq*qN*H0"
-        b"OQ^EoZml6h)a4BH|HAM-Y))Xa-GHRcMWkT(evVy{ulmQ`JNtj@DNWvhY4uMv&Is{{}Is|iQ6BCl8It0>K?E%q9?Lkvm?"
-        b"UCV0wMW7ZDlZ_9l@SDrvaN{3$_R`?Wdua0$_NA@Wd!7aGJ@cMGJ+;2$_NZXWduZHWdz11$_NsQlo2Eelo2EwD<dEprK-"
-        b"1iWdwu>WdzM~J*|{70`XWGfk>o`fLux$0S%_g2n3<j|2C_Pz)Y-+K-?~yPMs<v1_tax3=P4`D-I+-%Z72<F~&S{QV9|+"
-        b"eVBy}wnw8nQX+gghY<#iAS$7B^K|LqGAKuvcFw8M!1K?8LYl8`OqnO-jVUu)ub8lk1dAgZ)urvS8xXeRB-{Z-j0r%(SQ"
-        b"c@_umNa1Vh{ud3&IFL4WM{^1|S%F7RaqC$E;N_P<#l)sc4VQ3!(;t=waKCYm6@Ys4CaNJi^&OLRj1n5ru0EkucqeKva*"
-        b"Ii(LZ5MZFb4ahDk=P~}3+404C-pr~*%XXdG$;W{eHvG!QkLEgt}KqLg*NU_~<_TUFFw;@SD(MBTXCc9r4inmxW7jGdDT"
-        b"sE7D?NaGKY=MIof}O?=2`q{p5-f-x5_B9vU>G~xdp7EE{c4^-&0mg7dHj4>d`q(iPEgopW?F<GDFNW(nHE6Pv^9YcyWx"
-        b"OFo8b^c^8*0E)-R&a4lUr&E-JwA_9z0Q-BAclH%Ac^?O!4&-fn~x+#ST^bl(qB90u<8KyvB}0*Kgz0VLsH0y0{#F+*mF"
-        b"0Y1%K03`MR5Hty}0Wyt>kvhLtt*F;b3DpQQW(@+wBbb1rx~I5lDv#jeT0MZEP8_M(CH5#r8&KA`8NjTG5uU%Xa5S7ger"
-        b"Ut^YCY#<a|2G9G{Yxk=dFmN4Jd2)%q8awFC)pFNDlP$d2KdUY1^zEuH}R&EjLPOd9eq=@LUE+5CsDYMz$>{N@+omaya="
-        b"u|6u&#7A*6)Q}+8d(@t;4<&UT5XCJK}?||asX!&r|e*Q`P!>#P9@(9KccN><c89-+Dg=qQ<0i#Lua@Cx#26PppTXtXu="
-        b"xR4hk?eWKXh#%LUx19=LQGBlLP$ma5~7Hy1EJAc454^}K^U=Rg;3C%HOK~Z<Nu&w-fFZric1?lIKgYj0iFBdioFqhY}J"
-        b"=?#-juNyB<Fp#;;&?Z{jzYE{_L}F(ycq`c(uT=S65V>ii^%)>s<G!-eFdG4n`970-1L4ecC~?Ty?*8@ApBx*Vh=jI%m>"
-        b"a>g+n(t<dOL-FauF{BkZAVag6Lo$>hKL0||FegL9lOrA!i2DsigG>pD5&~F?&nnhahSPit#p0w3Nk@w(NhY=Aq!o~C)9"
-        b"gfJodBo#78+%PP#>MZQG7+?(>anN(Y^`E;^~*dp@@`*v5+*uXOwrOW$Yu-Xe?VJS**ND;6Qyv(MaAzvXeN3;*f-eWK%M"
-        b"hqY<%|73*GQ4`H6Lzk4-+#?-OJlnr;{9F3!&Ez92c#+s=#KA52bhtHxh*O?LKObG;;{TSQPFnZAq^BqClIex%v&S$;Gd"
-        b"!VEsS7g3OK=W=RiKSGzgb~(KVi>6(_hkH|4fiMWd=O`5ehd#;#L?qGO<(@-vAp@;(mUKjWj^pK#Dl;(>|$p3R)-6~xcB"
-        b"~XJxldHnt-B$f^p`@0*C92rr2}SNA_x#mK@E1exXpeyO{?dMx(eezxFVqAy4tXT!272WI{A`5FN6UgXoBfLv}>LW5^gp"
-        b"y&RG8xmQHRE<2>i<9Ucq9l^qU?4?2ud#DJd98Q9Lx*$L(_A3!Kb<YqJkJW*SM#gYfgY~V55#@b+fnbS#h2cbZzy|r_Cx"
-        b"jtVFcaug5%U51LE6%&F6=}U--plow66HgPmRM8;?57_?(Bacre31"
+        b"c-p0%U3c5K5r*&mD|ELvkrO-4m)qntyPLLqn*BJ*wmm&Py?{tqLQE120LoT>eF0LEW#AoPm|pB|LOlbL_?#KM;QlO~sD%^"
+        b"De@J7M?yeV?=T~RHh*n-NY^9vMKRfy5`LpwjXJ?;>wiRY~y?DQ<blV%bk)2grx%h48Ho99hYGwTIiyLi18M1TgMpYv_IMu"
+        b"BeqN^9-rv4A2*;!@Jelz-utlaYNpFUnM{;FHqi?w{R*f`hQ>!(lG%58?#xi8`A?#>%_VkIx$yngd^dc<Wv-uQ7TKk8~|{k"
+        b"?_r5C2fqWN~h!sNF`^y0Yg=KeqfNdu^4|X7~R+!S};@@w*Y#tu%8BdaA4)q&<5-_`jK@Y=vsB7ylaUa4Q%8+?y@_cr4*h`"
+        b"_~fc-PuP~`Sy^@5BI)l?9_Dc|MJ_%<@57rOWifQBk^a|_-6k2(+?kh`TXJRZ*q61O>M8owpkw9=1D86jq2pGk-~Jo`JQxg"
+        b"Frry@(s};YKJj<)KUJG24~@M%Hue*%*1n`=Z*&!&rdyx=&<OvB8zqfzCApQ2?n6T@KKr&B?Be=*akW@3zV|)z5&Bc-WLL|"
+        b"2@qVcNeJUBqy}j?EW%hG5{_*Lj{qsJu_|=yo#@_jPXPs<=!LOfvLAC5dQJs5)`-WZ{(YC?hqv+Oy@2|mRKLq@rp3mjO(3)"
+        b"*>G2i5JzRBZv`Ca#ZI3Fr>Z11NZy0z~k(!}jsV8bu(&3IXfW^A^mQR~o5bBp<@^YcwRj`qd-!@Ppa&^PW*82PC4`RgCYc}"
+        b"q!q^8P>TdT9JW{3O2)%6IhTbp3kq?(NuM$Ll{T>#i3oDSWTL85*mH{_5S^D_`B`2~{<!x_$Td_4%{(w;Q!KvQoW#_x9QO)"
+        b"r<3s80dtv+PLKM(Du9dV(%v(u?}sL{Lt0HCRcYm(Khkb{lp~tK0MOp%k+^Bgdb}<FwfK1+9NC9vKzm6+y?C8`~`&>eP^Ya"
+        b"pbLts8hJO~?xkO{2*giA!cFD8A(_rs`t;lv7c}Jm<MNMPZO29<-@aarHAq%qEyn_0(p6lmYX1zc2|~Ime-l5r{3?-0{9kP"
+        b"THmY+*+g_F)XX+5I$SP^{I`q$cuW4;qm?q|uU^?yOO6z^cx}vEtcZ{>dR0mYA&^F&|dg0f=Mm8nNZ6@LsMby*pFNxoc^eb"
+        b"n+2wQD*Bm8K&IKO;DzPgpwV3gZUuT538^=q&VB|Xa^hk;4m%Kww^6>ir{n}4Zc>Z8xoPU^naZE&=<s`l4D+&d$#7k<_1+&"
+        b"D^wUla^ALp`R((dvi69~Lr{vUvM;@m+*`m)@yKW=NrQaPJ-!(=^{DSm!n-EJ7vl@hVcJ)ylt{?~i`QEV6@Y>JsFKhaXAS6"
+        b"}hmC6(QYqewL7RFM^lm{oA625qHg%P-RYAYvhfeLn<+j!`D$$A|t!KY=p0`5_luSBXjCBS+R=--YN0()MXfBC3Y=!yKH5x"
+        b"L{~(Wn}UZTsP(#$(?U>Wjs99<HZRJJx^ZoD8CK9T==x&gsCFe9;hn^Kib{%nU$4pxtMa~x;?sTc%~fRd%7@8CYG~A8OH>o"
+        b"0GrvmQ_;9Y+Tbui~;V{e4V!_2Kcf8=w)%uRjU6w)DH`*~OsI7{#ZYx_K$+PRH?PL+L#U^QY<ss4fICIIHVouO;-YD_=7@>"
+        b"%*Z0|$+aj||=gr$E5VRv1nbeX+d?Sq9^MRsT_UCXLir#{MOOjsk;jGpCwRd`i?w_sFlm%JGu!2RyNDRXY<M2YI_o4y&^Rk"
+        b";)NO5UrRGSxKtu1GavcW2ak<M?Fo3a=PT);M&Fy}vgyL}#rkKY{hmP*bLMmG0M<%a!VcDc^o4jA7K%uJ&GA*<<T>>ySmTW"
+        b"zNrSA@|5=?ww!u8PMQ+P#FsWzh=A!uP|x6@7I?>UJu(jY5mM5Djv$DxO3H>uJo2k%8pBZvAPQZ9AhfpTeQ0DQSZ_4ueLl}"
+        b"9ca}`J#Zi6zE-Si_Os>EcdL6Q+SuNQp=QhJ{7#!{<5z9zG4J2h%PnK381q*p>Z=Ls&A<Ib`JWORMygn;#)r*Ij^h;gY9ma"
+        b"U`#Sh~E>0Il^}YAhYw3IlrOJ)%qsyZAVg}L5X3423Gu#wsgMIR$JmLEg{8l-hzwX(dQy@2{&saZXHMtfiSx%-&l+I*You)"
+        b"UrCa396w#{kHv2PXjh^(CMb;YiUV+NGVKV(F?77rOxro}_Xlxc99LFJm9WK@|Zn_;Z0i#P1bJ?2`O{Nvm!)2MCs2}C9z<z"
+        b"@L+ah{fGsg15SW9wY-Ya&YKvaOEEU9QC;*~{cllfO)pC>hMPdYl|)TaDYx^Lm}NoAKe;W9Kv_%{DovsF@Z{wtdJ8PVd6DI"
+        b">}=*O&;>vOamW$xhd?wx?&hfvC@nMRyMLzLtEzD&^xW0qN`$WgNr%7+XbVYblC4zBJeLbOQIgS+AjvGD*885N`puF#oTFD"
+        b"PW*)T4)56T{zBP<qwK~Z@PcXW1KZtdaBdoETr1=1rQ66>&gEGtrbFh4Gw{DQ%T{#WQ8NrwG?jmdviBEeh1NUrjIQbGMy-|"
+        b"&Bc`#tw(NL1u^Pf$QRKXz;K%Te!C7r?7-^e{>_t@uP0LK7I^8z6<=ASB$5_zlAhSq23CUROR#`>>6!r#-%$+Ldc*mK2$qO"
+        b"hamK)PeG=E|pTG8{OraR%PO|92OPOfUBd=$<dm3JE{i?whsj1k4Qyl+fhX6*fCWs6ysU2$jXzy6sLCfU&K`<cOE--A*@ub"
+        b"&$-hU>T}_YIC(FiT52N^Z(|)guZ@F{)lm-bT&DmV^2Om)>g(ml?b4d-6N(b74B4;-;+1vHj69e!)ugZZNX2nYE`%+fNjhZ"
+        b"Um5I_Wh4m$y+q?Zf5EtTt@{dMq7JohEM|0aDyCycy|Pn$pV2Wv^0!dS`&Jxd7XJgXXXy}HpyMbtkK+*()0r=Ey(E@6*Y3u"
+        b"KC9u$<*PEXoxOlBy}o5{23A|nAls(*-sj5ZXVUgR!4hSNx6&V0Gd9NR)vP=n!lAz&z~sSXrH$~eoGnWs9$4ngo-v>|gEB_"
+        b"RQk7w2motN=F48HS*4UOYEqaP4G(#Xge?poNnn5-Wsu6^QW{``8W)R8>&7cJknqjUWG=oM+Xof&6G=pSLXa)@kp&4Qcp&3"
+        b"NcItoETXa?CxXoi?rXa*T1G{aydG(%8MXa@O6XoeY9<wZg>h(tm&$bi{(%Mh9&iWHhbINC3z7(!@<a3nO#ahGKfuO{1)&<"
+        b"rB9&<x^_lMoQG#U_b`W|)COGlT-+7{tgWb<5U*K^AGj5SVJgNGhiVql{vC7v^Gl7oxDd3zCVv3sbSf2`L!B<Vh6!VT)Ma1"
+        b"t}=+f@G40fK;m2!dR-;!d$A?!W`6V5vZ&gP^{O&7!OKySQzAW1+2p&Q6|NmC$J7HLq<BR3`yv)G8VB8D}w?ZR*p_}SQ$Fe"
+        b"VG%6SVP#OP!y*g{IxK7z2m6R3bXW+@>98n1)?r~TP0T<pqr-xHq{D&?)?s1vrZ^iw9To<$4vS!WPJv7vR?eD8k!MUYnb(X"
+        b"Jm72_%WHL?}vs_*$V}%t@84Ijm${0}krHl!b7G-!^T9h#=h<-Ab8PQA5ir!1fSwa0u&VbObWK6I~Bx68}M4(YB62Vw162T"
+        b"nW%Y-B;5`i=peLyr3eb5vZeH3_7^pUZH0u0Dwfdqk~gexMkKmwysAOX=>Ab}txkboQzNDv$lNYG>?kiZ}mNI*0dNMI}yNR"
+        b"Ut>kRVAQkRaJqAOX=NTfHp{Bp^fxBxsiFY~=(Jh{pm6L?VF%<Z=QDXb=k|5QMV-+oC`MGpRrVal2whH5N#W4A_Vm8-kTu9"
+        b"7%qn4db+LjCtgz5+q#uFbf-Ok0y1bMEHyjBNCcGR6^zEY1+eOP>!zbob#iB=bsFPG+*SHGta0Tb7r(`F=LhJ7AH2TOWPOs"
+        b"AZ*XcxdVzA6M%%_EaHe^1JHEDAP5W=gb{ukK=JwvKrr?!P+irIS*u{6__&Ev(H@%@d5s3i&9))km|XUuSgC_~gtLW&u(Tf"
+        b"{3fCASVa5@Gs2(wwx&(+zdMkp`E;CY~%7vO48IRXNQQ=h2%o9K3bySpNZL_X}#E;j2NDR1<V!PvP!;fHTPm+L=y+q7K8(<"
+        b"hpcUdr(?jjIeF`<d=av4BufrA!;jbn!lmP8L37Q_!3I*lMOj2-ShoAkJ0HBY4GFQ=tEd~PiLNwWq{5ZV@IT7)1q0pQY^7C"
+        b">?4nm~vRaX_Q}aEPJ#0f1ol7g1=F7I0`I6<~OW6oJVGDTLzvQ3NGhm<URD93cfa2r(IN{XvSuzzrWr#=anch<zA968<G1l"
+        b"LZ?yWNI1UapnRbsRw|dD8L3t92Fyxexo|kteGmR31-Y11c*m40Vj1&ad9e-;L=(>fS^tssoNzsHYOWT*0h7btceMpzZ-Eh"
+        b"jBh`-VS2Thb1J$8hfUh?d$RLZ#K{JfHGUS8^R1VO<W3|9I=)|5j8(d>sEF%0VM@o1QaWDjfiOIm0TM*PfP#^2$B9xp5TqP"
+        b"V&CfqnfA|TOdE8$6wjH?BpVRWEllQZa<xjtW;?ijOa7=&xDgMJx#Z~12OmFTsEKf6l%<c=({MQ90ljPy*IbR&;Yeu*1!3@"
+        b"whZk8z7^Ni7sD5AaqnYx9Tiv2=JCH@kkh^Ygi$yyAdbb>(`v1Nr&(3%a%2K3Yatzh12v^Ppi8$VXTYsV3t`_YTN5xi|ZRC"
+        b"30x1O837pA6GSuzE1*6U58ofn$sb5~bdXz|*`4jV7I+M9~^c!+5xmd@^Pp$fV-A4x*u*L$bY*TWG`9yFizN{)BN{XHU*Ji"
+        b"9=ctr*SAge?Eq^0%v4sws1~{GQ>w<C>rKuXgE6ML4mm6P&CMtkSL*nrTC&~J!cr_TPPMMT}V1vJV`PuCnv3dYMW*wnRNz?"
+        b"^DQ*W2BAbcgQNJ0#^X7XBGJAH$>Qmk!l90ohOw43!x!Xwq-E+O(P%1LBU!Ax%HTkKMbSv!M6yvFLUBmKLb5p-%h8Bf%a-d"
+        b"w70+Rwu;08IKx69UV$Oy;aZbj`YwyLN^R=RfpHP|O_tBV3%>;911%fPomF;MlJm`k`j3D%!KIJv%17Fi`proK!WIjkh%bp"
+        b"{N<#f4(5tdV87zrTvWct#E`^r2w#F?32#X}Zp069|e!ymqyH~*u0ho4ZH_q+=6Ag~S_nZ@nZ@d7X&yo=n-(tS@Rpr{~Xoc"
+        b"Yzj@j9a^_FR0+LCsQ=qe;-O73yX;^W?;2losZfA4WjrDc<)B5J*Q&h^CICLpC~&j+iuRM-)7aj6u}P5t*KTMO5mwLyA14h"
+        b"v?ivEX=2lD&(+}icreuB-qCb0)$f65@E52hM07$j#M%-#?u<CFGfr#?-L9JOY|!YXSxG6C>}r|?2v|;Kp)GP573X&Rz~$<"
+        b"FJk#a__$B!mcRR%aa=*%)5EYk`yYI;Wuy"
     )
 )
 PRODUCER_ENTRY_POINTS = (
@@ -174,6 +174,13 @@ def metadata(version=VERSION, name="scitex", duplicate=False):
     if duplicate:
         body += "Version: " + version + "\n"
     return body.encode()
+
+
+def declared_dev_floor():
+    """The scitex-dev floor exactly as pyproject declares it, as bytes."""
+    return next(
+        r for r in PROJECT["dependencies"] if r.startswith("scitex-dev>=")
+    ).encode()
 
 
 def record_bytes(files, record_name):
@@ -975,7 +982,7 @@ class WholeSourceTests(unittest.TestCase):
     def test_missing_required_tracked_wheel_member_refused(self):
         # Arrange
         files = public_wheel_files()
-        omitted = next((name for name in sorted(files) if name not in {CONFIG, SCRIPT}))
+        omitted = next(name for name in sorted(files) if name not in {CONFIG, SCRIPT})
         del files[omitted]
         changed = wheel(files=files)
         RELEASE.wheel_identity(changed, VERSION)
@@ -1621,7 +1628,13 @@ class DocsBundleTests(unittest.TestCase):
             root = Path(temporary)
             (root / "w.whl").write_bytes(wheel_raw)
             (root / "s.tar.gz").write_bytes(sdist_raw)
-            command = [sys.executable, "-I", "-S", "-B", str(HERE / "release_docs_bundle.py")]
+            command = [
+                sys.executable,
+                "-I",
+                "-S",
+                "-B",
+                str(HERE / "release_docs_bundle.py"),
+            ]
             # Act
             result = subprocess.run(
                 [*command, str(root / "w.whl"), str(root / "s.tar.gz")],
@@ -1769,9 +1782,18 @@ class SourceMetadataTests(unittest.TestCase):
         # Assert
         assert result
 
+    def test_declared_dependency_floor_is_in_producer_metadata(self):
+        # Arrange: guards the tamper case below against a no-op replacement.
+        declared = declared_dev_floor()
+        # Act
+        headers = metadata()
+        # Assert
+        assert declared in headers
+
     def test_rehashed_wheel_cannot_change_declared_dependency_floor(self):
-        # Arrange
-        headers = metadata().replace(b"scitex-dev>=0.64.3", b"scitex-dev>=0.0.1")
+        # Arrange: the floor is read from pyproject, so a floor bump keeps
+        # this tamper case meaningful.
+        headers = metadata().replace(declared_dev_floor(), b"scitex-dev>=0.0.1")
         wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
         _, sdist_raw = whole_archives()
         RELEASE.wheel_identity(wheel_raw, VERSION)
@@ -2045,12 +2067,18 @@ def owned_driver_fixture(mode):
             "failure": 'printf failed > "$TMPDIR/result"; return 37',
             "term": 'printf ready > "$FIXTURE_PARENT/ready"; while :; do sleep 1; done',
             "int": 'printf ready > "$FIXTURE_PARENT/ready"; while :; do sleep 1; done',
-            "stubborn-term": ('trap "" TERM; printf ready > "$FIXTURE_PARENT/ready"; '
-                              'while :; do sleep 1; done'),
-            "symlink": ('mv "$TMPDIR" "$TMPDIR.saved"; '
-                        'ln -s "$FIXTURE_PARENT/unrelated" "$TMPDIR"'),
-            "replacement": ('mv "$TMPDIR" "$TMPDIR.saved"; mkdir "$TMPDIR"; '
-                            'printf replacement > "$TMPDIR/retained"'),
+            "stubborn-term": (
+                'trap "" TERM; printf ready > "$FIXTURE_PARENT/ready"; '
+                "while :; do sleep 1; done"
+            ),
+            "symlink": (
+                'mv "$TMPDIR" "$TMPDIR.saved"; '
+                'ln -s "$FIXTURE_PARENT/unrelated" "$TMPDIR"'
+            ),
+            "replacement": (
+                'mv "$TMPDIR" "$TMPDIR.saved"; mkdir "$TMPDIR"; '
+                'printf replacement > "$TMPDIR/retained"'
+            ),
         }
         script.write_text(
             'set -euo pipefail\nTMPDIR="$(mktemp -d "$FIXTURE_PARENT/owned-XXXXXX")"\n'
@@ -2186,9 +2214,13 @@ class OwnedDriverCleanupTests(unittest.TestCase):
         result = owned_driver_fixture("stubborn-term")
         # Assert
         assert result == {
-            "exit": 143, "root_absent": True, "child_reaped": True,
-            "unrelated": "keep", "cleanup_refused": False,
-            "replacement_retained": None, "stdout": b""
+            "exit": 143,
+            "root_absent": True,
+            "child_reaped": True,
+            "unrelated": "keep",
+            "cleanup_refused": False,
+            "replacement_retained": None,
+            "stdout": b"",
         }
 
     def test_symlink_replacement_cannot_delete_unrelated_scratch(self):
