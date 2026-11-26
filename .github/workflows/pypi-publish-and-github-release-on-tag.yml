@@ -25,10 +25,13 @@ env:
   RELEASE_TAG: ${{ inputs.version || github.ref_name }}
 
 jobs:
+  # Native jobs run on scitex-compute-02, where the CI SIF is staged. The
+  # generic pool also holds compute-04 (disk-full; its runners lack the SIF
+  # under ~/.scitex/dev/containers), which refused v2.30.13's legs.
   admission:
     uses: scitex-ai/.github/.github/workflows/runner-admission.yml@8c646081e9f1352077d3d8674052cce7ec75a1b7
     with:
-      runs_on: '["self-hosted","Linux","X64","scitex-org-cpu"]'
+      runs_on: '["self-hosted","Linux","X64","scitex-org-cpu","scitex-compute-02"]'
 
   preflight:
     needs: admission
@@ -68,7 +71,7 @@ jobs:
   test:
     needs: [admission, preflight]
     if: needs.admission.outputs.native_authorized == 'true'
-    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu"]}') }}
+    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu","scitex-compute-02"]}') }}
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -85,7 +88,7 @@ jobs:
   build:
     needs: [admission, preflight, test]
     if: needs.admission.outputs.native_authorized == 'true'
-    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu"]}') }}
+    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu","scitex-compute-02"]}') }}
     # The Sphinx docs bundle for the wheel (PS-121) is rendered in this job;
     # a cold docs install plus the ~6 min Sphinx build needs the headroom.
     timeout-minutes: 60
@@ -107,7 +110,7 @@ jobs:
   publish:
     needs: [admission, preflight, build]
     if: needs.admission.outputs.native_authorized == 'true'
-    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu"]}') }}
+    runs-on: ${{ fromJSON('{"group":"Organization","labels":["self-hosted","Linux","X64","scitex-org-cpu","scitex-compute-02"]}') }}
     timeout-minutes: 15
     environment:
       name: pypi
