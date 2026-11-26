@@ -98,6 +98,11 @@ torch = _LazyModule(
 )  # torch numerics live in scitex-linalg (>=0.1.5)
 web = _LazyModule("web", external="scitex_web")
 db = _LazyModule("db", external="scitex_db")
+dataset = _LazyModule("dataset", external="scitex_dataset")
+hpc = _LazyModule("hpc", external="scitex_hpc")  # cluster jobs (scitex-hpc)
+live_paper = _LazyModule(
+    "live_paper", external="scitex_live_paper"
+)  # live manuscript (scitex-live-paper)
 repro = _LazyModule("repro", external="scitex_repro")
 scholar = _LazyModule("scholar", external="scitex_scholar")
 writer = _LazyModule("writer", external="scitex_writer")
@@ -272,6 +277,9 @@ __all__ = [
     "nn",
     "web",
     "db",
+    "dataset",
+    "hpc",
+    "live_paper",
     "repro",
     "scholar",
     "writer",

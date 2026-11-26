@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.11"
+version = "2.30.12"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -290,6 +290,14 @@ db = [
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
 dataset = ["scitex-dataset>=0.14.0"]
+
+# HPC Module - Cluster job submission and monitoring (scitex-hpc)
+# Use: pip install scitex[hpc]
+hpc = ["scitex-hpc>=0.8.1"]
+
+# Live Paper Module - Live manuscript with per-claim state (scitex-live-paper)
+# Use: pip install scitex[live-paper]
+live-paper = ["scitex-live-paper>=0.5.4"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -789,7 +797,7 @@ clew = ["scitex-clew>=0.36.4"]
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer>=2.44.1",  # Core writer package (single source of truth)
+    "scitex-writer>=2.44.5",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -954,7 +962,7 @@ dev = [
     "scitex-ssh>=1.2.1",
     "scitex-stats>=1.0.0",
     "scitex-ui>=0.23.1",
-    "scitex-writer>=2.44.1",
+    "scitex-writer>=2.44.5",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1033,10 +1041,12 @@ all = [
     "scitex[gists]",
     "scitex[git]",
     "scitex[heavy]",
+    "scitex[hpc]",
     "scitex[hub]",
     "scitex[introspect]",
     "scitex[io]",
     "scitex[linalg]",
+    "scitex[live-paper]",
     "scitex[logging]",
     "scitex[media]",
     "scitex[ml]",
