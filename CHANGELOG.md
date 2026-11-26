@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.30.12] - 2026-11-26
+
+### Added
+- `scitex[all]` installs the remaining research-lifecycle leaves (#428):
+  new extras `scitex[hpc]` (`scitex-hpc>=0.8.1`) and `scitex[live-paper]`
+  (`scitex-live-paper>=0.5.4`), both aggregated into `all`.
+- `stx.dataset`, `stx.hpc` and `stx.live_paper` resolve to `scitex_dataset`,
+  `scitex_hpc` and `scitex_live_paper` (lazy, like every other leaf).
+  `stx.dataset` previously raised `AttributeError` although `[all]`
+  installed scitex-dataset.
+
+### Changed
+- `scitex-writer` floor raised to 2.44.5 (PyPI latest;
+  `scripts/release/sync_member_floors.py --check` passes).
+
 ## [2.30.11] - 2026-11-26
 
 First published release carrying the 2.30.10 and 2.30.9 changes below.

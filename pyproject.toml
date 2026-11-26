@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.11"
+version = "2.30.12"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,11 +79,11 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config>=0.3.11",
     # Reproducibility Verification
-    "scitex-clew>=0.36.4",
+    "scitex-clew>=0.37.0",
     # App SDK — unified file storage for local + cloud
     "scitex-app>=0.26.1",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.66.1",
+    "scitex-dev>=0.67.0",
     "scitex-io>=0.7.0",
     "scitex-stats>=1.0.0",
     "scitex-audio>=0.3.0",
@@ -91,7 +91,7 @@ dependencies = [
     "scitex-notebook>=0.1.4",
     # Delegated modules from #51 standalonization
     "scitex-db>=0.2.1",
-    "scitex-scholar>=1.29.4",
+    "scitex-scholar>=1.29.5",
     "scitex-parallel>=0.1.9",
     "scitex-types>=0.1.7",
     "scitex-path>=0.1.7",
@@ -289,7 +289,15 @@ db = [
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = ["scitex-dataset>=0.14.0"]
+dataset = ["scitex-dataset>=0.15.0"]
+
+# HPC Module - Cluster job submission and monitoring (scitex-hpc)
+# Use: pip install scitex[hpc]
+hpc = ["scitex-hpc>=0.9.1"]
+
+# Live Paper Module - Live manuscript with per-claim state (scitex-live-paper)
+# Use: pip install scitex[live-paper]
+live-paper = ["scitex-live-paper>=0.5.4"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -653,7 +661,7 @@ scholar = [
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar>=1.29.4"
+    "scitex-scholar>=1.29.5"
 ]
 
 # Schema Module - Data schema validation
@@ -709,7 +717,7 @@ str = [
 # Use: pip install scitex[template]
 # Delegates to standalone scitex-template package (per general rule §12).
 template = [
-    "scitex-template>=0.7.4",
+    "scitex-template>=0.7.5",
 ]
 
 # Tex Module - LaTeX utilities
@@ -784,12 +792,12 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only the standard library
-clew = ["scitex-clew>=0.36.4"]
+clew = ["scitex-clew>=0.37.0"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer>=2.44.1",  # Core writer package (single source of truth)
+    "scitex-writer>=2.45.0",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -939,22 +947,22 @@ dev = [
     "scitex-audio>=0.3.0",
     "scitex-security>=0.2.0",
     "scitex-browser>=0.1.15",
-    "scitex-clew>=0.36.4",
+    "scitex-clew>=0.37.0",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) reaches dev/CI installs through [all] (scitex[cloud] etc.).
     "scitex-container>=0.4.4",
-    "scitex-dataset>=0.14.0",
-    "scitex-dev>=0.66.1",
+    "scitex-dataset>=0.15.0",
+    "scitex-dev>=0.67.0",
     "scitex-etc>=0.2.1",
     "scitex-genai>=0.2.1",
     "scitex-io>=0.7.0",
     "scitex-logging>=0.3.0",
     "scitex-notification>=0.2.9",
-    "scitex-scholar>=1.29.4",
+    "scitex-scholar>=1.29.5",
     "scitex-ssh>=1.2.1",
     "scitex-stats>=1.0.0",
     "scitex-ui>=0.23.1",
-    "scitex-writer>=2.44.1",
+    "scitex-writer>=2.45.0",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1033,10 +1041,12 @@ all = [
     "scitex[gists]",
     "scitex[git]",
     "scitex[heavy]",
+    "scitex[hpc]",
     "scitex[hub]",
     "scitex[introspect]",
     "scitex[io]",
     "scitex[linalg]",
+    "scitex[live-paper]",
     "scitex[logging]",
     "scitex[media]",
     "scitex[ml]",
@@ -1082,7 +1092,7 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev>=0.66.1"]
+linter = ["scitex-dev>=0.67.0"]
 orochi = ["scitex-orochi>=0.17.0"]
 agent-container = ["scitex-agent-container>=0.42.1"]
 

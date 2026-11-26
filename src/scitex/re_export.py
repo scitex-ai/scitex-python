@@ -308,6 +308,9 @@ EXTERNAL_REEXPORTS = {
     "security": "scitex_security",
     "session": "scitex_session",  # @scitex.session decorator + INJECTED sentinel
     "tex": "scitex_tex",
+    "dataset": "scitex_dataset",
+    "hpc": "scitex_hpc",
+    "live_paper": "scitex_live_paper",
 }
 
 
