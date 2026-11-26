@@ -22,6 +22,12 @@ so neither was published.
 - `test_completion_group_still_installs` skips when no `scitex` console
   script is on PATH (the SIF leg installs with `--target`); the command
   correctly refuses to print a completion line for a missing executable.
+- `.github/ci/run-in-sif.sh`: the test body now gets its own temp root
+  (`$OWNED_TMPDIR/tmp`). jupyter_client sets the sticky bit on the directory
+  of a kernel connection file, which turned the owned root's mode 700 into
+  1700, so the owned-cleanup identity check refused and a green suite exited
+  1. Verified by running the leg locally in the qualified SIF (sha256
+  aa5836a6...): 637 passed, exit 0.
 
 ## [2.30.10] - 2026-11-26 (tagged, not published)
 
