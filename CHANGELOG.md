@@ -7,10 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.30.10] - 2026-11-26
+## [2.30.11] - 2026-11-26
 
-First published release carrying the 2.30.9 changes below; v2.30.9 was
-tagged but its release preflight refused it, so it was never published.
+First published release carrying the 2.30.10 and 2.30.9 changes below.
+v2.30.9 and v2.30.10 were tagged but their release workflows refused them,
+so neither was published.
+
+### Fixed
+- Release test leg (complete suite in the qualified SIF, no PostgreSQL):
+  the io and clew example notebooks record Clew provenance, whose store is
+  PostgreSQL; they now take a `provenance_store` fixture that skips when
+  `tests/_database_isolation.py` reports no disposable database (they still
+  run in pytest-matrix, which provides one).
+- `test_completion_group_still_installs` skips when no `scitex` console
+  script is on PATH (the SIF leg installs with `--target`); the command
+  correctly refuses to print a completion line for a missing executable.
+
+## [2.30.10] - 2026-11-26 (tagged, not published)
+
+Tagged with the 2.30.9 changes below; its release test leg failed in the
+qualified SIF (see 2.30.11).
 
 ### Fixed
 - Release preflight refused every release: the release-identity controls'
