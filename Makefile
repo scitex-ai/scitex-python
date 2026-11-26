@@ -258,8 +258,11 @@ sync-extras:
 	@python scripts/maintenance/generate_module_deps.py --update-pyproject --include-empty 2>/dev/null || echo -e "$(YELLOW)Script not available$(NC)"
 	@echo -e "$(GREEN)✅ pyproject.toml extras updated$(NC)"
 
+# Raising floors changes the declared metadata, so the release-identity
+# controls' frozen producer headers are refreshed in the same step.
 sync-member-floors:
 	@python scripts/release/sync_member_floors.py --write
+	@uv run --no-project --with hatchling==1.30.1 python .github/ci/refresh_producer_headers.py
 
 check-member-floors:
 	@python scripts/release/sync_member_floors.py --check
