@@ -79,19 +79,19 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config>=0.3.11",
     # Reproducibility Verification
-    "scitex-clew>=0.21.0",
+    "scitex-clew>=0.36.4",
     # App SDK — unified file storage for local + cloud
     "scitex-app>=0.26.1",
     # Delegated core modules (thin re-exports)
-    "scitex-dev>=0.64.3",
-    "scitex-io>=0.4.3",
+    "scitex-dev>=0.66.1",
+    "scitex-io>=0.7.0",
     "scitex-stats>=1.0.0",
     "scitex-audio>=0.3.0",
     "scitex-notification>=0.2.9",
     "scitex-notebook>=0.1.4",
     # Delegated modules from #51 standalonization
     "scitex-db>=0.2.1",
-    "scitex-scholar>=1.29.2",
+    "scitex-scholar>=1.29.4",
     "scitex-parallel>=0.1.9",
     "scitex-types>=0.1.7",
     "scitex-path>=0.1.7",
@@ -101,10 +101,10 @@ dependencies = [
     "scitex-genai>=0.2.1",
     "scitex-gists>=0.1.8",
     "scitex-security>=0.2.0",
-    "scitex-logging>=0.2.7",
+    "scitex-logging>=0.3.0",
     "scitex-dict>=0.1.8",
     "scitex-browser>=0.1.15",
-    "scitex-str>=0.1.12",
+    "scitex-str>=0.1.14",
     "scitex-benchmark>=0.1.5",
     "scitex-context>=0.1.5",
     "scitex-cv>=0.4.0",
@@ -113,7 +113,7 @@ dependencies = [
     "scitex-os>=0.1.9",
     "scitex-pd>=0.1.6",  # pandas utilities — pinned-in-core so scitex.pd works out of the box
     "scitex-tex>=0.1.8",
-    "figrecipe>=0.44.7",
+    "figrecipe>=0.45.1",
     "scitex-ui>=0.23.1",
 ]
 
@@ -289,7 +289,7 @@ db = [
 
 # Dataset Module - Dataset management
 # Use: pip install scitex[dataset]
-dataset = ["scitex-dataset>=0.8.3"]
+dataset = ["scitex-dataset>=0.14.0"]
 
 # Datetime Module - Date and time utilities
 # Use: pip install scitex[datetime]
@@ -399,7 +399,7 @@ git = [
 # IO Module - File I/O operations
 # Use: pip install scitex[io]
 io = [
-    "scitex-io>=0.4.3",
+    "scitex-io>=0.7.0",
     "h5py",
     "openpyxl",
     "xlrd",
@@ -457,7 +457,7 @@ linalg = [
 # Use: pip install scitex[logging]
 logging = [
     "matplotlib",
-    "scitex-logging>=0.2.7",
+    "scitex-logging>=0.3.0",
 ]
 
 # Media Module - Media display utilities (always available: scitex-etc is a
@@ -555,7 +555,7 @@ plt = [
     "pyyaml",
     "joblib",
     "ruamel.yaml",
-    "figrecipe>=0.44.7",
+    "figrecipe>=0.45.1",
 ]
 
 # Project Module - Project management (OPTIONAL peer: scitex-hub.project)
@@ -607,8 +607,8 @@ rng = [
 scholar-gui = [
     "flask>=2.0.0",
     "click",
-    "crossref-local>=0.7.6",
-    "openalex-local>=0.7.6",
+    "crossref-local>=0.8.1",
+    "openalex-local>=0.7.9",
 ]
 
 # Scholar Module - Paper management & browser
@@ -648,12 +648,12 @@ scholar = [
     "sql-manager",
     "ruamel.yaml",
     # Standalone packages
-    "crossref-local>=0.7.6",
-    "openalex-local>=0.7.6",
+    "crossref-local>=0.8.1",
+    "openalex-local>=0.7.9",
     "connectedpapers-py",
     # # Heavy dependencies handled by _AVAILABLE flags
     # "torch",
-    "scitex-scholar>=1.29.2"
+    "scitex-scholar>=1.29.4"
 ]
 
 # Schema Module - Data schema validation
@@ -667,7 +667,7 @@ security = ["scitex-security>=0.2.0"]
 # Session Module - Session management
 # Use: pip install scitex[session]
 session = [
-    "scitex-session>=0.3.1",
+    "scitex-session>=0.7.0",
     "matplotlib",
     "PyYAML",
 ]
@@ -702,14 +702,14 @@ str = [
     "natsort",
     "matplotlib",
     "xarray",
-    "scitex-str>=0.1.12",
+    "scitex-str>=0.1.14",
 ]
 
 # Template Module - Project templates
 # Use: pip install scitex[template]
 # Delegates to standalone scitex-template package (per general rule §12).
 template = [
-    "scitex-template>=0.7.1",
+    "scitex-template>=0.7.4",
 ]
 
 # Tex Module - LaTeX utilities
@@ -784,12 +784,12 @@ web = [
 # Clew Module - Hash-based verification for reproducible science (Ariadne's thread)
 # Use: pip install scitex[clew]
 # Note: No extra dependencies - uses only the standard library
-clew = ["scitex-clew>=0.21.0"]
+clew = ["scitex-clew>=0.36.4"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer>=2.43.22",  # Core writer package (single source of truth)
+    "scitex-writer>=2.44.1",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -853,10 +853,10 @@ dev = [
     "click",
     "connectedpapers-py",
     "crawl4ai",
-    "crossref-local>=0.7.6",
+    "crossref-local>=0.8.1",
     "csv2latex",
     "feedparser",
-    "figrecipe>=0.44.7",
+    "figrecipe>=0.45.1",
     "flask>=2.0.0",
     "geom_median",
     "GitPython",
@@ -889,7 +889,7 @@ dev = [
     "newb>=0.26.7",
     "numcodecs",
     "openai",
-    "openalex-local>=0.7.6",
+    "openalex-local>=0.7.9",
     "openpyxl",
     "optuna",
     "pdfplumber",
@@ -935,26 +935,26 @@ dev = [
     "scholarly",
     "scikit-learn",
     "scipy",
-    "scitex-agent-container>=0.38.4",
+    "scitex-agent-container>=0.42.1",
     "scitex-audio>=0.3.0",
     "scitex-security>=0.2.0",
     "scitex-browser>=0.1.15",
-    "scitex-clew>=0.21.0",
+    "scitex-clew>=0.36.4",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) reaches dev/CI installs through [all] (scitex[cloud] etc.).
     "scitex-container>=0.4.4",
-    "scitex-dataset>=0.8.3",
-    "scitex-dev>=0.64.3",
+    "scitex-dataset>=0.14.0",
+    "scitex-dev>=0.66.1",
     "scitex-etc>=0.2.1",
     "scitex-genai>=0.2.1",
-    "scitex-io>=0.4.3",
-    "scitex-logging>=0.2.7",
+    "scitex-io>=0.7.0",
+    "scitex-logging>=0.3.0",
     "scitex-notification>=0.2.9",
-    "scitex-scholar>=1.29.2",
+    "scitex-scholar>=1.29.4",
     "scitex-ssh>=1.2.1",
     "scitex-stats>=1.0.0",
     "scitex-ui>=0.23.1",
-    "scitex-writer>=2.43.22",
+    "scitex-writer>=2.44.1",
     "seaborn",
     "selenium",
     "setuptools",
@@ -1082,9 +1082,9 @@ all = [
 # ============================================
 # Tool Configurations
 # ============================================
-linter = ["scitex-dev>=0.64.3"]
+linter = ["scitex-dev>=0.66.1"]
 orochi = ["scitex-orochi>=0.17.0"]
-agent-container = ["scitex-agent-container>=0.38.4"]
+agent-container = ["scitex-agent-container>=0.42.1"]
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"
