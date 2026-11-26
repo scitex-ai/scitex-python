@@ -11,7 +11,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex"
-version = "2.30.12"
+version = "2.30.13"
 description = "A comprehensive Python library for scientific computing and data analysis"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -79,7 +79,7 @@ dependencies = [
     # Config + env loading (scitex.helpers.load_scitex_env delegates here)
     "scitex-config>=0.3.11",
     # Reproducibility Verification
-    "scitex-clew>=0.37.0",
+    "scitex-clew>=0.37.1",
     # App SDK — unified file storage for local + cloud
     "scitex-app>=0.26.1",
     # Delegated core modules (thin re-exports)
@@ -795,12 +795,12 @@ web = [
 # for the per-user local provenance store, so a fresh machine records and
 # verifies provenance with no store configuration (scitex-dev#1111). On newer
 # Pythons the store uses system binaries (apt/brew/conda) and says so if absent.
-clew = ["scitex-clew>=0.37.0", "scitex-dev[local-store]>=0.66.1"]
+clew = ["scitex-clew>=0.37.1", "scitex-dev[local-store]>=0.67.0"]
 
 # Writer Module - Academic paper writing
 # Use: pip install scitex[writer]
 writer = [
-    "scitex-writer>=2.45.0",  # Core writer package (single source of truth)
+    "scitex-writer>=2.45.1",  # Core writer package (single source of truth)
     "yq",
     "xlsx2csv",
     "csv2latex",
@@ -950,7 +950,7 @@ dev = [
     "scitex-audio>=0.3.0",
     "scitex-security>=0.2.0",
     "scitex-browser>=0.1.15",
-    "scitex-clew>=0.37.0",
+    "scitex-clew>=0.37.1",
     # NOTE: scitex-hub (optional peer powering cloud/module/project; formerly
     # scitex-cloud) reaches dev/CI installs through [all] (scitex[cloud] etc.).
     "scitex-container>=0.4.4",
@@ -965,7 +965,7 @@ dev = [
     "scitex-ssh>=1.2.1",
     "scitex-stats>=1.0.0",
     "scitex-ui>=0.23.1",
-    "scitex-writer>=2.45.0",
+    "scitex-writer>=2.45.1",
     "seaborn",
     "selenium",
     "setuptools",
