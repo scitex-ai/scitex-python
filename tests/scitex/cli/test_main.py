@@ -16,6 +16,7 @@ click app via CliRunner.
 
 import importlib.util
 import re
+import shutil
 
 import pytest
 from click.testing import CliRunner
@@ -480,6 +481,11 @@ class TestRootHelp:
         # Assert
         assert "_SCITEX_COMPLETE" in result.stdout
 
+    # The generated script evals the installed `scitex` console script; a
+    # --target install (the release SIF leg) has the package but no script.
+    @pytest.mark.skipif(
+        shutil.which("scitex") is None, reason="scitex console script not on PATH"
+    )
     def test_completion_group_still_installs(self, invoke, tmp_path):
         # Arrange
         env = {"HOME": str(tmp_path)}

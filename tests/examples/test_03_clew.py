@@ -26,7 +26,7 @@ def test_example_notebook_exists():
 
 
 @pytest.mark.timeout(300)
-def test_example_notebook_executes_via_nbconvert(jupyter_cli, tmp_path):
+def test_example_notebook_executes_via_nbconvert(jupyter_cli, provenance_store, tmp_path):
     # Arrange
     cmd = [
         sys.executable,

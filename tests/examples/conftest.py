@@ -13,10 +13,27 @@ false-reds. The fixture skips cleanly on either gap rather than reporting
 an environment defect as a test failure.
 """
 
+import os
 import shutil
 import subprocess
 
 import pytest
+
+
+@pytest.fixture
+def provenance_store():
+    """The disposable PostgreSQL that Clew records into, or skip.
+
+    Notebooks that save through `stx.io` or call Clew write provenance to the
+    Clew store, which is PostgreSQL. tests/_database_isolation.py points
+    SCITEX_STORE_DSN at a deliberately unreachable sentinel when no
+    disposable database is configured (e.g. the release SIF test leg); there
+    the notebook cannot run, which is an environment gap, not a code defect.
+    """
+    target = os.environ.get("SCITEX_STORE_DSN", "")
+    if not target or "no_test_database_configured" in target:
+        pytest.skip("No disposable PostgreSQL configured for the Clew store")
+    return target
 
 
 @pytest.fixture

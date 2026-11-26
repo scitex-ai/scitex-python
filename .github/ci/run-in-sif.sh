@@ -141,6 +141,14 @@ readonly OWNED_TMP_ID
 export TMPDIR="$OWNED_TMPDIR"
 
 driver_body() {
+# The body gets its own temp root under the owned one. Tools legitimately
+# harden whatever TMPDIR they are given -- jupyter_client sets the sticky bit
+# on the directory of a kernel connection file -- and the owned root's
+# recorded identity (dev:inode:uid:mode 700) must stay exactly as created, or
+# cleanup refuses and a fully green suite exits 1 (seen on the v2.30.10 leg:
+# 700 -> 1700). Removing the owned root still removes all of this.
+export TMPDIR="$OWNED_TMPDIR/tmp"
+mkdir -m 700 "$TMPDIR"
 mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache"
 
 # The HPC compute-node $HOME is READ-ONLY inside the container, so uv/pip cannot
