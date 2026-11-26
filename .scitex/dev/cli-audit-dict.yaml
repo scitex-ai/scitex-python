@@ -1,0 +1,7 @@
+# scitex-dev audit-cli — vocabulary additions for the scitex umbrella CLI.
+# Format: scitex_dev/_cli/audit/_summary/_audit.py::_load_custom_dict()
+
+nouns:
+  # `scitex hpc ...` — the scitex-hpc leaf (high-performance computing),
+  # mounted as a noun group like `scitex dataset` / `scitex stats`.
+  - hpc
