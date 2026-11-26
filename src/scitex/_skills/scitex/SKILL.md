@@ -1,9 +1,9 @@
 ---
 name: scitex
 description: |
-  [WHAT] Umbrella package that lazy-re-exports every standalone SciTeX sister package (io, plt, stats, scholar, writer, cloud, container, ...) under one `import scitex` namespace.
+  [WHAT] Python umbrella that delegates scientific functionality to specialized installed packages and provides CLI/MCP integration entry points.
   [WHEN] Use when the user wants the all-in-one entry point, or asks for `import scitex`, `scitex.io`, `scitex.plt`, `@scitex.session`, or any `scitex.<sub>` access; defer to the relevant sister-package skill for sub-module specifics.
-  [HOW] `pip install scitex` then `import scitex`; sub-modules load lazily on first attribute access (see `src/scitex/__init__.py`).
+  [HOW] Inspect the installed version and command help, use `import scitex`, and consult the owning leaf package for detailed APIs and requirements.
 tags: [scitex]
 allowed-tools: mcp__scitex__*
 primary_interface: python
@@ -15,70 +15,47 @@ interfaces:
   http: 0
 ---
 
-# scitex — umbrella package
+# scitex — Python umbrella
 
-`scitex` is the user-facing aggregator for the SciTeX ecosystem. Each
-sister package (`scitex_io`, `scitex_plt`, `scitex_stats`, ...) ships
-independently on PyPI; the umbrella re-exports them lazily so a single
-`import scitex` exposes the whole stack with sub-second startup.
+Use SciTeX for shared entry points across installed scientific packages. The
+umbrella delegates domain logic; the owning leaf's version and configuration
+control the actual capability. Python API, CLI, MCP, skills and Hub Web APIs are
+complementary ecosystem interfaces, not a promise that every leaf exposes all five.
 
-## Mechanics
+## Start with the installed environment
 
-- External standalones are registered via `_EXTERNAL_REEXPORTS` and
-  wrapped with `importlib.util.LazyLoader` so `scitex.io`, `scitex.plt`,
-  etc. resolve to the top-level `scitex_<short>` package only on first
-  attribute access.
-- Native sub-modules (`scitex.gen`, `scitex.config`, ...) live under
-  `src/scitex/<name>/` and are wrapped by `_LazyModule`.
-- `scitex.session` is a `_CallableModuleWrapper` so `@scitex.session` works
-  as both a decorator and a module.
-
-See `src/scitex/__init__.py` for the full mapping.
-
-## Sub-skills index
-
-The umbrella does not duplicate sister-package documentation. For
-package-specific guidance, load the corresponding skill:
-
-| Topic | Skill |
-|-------|-------|
-| Universal I/O | `scitex-io` |
-| Plotting | `scitex-plt` (thin shim over `figrecipe`) |
-| Statistics | `scitex-stats` |
-| Scholar / literature | `scitex-scholar` |
-| Manuscript writer | `scitex-writer` |
-| Cloud platform | `scitex-cloud` |
-| Containers | `scitex-container` |
-| Notebook reproducibility | `scitex-notebook` |
-| Notifications | `scitex-notification` |
-| Audio / TTS | `scitex-audio` |
-| Datasets | `scitex-dataset` |
-| Linter | `scitex-linter` |
-| Dev tooling | `scitex-dev` |
-| Ecosystem standards | `scitex / general` |
-
-## Quick reference
-
-```python
-import scitex
-
-@scitex.session
-def main(CONFIG=scitex.INJECTED, plt=scitex.INJECTED, logger=scitex.INJECTED):
-    fig, ax = scitex.plt.subplots()
-    ax.plot_line(x, y)
-    scitex.io.save(fig, "plot.png")    # auto-exports plot.csv
-    return 0
+```bash
+scitex --version
+scitex --help
+scitex mcp --help
 ```
 
-## Mandatory leaves
+Help describes the command surface; runtime requirements need separate checks.
+Use the selected leaf's guidance before running a business operation. Retrieve
+only the skill/tool groups relevant to the task instead of injecting the whole
+catalog into an agent's context.
 
-- [01_installation.md](01_installation.md) — `pip install scitex` + extras
-- [02_quick-start.md](02_quick-start.md) — minimal `@scitex.session` script
-- [03_python-api.md](03_python-api.md) — top-level `scitex.*` surface
-- [04_cli-reference.md](04_cli-reference.md) — `scitex` console entry
+## Reference pages
 
-## MCP
+- [Installation](01_installation.md) — environments, extras and compatibility.
+- [Quick start](02_quick-start.md) — a complete synthetic plotting example.
+- [Python API](03_python-api.md) — selected entry points and source ownership.
+- [CLI and MCP](04_cli-reference.md) — discovery and server configuration.
 
-Sister-package MCP tools are mounted under namespaced prefixes
-(`io_*`, `plt_*`, `stats_*`, `scholar_*`, ...) on the umbrella server
-exposed by `scitex.mcp_server`.
+## Domain ownership
+
+| Topic | Owning package |
+|---|---|
+| File I/O | scitex-io |
+| Figures and recipes | figrecipe |
+| Statistics | scitex-stats |
+| Literature | scitex-scholar |
+| Manuscripts | scitex-writer |
+| Experiment lifecycle | scitex-session |
+| Provenance | scitex-clew |
+| Discovery, checks and skill tooling | scitex-dev |
+| App primitives / GUI hosting | scitex-sdk / scitex-hub |
+
+Source maps live in `scitex.re_export`, with facade setup in `scitex.__init__`.
+Some older aliases remain for compatibility. Do not infer a supported CLI or
+Web endpoint merely from a Python alias or installed distribution name.
