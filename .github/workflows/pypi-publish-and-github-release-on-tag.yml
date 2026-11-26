@@ -51,6 +51,14 @@ jobs:
           python-version: '3.12'
       - name: Check the release identity and archive refusal controls
         run: python .github/ci/test_release_identity.py
+      # 2.30.8 shipped exact pins months behind PyPI, so `pip install -U
+      # 'scitex[all]'` downgraded newer members. Refuse to publish while any
+      # member floor is older than its PyPI latest (or PyPI is unreachable).
+      # Fix with: python scripts/release/sync_member_floors.py --write
+      - name: Refuse member floors older than PyPI latest
+        run: |
+          python -m pip install --quiet packaging
+          python scripts/release/sync_member_floors.py --check
       - id: identity
         name: Resolve the existing tag and promoted project version
         env:
