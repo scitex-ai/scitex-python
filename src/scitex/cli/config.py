@@ -161,7 +161,13 @@ def list_config(env, exists, as_json):
     is_flag=True,
     help="Show what would be created without creating",
 )
-def init_config(dry_run):
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (init never prompts; accepted for scripts).",
+)
+def init_config(dry_run, yes):
     """
     Initialize all SciTeX directories.
 
@@ -172,6 +178,7 @@ def init_config(dry_run):
       scitex config init            # Create all directories
       scitex config init --dry-run  # Show what would be created
     """
+    del yes  # init only creates missing directories; nothing to confirm
     from scitex.config import ScitexPaths
 
     paths = ScitexPaths()
@@ -204,7 +211,8 @@ def init_config(dry_run):
 
 @config.command("show")
 @click.argument("path_name")
-def show_path(path_name):
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+def show_path(path_name, as_json):
     """
     Show a specific configured path.
 
@@ -219,6 +227,7 @@ def show_path(path_name):
     Examples:
       scitex config show logs
       scitex config show scholar_library
+      scitex config show logs --json
     """
     from scitex.config import ScitexPaths
 
@@ -226,6 +235,11 @@ def show_path(path_name):
 
     if hasattr(paths, path_name):
         path = getattr(paths, path_name)
+        if as_json:
+            import json
+
+            click.echo(json.dumps({"name": path_name, "path": str(path)}))
+            return
         click.echo(str(path))
     else:
         available = list(paths.list_all().keys())

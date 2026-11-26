@@ -58,13 +58,7 @@ class _LazyModule:
         # `scitex.<name>`. This lets the umbrella drop pure re-export shim
         # directories — no source tree under `src/scitex/<name>/` is required.
         self._external = external
-        # `fallback` is a secondary external tried when the primary `external`
-        # is not importable. Used where two packages absorbed each other in
-        # conflicting ADRs (e.g. scitex.security: ADR-0001 #139 routed it to
-        # `scitex_audit.github`, while ADR-0002 #142 made `scitex_security`
-        # the unified home and `scitex-audit` the deprecated shim). The
-        # fallback keeps `scitex.security` reachable whichever package is
-        # actually installed, instead of dying with a bare ModuleNotFoundError.
+        # Optional secondary provider for other compatibility surfaces.
         self._fallback = fallback
         self._module = None
 
@@ -288,7 +282,7 @@ EXTERNAL_REEXPORTS = {
     "etc": "scitex_etc",
     "media": "scitex_etc.media",  # in-tree dir removed; shipped in scitex-etc (>=0.2.0)
     "gists": "scitex_gists",
-    "audit": "scitex_audit",
+    "audit": "scitex_security",
     "compat": "scitex_compat",
     "repro": "scitex_repro",
     "app": "scitex_app",
@@ -310,29 +304,15 @@ EXTERNAL_REEXPORTS = {
     "introspect": "scitex_introspect",
     "msword": "scitex_msword",
     "os": "scitex_os",
-    # `scitex.security`: ADR-0001 (scitex-dev #139, 2026-06-07) routed it to
-    # `scitex_audit.github` (scitex-security absorbed into scitex-audit 0.2.0).
-    # ADR-0002 (#142) then REVERSED the direction: `scitex_security` 0.2.0 is
-    # the unified home and `scitex-audit` is now the deprecated thin shim.
-    # The two ADRs conflict, and which package is installed varies. Primary
-    # stays `scitex_audit.github` (ADR-0001 SSOT); `_EXTERNAL_FALLBACKS` adds
-    # `scitex_security` so the module stays reachable whichever side resolves.
-    # The 5 public symbols (check_github_alerts, save_alerts_to_file,
-    # get_latest_alerts_file, format_alerts_report, GitHubSecurityError) are
-    # exposed by both.
-    "security": "scitex_audit.github",
+    # Both public security entry points use the canonical provider.
+    "security": "scitex_security",
     "session": "scitex_session",  # @scitex.session decorator + INJECTED sentinel
     "tex": "scitex_tex",
 }
 
 
-# Secondary external tried when the primary `EXTERNAL_REEXPORTS[<short>]` is
-# not importable. Keeps `import scitex.<short>` and `scitex.<short>.X` working
-# across the conflicting security ADRs (see the `security` note above). Mirrors
-# the `fallback=` argument of `_LazyModule`.
-_EXTERNAL_FALLBACKS = {
-    "security": "scitex_security",
-}
+# Optional secondary providers; retired security packages are never selected.
+_EXTERNAL_FALLBACKS = {}
 
 
 def register_external_lazy_modules() -> None:

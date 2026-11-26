@@ -236,5 +236,79 @@ def test_peer_extras_registration_folds_in_brand_renamed_tools():
     # Assert
     assert any(n.startswith("plt_stx_") for n in local)
 
+# --------------------------------------------------------------------------- #
+# Import is side-effect free: the server (and its threaded peer resolve) is
+# built only on first access to ``mcp``. Checked in a fresh interpreter so a
+# server already built by another test in this process cannot mask it.
+# --------------------------------------------------------------------------- #
+
+_PROBE_IMPORT_ONLY = """
+import json, sys, threading
+import scitex._mcp as m
+import scitex.mcp_server  # back-compat shim must not build it either
+print(json.dumps({
+    "built": m._server is not None,
+    "resolver_threads": [t.name for t in threading.enumerate()
+                         if t.name.startswith("scitex-mcp-resolve-")],
+}))
+"""
+
+_PROBE_ACCESS = """
+import json
+import scitex._mcp as m
+from scitex.mcp_server import mcp as via_shim
+first = m.mcp
+print(json.dumps({
+    "same_object": first is m.mcp is via_shim is m.get_server(),
+    "name": first.name,
+}))
+"""
+
+
+def _run_probe(code: str) -> dict:
+    import json
+    import os
+    import subprocess
+    import sys
+
+    env = {**os.environ, "SCITEX_MCP_PEER_TIMEOUT": "60"}
+    proc = subprocess.run(
+        [sys.executable, "-c", code],
+        capture_output=True,
+        text=True,
+        timeout=300,
+        env=env,
+        check=True,
+    )
+    return json.loads(proc.stdout.strip().splitlines()[-1])
+
+
+def test_importing_mcp_module_does_not_build_server():
+    # Arrange
+    probe = _PROBE_IMPORT_ONLY
+    # Act
+    result = _run_probe(probe)
+    # Assert
+    assert result == {"built": False, "resolver_threads": []}
+
+
+def test_mcp_attribute_builds_one_shared_server_on_first_access():
+    # Arrange
+    probe = _PROBE_ACCESS
+    # Act
+    result = _run_probe(probe)
+    # Assert
+    assert result == {"same_object": True, "name": "scitex"}
+
+
+def test_unknown_module_attribute_raises_attribute_error():
+    # Arrange
+    from scitex import _mcp
+
+    # Act
+    has_attr = hasattr(_mcp, "no_such_attribute")
+    # Assert
+    assert has_attr is False
+
 
 # EOF

@@ -8,8 +8,9 @@ server verbatim. A few peers need brand-naming or tool-name adjustments
 that the generic loop cannot express:
 
 * figrecipe ``fr_*`` tools -> re-exposed as ``plt_stx_*`` (scitex branding).
-* socialia core tools -> registered as ``social_*`` (a curated subset:
-  post/delete/status), in addition to the full ``socialia_*`` mount.
+* socialia tools -> registered through socialia's own ``register_all_tools``
+  (``social_*`` incl. ``social_analytics_*``), in addition to the full
+  ``socialia_*`` mount. Delegating keeps new socialia tool modules reachable.
 * scitex_dev.linter MCP tools -> ``linter_*`` (engine moved out of the
   archived scitex-linter package).
 * scitex_cloud -> optional mount under ``cloud`` (not in the ecosystem
@@ -20,9 +21,9 @@ Each helper is best-effort: a missing optional peer logs and is skipped.
 
 from __future__ import annotations
 
-import logging
+import scitex_logging as slogging
 
-logger = logging.getLogger(__name__)
+logger = slogging.getLogger(__name__)
 
 __all__ = ["register_peer_extras"]
 
@@ -53,16 +54,16 @@ def _register_figrecipe_plt_stx(mcp) -> None:
 
 
 def _register_social_core(mcp) -> None:
-    """Register socialia's core social_* tools (post/delete/status)."""
+    """Register socialia's social_* tools via socialia's own register_all_tools."""
     try:
-        from socialia._mcp.tools import social
+        from socialia._mcp.tools import register_all_tools
     except ImportError:
         logger.debug("socialia not installed — social_* tools skipped")
         return
     try:
-        social.register_tools(mcp)
+        register_all_tools(mcp)
     except Exception as exc:  # noqa: BLE001 — diagnostic, never fatal
-        logger.warning("socialia core social_* registration failed: %s", exc)
+        logger.warning("socialia social_* registration failed: %s", exc)
 
 
 def _register_linter(mcp) -> None:

@@ -91,7 +91,6 @@ class LazyGroup(click.Group):
         cleanly via click's "No such command" path. See ywatanabe1989/todo#279.
         """
         import importlib
-        import logging
 
         module_path_or_candidates, attr_name, _ = self._lazy_subcommands[cmd_name]
         # Two shapes:
@@ -123,7 +122,9 @@ class LazyGroup(click.Group):
             if isinstance(cmd, (click.Command, click.Group)):
                 return cmd
         if last_exc is not None:
-            logging.getLogger(__name__).debug(
+            import scitex_logging as slogging
+
+            slogging.getLogger(__name__).debug(
                 "Lazy-loaded subcommand %r unavailable (no candidate resolved): %s",
                 cmd_name,
                 last_exc,
@@ -132,9 +133,39 @@ class LazyGroup(click.Group):
 
 
 # Registry-driven subcommand wiring. See ``_lazy_subcommands.py``.
-from ._lazy_subcommands import DEPRECATED_ALIASES, build_lazy_subcommands
+from ._lazy_subcommands import (
+    DEPRECATED_ALIASES,
+    RENAMED_MOUNTS,
+    build_lazy_subcommands,
+)
 
 _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
+
+from scitex.__version__ import __version__  # noqa: E402
+
+_ROOT_HELP = f"""scitex (v{__version__}) — Integrated Scientific Research Platform (SciTeX).
+
+\b
+Examples:
+  scitex config list                    # Show configured paths
+  scitex cloud clone user/project       # Clone from cloud
+  scitex scholar bibtex papers.bib      # Manage papers
+  scitex audio speak "Hello"            # Text-to-speech
+  scitex mcp list-tools                 # List MCP tools
+  scitex mcp start                      # Start MCP server
+
+\b
+Configuration:
+  Paths resolve under $SCITEX_DIR (default ~/.scitex/). Peer packages
+  read ~/.scitex/<name>/config.yaml (e.g. ~/.scitex/io/config.yaml).
+  `scitex config list` shows every resolved path.
+
+\b
+Enable tab-completion:
+  scitex install-shell-completion      # Install for your shell
+  scitex install-shell-completion --dry-run  # Preview without writing
+  scitex print-shell-completion --shell zsh  # Print the script
+"""
 
 
 @click.group(
@@ -142,6 +173,7 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
     lazy_subcommands=_LAZY_SUBCOMMANDS,
     context_settings={"help_option_names": ["-h", "--help"]},
     invoke_without_command=True,
+    help=_ROOT_HELP,
 )
 @click.version_option(None, "-V", "--version")
 @click.option("--help-recursive", is_flag=True, help="Show help for all commands")
@@ -157,24 +189,6 @@ _LAZY_SUBCOMMANDS = build_lazy_subcommands(os.path.dirname(__file__))
 )
 @click.pass_context
 def cli(ctx, help_recursive, as_json):
-    """
-    Integrated Scientific Research Platform (SciTeX).
-
-    \b
-    Examples:
-      scitex config list                    # Show configured paths
-      scitex cloud clone user/project       # Clone from cloud
-      scitex scholar bibtex papers.bib      # Manage papers
-      scitex audio speak "Hello"            # Text-to-speech
-      scitex mcp list-tools                 # List MCP tools
-      scitex mcp start                      # Start MCP server
-
-    \b
-    Enable tab-completion:
-      scitex completion install            # Install for your shell
-      scitex completion install --dry-run  # Preview without writing
-      scitex completion status             # Check installation status
-    """
     ctx.ensure_object(dict)["as_json"] = as_json
     # #211: top-level `--json <sub>` can't propagate to subcommand click.options.
     # Warn once on stderr so agent scripts piping to jq learn the right form.
@@ -204,18 +218,41 @@ def cli(ctx, help_recursive, as_json):
 
 # Retired duplicate namespaces (notify/verify/events/socialia) become
 # hidden warn-phase aliases that forward to the canonical name — the
-# doctrine 3-phase deprecation ladder (Warn -> Error -> Removed). The
-# helper ships with scitex-dev > 0.21.0; with an older scitex-dev the
-# duplicates are simply excluded (build_lazy_subcommands never registers
-# them), so canonical names are the only surface either way.
-try:
-    from scitex_dev._ecosystem.click_compat import deprecated_alias
-except ImportError:
-    deprecated_alias = None
+# doctrine 3-phase deprecation ladder (Warn -> Error -> Removed), via
+# scitex-dev's shared helper (a core dependency).
+from scitex_dev._ecosystem.click_compat import deprecated_alias  # noqa: E402
 
-if deprecated_alias is not None:
-    for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
-        deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
+for _old, (_new, _remove_in) in DEPRECATED_ALIASES.items():
+    deprecated_alias(cli, _old, target=_new, remove_in=_remove_in)
+
+# Umbrella commands renamed to the noun/verb convention (RENAMED_MOUNTS):
+# the old names stay as hidden aliases that print a deprecation note.
+# A pure group rename forwards through a path target so `--help` and
+# subcommands reach the new group; `audit` was split in two, so it uses
+# its own routing forwarder (scitex.cli.audit.audit).
+from ._deprecation import REMOVE_IN as _RENAME_REMOVE_IN  # noqa: E402
+
+for _old, _new_mounts in RENAMED_MOUNTS.items():
+    if not all(_new in _LAZY_SUBCOMMANDS for _new, _attr in _new_mounts):
+        continue
+    if len(_new_mounts) == 1:
+        deprecated_alias(
+            cli, _old, target=(_new_mounts[0][0],), remove_in=_RENAME_REMOVE_IN
+        )
+    else:
+        import importlib
+
+        _module = importlib.import_module(_LAZY_SUBCOMMANDS[_new_mounts[0][0]][0])
+        cli.add_command(getattr(_module, _old.replace("-", "_")), _old)
+
+# §1a: canonical install-/print-shell-completion leaves (scitex-dev helper).
+# The helper also registers a hidden `completion` redirect; the umbrella
+# keeps its own `completion` noun group (scitex/cli/completion.py), so the
+# helper's redirect is dropped instead of shadowing that group.
+from scitex_dev._cli._completion import attach_shell_completion  # noqa: E402
+
+attach_shell_completion(cli, prog_name="scitex")
+cli.commands.pop("completion", None)
 
 
 def _get_all_command_paths(group, prefix=""):
@@ -260,7 +297,14 @@ def _print_help_recursive(ctx):
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
 @click.pass_context
 def list_python_apis(ctx, verbose, max_depth, as_json):
-    """List all scitex Python APIs (alias for: scitex introspect api scitex)."""
+    """List all scitex Python APIs (same as: scitex introspection list-api scitex).
+
+    \b
+    Examples:
+      scitex list-python-apis
+      scitex list-python-apis -v --max-depth 2
+      scitex list-python-apis --json
+    """
     from .introspect import api
 
     ctx.invoke(

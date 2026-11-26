@@ -279,7 +279,7 @@ SciTeX provides a unified CLI that mirrors the Python module structure.
    scitex capture snap                     # Take a screenshot
 
    # Introspection
-   scitex introspect api scitex.stats      # List APIs for a module
+   scitex introspection list-api scitex.stats  # List APIs for a module
    scitex list-python-apis                 # List all Python APIs
    scitex mcp list-tools                   # List all MCP tools
 

@@ -23,10 +23,12 @@ def main():
     # Check dependencies first
     missing = _check_cli_dependencies()
     if missing:
-        print("SciTeX CLI missing dependencies:")
-        for pkg, install in missing:
-            print(f"  - {pkg}: {install}")
-        print("\nOr install all CLI deps: pip install scitex[cli]")
+        import scitex_logging as slogging
+
+        lines = ["SciTeX CLI missing dependencies:"]
+        lines += [f"  - {pkg}: {install}" for pkg, install in missing]
+        lines.append("\nOr install all CLI deps: pip install scitex[cli]")
+        slogging.getLogger(__name__).error("\n".join(lines))
         sys.exit(1)
 
     try:
@@ -34,7 +36,9 @@ def main():
 
         cli()
     except ImportError as e:
-        print(f"SciTeX CLI import error: {e}")
+        import scitex_logging as slogging
+
+        slogging.getLogger(__name__).error("SciTeX CLI import error: %s", e)
         import traceback
 
         traceback.print_exc()

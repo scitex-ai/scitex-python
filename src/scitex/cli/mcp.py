@@ -5,12 +5,15 @@
 SciTeX MCP CLI - Model Context Protocol server management commands.
 
 Commands:
-- scitex mcp list       List all available MCP tools
-- scitex mcp doctor     Check MCP server health and configuration
-- scitex mcp serve      Start the unified MCP server
+- scitex mcp list-tools         List all available MCP tools
+- scitex mcp doctor             Check MCP server health and configuration
+- scitex mcp start              Start the unified MCP server
+- scitex mcp show-installation  Show the Claude Desktop configuration
 """
 
 import click
+
+from ._mcp_helpers import _format_signature, _get_all_tools, _get_mcp_summary
 
 
 @click.group(invoke_without_command=True)
@@ -36,97 +39,6 @@ def mcp(ctx, help_recursive, as_json):
             click.echo(ctx.get_help())
 
 
-def _extract_return_keys(description: str) -> list:
-    """Extract return dict keys from docstring Returns section."""
-    import re
-
-    if not description or "Returns" not in description:
-        return []
-    match = re.search(
-        r"Returns\s*[-]+\s*\w+\s*(.+?)(?:Raises|Examples|Notes|\Z)",
-        description,
-        re.DOTALL,
-    )
-    if not match:
-        return []
-    return re.findall(r"'([a-z_]+)'", match.group(1))
-
-
-def _format_signature(tool_obj, multiline: bool = False, indent: str = "  ") -> str:
-    """Format tool as Python-like function signature with return type."""
-    params = []
-    if hasattr(tool_obj, "parameters") and tool_obj.parameters:
-        schema = tool_obj.parameters
-        props = schema.get("properties", {})
-        required = schema.get("required", [])
-        for name, info in props.items():
-            ptype = info.get("type", "any")
-            default = info.get("default")
-            if name in required:
-                p = f"{click.style(name, fg='white', bold=True)}: {click.style(ptype, fg='cyan')}"
-            elif default is not None:
-                def_str = repr(default) if len(repr(default)) < 20 else "..."
-                p = f"{click.style(name, fg='white', bold=True)}: {click.style(ptype, fg='cyan')} = {click.style(def_str, fg='yellow')}"
-            else:
-                p = f"{click.style(name, fg='white', bold=True)}: {click.style(ptype, fg='cyan')} = {click.style('None', fg='yellow')}"
-            params.append(p)
-    # All MCP tools return standardized Result envelope
-    ret_type = (
-        f" -> {click.style('Result', fg='magenta')}"
-        f"{click.style('{success, data, error, next_steps}', fg='yellow')}"
-    )
-    name_s = click.style(tool_obj.name, fg="green", bold=True)
-    if multiline and len(params) > 2:
-        param_indent = indent + "    "
-        params_str = ",\n".join(f"{param_indent}{p}" for p in params)
-        return f"{indent}{name_s}(\n{params_str}\n{indent}){ret_type}"
-    return f"{indent}{name_s}({', '.join(params)}){ret_type}"
-
-
-def _estimate_tokens(text: str) -> int:
-    """Estimate token count (rough: ~4 chars per token)."""
-    return len(text) // 4 if text else 0
-
-
-def _get_all_tools(mcp_server) -> dict:
-    """Get ALL tools including mounted sub-servers (crossref, openalex)."""
-    from scitex._mcp import get_tools_sync
-
-    return get_tools_sync(mcp_server)
-
-
-def _get_mcp_summary(mcp_server, all_tools: dict | None = None) -> dict:
-    """Get MCP server summary statistics."""
-    import json as json_mod
-
-    if all_tools is None:
-        all_tools = _get_all_tools(mcp_server)
-    tools = list(all_tools.values())
-    instructions = getattr(mcp_server, "instructions", "") or ""
-    total_desc = sum(len(t.description or "") for t in tools)
-    total_params = sum(
-        (
-            len(json_mod.dumps(t.parameters))
-            if hasattr(t, "parameters") and t.parameters
-            else 0
-        )
-        for t in tools
-    )
-
-    return {
-        "name": getattr(mcp_server, "name", "unknown"),
-        "tool_count": len(tools),
-        "instructions_tokens": _estimate_tokens(instructions),
-        "descriptions_tokens": _estimate_tokens("x" * total_desc),
-        "schemas_tokens": _estimate_tokens("x" * total_params),
-        "total_context_tokens": (
-            _estimate_tokens(instructions)
-            + _estimate_tokens("x" * total_desc)
-            + _estimate_tokens("x" * total_params)
-        ),
-    }
-
-
 @mcp.command("list-tools")
 @click.option("-v", "--verbose", count=True, help="Verbosity: -v, -vv, -vvv.")
 @click.option("-c", "--compact", is_flag=True, help="Compact signatures (single line)")
@@ -146,14 +58,21 @@ def list_tools(
 
     Verbosity: (none) names, -v signatures, -vv +description, -vvv full.
     Signatures are expanded by default; use -c/--compact for single line.
+
+    \b
+    Examples:
+      scitex mcp list-tools
+      scitex mcp list-tools -v --module stats
+      scitex mcp list-tools --json --summary
     """  # noqa: D301
-    import logging
     import warnings
+
+    import scitex_logging as slogging
 
     # Suppress DeprecationWarnings from third-party libraries (httplib2, etc.)
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     # Suppress INFO messages from env loader during import
-    logging.getLogger("scitex.helpers._env_loader").setLevel(logging.WARNING)
+    slogging.getLogger("scitex.helpers._env_loader").setLevel(slogging.WARNING)
     try:
         from scitex._mcp import FASTMCP_AVAILABLE
         from scitex._mcp import mcp as mcp_server
@@ -302,7 +221,13 @@ def list_tools(
 @mcp.command("doctor")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed diagnostics")
 def doctor(verbose: bool):
-    """Check MCP server health and configuration."""
+    """Check MCP server health and configuration.
+
+    \b
+    Examples:
+      scitex mcp doctor
+      scitex mcp doctor --verbose
+    """
     issues = []
     warnings = []
 
@@ -472,8 +397,29 @@ def _print_help_recursive(ctx):
 @click.option(
     "--port", "-p", default=8085, type=int, help="Port to bind (default: 8085)"
 )
-def start(transport: str, host: str, port: int):
-    """Start the unified MCP server."""
+@click.option(
+    "--dry-run", is_flag=True, help="Print the server settings without starting it."
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (start never prompts; accepted for scripts).",
+)
+def start(transport: str, host: str, port: int, dry_run: bool, yes: bool):
+    """Start the unified MCP server.
+
+    \b
+    Examples:
+      scitex mcp start
+      scitex mcp start --transport http --port 8085
+      scitex mcp start --transport sse --dry-run
+    """
+    del yes  # starting the server changes no files; nothing to confirm
+    if dry_run:
+        where = "" if transport == "stdio" else f" on {host}:{port}"
+        click.echo(f"[dry-run] Would start the SciTeX MCP server ({transport}){where}")
+        return
     try:
         from scitex._mcp import run_server
     except ImportError:
@@ -484,19 +430,45 @@ def start(transport: str, host: str, port: int):
     run_server(transport=transport, host=host, port=port)
 
 
-@mcp.command("installation")
-def installation():
-    """Show Claude Desktop configuration for SciTeX MCP server."""
+@mcp.command("show-installation")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+def installation(as_json: bool):
+    """Show Claude Desktop configuration for SciTeX MCP server.
+
+    \b
+    Examples:
+      scitex mcp show-installation
+      scitex mcp show-installation --json
+    """
     import shutil
     import sys
 
     from scitex import __version__
 
+    scitex_path = shutil.which("scitex")
+    if as_json:
+        import json
+
+        click.echo(
+            json.dumps(
+                {
+                    "version": __version__,
+                    "scitex_path": scitex_path,
+                    "python_path": sys.executable,
+                    "mcpServers": {
+                        "scitex": {
+                            "command": scitex_path or "/path/to/.venv/bin/scitex",
+                            "args": ["mcp", "start"],
+                        }
+                    },
+                }
+            )
+        )
+        return
+
     click.secho(f"SciTeX MCP Server v{__version__}", fg="cyan", bold=True)
     click.echo()
 
-    # Get actual path
-    scitex_path = shutil.which("scitex")
     python_path = sys.executable
 
     if scitex_path:
@@ -516,6 +488,12 @@ def installation():
   "args": ["mcp", "start"]
 }}"""
     click.secho(config, fg="yellow")
+
+
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
+
+alias_renamed(mcp, {"installation": "show-installation"})
 
 
 # EOF

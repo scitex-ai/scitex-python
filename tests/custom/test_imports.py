@@ -56,6 +56,7 @@ This helps catch:
 import importlib
 import inspect
 import pkgutil  # noqa: F401
+import subprocess
 import sys
 from pathlib import Path
 from typing import List, Set, Tuple  # noqa: F401
@@ -107,18 +108,27 @@ class TestLazyImports:
     """Test that lazy-loaded modules don't get imported at module load time."""
 
     def test_torch_not_imported_at_module_level(self):
-        """Test that torch is not imported when loading scitex.types."""
-        # Clear torch from sys.modules if it exists
-        torch_modules = [m for m in sys.modules if m.startswith("torch")]
-        for module in torch_modules:
-            del sys.modules[module]
+        """Test that torch is not imported when loading scitex.types.
 
-        # Import scitex.types
-        from scitex import types  # noqa: F401
+        Checked in a fresh interpreter. Evicting ``torch`` from this
+        process's ``sys.modules`` instead would make every later
+        ``import torch`` in the same pytest worker re-execute torch's
+        ``__init__``, which torch>=2.15 refuses ("can only be initialized
+        once per process").
+        """
+        code = (
+            "import sys; from scitex import types; "
+            "print('torch' in sys.modules)"
+        )
+        proc = subprocess.run(
+            [sys.executable, "-c", code],
+            capture_output=True,
+            text=True,
+            timeout=300,
+            check=True,
+        )
 
-        # torch should still not be in sys.modules
-        # (it might be if used elsewhere, but not from the types module)
-        assert "torch" not in sys.modules or torch_modules, (
+        assert proc.stdout.strip().splitlines()[-1] == "False", (
             "torch should not be imported at types module level"
         )
 

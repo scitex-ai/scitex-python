@@ -35,6 +35,13 @@ HELPER_SHA = hashlib.sha256(HELPER.read_bytes()).hexdigest()
 SPEC = importlib.util.spec_from_file_location("owned_umbrella_release_identity", HELPER)
 RELEASE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(RELEASE)
+DOCS = RELEASE.DOCS
+# Synthetic stand-in for the release-time Sphinx bundle (gitignored, untracked).
+DOCS_FILES = {
+    "index.html": b"<html>scitex docs</html>\n",
+    "_static/basic.css": b"body { margin: 0 }\n",
+    "api/scitex.io.html": b"<html>io</html>\n",
+}
 CONFIG = "scitex/cli/__init__.py"
 SCRIPT = "scitex/__version__.py"
 PREFIX = "repos/scitex-ai/scitex-python"
@@ -67,71 +74,67 @@ SCRIPT_BYTES = git("show", SOURCE + ":src/" + SCRIPT)
 INIT_BYTES = git("show", SOURCE + ":src/scitex/__init__.py")
 LICENSE_BYTES = git("show", SOURCE + ":LICENSE")
 
-# Frozen static metadata from the existing Hatchling 1.27.0 producer, bound to
-# public f34 pyproject (42 core requirements / 77 extras). No backend build.
+# Frozen static metadata from the pinned Hatchling 1.30.1 producer, bound to
+# public pyproject (42 core requirements / 77 extras). No backend build.
 PRODUCER_HEADERS = zlib.decompress(
     base64.b85decode(
-        b"c$}r3U3c8J5r*&eEA}oorew*E6RWjPoy2W(>U<nKZBI{6FR&!E3yUOZ5|p(4^&ODhl@{|3fK4xw*xYA85&#D?gO|"
-        b")t+Nnx8Rs2KugR$-P>gxRE+0Uxc*Q=p4PCuMI`Q^p)^Vese#->sI?t1lZRobTO^;Wloxznp(cW!IjRc+Qi{l2=fy"
-        b">CLd&fJ)CVn=7%%}TY^%Ab?|pz7UVhO=LL`&pN+`1{8X*Q>wUMt5qXpRKmeb;I?=#m2bpxIU*AE_U~1*s8U@eEsd"
-        b"~i}?zRZaVRCD?iwBZ0Ov|(X~G|HCvqbT2*eVD_aid#vWUK)SVrSv;FS>yMph=&FZ&amAAS-wV?|$45J>--i`FPzR"
-        b"-;__4Vps<1pUp)jt=r)gKQn{Asx@W!|2BFeQzLF5W-T&<yj)z5C0rABq>}&kNhuy94oOQ`0Da`0@MqKYx0E_BXw|"
-        b"w|zBSPh(T;$L3k1%B^X2QESz=G<?rmJ@%?DTJ4Cx9iGuy=%;e~>~XM*!(cxf%!XPjy55%lYTC`&_qC!w+!)={DCs"
-        b"+0+s+Tv>JyFCIIOO(S1(t^>N}d4N9d2O(`}`z)w{8x^OV|?i#^TIH2bNX{&?|mx!xm-U#JZ=&CXA|!Rf{u{PKw!s"
-        b"&wa@YTXe|1HI{0(|Cgqs@;q<U%kol2+*HioXVeHK0n>$@^q7{(@l==<u}{W<Gk<CX}mAqw;P%xx(~-U!TMj`_0wU"
-        b"a>S@^O+HCwVo!ZQgE%}>fdfHd-_I?GoVQ<{M>h;m&qvIbYzh(6B<o<uM)mYPm_)&iu4Ndf7K7PG=`(_%j!|@-?;I"
-        b"3C|t!UQYjP+p0?&aGzFR8oF8CBM%ynXxT+w<rAw;QwRb!j^N=FRi-tJmai1E5uIu)Sl4$EMqb2Rm{;YU9U*{m@ow"
-        b"U`Ka5)zsn9#WAU_n=a|q`K3hAvt~W>g5TB?#7)hJ$eIR!OY6(6$1cymmayL554xYBONlCLeLtP<QaqpcRLafmu+B"
-        b"a(Ese{3Yp-O6{<AdnQiAT{H(#xn8@iGJJ+<)a>RcpDxm?7z0-;?wUxhS~^!zEaT!@6wUxxT;OzV0(bb5a|-$>jtX"
-        b"I==u*LLHl@O;VAT{nYYyXJ-@rnOG5tz9Nog!1lXawPLPrCDJU9ndLSCTm@%D7TGwP*=^rOEa(6w7ABb7|N}!6+JC"
-        b"9HN}n|X#E|QZk8tS;QGW2rGMhr;&z=L;&(Jov+oM{5%;BPe3W%(DmwQ5!S(8TMN3xerUy{biqK2G=a^dD!sX>3R@"
-        b"yhSdh=%WRlt13PgOJjsEqZ&-BB}j{T0Jnx9$BBlmd^}kR)x^baOP-$QdTt(bQE6qM1(*$>5TlU&NA-ZCi2xy6TjV"
-        b"(I~o2TJ-9^eyL2Fv%}Eq8*&e&njW!l&R->shP$g;QGcbt8|^PSr%%~>oiw13gckoRzxb!vjkZnE=*p-zi5fSj4oT"
-        b"43O|54ipJaRcCB<yNP7mtVHT9KW9n+xel7nNKwW<|`h}E2vB>Apdr<ttI`>c{z_nC$($=Ed|$w_Lg%{Zi}+UI7p0"
-        b"NhYAmz=HjLsRE4g&#2=J*6j}57jDrpUqvRLD$vRWpq$eCcSQ>8_MIe`=@Dj5*d<1((KZYL_=9-k>_Hbpp)N7@k@q"
-        b"~#MVPciT%S{a$HHT)oQv1HSF5b*fe{;UQ&f`lI+-&w$f#?PbtUGa99&nPeEh;s^E>vyCTm6c(~g=B%dPNxv^C#s;"
-        b"h3gdTiF|NzfVnU~bY>UEBL4Rjb{7Z#LWH9C;+)`p_|B$(kPB<m~Ty?GvxYq_1G0U?|z!-LNZdx4A0Trd56V^gGq}"
-        b"8U3`YC~8YbY~60-YY53X-0jG>`O0I)aPMf@&wxgnL21mV`!?e?@*2}U#ePZ8+wJmZ*v{#JJew->&`c`VS1ojD?=n"
-        b"f<=8~TW+xpxr!xb+UjZH_?3+n&Xq`lRiHjTDp?qxhwCaastTNX5}k`d8@)<aj&K;Pv|erNk~ORKgfjN+TBxXbVqQ"
-        b"}rrEed+yr^KWvL|4E_#NmXl88@DTR0w>RxTa~=Mp8iVxoOBnx={kzkEA1$SGU>sl>@pd>^rLEYUF7ssKi(w0!BSU"
-        b"9JABH)Z;i`~*NIKXPp2gH5%b5QX0FAPBIgMv`=V#2Nl@L)w0c_Y%r$vh{miy`+S}PZ=XaF`?dG5?+vrdb%{6!|km"
-        b"g!E7ECiO9t)_M22TsBxhCeZz?x}tD5Pfc$A#5QqozJ>CI>~=e5<esn`vo#TW;sR{wDh(gGz0-)uD2mYq787X7W!f"
-        b"yO}1(mEK&Vd7pTmKDje=7`FZ_`M&0;zMO5-pXdObZaQD%o4i1Fw>>RNXPP_~sWS~Ik#gQ?`rFUwWv$jWW3kk=Zq3"
-        b"-FIX8CB+Bz9_47Wa9e4D$DSif^?l<$kLbCxPQwiP*PQzm1Txjd0a(IV??R(<;kPr>Un@N^&@jY)PsF}_OQ_H0c_>"
-        b"TW$cXItODxmLZa3b)lwW{*AcS>>XA6)4ADeyNK_wG?zEgIq#YUD8FQBRTID8VbrYrlzZEvo7k4{AAcQ=^)an_2_*"
-        b"?lB4yTp5b(Rx*cqPlTm`1$xbDca`G5WW;xW^roK(*NmFi>1x>MT7CFq4uq^h@3>nFc-{?y+_a<GhojiMymmJP)Zh"
-        b"kh?`HppLRF{_l-78maE4xW@dR_H~GV0u?@_wszvKJmy->c+UKGc2E*FMz4!&NyXD<-?-F4KSMni#`2XS?piJg@6O"
-        b"D}L6Wn*I6XxGAR8No9rpIB)78i%Azq4=8A*H`PXmP2e4unN4Tsdyb!L%3(u$uwA~8>{QZqVLD!`maNhV_rWr}!BT"
-        b"Z@?0Ih<?@BEczq#XmBnjgceUXgb|G|pgMXm2otS9*6s3DUv)<m%@mlY3)hCAH|#M>N@WUB+B(7G^jyeI5f<xS=Zl"
-        b"_uqOT>CKb@^#q#lMOrTRLVKE&NKgjTJw^(jE<T(XdhMM#EM7}{mr7X<Hzs9^N728<z3E0cE``X6tGS%Z!N#T2DQ("
-        b"%_z!FD<;4xIYJFPq4Dm2n_aM76UD{qz9LL0?T+{H#W_tFBfxN2|F=9(qgbm}(2+HH5r!em^HZ_4;B#NB}D#j2f`%"
-        b"g#<iZRHB88w2CVhnPjVhlo2#Tc{ziZRS36l2f`DaH_p6=RT$DaN3Ipcq4}pcsQFT1O!$D8?WgD8>*ID#jp#6k`|+"
-        b"6k`aADaIflD8?|8)p>zp3?hMI3^KsG0*Wcd5G5+cARKIbN{pZwLpV~5#ki|9h*uLpmPxN0QH(+SxB>x@Avq+WVhl"
-        b"4-F@{i}0E3vgq#_oJx*&^0T?pi&E|H3fx+J4er-ivtr-dl2(}E<^X<;f1I3WcSm^g`YKWq`|v>*j_T99OA2uN|^6"
-        b"~?&m3Ugd|g*hm^5>TCtc!2N<V|fr4RADf0DqumCh-Ol`egX@sB4i+_ijab!Dq;}|sv;;5RK;j6sEW``P$jTPP!&P"
-        b"3ph_@E2&%AEnCv4;5L6*FCa9A5P*8<AUYLPgL{J6!Ku`r4EU3chP0|}cK@|qEph{rV;l&Aps+hS@AWxW}LU_a^Qm"
-        b"u_xN#)F#Nu){@F^klKB1Txb6tTcMq=<o}LyDL{QBj0XD0d>3vT`M61Vtz@14)DuvB64@h=Hv1fJR*DfibT1z#Q6;"
-        b"grunSfHYQaK$IyrWC|-c61=F~h}c0D1>~{HK|oRA6p>ivfKjM&fM}?4KoC+nKn|!J1P-ViWHL}WU=XStAj(w^7z<"
-        b"PmBE(b<A_-IuBFj|{5M@<oz=SFX2ni|&navHFVk!s3W0eCUk;(ybF_i-}2vrUULREY~1u6&3aFqk%cFD?UsB)MXu"
-        b"%R#wL{^D#BJ&Go7?)#Q%%gZyAmP%7SvX(|%KFGC|5clejAjN=3#GWzhXv#QFlfh?Y@}i@bb6i_)TCE6A)T*OjG0H"
-        b"IiZL@;dl<1|;=`F`eK|0F58F!^I$jm$4+fxwX9AEgEk&I0*Z`D2F$e+=3&Mmr4WM{^1|WF$1|XfP*drtKDtJ&Rna"
-        b"SyB!cI$vCIfb|J6|?rhbccwO)x^(`N38Y!uUKy6z(xZ!pb26Q9ojihXjaYvlT&n%1jjKa>aB*iF9>34w@oc=4%tL"
-        b"(@e)vQ*0)~?b3~x>g5d}67_Ahx?>;hLfh#R$S2hC-l71pJweO`8(A3QyCs<8y8!~1EKFj%SS1fz;G{)h!`vZ)vFs"
-        b"tjg8U&u^9%yRIN)AbHseMnEsBfH=rC{P@zY-XCnlYR4~|#MCOj=dkSYLh+|vRmtUwEhu(1tjw66^@<R1VCc5xAfH"
-        b"d_IQHbeo2cRCTsHaZ~`?sFoDZABu8?;Ju3ZuDU?+`@xY4g)uCAQ{Gj0220704c<mfMg3cX2g0gz{AP~KzIazpdi5"
-        b"pNSGBPrG0H$Rd1N<!D^@(&hQ!nh@W5qW_>SlVJT1Gc(3k3&?ipR-wL}8vkho#epfiNCuUfhV)A>(2gC66(-`uj(z"
-        b"i<COUey+W2Bir?|RybINN}>rcY1;55hjaGLyNEWKW0ZYm>Q3i&B+iWg9^FV*nsL@Bl=)2g0x~10=|T0R=N#!11T4"
-        b"1xd>OC3az=MBZ`V{{-7SY?R6E#`e;l{><B-UxXK0mfw<}e*w+$Y<d6Iyl{@lOZEGolB>!i$WQLJS&^m(Gp8>^<1h"
-        b"QqChX#v8;E@XpyRH9Ps<K?fUag)YE)cIe8$s`D51Xq$-_cSg>fOISiFQN!F3>%t;G=H4hCVumK8$5Xx5+_(9Qqzf"
-        b"YVl^#fY~yeLEs=94Azo_|i8h79)7tYAiEfGCbhF>-4iBzl6b#J->o*dE9du&xD9dcO~GwE+V6B@{1^1V`UgWE+Ws"
-        b"KnMaa!d~Sf)%fX>I-Y6^_{MI{<3l}9xcn0v=%|fz^k>98hErhpfBtHJ0i)aPjb&=V``!13pew9U{VNFJcgSRy#5Y"
-        b"HQl29**K6|}4ppA?_R48wYh#NwihNVCOLB%`u$(F&-qWj2sYN5HV&BBR+LlsZRnlwZks=p!Yv*L>eZWU>2|aHt2B"
-        b"VXO&_@NwatXvjk(8Re=qk;THR2oA(o5{=YNA{(S35{DElA{$e&9E^metk{e!m1D0{K4E|NVgQY$7Z77MxqfptX1A"
-        b"@&v8TZjW~?L`-kYHYr!SmkE;BQn;}HZh`CYYxA-hnP)e6@L($4u?T<lsRU+9{D11)*AV&;W-G#xdHSX7iNSYa(Ch"
-        b"LQSlA^Baim{Gdtych&v@$cFp3!XhrRCw|G@7@U~jC>Yv{}XESA+JLS1lE2RlMP3>w>ljF#v{eYQfUdRzGoBAlvgl"
-        b"H-6DMVZ#tea6bl!gl6&i@lpMK0S}Dwp<N&2t8D=Bi7%e^-*$`3emf=ST5Gbcih?d?dhivdpIbwLqjwtv>F$U2rM<"
-        b"joR6;V87hm`oH9in4zQ(>M*sgT1FDng}zQ(%u*1PJlK5@BI{h8X^=P854GrdKssxP(6YFr$2WqN=mN3iArXk?DX9"
-        b"l5d{~c1XZ1pvM~KJ@kVf%HDK-Bck};f1#&!#c$*prxnCq>>s<c{{h0HJqQ"
+        b"c-p0%+mhS35r*&QDRk!>Q{y@KG>KjD?mEd<yoa(kNu^S`fJlr44@uAfs2Szy1CWwNL;MXiHy68WlV5`rj@^wP+@GWqm2"
+        b"jf?hcs5{_GWRpygvI`H1cL)OXcLl*~y)&7t6P2U;3sIW_PpruqbuY8M%?IRa?3Eb>}v^UDRr2{QbqPHlYaFI(4hcf$g1"
+        b"Y*9*~Bi||bU2T|{=vS+^<{Z*E(`1|KiH;cdOMs{K?pD#Afb@t}`e68H3UoCwJ=ev7v*ou|Bc>Ct<`S^xKH$3=hDL?44Z"
+        b"~U``^Y8vx)M&9ZQdDjuD_z>9(oZcv%T8P6wAuZCZ}45eUi@Z6c_+=>g3gt-y|iZ^djB_5$VRC8X7R7y_IGme&%N2=kH-"
+        b"@JwEtN`y+8Y;O5Yx``1s(P#*Qub;V-{_Dz26<3f<PbBk^Zd`&Rz+<M$tb{_^qcZ*q69O=WL}wkZy6^Slw|Mzyl2r7*2;"
+        b"zUQs%ji`%OI?vzP=l&`FR=Iip*x1Ffv7cMD_9Yda(Pem>c767JE&LyDl{CJU<W|<Y3k|jS;@hgXi<_Ip^`cmO=R4*T^v"
+        b"Bl8wvyH2LtpvllroTed*4Iz?3Z%*<N4?P`#!Pw#g`$5-uY!`oos@^FJF8?mFz-Mt$Tv|hF%-dG{NALXxF{(ufb$L1pJ?"
+        b"_=JLyn7xPUn=9^s3H+lM7e$$;F&W8#e+WY)tyY_uVnrZuH*l_2A87?bP56xEBY8{$sZZSW$e!gjj(Z2X_m{)Ka`qteGB"
+        b"cF6WfBn-iZz*X{e*aIp>T5p`Kg(~u@*TYxuiq@*zZ)9tc>M=u-OXYph41yZeQkB$UB7>K?W=nkQDv>lyZ7(jEMLU;Zq?"
+        b"ezQg!nEyBEvr>*eby&<ba@ana?z>2}kLou7QfI<!f2qpgIEuI_fCsi#->6O-t=@Jg4jmKPM^$C?hzRs6F~5H}P<A}inc"
+        b"8^6BX1?*z^lERF>x6+Kz1x1y$ydNHSK|U|cRKktryd{~|x6Am`E-q-u|Hq|YyW9@#O1@3C8f%AoNF|2?UR^J*C_<I{cX"
+        b"&e((v|6l`0?i#k~HG~V$+XNtuxwoGWR-TpP_$Ht=FLokMHxEfEpXtuCawK38vLfuC(5FtZSMI)5|cCjL)Qcg|_Kl(+R&"
+        b"!*0Rn~ZZi_pZ|kb@{ww0Xk$!Pa7h%hdu7w{h7t71HWCdBj0NcR4Ap56vhapE5;{Qpvx7&5nreC)od*4;u{oJ>z30~G#R"
+        b"sPz?2WQ01!Y^5^8^)jTD}tfso~P8%SKchI|FDpul*PMui)Rz$S^T6rnjVGH!MA%-OkF>Vu-0u%Sb=ij(<LNJtCjz4zNh"
+        b")QFw6F;u5ys?_<oF7m*v75mW6cN`tdKTP6QXtJGWU2Bkt>Kq4J!z*2r5wJCve+=iBo2@>SNzZZB)$>njJ|%J9mZI*pd="
+        b"tbzAP{0wv%##oMBOWhQWtdwZ8sB&ZEkOj3~*K(ZVv#inIa?IvszEL->sV~FYm<L^#Z5-9CL@m6BSdAe`mhY-no?%tqSC"
+        b"M_YufDmmj9&Q|IZO4m>TQmyLulsb|63o+WqWJ=(9|5J2rU+zr+mi?o?4~v+1zCwbX~0-qk@_;JL@*G@nJl>ewtQh5u0t"
+        b"2W|toljSn&l-V}3!4)aEi-v<a;Y-Kwi*AI*J+bk^oI|#dLOQrMd{c0a6WM@MkwUoM&WwuUzh|id?2C5!>M*gZ0jLL1nn"
+        b"*jpc?H=kp=lWLUsII#0>b_a!J3*)9gSyRAb*=BSR4sP*My)rFPX@2>nz3XJLpR&|J0nBf)u{X%Snmwgd1_bcZhcv-R4Y"
+        b"vW@jGD*qn>t^_uBFvTen+>6oSojer^kiM@Dn+{Ibu0df$WcScvvD<7e;+lg9ggT^{81u$`0E&upUPp-hT9SMBLiZ<(ZQ"
+        b"x#U-?+Yp*DrsBOtqw^m19u5C$^0U=}R*lp>_cb0W#j0jMTNb`sJuuPQc7<=~EvNH4ZOV;bwWY_re^V7(#!N9JuX5Bk6V"
+        b"{u5`-$>DIW&w^u~M~iyMp651-{$}ljpwmzMiwwg;8DSJ@raDA3~{oWBceb>%Ev>G_o!@HD&tS>};@4E9579AA;X0$Me@"
+        b"c+i?oy#`Fp6$CM`5;v~g6!{m_iWSUHJn@p?ITqoD$H22B2IjQVxc3p=(B`b$#y;)vyjSksRF8`Pv<yt&uOPLmr*;A&$X"
+        b"*QK>a*|zTnr!-^t}foP8~>PhW%5t+uuP+-p4as!Ia<EeG-u1S)JB(^p>-}^vtM$O*kxNC6TMuEL*kdopC*EtCX>W4*J|"
+        b"8X-fxI-jqGN44By}+9nCg5rl*+}PBvZ03BDhKMeeJe=CGM2k2!6ofe*ag81i3VEid!GM~anZtgf<_t?HXR=lafRU1$9i"
+        b"dl&pm_R6EfPOlPyf5}<gbl+BfURPz-xf$~rJjyT2PO}o?C%pG|hnDvj^6ndDH;jRoOlu$2?pD2X<5=Tb8CMl<BO5uFXX"
+        b"Td;X(P^j`K>M*(Rwe<Fi=sK{w4CRUzipe@5M8^rmJeTDr!bRV|Pv7>vUq(hsh$#`6b^E;vIvt+T1d7HY3@IG7p-DnLl;"
+        b"9sqgZE)ewxapusz4k#>}jvDmG$jOZt93}%^ol~3>vQ+vUSCP$VV(2X>IV(lBz@j|A1;mS>=*I7=kDx-V|&K;Ha8!5B3@"
+        b"F0v4*|vPBO_gWt!)0l+DVAM!Tk605ogyaM&F#9Gkzv<?QbMnv8!v|IxF|O_jttl1qK-0}d`9(%f>MmC){?hHGqU+`{=m"
+        b"i08lqmt{`#JL#(ghLr<2>1RX#*NT26mpDLU61nc2qLQ@M>N3X8V@NHY2Rk5<vIsOA043`Dq&3Q~-=_S6iC1ft>AI0Es$"
+        b"2qdG`0a0jO7`V75bYJm0^MKCG0qkv}rw+-VxtXEy1}ZH`<QNq-aL_)f-btmM5`vw*C@;RgWp4wPTh1Wc#?RiTyk;lF_I"
+        b"F@`GQ?W(jn#}Dv1&Cd-G*@Js|PT8F<ELOyc=ip8i+@hIk6`U=v|<MQM6Je*r~gjKx6ml6pm|b%a|2C#Z#Ceke)svO(@J"
+        b"DI}NB2gcN3wn<~s8lvJ2O3!pH=Tt;CAjgZ0&fmmS%$&|tj8W0LI#1aZKh@xc_f`q~hvJ-_FVx|f+$RLFo1}6$L1f>*ak"
+        b"e?{bFvF_6iNXvb6NMRM!0ftZD9jK=D$F1}*(jwLLScq*q%ccymw6DcCfl6C3?j6`4B}4{5D>B1CYdVCFas542nC8Uh>="
+        b"U`mMsE<EE0hsFcyK4R7wO!8BKLvn49Xl5QTMJkc@O)n40>Vkb?0`nna-=wwUU=AO&?@kc_erkcx#`7>k8kn2Uv4n1ezs"
+        b"0+kg5nhLcr#)D!376y4;0SmB5lu2>t2`s=$kP`t`f+Pf335%%!D}e$5R*H@VSP423U=b`5U?os2z#<GX0xWDbjr9>l2("
+        b"S>E5@1pMRDgxKI4=Xaga8Zj69E=vumB6Ax7pbM3a~JU1y}^zaSCJ#uu|4UdOTx-(%=b`M6NbrMI|#+CW#zX!Yq*qN*H0"
+        b"OQ^EoZml6h)a4BH|HAM-Y))Xa-GHRcMWkT(evVy{ulmQ`JNtj@DNWvhY4uMv&Is{{}Is|iQ6BCl8It0>K?E%q9?Lkvm?"
+        b"UCV0wMW7ZDlZ_9l@SDrvaN{3$_R`?Wdua0$_NA@Wd!7aGJ@cMGJ+;2$_NZXWduZHWdz11$_NsQlo2Eelo2EwD<dEprK-"
+        b"1iWdwu>WdzM~J*|{70`XWGfk>o`fLux$0S%_g2n3<j|2C_Pz)Y-+K-?~yPMs<v1_tax3=P4`D-I+-%Z72<F~&S{QV9|+"
+        b"eVBy}wnw8nQX+gghY<#iAS$7B^K|LqGAKuvcFw8M!1K?8LYl8`OqnO-jVUu)ub8lk1dAgZ)urvS8xXeRB-{Z-j0r%(SQ"
+        b"c@_umNa1Vh{ud3&IFL4WM{^1|S%F7RaqC$E;N_P<#l)sc4VQ3!(;t=waKCYm6@Ys4CaNJi^&OLRj1n5ru0EkucqeKva*"
+        b"Ii(LZ5MZFb4ahDk=P~}3+404C-pr~*%XXdG$;W{eHvG!QkLEgt}KqLg*NU_~<_TUFFw;@SD(MBTXCc9r4inmxW7jGdDT"
+        b"sE7D?NaGKY=MIof}O?=2`q{p5-f-x5_B9vU>G~xdp7EE{c4^-&0mg7dHj4>d`q(iPEgopW?F<GDFNW(nHE6Pv^9YcyWx"
+        b"OFo8b^c^8*0E)-R&a4lUr&E-JwA_9z0Q-BAclH%Ac^?O!4&-fn~x+#ST^bl(qB90u<8KyvB}0*Kgz0VLsH0y0{#F+*mF"
+        b"0Y1%K03`MR5Hty}0Wyt>kvhLtt*F;b3DpQQW(@+wBbb1rx~I5lDv#jeT0MZEP8_M(CH5#r8&KA`8NjTG5uU%Xa5S7ger"
+        b"Ut^YCY#<a|2G9G{Yxk=dFmN4Jd2)%q8awFC)pFNDlP$d2KdUY1^zEuH}R&EjLPOd9eq=@LUE+5CsDYMz$>{N@+omaya="
+        b"u|6u&#7A*6)Q}+8d(@t;4<&UT5XCJK}?||asX!&r|e*Q`P!>#P9@(9KccN><c89-+Dg=qQ<0i#Lua@Cx#26PppTXtXu="
+        b"xR4hk?eWKXh#%LUx19=LQGBlLP$ma5~7Hy1EJAc454^}K^U=Rg;3C%HOK~Z<Nu&w-fFZric1?lIKgYj0iFBdioFqhY}J"
+        b"=?#-juNyB<Fp#;;&?Z{jzYE{_L}F(ycq`c(uT=S65V>ii^%)>s<G!-eFdG4n`970-1L4ecC~?Ty?*8@ApBx*Vh=jI%m>"
+        b"a>g+n(t<dOL-FauF{BkZAVag6Lo$>hKL0||FegL9lOrA!i2DsigG>pD5&~F?&nnhahSPit#p0w3Nk@w(NhY=Aq!o~C)9"
+        b"gfJodBo#78+%PP#>MZQG7+?(>anN(Y^`E;^~*dp@@`*v5+*uXOwrOW$Yu-Xe?VJS**ND;6Qyv(MaAzvXeN3;*f-eWK%M"
+        b"hqY<%|73*GQ4`H6Lzk4-+#?-OJlnr;{9F3!&Ez92c#+s=#KA52bhtHxh*O?LKObG;;{TSQPFnZAq^BqClIex%v&S$;Gd"
+        b"!VEsS7g3OK=W=RiKSGzgb~(KVi>6(_hkH|4fiMWd=O`5ehd#;#L?qGO<(@-vAp@;(mUKjWj^pK#Dl;(>|$p3R)-6~xcB"
+        b"~XJxldHnt-B$f^p`@0*C92rr2}SNA_x#mK@E1exXpeyO{?dMx(eezxFVqAy4tXT!272WI{A`5FN6UgXoBfLv}>LW5^gp"
+        b"y&RG8xmQHRE<2>i<9Ucq9l^qU?4?2ud#DJd98Q9Lx*$L(_A3!Kb<YqJkJW*SM#gYfgY~V55#@b+fnbS#h2cbZzy|r_Cx"
+        b"jtVFcaug5%U51LE6%&F6=}U--plow66HgPmRM8;?57_?(Bacre31"
     )
 )
 PRODUCER_ENTRY_POINTS = (
@@ -201,12 +204,14 @@ def wheel(
         b"Root-Is-Purelib: true\nTag: py3-none-any\n"
     ),
     license_body=LICENSE_BYTES,
+    docs=DOCS_FILES,
 ):
     bodies = (
         {CONFIG: CONFIG_BYTES, SCRIPT: SCRIPT_BYTES, "scitex/__init__.py": INIT_BYTES}
         if files is None
         else dict(files)
     )
+    bodies.update({DOCS.WHEEL + name: body for name, body in (docs or {}).items()})
     bodies[metadata_owner + "/METADATA"] = (
         metadata(version) if metadata_body is None else metadata_body
     )
@@ -240,6 +245,7 @@ def sdist(
     additions=None,
     omit=(),
     metadata_body=None,
+    docs=DOCS_FILES,
 ):
     bodies = (
         {
@@ -250,6 +256,7 @@ def sdist(
         if files is None
         else dict(files)
     )
+    bodies.update({DOCS.SOURCE + name: body for name, body in (docs or {}).items()})
     bodies.update(
         {
             "pyproject.toml": project,
@@ -1399,7 +1406,7 @@ class UmbrellaSelectionTests(unittest.TestCase):
             len(set(source_files) & set(RELEASE.PUBLIC_LINKS)),
         )
         # Assert
-        assert (result[0], result[2]) == (67, 7)
+        assert (result[0], result[2]) == (69, 7)
 
     def test_all_reviewed_git_link_literals_are_preserved_without_dereference(self):
         # Arrange
@@ -1453,6 +1460,32 @@ class UmbrellaSelectionTests(unittest.TestCase):
         # Assert
         assert refused
 
+    def test_tracked_link_under_ignored_path_refuses_selection(self):
+        # Arrange
+        entries = dict(RELEASE.git_tree(SOURCE, REPOSITORY))
+        entries["data/scholar"] = ("120000", "0" * 40, None)
+        # Act
+        refused = refusal(
+            lambda: RELEASE.selected_paths(
+                entries,
+                tomllib.loads(PYPROJECT.decode()),
+                git("show", SOURCE + ":.gitignore"),
+            )
+        )
+        # Assert
+        assert refused
+
+    def test_real_tree_tracks_no_ignored_link(self):
+        # Arrange
+        entries = RELEASE.git_tree(SOURCE, REPOSITORY)
+        ignore = git("show", SOURCE + ":.gitignore")
+        # Act
+        _, selected = RELEASE.selected_paths(
+            entries, tomllib.loads(PYPROJECT.decode()), ignore
+        )
+        # Assert
+        assert {name for name, row in entries.items() if row[0] == "120000"} <= selected
+
     def test_new_force_include_cannot_change_reviewed_package_mapping(self):
         # Arrange
         entries = RELEASE.git_tree(SOURCE, REPOSITORY)
@@ -1485,6 +1518,118 @@ class UmbrellaSelectionTests(unittest.TestCase):
         ]
         # Assert
         assert results == [1, 1]
+
+
+class DocsBundleTests(unittest.TestCase):
+    """The release-time Sphinx bundle (PS-121) is admitted only as reviewed."""
+
+    def test_docs_bundle_identity_is_bound_into_the_source_proof(self):
+        # Arrange
+        wheel_raw, sdist_raw = whole_archives()
+        # Act
+        identity = RELEASE.source_payload_identity(
+            wheel_raw, sdist_raw, SOURCE, REPOSITORY
+        )
+        # Assert
+        assert identity["docs_bundle"]["members"] == len(DOCS_FILES)
+
+    def test_docs_less_wheel_is_refused_rather_than_shipped(self):
+        # Arrange
+        wheel_raw = wheel(files=public_wheel_files(), docs=None)
+        sdist_raw = sdist(files=public_source_files(), docs=None)
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="no docs bundle index",
+        )
+        # Assert
+        assert refused
+
+    def test_wheel_bundle_must_equal_sdist_bundle(self):
+        # Arrange
+        docs = {**DOCS_FILES, "index.html": b"<html>tampered</html>\n"}
+        wheel_raw = wheel(files=public_wheel_files(), docs=docs)
+        _, sdist_raw = whole_archives()
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="docs bundles differ",
+        )
+        # Assert
+        assert refused
+
+    def test_sphinx_build_caches_are_refused(self):
+        # Arrange
+        docs = {**DOCS_FILES, ".doctrees/index.doctree": b"cache"}
+        wheel_raw = wheel(files=public_wheel_files(), docs=docs)
+        sdist_raw = sdist(files=public_source_files(), docs=docs)
+        # Act
+        refused = refusal(
+            lambda: RELEASE.source_payload_identity(
+                wheel_raw, sdist_raw, SOURCE, REPOSITORY
+            ),
+            message="build caches",
+        )
+        # Assert
+        assert refused
+
+    def test_tracked_docs_bundle_is_refused(self):
+        # Arrange
+        entries = dict(RELEASE.git_tree(SOURCE, REPOSITORY))
+        entries[DOCS.SOURCE + "index.html"] = entries["LICENSE"]
+        ignore = git("show", SOURCE + ":.gitignore")
+        # Act
+        refused = refusal(
+            lambda: RELEASE.selected_paths(
+                entries, tomllib.loads(PYPROJECT.decode()), ignore
+            ),
+            message="must not be tracked",
+        )
+        # Assert
+        assert refused
+
+    def test_wheel_target_must_declare_the_reviewed_artifacts(self):
+        # Arrange
+        entries = RELEASE.git_tree(SOURCE, REPOSITORY)
+        project = tomllib.loads(PYPROJECT.decode())
+        del project["tool"]["hatch"]["build"]["targets"]["wheel"]["artifacts"]
+        ignore = git("show", SOURCE + ":.gitignore")
+        # Act
+        refused = refusal(
+            lambda: RELEASE.selected_paths(entries, project, ignore),
+            message="Hatch mapping changed",
+        )
+        # Assert
+        assert refused
+
+    def test_reviewed_artifacts_are_the_ones_pyproject_declares(self):
+        # Arrange
+        build = tomllib.loads(PYPROJECT.decode())["tool"]["hatch"]["build"]
+        # Act
+        declared = [build["targets"][name]["artifacts"] for name in ("wheel", "sdist")]
+        # Assert
+        assert declared == [DOCS.ARTIFACTS, DOCS.ARTIFACTS]
+
+    def test_bundle_cli_reports_identity_of_built_archives(self):
+        # Arrange
+        wheel_raw, sdist_raw = whole_archives()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "w.whl").write_bytes(wheel_raw)
+            (root / "s.tar.gz").write_bytes(sdist_raw)
+            command = [sys.executable, "-I", "-S", "-B", str(HERE / "release_docs_bundle.py")]
+            # Act
+            result = subprocess.run(
+                [*command, str(root / "w.whl"), str(root / "s.tar.gz")],
+                capture_output=True,
+                timeout=7,
+            )
+        # Assert
+        assert result.returncode == 0 and b'"members": 3' in result.stdout
 
 
 class SourceMetadataTests(unittest.TestCase):
@@ -1599,7 +1744,7 @@ class SourceMetadataTests(unittest.TestCase):
         )
         # Assert
         assert result["metadata_source"] == {
-            "runtime_requirements": 630,
+            "runtime_requirements": 632,
             "extras": 77,
             "entry_point_groups": 3,
         }
@@ -1626,7 +1771,7 @@ class SourceMetadataTests(unittest.TestCase):
 
     def test_rehashed_wheel_cannot_change_declared_dependency_floor(self):
         # Arrange
-        headers = metadata().replace(b"scitex-dev==0.62.2", b"scitex-dev==0.0.1")
+        headers = metadata().replace(b"scitex-dev>=0.64.3", b"scitex-dev>=0.0.1")
         wheel_raw = wheel(files=public_wheel_files(), metadata_body=headers)
         _, sdist_raw = whole_archives()
         RELEASE.wheel_identity(wheel_raw, VERSION)

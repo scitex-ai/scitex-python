@@ -11,7 +11,7 @@ from typing import List, Optional
 import click
 
 
-@click.group(invoke_without_command=True)
+@click.group("bundle", invoke_without_command=True)
 @click.option(
     "--json",
     "as_json",
@@ -20,7 +20,14 @@ import click
 )
 @click.pass_context
 def convert(ctx, as_json):
-    """Convert and validate SciTeX bundle files."""
+    """Convert and validate SciTeX bundle files.
+
+    \b
+    Examples:
+      scitex bundle convert old_figure.figz
+      scitex bundle batch "*.figz" --dry-run
+      scitex bundle validate figure.stx
+    """
     if ctx.invoked_subcommand is None:
         if as_json:
             from . import group_to_json
@@ -30,7 +37,7 @@ def convert(ctx, as_json):
             click.echo(ctx.get_help())
 
 
-@convert.command("file")
+@convert.command("convert")
 @click.argument("input_path", type=click.Path(exists=True))
 @click.option(
     "-o",
@@ -49,12 +56,19 @@ def convert(ctx, as_json):
     help="Show what would be done without writing files",
 )
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON")
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation (never prompts; use --overwrite to replace output).",
+)
 def convert_file(
     input_path: str,
     output: Optional[str],
     overwrite: bool,
     dry_run: bool,
     as_json: bool,
+    yes: bool,
 ):
     """Convert a single legacy bundle to .stx format.
 
@@ -66,10 +80,11 @@ def convert_file(
 
     \b
     Examples:
-      scitex convert file old_figure.figz
-      scitex convert file plot.pltz -o converted_plot.stx
-      scitex convert file stats.statsz --dry-run
+      scitex bundle convert old_figure.figz
+      scitex bundle convert plot.pltz -o converted_plot.stx
+      scitex bundle convert stats.statsz --dry-run
     """
+    del yes  # an existing output is protected by --overwrite, not a prompt
     if as_json:
         from scitex_dev import wrap_as_cli
 
@@ -167,9 +182,9 @@ def convert_batch(
 
     \b
     Examples:
-      scitex convert batch ./figures/*.figz
-      scitex convert batch ./plots/*.pltz -o ./converted/
-      scitex convert batch ./**/*.figz ./**/*.pltz --dry-run
+      scitex bundle batch ./figures/*.figz
+      scitex bundle batch ./plots/*.pltz -o ./converted/
+      scitex bundle batch ./**/*.figz ./**/*.pltz --dry-run
     """
     if as_json:
         from scitex_dev import wrap_as_cli
@@ -306,8 +321,8 @@ def validate_bundles(paths: tuple, verbose: bool):
 
     \b
     Examples:
-      scitex convert validate output.stx
-      scitex convert validate ./figures/*.stx --verbose
+      scitex bundle validate output.stx
+      scitex bundle validate ./figures/*.stx --verbose
     """
     # Use Bundle for validation
     try:
@@ -384,7 +399,7 @@ def bundle_info(path: str):
 
     \b
     Example:
-      scitex convert info figure.stx
+      scitex bundle info figure.stx
     """
     try:
         from scitex.io.bundle import Bundle as ZipBundle
@@ -444,64 +459,16 @@ def bundle_info(path: str):
 
 
 def _convert_bundle(input_path: Path, output_path: Path) -> None:
-    """Convert a legacy bundle to .stx format.
+    """Convert a legacy bundle to .stx format (see ``_convert_bundle.py``)."""
+    from ._convert_bundle import convert_bundle
 
-    Args:
-        input_path: Path to legacy bundle (.figz, .pltz, .statsz)
-        output_path: Path for output .stx bundle
-    """
-    import json
-    import tempfile
+    convert_bundle(input_path, output_path)
 
-    # Generate bundle ID and normalize spec - inline functions since io.bundle is deprecated
-    import uuid
-    import zipfile
 
-    def generate_bundle_id():
-        return str(uuid.uuid4())[:8]
+# Renamed to the noun/verb convention; old names stay as hidden aliases.
+from ._deprecation import alias_renamed  # noqa: E402
 
-    def normalize_spec(spec):
-        return spec  # FTS handles normalization internally
-
-    # Determine bundle type from extension
-    ext = input_path.suffix
-    type_map = {
-        ".figz": "figure",
-        ".pltz": "plot",
-        ".statsz": "stats",
-    }
-    bundle_type = type_map.get(ext)
-
-    # Read input bundle
-    with zipfile.ZipFile(input_path, "r") as zf:
-        # Read spec
-        spec_data = zf.read("spec.json")
-        spec = json.loads(spec_data)
-
-        # Normalize to v2.0.0
-        normalized_spec = normalize_spec(spec, bundle_type)
-
-        # Ensure bundle_id
-        if "bundle_id" not in normalized_spec:
-            normalized_spec["bundle_id"] = generate_bundle_id()
-
-        # Copy all files to new bundle
-        with tempfile.TemporaryDirectory() as tmpdir:
-            # Extract all
-            zf.extractall(tmpdir)
-
-            # Write updated spec
-            spec_path = Path(tmpdir) / "spec.json"
-            with open(spec_path, "w") as f:
-                json.dump(normalized_spec, f, indent=2)
-
-            # Create output bundle
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-            with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as out_zf:
-                for file_path in Path(tmpdir).rglob("*"):
-                    if file_path.is_file():
-                        arcname = file_path.relative_to(tmpdir)
-                        out_zf.write(file_path, arcname)
+alias_renamed(convert, {"file": "convert"})
 
 
 # EOF

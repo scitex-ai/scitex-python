@@ -6,6 +6,7 @@ import base64
 import configparser
 import csv
 import hashlib
+import importlib.util
 import io
 import json
 import os
@@ -288,7 +289,14 @@ def git_read(argv, source_root, stdin=None):
 # Public selection is evaluated by Git's own ignore engine in an isolated
 # metadata-only repository. The reviewed ignore bytes and Hatch default target
 # shape are fixed; no caller global/info/nested ignores or filesystem walks.
-IGNORE_SHA256 = "83fbffa2f6bb7b4df285d6381e114ffb3ccff7075610d48dcf3e7caa1bb39663"
+IGNORE_SHA256 = "9a31cb07d0e7b8340a38273d43074a12ec23c20e40f55bea4955ba7be4035f98"
+# Loaded by path: this verifier runs under `python -I -S -B`, whose isolated
+# mode keeps the script directory off sys.path.
+_DOCS_SPEC = importlib.util.spec_from_file_location(
+    "scitex_release_docs_bundle", Path(__file__).with_name("release_docs_bundle.py")
+)
+DOCS = importlib.util.module_from_spec(_DOCS_SPEC)
+_DOCS_SPEC.loader.exec_module(DOCS)
 EXCLUDES = [
     "src/scitex/scholar/.env",
     "src/scitex/scholar/.venv",
@@ -365,10 +373,11 @@ def git_tree(commit, source_root):
 
 def selected_paths(entries, project, ignore_raw):
     build = project.get("tool", {}).get("hatch", {}).get("build", {})
-    if build != {
-        "targets": {"wheel": {"exclude": EXCLUDES}, "sdist": {"exclude": EXCLUDES}}
-    }:
+    target = {"exclude": EXCLUDES, "artifacts": DOCS.ARTIFACTS}
+    if build != {"targets": {"wheel": target, "sdist": target}}:
         raise ValueError("reviewed umbrella Hatch mapping changed")
+    if any(name.startswith(DOCS.SOURCE) for name in entries):
+        raise ValueError("generated docs bundle must not be tracked")
     if hashlib.sha256(ignore_raw).hexdigest() != IGNORE_SHA256:
         raise ValueError("reviewed umbrella ignore selection changed")
     with tempfile.TemporaryDirectory(prefix="scitex-release-selector-") as temporary:
@@ -405,6 +414,13 @@ def selected_paths(entries, project, ignore_raw):
         if process.returncode not in {0, 1}:
             raise ValueError("public selection failed")
         excluded = set(filter(None, output.decode().split("\0")))
+    # Hatchling walks the checkout and follows tracked links that Git's
+    # ignore rules exclude; a directory link then shadows the directory it
+    # points to and drops selected files from the sdist (13 docs pages via
+    # session/.claude/agents), and an absolute link breaks the sdist->wheel
+    # build. Such links must be untracked, not reinterpreted here.
+    if any(entries[name][0] == "120000" for name in excluded):
+        raise ValueError("tracked link excluded by the reviewed ignore rules")
     selected = {
         name
         for name, row in entries.items()
@@ -783,7 +799,10 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                 for name in names
                 if name.startswith("scitex/") and not name.endswith("/")
             }
-            if actual != set(wheel_expected):
+            wheel_docs = DOCS.wheel_bundle(wheel, names)
+            if {
+                name for name in actual if not name.startswith(DOCS.WHEEL)
+            } != set(wheel_expected):
                 raise ValueError("whole wheel public source membership differs")
             owner = "scitex-" + project["project"]["version"] + ".dist-info/"
             generated = {
@@ -820,9 +839,13 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
             if len(roots) != 1 or roots != {"scitex-" + project["project"]["version"]}:
                 raise ValueError("sdist source root differs")
             root = next(iter(roots))
+            sdist_docs = DOCS.sdist_bundle(sdist, sdist.getmembers(), root)
+            docs_identity = DOCS.identity(wheel_docs, sdist_docs)
             allowed_directories = {root} | {
                 root + "/" + str(parent)
-                for name in sdist_expected | {"PKG-INFO"}
+                for name in sdist_expected
+                | {"PKG-INFO"}
+                | {DOCS.SOURCE + name for name in sdist_docs}
                 for parent in PurePosixPath(name).parents
                 if str(parent) != "."
             }
@@ -837,7 +860,9 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
                 for item in sdist.getmembers()
                 if not item.isdir() and item.name != root + "/PKG-INFO"
             }
-            if set(members) != sdist_expected:
+            if {
+                name for name in members if not name.startswith(DOCS.SOURCE)
+            } != sdist_expected:
                 raise ValueError("whole sdist public source membership differs")
             for name in sorted(sdist_expected):
                 row = entries[name]
@@ -873,6 +898,7 @@ def source_payload_identity(wheel_raw, sdist_raw, commit, source_root=Path("."))
         "metadata_source": metadata_summary,
         "wheel_public_members": len(wheel_expected),
         "sdist_public_members": len(sdist_expected),
+        "docs_bundle": docs_identity,
         "source_membership_sha256": hashlib.sha256(
             json.dumps(manifest, sort_keys=True).encode()
         ).hexdigest(),

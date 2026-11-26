@@ -13,15 +13,11 @@ Minimal scitex initialization.
 Modules are imported on-demand to avoid circular dependencies.
 """
 
-# Suppress SQLAlchemy verbose logging (SQL queries, BEGIN/COMMIT)
-# Must happen early, before any module imports sqlalchemy
-import logging as _stdlib_logging
 import warnings
 
-_stdlib_logging.getLogger("sqlalchemy").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.engine").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.engine.Engine").setLevel(_stdlib_logging.WARNING)
-_stdlib_logging.getLogger("sqlalchemy.pool").setLevel(_stdlib_logging.WARNING)
+# SQLAlchemy's per-statement INFO records are held at WARNING by
+# scitex_logging.configure(), the code that raises the root logger to INFO.
+# `import scitex` itself configures no logging.
 
 # Show deprecation warnings from scitex modules (educational for migration)
 warnings.filterwarnings("default", category=DeprecationWarning, module="scitex.*")
@@ -161,18 +157,14 @@ notify = notification  # Backward compat alias
 git = _LazyModule("git", external="scitex_git")  # Git operations
 schema = _LazyModule("schema")  # Data schema utilities
 canvas = _LazyModule("canvas")  # Canvas utilities for figure composition
-security = _LazyModule(
-    "security", external="scitex_audit.github", fallback="scitex_security"
-)  # ADR-0001 (#139) routed scitex.security → scitex_audit.github; ADR-0002
-# (#142) then made scitex_security the unified home (scitex-audit = deprecated
-# shim). Prefer scitex_audit.github when present, fall back to scitex_security.
+security = _LazyModule("security", external="scitex_security")
 benchmark = _LazyModule(
     "benchmark", external="scitex_benchmark"
 )  # Benchmarking utilities
 bridge = _LazyModule("bridge", external="scitex_bridge")  # Bridge utilities
 browser = _LazyModule("browser", external="scitex_browser")  # Browser automation
 compat = _LazyModule("compat", external="scitex_compat")  # Compatibility utilities
-audit = _LazyModule("audit", external="scitex_audit")  # Security auditing
+audit = _LazyModule("audit", external="scitex_security")  # Security auditing
 events = _LazyModule("events", external="scitex_events")  # Event system
 media = _LazyModule(
     "media", external="scitex_etc.media"
