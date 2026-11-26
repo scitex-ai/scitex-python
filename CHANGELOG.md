@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.30.9] - 2026-11-26
+## [2.30.10] - 2026-11-26
+
+First published release carrying the 2.30.9 changes below; v2.30.9 was
+tagged but its release preflight refused it, so it was never published.
+
+### Fixed
+- Release preflight refused every release: the release-identity controls'
+  frozen producer metadata (`PRODUCER_HEADERS`) still described the old
+  requirements (`scitex-audit`, `==0.7.6` scholar backends, pre-refresh
+  floors). New `.github/ci/refresh_producer_headers.py` regenerates it with
+  the pinned Hatchling 1.30.1 (`--check` reports drift), and
+  `make sync-member-floors` runs it after raising floors. The
+  dependency-floor tamper control now reads the floor from pyproject instead
+  of a hard-coded version.
+- The release-identity controls now also run in pytest-matrix
+  (`tests/integration/test_release_identity_controls.py`), so metadata drift
+  fails the PR that causes it, not a pushed tag.
+
+## [2.30.9] - 2026-11-26 (tagged, not published)
 
 ### Added
 - Release gate: `scripts/release/sync_member_floors.py --check` runs in the
