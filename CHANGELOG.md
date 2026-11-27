@@ -24,7 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`scitex_io.bundle`), `scitex-ml>=0.2.0` (0.1.0 imported torch and
   torchvision eagerly, so `import scitex; import torch` recursed),
   `scitex-db>=0.1.9` (older releases delete their own attributes in
-  `__init__`, which recurses under the umbrella's LazyLoader). The rest are the lowest releases that resolve
+  `__init__`, which recurses under the umbrella's LazyLoader),
+  `scitex-agent-container>=0.42.1` (its CLI is mounted as
+  `scitex agent-container`; 0.28.1 fails the umbrella's audit-cli with 112
+  errors, and without the floor resolvers pick it to keep fastmcp 4.x;
+  releases between 0.28.1 and 0.42.1 were not bisected). The rest are the lowest releases that resolve
   together (`make resolve-member-floors`).
 - `scripts/release/sync_member_floors.py` (raise every floor to PyPI latest,
   and refuse a release otherwise) is replaced by

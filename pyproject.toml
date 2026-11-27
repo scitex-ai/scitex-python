@@ -952,7 +952,7 @@ dev = [
     "scholarly",
     "scikit-learn",
     "scipy",
-    "scitex-agent-container>=0.1.0",
+    "scitex-agent-container>=0.42.1",
     "scitex-audio>=0.1.0",
     "scitex-security>=0.2.0",
     "scitex-browser>=0.1.15",
@@ -1103,7 +1103,10 @@ all = [
 # ============================================
 linter = ["scitex-dev>=0.67.0"]
 orochi = ["scitex-orochi>=0.1.0"]
-agent-container = ["scitex-agent-container>=0.1.0"]
+# 0.42.1: `scitex agent-container` is mounted into the umbrella CLI, and the
+# umbrella's audit-cli fails on older releases (0.28.1: 112 §1/§2/§4 errors).
+# Without this floor a resolver trades it down to keep fastmcp 4.x.
+agent-container = ["scitex-agent-container>=0.42.1"]
 
 [tool.hatch.version]
 path = "src/scitex/__version__.py"
