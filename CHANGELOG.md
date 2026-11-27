@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Member floors are minimums, not PyPI latest.** Every member is declared
+  with the oldest release that provides what the umbrella imports or
+  re-exports. A leaf release no longer forces an umbrella release, and users
+  who installed an older member directly can still install the umbrella.
+  Each floor was found by bisecting PyPI releases against the umbrella's
+  import surface and then against the test suite at the minimum set. Floors
+  that stayed high have a stated reason: `scitex-dev>=0.67.0` (an unset
+  `SCITEX_STORE_DSN` resolves to a per-user local store, never a fleet host;
+  `[local-store]` extra), `scitex-logging>=0.2.7` (SQLAlchemy quieting),
+  `scitex-config>=0.3.6` (`load_scitex_env`), `scitex-clew>=0.19.1`
+  (`hash_file` digest the integration tests pin), `scitex-types>=0.1.5`
+  (`is_array_like`/`ArrayLike`), `figrecipe>=0.28.13` (`figrecipe.diagram`),
+  `scitex-etc>=0.2.0` (`scitex_etc.media`), `scitex-io>=0.2.16`
+  (`scitex_io.bundle`), `scitex-ml>=0.2.0` (0.1.0 imported torch and
+  torchvision eagerly, so `import scitex; import torch` recursed),
+  `scitex-db>=0.1.9` (older releases delete their own attributes in
+  `__init__`, which recurses under the umbrella's LazyLoader),
+  `scitex-agent-container>=0.42.1` (its CLI is mounted as
+  `scitex agent-container`; 0.28.1 fails the umbrella's audit-cli with 112
+  errors, and without the floor resolvers pick it to keep fastmcp 4.x;
+  releases between 0.28.1 and 0.42.1 were not bisected; pragmatic floor,
+  not minimised), and its joint requirements `scitex-container>=0.4.0`,
+  `scitex-genai>=0.2.1`.
+- `scitex[cli]` declares `fastmcp>=3.4.11`: `scitex mcp` builds its server
+  with fastmcp but never declared it, and fastmcp 2.14.1 (uncapped `mcp`)
+  breaks against mcp 2.x. Pragmatic floor, not minimised (today's
+  known-good version). The rest are the lowest releases that resolve
+  together (`make resolve-member-floors`).
+- `scripts/release/sync_member_floors.py` (raise every floor to PyPI latest,
+  and refuse a release otherwise) is replaced by
+  `scripts/release/member_floors.py`: `check` refuses an exact pin, a missing
+  floor or an unpublished floor (release preflight); `constraints` writes the
+  floors as `==` constraints; `lowest` lists floors a lowest-direct
+  resolution must raise. `make sync-member-floors` is removed.
+
+### Added
+- CI leg `min-versions`: installs `.[all,dev]` with every member constrained
+  to exactly its floor and runs the full suite, so the floors stay honest.
+- `tests/integration/test_lazy_peers_load.py`: every peer `import scitex`
+  registers lazily must execute cleanly (catches releases that break under
+  the LazyLoader, independent of torch).
+- `scitex[resource]` declares `scitex-resource`; `scitex.resource` and
+  `scitex resource` previously worked only when scitex-orochi pulled it in.
+
+### Fixed
+- `scitex --help` no longer executes every lazily registered peer:
+  `_peer_cli_present` and `_peer_installed` asked `importlib.util.find_spec`, which reads
+  `sys.modules[peer].__spec__` through the LazyLoader and runs the peer's
+  body (a peer importing torch at import time made `--help` recurse).
+- `scitex docs`, the MCP docs/search/skills tools and the MCP result schema
+  imported `scitex_dev.docs`, `scitex_dev.search`, `scitex_dev.types` and
+  `scitex_dev.skills`, modules scitex-dev no longer ships; they now use the
+  public `scitex_dev` / `scitex_dev.ecosystem` exports.
+  `scitex.show_install_guide` (deprecated) pointed at a missing
+  `scitex.dev.show_install_guide`; it now resolves `scitex.helpers`.
+
 ## [2.30.13] - 2026-11-27
 
 ### Changed
