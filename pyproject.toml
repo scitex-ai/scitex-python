@@ -235,6 +235,11 @@ capture = [
 # in; keeping them as a coherent group preserves `pip install
 # scitex[cli]` ergonomics for the rest of the CLI feature set.
 cli = [
+    # `scitex mcp` builds its server with fastmcp (try_import_optional in
+    # scitex._mcp). Pragmatic floor, not minimised: fastmcp 2.14.1 does not
+    # cap mcp and breaks against mcp 2.x (McpError removed); 3.4.11 is the
+    # known-good version of today's working set.
+    "fastmcp>=3.4.11",
     "requests",
     "playwright",
     "pyyaml",
