@@ -104,7 +104,7 @@ dependencies = [
     "scitex-logging>=0.2.7",
     "scitex-dict>=0.1.0",
     "scitex-browser>=0.1.15",
-    "scitex-str>=0.1.0",
+    "scitex-str>=0.1.11",
     "scitex-benchmark>=0.1.0",
     "scitex-context>=0.1.0",
     "scitex-cv>=0.1.0",
@@ -716,7 +716,7 @@ str = [
     "natsort",
     "matplotlib",
     "xarray",
-    "scitex-str>=0.1.0",
+    "scitex-str>=0.1.11",
 ]
 
 # Template Module - Project templates
