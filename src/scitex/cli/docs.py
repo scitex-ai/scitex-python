@@ -64,7 +64,7 @@ def docs(ctx, list_pages, page, as_json, tldr, fmt, help_recursive):
 
     # Delegate to scitex_dev docs
     try:
-        from scitex_dev.docs import get_docs
+        from scitex_dev import get_docs
     except ImportError:
         click.secho(
             "scitex-dev package required. pip install scitex-dev",
@@ -128,7 +128,7 @@ stx.io.save(fig, "plot.png")  # saves plot.png + plot.csv
 
 def _show_list(as_json):
     """List all doc pages across packages."""
-    from scitex_dev.docs import get_docs
+    from scitex_dev import get_docs
 
     overview = get_docs()
     pages = []
@@ -150,7 +150,7 @@ def _show_list(as_json):
 
 def _show_page(page, fmt, as_json):
     """Show a specific doc page."""
-    from scitex_dev.docs import get_docs
+    from scitex_dev import get_docs
 
     # Try to find the page in any package
     overview = get_docs()
@@ -197,7 +197,7 @@ def docs_search(query, package, max_results, as_json):
       scitex docs search "neural" --json
     """
     try:
-        from scitex_dev.docs import search_docs
+        from scitex_dev import search_docs
 
         results = search_docs(query=query, package=package, max_results=max_results)
 
@@ -248,7 +248,7 @@ def docs_build(package, fmt, as_json, dry_run, yes):
     """
     del yes  # build writes generated HTML only; nothing to confirm
     if dry_run:
-        from scitex_dev.docs import get_docs
+        from scitex_dev import get_docs
 
         overview = get_docs()
         packages = list(overview.keys()) if isinstance(overview, dict) else []
@@ -268,7 +268,7 @@ def docs_build(package, fmt, as_json, dry_run, yes):
         return
 
     try:
-        from scitex_dev.docs import build_docs
+        from scitex_dev import build_docs
 
         results = build_docs(package=package, formats=[fmt])
 

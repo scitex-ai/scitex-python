@@ -96,7 +96,7 @@ def register_umbrella_tools(mcp) -> None:
     @mcp.tool()
     async def docs_list() -> str:
         """Enumerate every installed SciTeX package that ships bundled Sphinx docs — each entry includes version, manifest path, and docs URL. Use when the user asks "what SciTeX packages are installed?", "which ones have docs?", or before calling `docs_get` / `docs_search`."""
-        from scitex_dev.docs import get_docs
+        from scitex_dev import get_docs
         from scitex_dev.ecosystem import wrap_as_mcp
 
         return wrap_as_mcp(get_docs, idempotent=True)
@@ -114,7 +114,7 @@ def register_umbrella_tools(mcp) -> None:
             format: None for manifest, "json" for structured, "html" for path.
             page: Specific documentation page name.
         """
-        from scitex_dev.docs import get_docs
+        from scitex_dev import get_docs
         from scitex_dev.ecosystem import wrap_as_mcp
 
         return wrap_as_mcp(
@@ -132,7 +132,7 @@ def register_umbrella_tools(mcp) -> None:
             package: Package name. None = build all.
             formats: List of builders ("html", "json"). Default: ["html"].
         """
-        from scitex_dev.docs import build_docs
+        from scitex_dev import build_docs
         from scitex_dev.ecosystem import wrap_as_mcp
 
         return wrap_as_mcp(
@@ -158,7 +158,7 @@ def register_umbrella_tools(mcp) -> None:
             max_results: Maximum number of results.
         """
         from scitex_dev.ecosystem import wrap_as_mcp
-        from scitex_dev.search import search
+        from scitex_dev import search
 
         return wrap_as_mcp(
             search,
@@ -178,7 +178,7 @@ def register_umbrella_tools(mcp) -> None:
             package: Filter to a specific package. None returns all packages.
         """
         from scitex_dev.ecosystem import wrap_as_mcp
-        from scitex_dev.skills import list_skills
+        from scitex_dev.ecosystem import list_skills
 
         return wrap_as_mcp(list_skills, idempotent=True, package=package)
 
@@ -191,7 +191,7 @@ def register_umbrella_tools(mcp) -> None:
             name: Reference name (e.g. "test-selection"). None = main SKILL.md.
         """
         from scitex_dev.ecosystem import wrap_as_mcp
-        from scitex_dev.skills import get_skill
+        from scitex_dev.ecosystem import get_skill
 
         return wrap_as_mcp(get_skill, idempotent=True, package=package, name=name)
 

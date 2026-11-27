@@ -165,6 +165,33 @@ class TestOnlyResolvablePeersAreAdvertised:
         # Assert
         assert present is True
 
+    def test_probe_does_not_execute_a_lazily_registered_peer(self, tmp_path):
+        # Arrange: `import scitex` registers peers behind a LazyLoader; a probe
+        # that touches `sys.modules[peer].__spec__` executes the peer body.
+        import importlib.util
+        import sys
+
+        name = "scitex_lazy_probe_fixture"
+        package = tmp_path / name
+        (package / "_cli").mkdir(parents=True)
+        (package / "__init__.py").write_text("raise RuntimeError('executed')\n")
+        (package / "_cli" / "__init__.py").write_text("")
+        (package / "_cli" / "_main.py").write_text("main = None\n")
+        sys.path.insert(0, str(tmp_path))
+        try:
+            spec = importlib.util.find_spec(name)
+            spec.loader = importlib.util.LazyLoader(spec.loader)
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[name] = module
+            spec.loader.exec_module(module)
+            # Act
+            present = _peer_cli_present(_peer_cli_candidates(name))
+        finally:
+            sys.modules.pop(name, None)
+            sys.path.remove(str(tmp_path))
+        # Assert
+        assert present is True
+
     def test_uninstalled_peer_is_not_installed(self):
         # Arrange
         name = "scitex_no_such_peer_for_probe"

@@ -4,7 +4,7 @@
 The release-identity controls compare built archives against a frozen copy of
 the core metadata headers that the pinned producer (Hatchling 1.30.1, see
 build-in-sif.sh) emits for the public pyproject. Any change to the declared
-requirements -- e.g. ``make sync-member-floors`` -- must refresh that copy, or
+requirements -- e.g. changing a member floor -- must refresh that copy, or
 every release preflight refuses ("source runtime requirements differ").
 
 Run with the pinned producer, from the repository root::

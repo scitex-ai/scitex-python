@@ -16,6 +16,7 @@ under the project's 512-line cap.
 from __future__ import annotations
 
 import os
+import sys
 from typing import Dict, Tuple
 
 # Spec shape: (module_path_or_candidates, attr_name, short_help).
@@ -181,6 +182,26 @@ _PEER_CLI_PROBES: tuple[tuple[str, str], ...] = (
 _IDENTITY_ALIASES: Dict[str, str] = {"scitex_plt": "figrecipe"}
 
 
+def _locate_without_importing(top: str):
+    """Find the spec of top-level package ``top`` without executing it.
+
+    ``importlib.util.find_spec`` is not safe here: `import scitex` registers
+    peers in ``sys.modules`` behind a ``LazyLoader``, and ``util.find_spec``
+    reads ``sys.modules[top].__spec__``, which executes the peer's whole body
+    (a peer importing torch at import time then recursed through torch's
+    inspect-based op registration and broke `scitex --help`). Asking the
+    meta-path finders directly never consults ``sys.modules``.
+    """
+    for finder in sys.meta_path:
+        find_spec = getattr(finder, "find_spec", None)
+        if find_spec is None:
+            continue
+        spec = find_spec(top, None)
+        if spec is not None:
+            return spec
+    return None
+
+
 def _peer_cli_present(candidates: tuple[tuple[str, str], ...]) -> bool:
     """Return True when the peer is installed AND ships a probed CLI module.
 
@@ -192,12 +213,10 @@ def _peer_cli_present(candidates: tuple[tuple[str, str], ...]) -> bool:
     then rejects, and which scitex-dev's CLI audit refuses as incomplete
     public command discovery (§1a, ``missing-command``).
     """
-    import importlib.util
-
     top = candidates[0][0].split(".", 1)[0]
     top = _IDENTITY_ALIASES.get(top, top)
     try:
-        spec = importlib.util.find_spec(top)
+        spec = _locate_without_importing(top)
     except (ImportError, ValueError):
         return False
     if spec is None or not spec.submodule_search_locations:
@@ -215,10 +234,8 @@ def _peer_cli_present(candidates: tuple[tuple[str, str], ...]) -> bool:
 
 def _peer_installed(import_name: str) -> bool:
     """Return True when the peer's top-level package is importable (no import)."""
-    import importlib.util
-
     try:
-        return importlib.util.find_spec(import_name) is not None
+        return _locate_without_importing(import_name) is not None
     except (ImportError, ValueError):
         return False
 

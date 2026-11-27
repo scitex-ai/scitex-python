@@ -12,7 +12,7 @@ SHELL := /bin/bash
 	test-stats-cov test-config-cov test-logging-cov \
 	build release upload upload-test test-install test-install-pypi test-install-module test-install-modules \
 	build-all release-all upload-all upload-test-all \
-	sync-extras sync-tests sync-examples sync-redirect sync-member-floors check-member-floors \
+	sync-extras sync-tests sync-examples sync-redirect check-member-floors resolve-member-floors \
 	show-version tag \
 	bench-install bench-install-uv
 
@@ -74,8 +74,8 @@ help:
 	@echo -e "  make clean             Remove build/test/cache artifacts"
 	@echo -e "  make clean-old-legacy  Remove all .old and .legacy directories"
 	@echo -e "  make sync-extras       Sync pyproject.toml extras from imports"
-	@echo -e "  make sync-member-floors  Raise SciTeX member floors to PyPI latest"
-	@echo -e "  make check-member-floors Fail if a member floor is older than PyPI latest"
+	@echo -e "  make check-member-floors   Fail on an exact member pin or an unpublished floor"
+	@echo -e "  make resolve-member-floors List floors a lowest-direct resolution must raise"
 	@echo -e "  make sync-tests        Sync test files with source structure"
 	@echo -e "  make sync-examples     Sync example files with source structure"
 	@echo -e ""
@@ -258,14 +258,15 @@ sync-extras:
 	@python scripts/maintenance/generate_module_deps.py --update-pyproject --include-empty 2>/dev/null || echo -e "$(YELLOW)Script not available$(NC)"
 	@echo -e "$(GREEN)✅ pyproject.toml extras updated$(NC)"
 
-# Raising floors changes the declared metadata, so the release-identity
-# controls' frozen producer headers are refreshed in the same step.
-sync-member-floors:
-	@python scripts/release/sync_member_floors.py --write
-	@uv run --no-project --with hatchling==1.30.1 python .github/ci/refresh_producer_headers.py
-
+# Member floors are MINIMUMS (the oldest release the umbrella works with), not
+# PyPI latest; the min-versions CI leg tests exactly the floors. After editing
+# a floor, refresh the release-identity controls' frozen producer headers:
+#   uv run --no-project --with hatchling==1.30.1 python .github/ci/refresh_producer_headers.py
 check-member-floors:
-	@python scripts/release/sync_member_floors.py --check
+	@python scripts/release/member_floors.py check
+
+resolve-member-floors:
+	@python scripts/release/member_floors.py lowest
 
 sync-tests:
 	@echo -e "$(CYAN)🔄 Syncing test files with source...$(NC)"

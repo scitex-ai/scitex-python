@@ -227,11 +227,11 @@ def __getattr__(name):
         return INJECTED
     if name == "show_install_guide":
         warnings.warn(
-            "scitex.show_install_guide() is deprecated, use scitex.dev.show_install_guide() instead",
+            "scitex.show_install_guide() is deprecated, use scitex.helpers.show_install_guide() instead",
             DeprecationWarning,
             stacklevel=2,
         )
-        from .dev import show_install_guide
+        from .helpers import show_install_guide
 
         return show_install_guide
     if name == "Diagram":
