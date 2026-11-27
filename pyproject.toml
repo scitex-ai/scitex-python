@@ -475,7 +475,10 @@ media = []
 # ML Module - Machine learning
 # Use: pip install scitex[ml]
 ml = [
-    "scitex-ml>=0.1.0",
+    # 0.2.0: `import scitex_ml` no longer imports torch/torchvision eagerly;
+    # 0.1.0 did, and `import scitex; import torch` then recursed through
+    # torch's inspect-based op registration (scitex.ml is a lazy peer).
+    "scitex-ml>=0.2.0",
 ]
 
 # Module Module - Module management (OPTIONAL peer: scitex-hub.module)

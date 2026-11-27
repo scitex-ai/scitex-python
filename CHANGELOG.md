@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`hash_file` digest the integration tests pin), `scitex-types>=0.1.5`
   (`is_array_like`/`ArrayLike`), `figrecipe>=0.28.13` (`figrecipe.diagram`),
   `scitex-etc>=0.2.0` (`scitex_etc.media`), `scitex-io>=0.2.16`
-  (`scitex_io.bundle`). The rest are the lowest releases that resolve
+  (`scitex_io.bundle`), `scitex-ml>=0.2.0` (0.1.0 imported torch and
+  torchvision eagerly, so `import scitex; import torch` recursed). The rest are the lowest releases that resolve
   together (`make resolve-member-floors`).
 - `scripts/release/sync_member_floors.py` (raise every floor to PyPI latest,
   and refuse a release otherwise) is replaced by
