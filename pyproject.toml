@@ -90,7 +90,7 @@ dependencies = [
     "scitex-notification>=0.1.0",
     "scitex-notebook>=0.1.0",
     # Delegated modules from #51 standalonization
-    "scitex-db>=0.1.0",
+    "scitex-db>=0.1.9",
     "scitex-scholar>=1.4.3",
     "scitex-parallel>=0.1.0",
     "scitex-types>=0.1.5",
@@ -284,7 +284,7 @@ cv = [
 db = [
     "sqlalchemy",
     "psycopg2-binary",
-    "scitex-db>=0.1.0",
+    "scitex-db>=0.1.9",
 ]
 
 # Dataset Module - Dataset management

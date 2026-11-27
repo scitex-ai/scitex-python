@@ -22,7 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`is_array_like`/`ArrayLike`), `figrecipe>=0.28.13` (`figrecipe.diagram`),
   `scitex-etc>=0.2.0` (`scitex_etc.media`), `scitex-io>=0.2.16`
   (`scitex_io.bundle`), `scitex-ml>=0.2.0` (0.1.0 imported torch and
-  torchvision eagerly, so `import scitex; import torch` recursed). The rest are the lowest releases that resolve
+  torchvision eagerly, so `import scitex; import torch` recursed),
+  `scitex-db>=0.1.9` (older releases delete their own attributes in
+  `__init__`, which recurses under the umbrella's LazyLoader). The rest are the lowest releases that resolve
   together (`make resolve-member-floors`).
 - `scripts/release/sync_member_floors.py` (raise every floor to PyPI latest,
   and refuse a release otherwise) is replaced by
@@ -34,6 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - CI leg `min-versions`: installs `.[all,dev]` with every member constrained
   to exactly its floor and runs the full suite, so the floors stay honest.
+- `tests/integration/test_lazy_peers_load.py`: every peer `import scitex`
+  registers lazily must execute cleanly (catches releases that break under
+  the LazyLoader, independent of torch).
 - `scitex[resource]` declares `scitex-resource`; `scitex.resource` and
   `scitex resource` previously worked only when scitex-orochi pulled it in.
 
