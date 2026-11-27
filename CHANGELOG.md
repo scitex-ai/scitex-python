@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Test subprocess coverage is now configured declaratively via coverage.py's `patch = ["subprocess"]` (`coverage[toml]>=7.13.0`, `pytest-cov>=7.0.0`); `tests/conftest.py` no longer writes `.pth` files into site-packages or overwrites caller-owned coverage environment variables.
+
 ## [2.30.13] - 2026-11-27
 
 ### Changed
