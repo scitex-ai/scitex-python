@@ -1,0 +1,37 @@
+name: min-versions
+
+# Member floors are MINIMUMS: the oldest release of each member the umbrella
+# works with. This workflow installs the umbrella with every member
+# constrained to exactly its declared floor (UV_CONSTRAINT, read by the org
+# workflow's `uv pip install`) and runs the full suite, so a floor that no
+# longer provides what the umbrella imports or re-exports fails here rather
+# than on a user who installed that member directly.
+#
+# A separate workflow, not a second job in ci.yml: the org pytest-matrix
+# declares `concurrency: ${{ github.workflow }}-${{ github.ref }}`, so two
+# calls from one workflow share a group and cancel each other on PRs.
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  schedule:
+    - cron: "30 17 * * *"
+  workflow_dispatch:
+
+jobs:
+  pytest-matrix:
+    uses: scitex-ai/.github/.github/workflows/pytest-matrix.yml@main
+    with:
+      postgres: true
+      full_python_versions: '["3.12"]'
+      pre_test_command: |
+        owned=$(mktemp -d "${RUNNER_TEMP:?}/scitex-min-versions.XXXXXXXX")
+        mkdir -p "$owned/tmp" "$owned/cache" "$owned/config" "$owned/scitex" "$owned/mpl"
+        python3 scripts/release/member_floors.py constraints "$owned/member-floors.txt"
+        cat "$owned/member-floors.txt"
+        for pair in "UV_CONSTRAINT=$owned/member-floors.txt" "SCITEX_DIR=$owned/scitex" "TMPDIR=$owned/tmp" "XDG_CACHE_HOME=$owned/cache" "XDG_CONFIG_HOME=$owned/config" "MPLCONFIGDIR=$owned/mpl" "MPLBACKEND=Agg" "PIP_CACHE_DIR=$owned/cache/pip" "UV_CACHE_DIR=$owned/cache/uv" "PYTHONPYCACHEPREFIX=$owned/cache/pycache" "RUN_E2E=1"; do
+          printf '%s\n' "$pair" >> "${GITHUB_ENV:?}"
+        done
+    secrets: inherit
