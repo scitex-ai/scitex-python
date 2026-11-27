@@ -26,6 +26,9 @@ jobs:
     with:
       postgres: true
       full_python_versions: '["3.12"]'
+      # The floor install resolves and builds an uncached member set; on a
+      # loaded compute-04 runner it exceeded the 30-minute default.
+      timeout_minutes: 60
       pre_test_command: |
         owned=$(mktemp -d "${RUNNER_TEMP:?}/scitex-min-versions.XXXXXXXX")
         mkdir -p "$owned/tmp" "$owned/cache" "$owned/config" "$owned/scitex" "$owned/mpl"
