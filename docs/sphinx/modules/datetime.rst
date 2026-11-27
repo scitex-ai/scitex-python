@@ -1,4 +1,4 @@
 datetime Module (``stx.datetime``)
 ==================================
 
-See :doc:`/api/scitex.datetime` for the auto-generated Python API.
+See :doc:`/source/api/datetime` for the auto-generated Python API.

@@ -161,4 +161,4 @@ Compilation Options
 API Reference
 -------------
 
-See :doc:`/api/scitex.writer` for the auto-generated Python API.
+See :doc:`/source/api/writer` for the auto-generated Python API.

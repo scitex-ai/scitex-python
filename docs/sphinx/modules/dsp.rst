@@ -71,4 +71,4 @@ Available Functions
 API Reference
 -------------
 
-See :doc:`/api/scitex.dsp` for the auto-generated Python API.
+See :doc:`/source/api/dsp` for the auto-generated Python API.

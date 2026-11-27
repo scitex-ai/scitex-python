@@ -95,4 +95,4 @@ Backends
 API Reference
 -------------
 
-See :doc:`/api/scitex.diagram` for the auto-generated Python API.
+See :doc:`/source/api/diagram` for the auto-generated Python API.

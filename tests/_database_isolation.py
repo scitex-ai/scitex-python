@@ -86,6 +86,38 @@ for _key in tuple(os.environ):
 os.environ.update(_isolated)
 
 
+def pytest_sessionstart(session):
+    """CI may observe its private database without changing worker behavior."""
+    if (os.environ.get("SCITEX_TEST_PG_DIAGNOSTICS") != "1"
+            or hasattr(session.config, "workerinput")
+            or os.environ.get("PYTEST_XDIST_WORKER")
+            or os.environ.get("PYTEST_CURRENT_TEST")
+            or _isolated["SCITEX_STORE_DSN"] == _UNREACHABLE):
+        return
+    from _postgres_waits import PostgresWaitObserver
+
+    session.config._scitex_pg_wait_observer = PostgresWaitObserver(
+        _isolated["SCITEX_STORE_DSN"]
+    )
+
+
+def pytest_sessionfinish(session, exitstatus):
+    observer = getattr(session.config, "_scitex_pg_wait_observer", None)
+    if observer is None:
+        return
+    import json
+
+    report = observer.finish()
+    terminal = session.config.pluginmanager.getplugin("terminalreporter")
+    if terminal:
+        terminal.write_line("POSTGRES_WAIT_DIAGNOSTICS " + json.dumps(report))
+    if (not report["ready"] or report["error_types"]
+            or report["process_exit"] not in (0, -15)):
+        # Requested evidence being unavailable must not produce a false pass.
+        if not session.exitstatus:
+            session.exitstatus = pytest.ExitCode.TESTS_FAILED
+
+
 @pytest.fixture(autouse=True)
 def _no_fleet_database_environment():
     """Reassert isolation per test and report a leaked fleet target."""

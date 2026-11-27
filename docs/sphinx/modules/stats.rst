@@ -149,4 +149,4 @@ Post-hoc Tests
 API Reference
 -------------
 
-See :doc:`/api/scitex.stats` for the auto-generated Python API.
+See :doc:`/source/api/stats` for the auto-generated Python API.
