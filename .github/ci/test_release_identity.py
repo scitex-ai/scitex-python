@@ -1757,7 +1757,7 @@ class SourceMetadataTests(unittest.TestCase):
         )
         # Assert
         assert result["metadata_source"] == {
-            "runtime_requirements": 641,
+            "runtime_requirements": 643,
             "extras": 79,
             "entry_point_groups": 3,
         }

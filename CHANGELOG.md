@@ -28,7 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `scitex-agent-container>=0.42.1` (its CLI is mounted as
   `scitex agent-container`; 0.28.1 fails the umbrella's audit-cli with 112
   errors, and without the floor resolvers pick it to keep fastmcp 4.x;
-  releases between 0.28.1 and 0.42.1 were not bisected). The rest are the lowest releases that resolve
+  releases between 0.28.1 and 0.42.1 were not bisected; pragmatic floor,
+  not minimised), and its joint requirements `scitex-container>=0.4.0`,
+  `scitex-genai>=0.2.1`.
+- `scitex[cli]` declares `fastmcp>=3.4.11`: `scitex mcp` builds its server
+  with fastmcp but never declared it, and fastmcp 2.14.1 (uncapped `mcp`)
+  breaks against mcp 2.x. Pragmatic floor, not minimised (today's
+  known-good version). The rest are the lowest releases that resolve
   together (`make resolve-member-floors`).
 - `scripts/release/sync_member_floors.py` (raise every floor to PyPI latest,
   and refuse a release otherwise) is replaced by
