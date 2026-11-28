@@ -87,6 +87,7 @@ RENAMED_MOUNTS: Dict[str, Tuple[Tuple[str, str], ...]] = {
 # to fit the help column.
 _FALLBACK_HELP: Dict[str, str] = {
     # scitex-internal wrappers (no peer in the registry)
+    "api": "API surface of installed packages (REST operations + MCP tools).",
     "audit-security": "Run security tools (Bandit, ShellCheck, pip-audit, GitHub).",
     "audit-tool": "Check and install the tools audit-security runs.",
     "bundle": "Convert and validate SciTeX bundle files (.figz/.pltz -> .stx).",
@@ -352,7 +353,9 @@ _NON_CORE_CATEGORIES: Tuple[Tuple[str, frozenset], ...] = (
     ),
     (
         "Introspection",
-        frozenset({"dev", "docs", "introspection", "list-python-apis", "skills"}),
+        frozenset(
+            {"api", "dev", "docs", "introspection", "list-python-apis", "skills"}
+        ),
     ),
     (
         "Shell",
