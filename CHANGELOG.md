@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- `import scitex` no longer copies `./.env` or `$HOME/.env` into `os.environ`
+  (scitex-config#47). Earlier versions ran `PATHS = ScitexPaths()` at import,
+  which loaded every key of the file through scitex-config, credentials
+  included, so every subprocess inherited them. This release requires
+  `scitex-config>=0.4.0`, where import has no environment side effects.
+  `scitex.PATHS` still honours `SCITEX_DIR` from `.env`, reading only that
+  key and only on first use. Code that relied on `.env` values appearing in
+  `os.environ` must ask for them explicitly with
+  `scitex_config.read_dotenv(path)` or `load_dotenv(path, keys=[...])`.
+  A fresh-interpreter test with a real `.env` guards this.
+
 ## [2.30.13] - 2026-11-27
 
 ### Changed
