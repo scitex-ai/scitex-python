@@ -15,7 +15,7 @@ from pathlib import Path
 
 import click
 
-SDK_FLOOR = "0.3.27"
+SDK_FLOOR = "0.4.1"
 
 
 def _sdk():
