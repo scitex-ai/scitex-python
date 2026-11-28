@@ -92,8 +92,9 @@ def api(ctx: click.Context) -> None:
     "--output", "-o", type=click.Path(dir_okay=False), help="Write to a file."
 )
 @click.option("--strict", is_flag=True, help="Exit 1 when any entry violates a rule.")
+@click.option("--json", "as_json", is_flag=True, help="Same as --format json.")
 def list_(
-    packages: tuple[str, ...], fmt: str, output: str | None, strict: bool
+    packages: tuple[str, ...], fmt: str, output: str | None, strict: bool, as_json: bool
 ) -> None:
     """List REST operations and MCP tools of installed packages, with rule findings.
 
@@ -105,7 +106,7 @@ def list_(
     """
     inv = _sdk()
     doc = inv.aggregate(installed_specs(inv, packages))
-    text = inv.RENDERERS[fmt](doc)
+    text = inv.RENDERERS["json" if as_json else fmt](doc)
     if output:
         Path(output).write_text(text, encoding="utf-8")
         click.echo(f"wrote {output}", err=True)
